@@ -34,6 +34,25 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
             }
         });
         timerUpdateAircraft->start(3000);
+
+        QTimer *timerRemoveAircraft = new QTimer();
+        QObject::connect(timerRemoveAircraft, &QTimer::timeout, [this](){
+            if (mFlyableDataList.size() > 0){
+                QJsonObject jsonObject;
+                jsonObject.insert("Type", "Flyable");
+                jsonObject.insert("COMMAND", "REMOVE");
+
+                QJsonObject jsonData;
+                jsonData.insert("Id", mFlyableDataList[0].flyableDoc.object().value("Data").toObject().value("Id").toObject().value("value").toInt());
+                jsonObject.insert("Data", jsonData);
+                mFlyableDataList.pop_front();
+                QJsonDocument d(jsonObject);
+                qDebug() << "flyable[0]: " << mFlyableDataList[0].flyableDoc.toJson(QJsonDocument::Compact);
+                qDebug() << "f: " << d.toJson(QJsonDocument::Compact);
+                mNetworkManager->sendData(d.toJson(QJsonDocument::Compact));
+            }
+        });
+        timerRemoveAircraft->start(7000);
     });
 }
 
@@ -56,7 +75,7 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonObject jsonObject;
 
     jsonObject.insert("Type", "Flyable");
-
+    jsonObject.insert("COMMAND", "ADD");
     QJsonObject jsonData;
     QJsonObject nameObject;
     nameObject.insert("value", name);
@@ -111,6 +130,7 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonObject jsonObjectStatus;
 
     jsonObjectStatus.insert("Type", "Status");
+    jsonObjectStatus.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectStatusData;
     jsonObjectStatusData.insert("Name", name);
@@ -135,6 +155,7 @@ void FlyableNodeTest::createFlyableInfo()
     QJsonObject jsonObjectLine;
 
     jsonObjectLine.insert("Type", "Line");
+    jsonObjectLine.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectLineData;
     jsonObjectLineData.insert("Name", name);
@@ -227,6 +248,7 @@ void FlyableNodeTest::updateFlyableInfo()
 
         QJsonObject jsonObject;
         jsonObject.insert("Type", "Flyable");
+        jsonObject.insert("COMMAND", "UPDATE");
         jsonObject.insert("Data", dataObject);
         flaybleData.flyableDoc.setObject(jsonObject);
         //--status node-----------------------------------------------
@@ -238,6 +260,7 @@ void FlyableNodeTest::updateFlyableInfo()
         QString name = dataObject["Name"].toObject().value("value").toString();
 
         jsonObjectStatus.insert("Type", "Status");
+        jsonObjectStatus.insert("COMMAND", "UPDATE");
         jsonObjectStatusData.insert("Name", name);
         jsonObjectStatusData.insert("Id", id);
         jsonObjectStatusData.insert("Longitude", longitude);
@@ -260,6 +283,7 @@ void FlyableNodeTest::updateFlyableInfo()
         QJsonObject jsonObjectLine;
 
         jsonObjectLine.insert("Type", "Line");
+        jsonObjectLine.insert("COMMAND", "UPDATE");
 
         QJsonObject jsonObjectLineData;
         jsonObjectLineData.insert("Name", name);
@@ -282,4 +306,9 @@ void FlyableNodeTest::updateFlyableInfo()
         jsonDocLine.setObject(jsonObjectLine);
         flaybleData.lineDoc = jsonDocLine;
     }
+}
+
+void FlyableNodeTest::removeFlyableInfo()
+{
+
 }

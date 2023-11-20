@@ -92,26 +92,66 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
     return movableNode;
 }
 
-void DataManager::removeFlyableNodeData(NodeData *nodeData)
+void DataManager::flyableNodeDataReceived(NodeData *nodeData)
 {
-    for (auto &layer: nodeData->layers)
-        layer->removeChild(mNodeMap[nodeData->id]);
-    mNodeMap.remove(nodeData->id);
+    qDebug() << nodeData->command << "--------------------------";
+    if (nodeData->command == "REMOVE"){
+        removeNodeData(nodeData);
+    } else if (nodeData->command == "UPDATE") {
+        addUpdateFlyableNode(nodeData);
+    } else {
+        addUpdateFlyableNode(nodeData);
+    }
 }
 
-void DataManager::removeMovableNodeData(NodeData *nodeData)
+void DataManager::movableNodeDataReceived(NodeData *nodeData)
 {
-    for (auto &layer: nodeData->layers)
-        if (mNodeMap.contains(nodeData->id))
-            layer->removeChild(mNodeMap[nodeData->id]);
-    mNodeMap.remove(nodeData->id);
+    if (nodeData->command == "REMOVE"){
+        removeNodeData(nodeData);
+    } else if (nodeData->command == "UPDATE") {
+        addUpdateNode(nodeData);
+    }
+    else {
+        addUpdateMovableNode(nodeData);
+    }
 }
+
+void DataManager::nodeDataReceived(NodeData *nodeData)
+{
+    qDebug() << nodeData->command;
+    if (nodeData->command == "REMOVE"){
+        removeNodeData(nodeData);
+    } else if (nodeData->command == "UPDATE") {
+        addUpdateNode(nodeData);
+    }
+    else {
+        addUpdateNode(nodeData);
+    }
+}
+
+//void DataManager::removeFlyableNodeData(NodeData *nodeData)
+//{
+//    for (auto &layer: nodeData->layers)
+//        layer->removeChild(mNodeMap[nodeData->id]);
+//    mNodeMap.remove(nodeData->id);
+//}
+
+//void DataManager::removeMovableNodeData(NodeData *nodeData)
+//{
+//    for (auto &layer: nodeData->layers)
+//            layer->removeChild(mNodeMap[nodeData->id]);
+//    mNodeMap.remove(nodeData->id);
+//}
 
 void DataManager::removeNodeData(NodeData *nodeData)
 {
-    for (auto &layer: nodeData->layers)
-        layer->removeChild(mNodeMap[nodeData->id]);
-    mNodeMap.remove(nodeData->id);
+    qDebug() << nodeData->id << "=========================";
+    if(mNodeMap.contains(nodeData->id)){
+        for(auto layer: mNodeMap[nodeData->id]->nodeData()->layers){
+            layer->removeChild(mNodeMap[nodeData->id]);
+        }
+        mNodeMap.remove(nodeData->id);
+    }
 }
 
 int DataManager::nodeCount()

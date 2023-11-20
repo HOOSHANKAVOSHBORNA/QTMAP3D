@@ -46,6 +46,7 @@ void MovableNodeTest::createMovableInfo()
     QJsonObject jsonObject;
 
     jsonObject.insert("Type", "Movable");
+    jsonObject.insert("COMMAND", "ADD");
 
     QJsonObject jsonData;
     QJsonObject nameObject;
@@ -100,6 +101,7 @@ void MovableNodeTest::createMovableInfo()
     QJsonObject jsonObjectStatus;
 
     jsonObjectStatus.insert("Type", "Status");
+    jsonObjectStatus.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectStatusData;
     jsonObjectStatusData.insert("Name", name);
@@ -124,6 +126,7 @@ void MovableNodeTest::createMovableInfo()
     QJsonObject jsonObjectLine;
 
     jsonObjectLine.insert("Type", "Line");
+    jsonObjectLine.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectLineData;
     jsonObjectLineData.insert("Name", name);
@@ -202,6 +205,7 @@ void MovableNodeTest::updateMovableInfo()
 
         QJsonObject jsonObject;
         jsonObject.insert("Type", "Movable");
+        jsonObject.insert("COMMAND", "UPDATE");
         jsonObject.insert("Data", dataObject);
         movableData.movableDoc.setObject(jsonObject);
         //--status node-----------------------------------------------
@@ -213,6 +217,7 @@ void MovableNodeTest::updateMovableInfo()
         QString name = dataObject["Name"].toObject().value("value").toString();
 
         jsonObjectStatus.insert("Type", "Status");
+        jsonObjectStatus.insert("COMMAND", "UPDATE");
         jsonObjectStatusData.insert("Name", name);
         jsonObjectStatusData.insert("Id", id);
         jsonObjectStatusData.insert("Longitude", longitude);
@@ -237,6 +242,7 @@ void MovableNodeTest::updateMovableInfo()
         QJsonObject jsonObjectLine;
 
         jsonObjectLine.insert("Type", "Line");
+        jsonObjectLine.insert("COMMAND", "UPDATE");
 
         QJsonObject jsonObjectLineData;
         jsonObjectLineData.insert("Name", name);

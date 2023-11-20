@@ -25,6 +25,7 @@ public:
 private:
     void createFlyableInfo();
     void updateFlyableInfo();
+    void removeFlyableInfo();
 
 private:
     NetworkManager *mNetworkManager;
