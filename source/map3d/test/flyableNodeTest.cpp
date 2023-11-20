@@ -38,18 +38,26 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
         QTimer *timerRemoveAircraft = new QTimer();
         QObject::connect(timerRemoveAircraft, &QTimer::timeout, [this](){
             if (mFlyableDataList.size() > 0){
-                QJsonObject jsonObject;
-                jsonObject.insert("Type", "Flyable");
-                jsonObject.insert("COMMAND", "REMOVE");
+                QJsonObject jsonObject = mFlyableDataList[0].flyableDoc.object();
+                QJsonObject jsonStatusObject = mFlyableDataList[0].statusDoc.object();
+                QJsonObject jsonLineObject = mFlyableDataList[0].lineDoc.object();
 
-                QJsonObject jsonData;
-                jsonData.insert("Id", mFlyableDataList[0].flyableDoc.object().value("Data").toObject().value("Id").toObject().value("value").toInt());
-                jsonObject.insert("Data", jsonData);
+                jsonObject.remove("COMMAND");
+                jsonObject.insert("COMMAND", "REMOVE");
+                jsonStatusObject.remove("COMMAND");
+                jsonStatusObject.insert("COMMAND", "REMOVE");
+                jsonLineObject.remove("COMMAND");
+                jsonLineObject.insert("COMMAND", "REMOVE");
+
                 mFlyableDataList.pop_front();
-                QJsonDocument d(jsonObject);
-                qDebug() << "flyable[0]: " << mFlyableDataList[0].flyableDoc.toJson(QJsonDocument::Compact);
-                qDebug() << "f: " << d.toJson(QJsonDocument::Compact);
-                mNetworkManager->sendData(d.toJson(QJsonDocument::Compact));
+
+                QJsonDocument jsonDoc(jsonObject);
+                QJsonDocument jsonStatusDoc(jsonStatusObject);
+                QJsonDocument jsonLineDoc(jsonLineObject);
+
+                mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(jsonLineDoc.toJson(QJsonDocument::Compact));
             }
         });
         timerRemoveAircraft->start(7000);
@@ -61,8 +69,8 @@ void FlyableNodeTest::createFlyableInfo()
     if(mFlyableDataList.count() >= mMaxFlyableNumber)
         return;
     //---------------------------------------------------------
-    QString name = "Flyable" + QString::number(mFlyableDataList.count());
-    int id = 10000 + mFlyableDataList.count();
+    QString name = "Flyable" + QString::number(mCount);
+    int id = 10000 + mCount++;
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
     double altitude =0;/* (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));*/

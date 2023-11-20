@@ -35,7 +35,6 @@ void ServiceManager::flyableNodeData(QJsonObject jsonObject)
     flyableNodeData->color = jsonObjectData.value("Color").isObject() ? jsonObjectData.value("Color").toObject().value("value").toString().toStdString() : jsonObjectData.value("Color").toString().toStdString();
     flyableNodeData->speed = jsonObjectData.value("Speed").isObject() ? jsonObjectData.value("Speed").toObject().value("value").toInt() : jsonObjectData.value("Speed").toInt();
     flyableNodeData->command = jsonObject.value("COMMAND").toString().toStdString();
-    qDebug() << flyableNodeData->command;
     for (auto i : jsonObjectData.value("LayersId").toArray()){
         int id = i.toInt();
         auto layer = findParenticLayer(id);
@@ -125,7 +124,7 @@ void ServiceManager::polylineData(QJsonObject polyline)
     }
     int layerId = jsonObjectData.value("LayerId").toInt();
     auto layer = findParenticLayer(layerId);
-    if (layer){
+//    if (layer){
         lineNodeData->layer = layer;
         lineNodeData->name = jsonObjectData.value("name").toString().toStdString();
         lineNodeData->id = jsonObjectData.value("Id").toInt();
@@ -133,7 +132,7 @@ void ServiceManager::polylineData(QJsonObject polyline)
         lineNodeData->width = jsonObjectData.value("Width").toInt();
         lineNodeData->command = polyline.value("COMMAND").toString().toStdString();
         emit lineNodeDataReceived(lineNodeData);
-    }
+//    }
 }
 
 void ServiceManager::movableNodeData(QJsonObject jsonObject)

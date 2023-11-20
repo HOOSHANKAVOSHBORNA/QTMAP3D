@@ -35,6 +35,7 @@ private:
 
     QVector<Url> mUrlList;
     QVector<QColor> mColorList;
+    int mCount{0};
 };
 
 #endif // MODELNODETEST_H

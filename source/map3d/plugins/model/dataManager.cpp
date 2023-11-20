@@ -94,7 +94,6 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
 
 void DataManager::flyableNodeDataReceived(NodeData *nodeData)
 {
-    qDebug() << nodeData->command << "--------------------------";
     if (nodeData->command == "REMOVE"){
         removeNodeData(nodeData);
     } else if (nodeData->command == "UPDATE") {
@@ -118,7 +117,6 @@ void DataManager::movableNodeDataReceived(NodeData *nodeData)
 
 void DataManager::nodeDataReceived(NodeData *nodeData)
 {
-    qDebug() << nodeData->command;
     if (nodeData->command == "REMOVE"){
         removeNodeData(nodeData);
     } else if (nodeData->command == "UPDATE") {
@@ -145,11 +143,11 @@ void DataManager::nodeDataReceived(NodeData *nodeData)
 
 void DataManager::removeNodeData(NodeData *nodeData)
 {
-    qDebug() << nodeData->id << "=========================";
     if(mNodeMap.contains(nodeData->id)){
         for(auto layer: mNodeMap[nodeData->id]->nodeData()->layers){
             layer->removeChild(mNodeMap[nodeData->id]);
         }
+        mNodeMap[nodeData->id].release();
         mNodeMap.remove(nodeData->id);
     }
 }

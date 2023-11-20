@@ -33,13 +33,14 @@ public:
 public:
     explicit DrawLine(QWidget *parent = nullptr);
     bool setup() override;
+    void addUpdateLineNode(PolyLineData *lineNodeData);
 
 private slots:
     void onLineItemCheck(bool check);
     void onRulerItemCheck(bool check);
     void onHeightItemCheck(bool check);
     void onSlopeItemCheck(bool check);
-    void addUpdateLineNode(PolyLineData *lineNodeData);
+    void LineNodeDataReceived(PolyLineData *lineNodeData);
 private:
     void onItemChecked(Type type, bool check);
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
