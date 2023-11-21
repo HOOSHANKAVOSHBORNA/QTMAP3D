@@ -42,6 +42,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObject;
 
     jsonObject.insert("Type", "Node");
+    jsonObject.insert("COMMAND", "ADD");
 
     QJsonObject jsonData;
 
@@ -90,6 +91,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectStatus;
 
     jsonObjectStatus.insert("Type", "Status");
+    jsonObjectStatus.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectStatusData;
     jsonObjectStatusData.insert("Name", name);
@@ -116,6 +118,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectCircle;
 
     jsonObjectCircle.insert("Type", "Circle");
+    jsonObjectCircle.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectCircleData;
     jsonObjectCircleData.insert("Name", name + " circle");
@@ -140,6 +143,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectPolygon;
 
     jsonObjectPolygon.insert("Type", "Polygon");
+    jsonObjectPolygon.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectPolygonData;
     jsonObjectPolygonData.insert("Name", name + " polygon");
@@ -223,6 +227,7 @@ void NodeTest::updateInfo()
 
 //        QJsonObject jsonObject;
 //        jsonObject.insert("Type", "Flyable");
+//        jsonObject.insert("COMMAND", "UPDATE");
 //        jsonObject.insert("Data", dataObject);
 //        flaybleData.flyableDoc.setObject(jsonObject);
 //        //--status node-----------------------------------------------
@@ -251,6 +256,7 @@ void NodeTest::updateInfo()
 //        QJsonObject jsonObjectLine;
 
 //        jsonObjectLine.insert("Type", "Route");
+//        jsonObjectLine.insert("COMMAND", "UPDATE");
 
 //        QJsonObject jsonObjectLineData;
 //        jsonObjectLineData.insert("Name", name);

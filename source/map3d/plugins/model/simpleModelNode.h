@@ -61,6 +61,8 @@ private slots:
     void onModeChanged(bool is3DView);
     void onInfoClicked();
     void onBookmarkChecked(bool status);
+    void onTargetChecked();
+    void onAttackChecked();
 
 private:
 
@@ -73,6 +75,7 @@ private:
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
     osg::ref_ptr<Circle> mCircleHighlightNode;
+    CircularMenuItem *mAttackerMenuItem;
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;

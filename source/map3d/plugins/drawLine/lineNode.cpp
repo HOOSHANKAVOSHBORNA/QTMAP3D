@@ -497,4 +497,14 @@ void LineNode::updateStatusNode( LabelData &lableData)
 
 }
 
+PolyLineData *LineNode::polyLineData() const
+{
+    return mPolyLineData;
+}
+
+void LineNode::setPolyLineData(PolyLineData *newPolyLineData)
+{
+    mPolyLineData = newPolyLineData;
+}
+
 
