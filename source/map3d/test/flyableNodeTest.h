@@ -25,6 +25,7 @@ public:
 private:
     void createFlyableInfo();
     void updateFlyableInfo();
+    void removeFlyableInfo();
 
 private:
     NetworkManager *mNetworkManager;
@@ -34,6 +35,7 @@ private:
 
     QVector<Url> mUrlList;
     QVector<QColor> mColorList;
+    int mCount{0};
 };
 
 #endif // MODELNODETEST_H

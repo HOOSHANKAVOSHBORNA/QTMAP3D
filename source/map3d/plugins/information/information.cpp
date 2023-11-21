@@ -11,7 +11,7 @@ Information::Information(QObject *parent): PluginInterface(parent)
 
 bool Information::setup()
 {
-    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::addUpdateStatusNode);
+    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::statusNodeReceived);
 
     mInformationLayer = new CompositeAnnotationLayer;
     mInformationLayer->setName(CATEGORY);
@@ -209,6 +209,21 @@ void Information::addUpdateStatusNode(StatusNodeData *statusnNodeData)
 
     statusNode->setName(statusnNodeData->name);
     statusNode->setNodeData(statusnNodeData);
+}
+
+void Information::statusNodeReceived(StatusNodeData *statusNodeData)
+{
+    if (statusNodeData->command == "REMOVE"){
+        if (mStatusNodeMap.contains(statusNodeData->id)){
+            mStatusNodeMap[statusNodeData->id]->nodeData()->layer->removeChild(mStatusNodeMap[statusNodeData->id]);
+            mStatusNodeMap[statusNodeData->id].release();
+            mStatusNodeMap.remove(statusNodeData->id);
+        }
+    } else if (statusNodeData->command == "UPDATE"){
+        addUpdateStatusNode(statusNodeData);
+    } else {
+        addUpdateStatusNode(statusNodeData);
+    }
 }
 
 void Information::makeIconNode(const QString &fileName)

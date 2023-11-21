@@ -37,9 +37,9 @@ bool Model::setup()
 
     mDataManager = new DataManager(mapItem(), mainWindow());
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, mDataManager, &DataManager::addUpdateFlyableNode);
-    connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::addUpdateNode);
-    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, mDataManager, &DataManager::addUpdateMovableNode);
+    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, mDataManager, &DataManager::flyableNodeDataReceived);
+    connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::nodeDataReceived);
+    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, mDataManager, &DataManager::movableNodeDataReceived);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -244,7 +244,6 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         }
         mNodeData->layers.push_back(mSimpleNodeLayer);
         mCurrentModel = mDataManager->addUpdateNode(mNodeData);
-        mDataManager->addUpdateNode(mNodeData);
         break;
     case Type::MOVEABLE:
         mNodeData = sampleNodeData("Car", "../data/models/car/car.png", "../data/models/car/car.osgb", "", geoPos);
@@ -309,11 +308,11 @@ void Model::cancel(){
             mSimpleNodeLayer->removeChild(mCurrentModel);
             break;
         case Type::MOVEABLE:
-            mDataManager->removeMovableNodeData(mNodeData);
+            mDataManager->removeNodeData(mNodeData);
             mMoveableNodeLayer->removeChild(mCurrentModel);
             break;
         case Type::FLYABLE:
-            mDataManager->removeFlyableNodeData(mNodeData);
+            mDataManager->removeNodeData(mNodeData);
             mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
         default:
