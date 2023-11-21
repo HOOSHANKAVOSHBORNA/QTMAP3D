@@ -18,9 +18,10 @@ class DrawPolygon : public DrawShape
 public:
     DrawPolygon(QObject *parent = nullptr);
     bool setup() override;
+    void addUpdatePolygon(PolygonData *polygonData);
 private slots:
     void onPolygonItemCheck (bool check);
-    void addUpdatePolygon(PolygonData *polygonData);
+    void polygonDataReceived(PolygonData *polygonData);
 private:
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void tempDrawing(const osgEarth::GeoPoint &geoPos) override;

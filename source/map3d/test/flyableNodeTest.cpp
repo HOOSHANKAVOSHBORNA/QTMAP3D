@@ -66,7 +66,7 @@ FlyableNodeTest::FlyableNodeTest(NetworkManager *networkManager):
 
 void FlyableNodeTest::createFlyableInfo()
 {
-    if(mFlyableDataList.count() >= mMaxFlyableNumber)
+    if(mCount >= mMaxFlyableNumber)
         return;
     //---------------------------------------------------------
     QString name = "Flyable" + QString::number(mCount);

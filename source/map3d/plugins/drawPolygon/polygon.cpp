@@ -400,3 +400,13 @@ void Polygon::createOrUpdateLabelImg(osg::ref_ptr<osg::Image> &image, double are
                     osg::Image::AllocationMode::NO_DELETE);
 
 }
+
+PolygonData *Polygon::polygonData() const
+{
+    return mPolygonData;
+}
+
+void Polygon::setPolygonData(PolygonData *newPolygonData)
+{
+    mPolygonData = newPolygonData;
+}

@@ -25,6 +25,7 @@ private:
     QVector<MovableData> mMovableDataList;
     int mMaxMovableNumber{5};
     bool mMovableQueueDeclared{false};
+    int mCount{0};
 };
 
 #endif // MOVABLENODETEST_H

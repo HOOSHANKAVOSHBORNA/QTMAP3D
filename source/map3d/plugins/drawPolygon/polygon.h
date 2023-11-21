@@ -3,6 +3,7 @@
 
 #include <osgEarthAnnotation/FeatureNode>
 #include "mapItem.h"
+#include "serviceManager.h"
 #include <osgEarthAnnotation/PlaceNode>
 
 class Polygon : public osgEarth::Annotation::FeatureNode
@@ -35,6 +36,9 @@ public:
     bool getShowVolume() const;
     void setShowVolume(bool newShowVolume);
 
+    PolygonData *polygonData() const;
+    void setPolygonData(PolygonData *newPolygonData);
+
 private:
     double CalculateAreaOfPolygon();
     double CalculateAreaOfPolygon_I();
@@ -57,6 +61,7 @@ private:
     int mCount{0};
     QList<osgEarth::GeoPoint> mPoints;
     osgEarth::GeoPoint mCenter;
+    PolygonData *mPolygonData{nullptr};
 };
 
 

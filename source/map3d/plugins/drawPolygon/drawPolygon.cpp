@@ -15,7 +15,7 @@ DrawPolygon::DrawPolygon(QObject *parent): DrawShape(parent)
 
 bool DrawPolygon::setup()
 {
-    connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawPolygon::addUpdatePolygon);
+    connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawPolygon::polygonDataReceived);
 
     auto toolboxItem =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawPolygon::onPolygonItemCheck);
@@ -51,6 +51,22 @@ void DrawPolygon::onPolygonItemCheck(bool check)
     }
 }
 
+void DrawPolygon::polygonDataReceived(PolygonData *polygonData)
+{
+    if (polygonData->command == "REMOVE"){
+        if (mPolygonMap.contains(polygonData->id)){
+            mPolygonMap[polygonData->id]->polygonData()->layer->removeChild(mPolygonMap[polygonData->id]);
+            mPolygonMap[polygonData->id].release();
+            mPolygonMap.remove(polygonData->id);
+        }
+    } else if (polygonData->command == "UPDATE") {
+        addUpdatePolygon(polygonData);
+    }
+    else {
+        addUpdatePolygon(polygonData);
+    }
+}
+
 void DrawPolygon::addUpdatePolygon(PolygonData *polygonData)
 {
     Polygon *polygon;
@@ -65,6 +81,7 @@ void DrawPolygon::addUpdatePolygon(PolygonData *polygonData)
     }
     polygon->setName(polygonData->name);
     polygon->create(&polygonData->points);
+    polygon->setPolygonData(polygonData);
 //    for (auto point: polygonData->points){
 //        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
 //        polygon->addPoint(geopos);

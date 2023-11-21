@@ -17,7 +17,7 @@ DrawCircle::DrawCircle(QObject *parent): DrawShape(parent)
 
 bool DrawCircle::setup()
 {
-    connect(serviceManager(), &ServiceManager::circleDataReceived, this, &DrawCircle::addUpdateCircle);
+    connect(serviceManager(), &ServiceManager::circleDataReceived, this, &DrawCircle::circleDataReceived);
     auto toolboxItem =  new ToolboxItem{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCircle::onCircleItemCheck);
     toolbox()->addItem(toolboxItem);
@@ -54,6 +54,22 @@ void DrawCircle::onCircleItemCheck(bool check)
     }
 }
 
+void DrawCircle::circleDataReceived(CircleData *circleData)
+{
+    if (circleData->command == "REMOVE"){
+        if (mCircleMap.contains(circleData->id)){
+            mCircleMap[circleData->id]->circleData()->layer->removeChild(mCircleMap[circleData->id]);
+            mCircleMap[circleData->id].release();
+            mCircleMap.remove(circleData->id);
+        }
+    } else if (circleData->command == "UPDATE") {
+        addUpdateCircle(circleData);
+    }
+    else {
+        addUpdateCircle(circleData);
+    }
+}
+
 void DrawCircle::addUpdateCircle(CircleData *circleData)
 {
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), circleData->longitude, circleData->latitude, circleData->altitude);
@@ -72,6 +88,7 @@ void DrawCircle::addUpdateCircle(CircleData *circleData)
     QColor color(QString::fromStdString(circleData->color));
     circle->setFillColor(Utility::qColor2osgEarthColor(color));
     circle->setHeight(1);
+    circle->setCircleData(circleData);
 //    circle->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 
