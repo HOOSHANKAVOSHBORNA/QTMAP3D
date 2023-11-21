@@ -69,7 +69,7 @@ void BookmarkProxyModel::addBookmarkItem(BookmarkItem *bookmarkItem)
     QStandardItem *item = new QStandardItem;
     item->setText(bookmarkItem->text);
     item->setData(QVariant::fromValue(bookmarkItem->wnd), itemSource);
-    QString parent = bookmarkItem->parent;
+    QString parent = bookmarkItem->category;
     if (mItems.find(parent) == mItems.end()){
         QStandardItem *p = new QStandardItem(parent);
         mItems[parent].second = p;
@@ -83,23 +83,25 @@ void BookmarkProxyModel::addBookmarkItem(BookmarkItem *bookmarkItem)
 
 void BookmarkProxyModel::removeBookmarkItem(BookmarkItem *bookmarkItem)
 {
-    mItems[bookmarkItem->parent].second->removeRow(mItems[bookmarkItem->text].second->row());
-    mItems.erase(bookmarkItem->text);
-    if (mItems[bookmarkItem->parent].second->rowCount() == 0){
-        rootItem->removeRow(mItems[bookmarkItem->parent].second->row());
-        mItems.erase(bookmarkItem->parent);
+    if(mItems.find(bookmarkItem->category) != mItems.end()){
+        mItems[bookmarkItem->category].second->removeRow(mItems[bookmarkItem->text].second->row());
+        mItems.erase(bookmarkItem->text);
+        if (mItems[bookmarkItem->category].second->rowCount() == 0){
+            rootItem->removeRow(mItems[bookmarkItem->category].second->row());
+            mItems.erase(bookmarkItem->category);
+        }
+        emit bookmarkItem->fromBookmarkRemoved();
     }
-    emit bookmarkItem->itemDeleted();
 }
 
 void BookmarkProxyModel::goToPosition(BookmarkItem *bookmarkItem)
 {
-    emit bookmarkItem->itemGoToPostition();
+    emit bookmarkItem->goToPosition();
 }
 
 void BookmarkProxyModel::trackItem(BookmarkItem *bookmarkItem)
 {
-    emit bookmarkItem->itemTracked();
+    emit bookmarkItem->track();
 }
 
 void BookmarkProxyModel::select(const QModelIndex index)
@@ -171,8 +173,15 @@ QItemSelectionModel *BookmarkProxyModel::selectioModel() const
     return mSelectioModel;
 }
 
-BookmarkItem::BookmarkItem(QString parent, QString text, QQuickWindow *wnd, QString imgUrl):
-    parent{parent}, text{text}, wnd{wnd}, imgUrl{imgUrl}
+BookmarkItem::BookmarkItem()
 {
 
+}
+
+void BookmarkItem::setInfo(QString category, QString text, QQuickWindow *wnd, QString imgUrl)
+{
+    this->category = category;
+    this->text = text;
+    this->imgUrl = imgUrl;
+    this->wnd = wnd;
 }

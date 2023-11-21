@@ -27,28 +27,36 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
-
+    SimpleModelNode(MapItem* mapItem, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
     ~SimpleModelNode();
-    void updateUrl(const std::string& url3D, const std::string& url2D);
-    MapItem *mapItem() const;
-    std::string url2D() const;
-    std::string url3D() const;
 
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
+    MapItem *mapItem() const;
+
+    void updateUrl(const std::string& url3D, const std::string& url2D);
+    std::string url3D() const;
+    std::string url2D() const;
+
+    BookmarkManager *bookmarkManager() const;
+    void setBookmarkManager(BookmarkManager *bookmarkManager);
+
+    bool isSelect() const;
     void select();
+
+    bool isHighlight() const;
     void highlight(bool isHighlight);
+
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
     NodeData *nodeData() const;
     void setNodeData(NodeData *newNodeData);
-    void setColor(osgEarth::Color color);
 
-    void setBookmarkManager(BookmarkManager *bookmarkManager);
+    osgEarth::Color color() const;
+    void setColor(osgEarth::Color color);
 
     bool isAttacker() const;
     void setAttacker(bool attacker);
@@ -57,7 +65,6 @@ public:
 
 
 private slots:
-    void compile();
     void onModeChanged(bool is3DView);
     void onInfoClicked();
     void onBookmarkChecked(bool status);
@@ -65,6 +72,10 @@ private slots:
     void onAttackChecked();
 
 private:
+    void compile();
+    void createCircularMenu();
+    void createNodeInformation();
+    void createBookmarkItem();
 
 private:
     osg::ref_ptr<osg::Image> mImage;
@@ -82,6 +93,7 @@ private:
     std::string mUrl3D;
     MapItem *mMapItem;
     bool mIs3D{false};
+    bool mIsHighlight{false};
     bool mIsAttacker{false};
     bool mIsAutoScale{true};
     bool mIsSelected{false};
@@ -93,6 +105,7 @@ private:
     BookmarkManager *mBookmarkManager;
     BookmarkItem *mBookmarkItem{nullptr};
     CircularMenu *mCircularMenu{nullptr};
+    CircularMenuItem *mBookmarkMenuItem{nullptr};
 
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;

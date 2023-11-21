@@ -20,11 +20,11 @@ QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
 
-SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D, const std::string &url2D, QObject *parent)
+SimpleModelNode::SimpleModelNode(MapItem *mapItem, const std::string &url3D, const std::string &url2D, QObject *parent)
     : QObject{parent},
-    osgEarth::Annotation::ModelNode(mapControler->getMapNode(), Utility::getDefaultStyle()),
+    osgEarth::Annotation::ModelNode(mapItem->getMapNode(), Utility::getDefaultStyle()),
     mUrl3D(url3D),
-    mMapItem(mapControler),
+    mMapItem(mapItem),
     mUrl2D(url2D)
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
@@ -32,36 +32,24 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
 
     mEnigine = QQmlEngine::contextForObject(mMapItem)->engine();
     compile();
-    //--circle menu---------------------------------------------------------------------
-    mCircularMenu = new CircularMenu(mapControler, this);
-    mCircularMenu->show(false);
-    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
-    QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
+    //--circle menu-------------------------------------------------------------
+    createCircularMenu();
 
-    CircularMenuItem *bookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/filled-bookmark.png", true};
-    QObject::connect(bookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
+    //--node information window-------------------------------------------------
+    createNodeInformation();
 
-    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/target.png", true};
-    QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
-
-    mCircularMenu->appendMenuItem(infoMenuItem);
-    mCircularMenu->appendMenuItem(bookmarkMenuItem);
-    mCircularMenu->appendMenuItem(targetMenuItem);
-    //--node information window------------------------------------------------------------
-    mNodeInformation = new NodeInformationManager(mEnigine, this);
-
-    connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
-        mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-    });
-    connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
-        mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
-    });
+    createBookmarkItem();
 }
 
 SimpleModelNode::~SimpleModelNode()
 {
     delete mNodeInformation;
     delete mCircularMenu;
+}
+
+MapItem *SimpleModelNode::mapItem() const
+{
+    return mMapItem;
 }
 
 void SimpleModelNode::updateUrl(const std::string &url3D, const std::string &url2D)
@@ -72,6 +60,155 @@ void SimpleModelNode::updateUrl(const std::string &url3D, const std::string &url
         compile();
     }
 
+}
+
+std::string SimpleModelNode::url3D() const
+{
+    return mUrl3D;
+}
+
+std::string SimpleModelNode::url2D() const
+{
+    return mUrl2D;
+}
+
+BookmarkManager *SimpleModelNode::bookmarkManager() const
+{
+    return mBookmarkManager;
+}
+
+void SimpleModelNode::setBookmarkManager(BookmarkManager *bookmarkManager)
+{
+    mBookmarkManager = bookmarkManager;
+    onBookmarkChecked(mIsBookmarked);
+}
+
+bool SimpleModelNode::isSelect() const
+{
+    return mIsSelected;
+}
+
+void SimpleModelNode::select()
+{
+    //    if (mNodeData) {
+    //        if (!mNodeInformation){
+    //            if (!mEnigine){
+    //                qDebug() << "first set engine to show info";
+    //                return;
+    //            }
+    //            mNodeInformation = new NodeInformationManager(mEnigine, this);
+
+    //             connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+    //                 mapItem()->getCameraController()->goToPosition(getPosition(), 500);
+    //             });
+    //             connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+    //                 mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
+    //             });
+    //             if (mBookmarkManager)
+    //                connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
+    //             mNodeInformation->addUpdateNodeInformationItem(mNodeData);
+    //        }
+    ////        mNodeInformation->show();
+    //    }
+    mIsSelected = !mIsSelected;
+    mCircularMenu->show(mIsSelected);
+    mSwitchNode->setValue(2, mIsSelected);
+
+
+}
+
+bool SimpleModelNode::isHighlight() const
+{
+    return mIsHighlight;
+}
+
+void SimpleModelNode::highlight(bool isHighlight)
+{
+    mIsHighlight = isHighlight;
+    mSwitchNode->setValue(3, isHighlight);
+}
+
+bool SimpleModelNode::isAutoScale() const
+{
+    return mIsAutoScale;
+}
+
+void SimpleModelNode::setAutoScale(bool newIsAutoScale)
+{
+    mIsAutoScale = newIsAutoScale;
+    if (mIsAutoScale){
+        setCullCallback(mAutoScaler);
+    }
+    else{
+        setCullCallback(nullptr);
+        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+    }
+}
+
+NodeData *SimpleModelNode::nodeData() const
+{
+    return mNodeData;
+}
+
+void SimpleModelNode::setNodeData(NodeData *newNodeData)
+{
+    mNodeData = newNodeData;
+    updateUrl(mNodeData->url3D, mNodeData->url2D);
+    setColor(osgEarth::Color(mNodeData->color));
+    if (mNodeInformation)
+        mNodeInformation->addUpdateNodeInformationItem(newNodeData);
+    if(mBookmarkItem)
+        mBookmarkItem->setInfo(QString::fromStdString(mNodeData->type),
+                               QString::fromStdString(mNodeData->name),
+                               mNodeInformation->wnd(),
+                               QString::fromStdString(mNodeData->imgSrc));
+
+    //TODO add signal for update data--------------------
+    setUserData(mNodeData);
+}
+
+osgEarth::Color SimpleModelNode::color() const
+{
+    return mColor;
+}
+
+void SimpleModelNode::setColor(osgEarth::Color color)
+{
+    if(mColor != color){
+        //--recolor 3D Node----------------------------------------------------
+        osg::ref_ptr<osg::Material> mat = new osg::Material;
+        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
+        mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+        //--recolor 2D Node----------------------------------------------------
+        osg::Vec4 imageColor = color;
+        for(int i=0; i<mImage->s(); ++i) {
+            for(int j=0; j<mImage->t(); ++j) {
+                imageColor.a() = mImage->getColor(i, j).a();
+                mImage->setColor(imageColor, i, j);
+            }
+        }
+        mImage->dirty();
+        //---------------------------------------------------------------------
+    }
+    mColor = color;
+
+}
+
+bool SimpleModelNode::isAttacker() const
+{
+    return mIsAttacker;
+}
+
+void SimpleModelNode::setAttacker(bool attacker)
+{
+    mIsAttacker = attacker;
+
+    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
+        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/attacker.png", true};
+        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onAttackChecked);
+
+        mCircularMenu->appendMenuItem(mAttackerMenuItem);
+    }
 }
 
 void SimpleModelNode::onModeChanged(bool is3DView)
@@ -104,65 +241,27 @@ void SimpleModelNode::onInfoClicked()
     mNodeInformation->show();
 }
 
-bool SimpleModelNode::isAttacker() const
+void SimpleModelNode::onBookmarkChecked(bool status)
 {
-    return mIsAttacker;
-}
-
-void SimpleModelNode::setAttacker(bool attacker)
-{
-    mIsAttacker = attacker;
-
-    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
-        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/attacker.png", true};
-        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onAttackChecked);
-
-        mCircularMenu->appendMenuItem(mAttackerMenuItem);
+    if (!mBookmarkManager)
+        return;
+    mIsBookmarked = status;
+    if (mIsBookmarked){
+        mBookmarkManager->addBookmarkItem(mBookmarkItem);
+    }
+    else{
+        mBookmarkManager->removeBookmarkItem(mBookmarkItem);
     }
 }
 
-NodeData *SimpleModelNode::nodeData() const
+void SimpleModelNode::onTargetChecked()
 {
-    return mNodeData;
-}
-
-void SimpleModelNode::setNodeData(NodeData *newNodeData)
-{
-    mNodeData = newNodeData;
-    updateUrl(mNodeData->url3D, mNodeData->url2D);
-    setColor(osgEarth::Color(mNodeData->color));
-    if (mNodeInformation)
-        mNodeInformation->addUpdateNodeInformationItem(newNodeData);
-
-    //TODO add signal for update data--------------------
-    setUserData(mNodeData);
-}
-
-void SimpleModelNode::setColor(osgEarth::Color color)
-{
-    if(mColor != color){
-        //--recolor 3D Node----------------------------------------------------
-        osg::ref_ptr<osg::Material> mat = new osg::Material;
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
-        mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-        //--recolor 2D Node----------------------------------------------------
-        osg::Vec4 imageColor = color;
-        for(int i=0; i<mImage->s(); ++i) {
-            for(int j=0; j<mImage->t(); ++j) {
-                imageColor.a() = mImage->getColor(i, j).a();
-                mImage->setColor(imageColor, i, j);
-            }
-        }
-        mImage->dirty();
-        //---------------------------------------------------------------------
-    }
-    mColor = color;
 
 }
 
-void SimpleModelNode::setBookmarkManager(BookmarkManager *bookmarkManager)
+void SimpleModelNode::onAttackChecked()
 {
-    mBookmarkManager = bookmarkManager;
+
 }
 
 void SimpleModelNode::compile()
@@ -290,107 +389,50 @@ void SimpleModelNode::compile()
     setColor(mColor);
 }
 
-bool SimpleModelNode::isAutoScale() const
+void SimpleModelNode::createCircularMenu()
 {
-    return mIsAutoScale;
+    mCircularMenu = new CircularMenu(mMapItem, this);
+    mCircularMenu->show(false);
+    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
+    QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
+
+    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/filled-bookmark.png", true};
+    QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
+
+    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/target.png", true};
+    QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
+
+    mCircularMenu->appendMenuItem(infoMenuItem);
+    mCircularMenu->appendMenuItem(mBookmarkMenuItem);
+    mCircularMenu->appendMenuItem(targetMenuItem);
 }
 
-void SimpleModelNode::setAutoScale(bool newIsAutoScale)
+void SimpleModelNode::createNodeInformation()
 {
-    mIsAutoScale = newIsAutoScale;
-    if (mIsAutoScale){
-        setCullCallback(mAutoScaler);
-    }
-    else{
-        setCullCallback(nullptr);
-        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-    }
+    mNodeInformation = new NodeInformationManager(mEnigine, this);
+
+    connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+        mMapItem->getCameraController()->goToPosition(getPosition(), 500);
+    });
+    connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+        mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
+    });
 }
 
-void SimpleModelNode::select()
+void SimpleModelNode::createBookmarkItem()
 {
-    //    if (mNodeData) {
-    //        if (!mNodeInformation){
-    //            if (!mEnigine){
-    //                qDebug() << "first set engine to show info";
-    //                return;
-    //            }
-    //            mNodeInformation = new NodeInformationManager(mEnigine, this);
+    mBookmarkItem = new BookmarkItem();
 
-    //             connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
-    //                 mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-    //             });
-    //             connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
-    //                 mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
-    //             });
-    //             if (mBookmarkManager)
-    //                connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
-    //             mNodeInformation->addUpdateNodeInformationItem(mNodeData);
-    //        }
-    ////        mNodeInformation->show();
-    //    }
-    mIsSelected = !mIsSelected;
-    mCircularMenu->show(mIsSelected);
-    mSwitchNode->setValue(2, mIsSelected);
+    connect(mBookmarkItem, &BookmarkItem::goToPosition, [&](){
+        emit mNodeInformation->itemGoToPostition();
+    });
 
+    connect(mBookmarkItem, &BookmarkItem::track, [&](){
+        emit mNodeInformation->itemTracked();
+    });
 
+    connect(mBookmarkItem, &BookmarkItem::fromBookmarkRemoved, [&](){
+        mIsBookmarked = false;
+        mBookmarkMenuItem->checked = false;
+    });
 }
-
-void SimpleModelNode::highlight(bool isHighlight)
-{
-    mSwitchNode->setValue(3, isHighlight);
-}
-
-void SimpleModelNode::onBookmarkChecked(bool status)
-{
-    qDebug()<<status;
-    if (status == mIsBookmarked)
-        return;
-    mIsBookmarked = status;
-    if (mIsBookmarked){
-        mBookmarkItem = new BookmarkItem(QString::fromStdString(mNodeData->type), QString::fromStdString(mNodeData->name),mNodeInformation->wnd() , QString::fromStdString(mNodeData->iconSrc));
-        mBookmarkManager->addBookmarkItem(mBookmarkItem);
-        connect(mBookmarkItem,&BookmarkItem::itemGoToPostition,[&](){
-            emit mNodeInformation->itemGoToPostition();
-        });
-        connect(mBookmarkItem,&BookmarkItem::itemTracked,[&](){
-            emit mNodeInformation->itemTracked();
-        });
-        connect(mBookmarkItem, &BookmarkItem::itemDeleted, [&](){
-            mIsBookmarked = false;
-            mNodeInformation->changeBookmarkStatus(false);
-        });
-    }
-    else{
-        if (mBookmarkItem)
-            mBookmarkManager->removeBookmarkItem(mBookmarkItem);
-        delete mBookmarkItem;
-    }
-}
-
-void SimpleModelNode::onAttackChecked()
-{
-
-}
-
-void SimpleModelNode::onTargetChecked()
-{
-
-}
-
-std::string SimpleModelNode::url3D() const
-{
-    return mUrl3D;
-}
-
-std::string SimpleModelNode::url2D() const
-{
-    return mUrl2D;
-}
-
-MapItem *SimpleModelNode::mapItem() const
-{
-    return mMapItem;
-}
-
-
