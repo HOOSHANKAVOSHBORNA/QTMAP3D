@@ -69,6 +69,13 @@ Item {
                     }
                 }
 
+                ColorBoxInput{
+                    id:testInput
+                    visible: false
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+
                 RowLayout{
                     id:fillcolorSec
                     Layout.fillWidth: true
@@ -112,7 +119,8 @@ Item {
                             }
                             MouseArea{
                                 anchors.fill: parent
-                                onClicked: fillColorDialog.visible = true
+                               // onClicked: fillColorDialog.visible = true
+                                onClicked: testInput.visible = true
 
                             }
                         }
@@ -159,7 +167,6 @@ Item {
                             rootItem.model.fillColor = currentColor
                         }
                     }
-
                 }
                 RowLayout{
                     Text{
