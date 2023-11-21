@@ -42,7 +42,7 @@ class CircularMenu : public QObject
 public:
     CircularMenu(QQuickItem *parentItem, osgEarth::Annotation::GeoPositionNode *osgNode);
     void appendMenuItem(CircularMenuItem* item);
-    void setVisible(bool visible);
+    void show(bool show);
     void setQmlNode(QmlNode *newQmlNode);
     QmlNode *qmlNode() const;
 private:

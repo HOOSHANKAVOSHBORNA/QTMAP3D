@@ -21,9 +21,9 @@ void CircularMenu::appendMenuItem(CircularMenuItem *item)
     mCircularMenuModel->appendMenuItem(item);
 }
 
-void CircularMenu::setVisible(bool visible)
+void CircularMenu::show(bool show)
 {
-    mQmlNode->setVisible(visible);
+    mQmlNode->show(show);
 }
 
 void CircularMenu::setQmlNode(QmlNode *newQmlNode)

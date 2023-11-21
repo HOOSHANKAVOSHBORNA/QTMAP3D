@@ -34,7 +34,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapControler, const std::string &url3D
     compile();
     //--circle menu---------------------------------------------------------------------
     mCircularMenu = new CircularMenu(mapControler, this);
-    mCircularMenu->setVisible(false);
+    mCircularMenu->show(false);
     CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
@@ -319,7 +319,7 @@ void SimpleModelNode::select()
     ////        mNodeInformation->show();
     //    }
     mIsSelected = !mIsSelected;
-    mCircularMenu->setVisible(mIsSelected);
+    mCircularMenu->show(mIsSelected);
     mSwitchNode->setValue(2, mIsSelected);
 
 
