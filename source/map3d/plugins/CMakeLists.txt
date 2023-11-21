@@ -22,5 +22,5 @@ add_subdirectory(model)
 add_subdirectory(screen)
 add_subdirectory(particle)
 add_subdirectory(information/)
-#add_subdirectory(uiComponents)
+add_subdirectory(combatModelNode)
 

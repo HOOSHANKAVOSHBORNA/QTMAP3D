@@ -32,7 +32,7 @@ DrawLine::DrawLine(QWidget *parent)
 
 bool DrawLine::setup()
 {
-    connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawLine::addUpdateLineNode);
+    connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawLine::LineNodeDataReceived);
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     auto toolboxItemLine =  new ToolboxItem{POLYLINE, CATEGORY, "qrc:/resources/line.png", true};
@@ -107,13 +107,29 @@ void DrawLine::addUpdateLineNode(PolyLineData *lineNodeData)
     lineNode->create(&lineNodeData->points);
     lineNode->setFillColor(osgEarth::Color(lineNodeData->color));
     lineNode->setWidth(lineNodeData->width);
+    lineNode->setPolyLineData(lineNodeData);
 //    for (auto point: lineNodeData->points){
 //        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
 //        lineNode->setName(lineNodeData->name);
 //        lineNode->addPoint(geopos);
 //        lineNode->setPointVisible(true);
 //    }
-//    lineNode->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
+    //    lineNode->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
+}
+
+void DrawLine::LineNodeDataReceived(PolyLineData *lineNodeData)
+{
+    if (lineNodeData->command == "REMOVE") {
+        if (mLineNodeMap.contains(lineNodeData->id)){
+            mLineNodeMap[lineNodeData->id]->polyLineData()->layer->removeChild(mLineNodeMap[lineNodeData->id]);
+            mLineNodeMap[lineNodeData->id].release();
+            mLineNodeMap.remove(lineNodeData->id);
+        }
+    } else if (lineNodeData->command == "UPDATE"){
+        addUpdateLineNode(lineNodeData);
+    } else {
+        addUpdateLineNode(lineNodeData);
+    }
 }
 
 void DrawLine::onItemChecked(Type type, bool check)

@@ -25,6 +25,19 @@ QVector3D Utility::osgEarthGeoPointToQvector3D(const osgEarth::GeoPoint &positio
 
 }
 
+osgEarth::Symbology::Style &Utility::getDefaultStyle()
+{
+    static osgEarth::Symbology::Style style;
+    static bool bFirst = true;
+    if (bFirst) {
+        static osg::Node *node = new osg::Node;
+        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
+        bFirst = false;
+    }
+
+    return style;
+}
+
 osgEarth::GeoPoint Utility::qVector3DToosgEarthGeoPoint(const QVector3D &position, const osgEarth::SpatialReference* srs)
 {
     osgEarth::GeoPoint tempLocation(srs, position.x(), position.y(), position.z());

@@ -12,59 +12,70 @@
 #include <osgFX/Scribe>
 #include <QQmlEngine>
 #include <bookmark.h>
+#include <qmlNode.h>
+#include <osg/ComputeBoundsVisitor>
+
 #include "circle.h"
 #include "cone.h"
-#include <osg/ComputeBoundsVisitor>
+#include "circularMenu.h"
 
 
 class MoveableModelNode;
 class FlyableModelNode;
-class AttackManager;
-class TargetManager;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    SimpleModelNode(MapItem* mapControler, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
-
+    SimpleModelNode(MapItem* mapItem, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
     ~SimpleModelNode();
-    void updateUrl(const std::string& url3D, const std::string& url2D);
-    MapItem *mapItem() const;
-    std::string url2D() const;
-    std::string url3D() const;
 
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
     virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
 
-    void selectModel();
+    MapItem *mapItem() const;
+
+    void updateUrl(const std::string& url3D, const std::string& url2D);
+    std::string url3D() const;
+    std::string url2D() const;
+
+    BookmarkManager *bookmarkManager() const;
+    void setBookmarkManager(BookmarkManager *bookmarkManager);
+
+    bool isSelect() const;
+    void select();
+
+    bool isHighlight() const;
+    void highlight(bool isHighlight);
+
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
     NodeData *nodeData() const;
     void setNodeData(NodeData *newNodeData);
-    void setModelColor(osgEarth::Color color);
 
-    void setBookmark(BookmarkManager *bookmark);
-    void setQQmlEngine(QQmlEngine *engine);
+    osgEarth::Color color() const;
+    void setColor(osgEarth::Color color);
 
-    bool getIsBookmarked() const;
-    void setIsBookmarked(bool newIsBookmarked);
+    bool isAttacker() const;
+    void setAttacker(bool attacker);
 
-    void customMenu();
-
-    bool isAttacker();
-    void makeAttacker(ParenticAnnotationLayer *layer, int bulletCount);
-    TargetManager *getTargetManager();
-    AttackManager *getAttackManager();
-    osgEarth::Annotation::ModelNode *getDragModelNode();
+//    osgEarth::Annotation::ModelNode *getDragModelNode();
 
 
 private slots:
-    void compile();
     void onModeChanged(bool is3DView);
+    void onInfoClicked();
     void onBookmarkChecked(bool status);
+    void onTargetChecked();
+    void onAttackChecked();
+
+private:
+    void compile();
+    void createCircularMenu();
+    void createNodeInformation();
+    void createBookmarkItem();
 
 private:
     osg::ref_ptr<osg::Image> mImage;
@@ -73,20 +84,17 @@ private:
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
-    osg::ref_ptr<Circle> mAttackerSelectNode;
-    osg::ref_ptr<Circle> mTargetSelectNode;
-//    osg::ref_ptr<LineNode> mAttackerLineNode;
-//    osg::ref_ptr<LineNode> mTargetLineNode;
     osg::ref_ptr<Cone> mConeSelecteNode;
-    AttackManager* mAttackManager;
-    TargetManager* mTargetManager;
-
+    osg::ref_ptr<Circle> mCircleHighlightNode;
+    CircularMenuItem *mAttackerMenuItem;
 
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
     std::string mUrl3D;
     MapItem *mMapItem;
     bool mIs3D{false};
+    bool mIsHighlight{false};
+    bool mIsAttacker{false};
     bool mIsAutoScale{true};
     bool mIsSelected{false};
     NodeData* mNodeData{nullptr};
@@ -94,10 +102,10 @@ private:
     NodeInformationManager* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
     QQmlEngine *mEnigine{nullptr};
-    BookmarkManager *mBookmark;
+    BookmarkManager *mBookmarkManager;
     BookmarkItem *mBookmarkItem{nullptr};
-    bool mIsAttacker{false};
-
+    CircularMenu *mCircularMenu{nullptr};
+    CircularMenuItem *mBookmarkMenuItem{nullptr};
 
 private:
     static QMap<std::string, osg::ref_ptr<osg::Node>> mNodes3D;

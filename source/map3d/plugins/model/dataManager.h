@@ -9,16 +9,20 @@ class DataManager : public QObject
 public:
     DataManager(MapItem *mapItem, MainWindow *mainWindow);
     ~DataManager();
-    void removeFlyableNodeData(NodeData *nodeData);
-    void removeMovableNodeData(NodeData *nodeData);
+//    void removeFlyableNodeData(NodeData *nodeData);
+//    void removeMovableNodeData(NodeData *nodeData);
     void removeNodeData(NodeData *nodeData);
     int nodeCount();
     SimpleModelNode* getNodeAtIndex(int index);
 
-public slots:
     FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
     SimpleModelNode* addUpdateNode(NodeData *nodeData);
     MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
+
+public slots:
+    void flyableNodeDataReceived(NodeData *nodeData);
+    void movableNodeDataReceived(NodeData *nodeData);
+    void nodeDataReceived(NodeData *nodeData);
 
 private:
     MapItem* mMapItem;

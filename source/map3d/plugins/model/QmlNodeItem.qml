@@ -1,14 +1,27 @@
 import QtQuick
 import Crystal
+import QtQuick.Controls
 
 QmlNode {
-    width: 100
-    height: 100
+    property double farRange: 50000
+    property double scaledNodeRadius: nodeRadius /*> 50000 ? 15 : 30*/
+    width: 0
+    height: 0
+    property var cppModel : ListModel{}
 
-    Rectangle{
-        width: 100
-        height: 100
-        color: "red"
-        border.color: "#e72626"
+    CircularMenu {
+        id: circularMenu
+        //        visible: nodeRadius < 80000
+        outerRadius: scaledNodeRadius + 30
+        innerRadius: scaledNodeRadius
+        listModel: cppModel
+        onClicked: (index) => {
+                            //                            console.log(cppModel.index)
+                        cppModel.onItemClicked(cppModel.index(index, 0))
+
+                    }
+        onToggled: (index, checked) =>{
+                       cppModel.onItemChecked(cppModel.index(index, 0), checked)
+                   }
     }
 }

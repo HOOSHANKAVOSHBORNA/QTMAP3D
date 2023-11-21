@@ -19,6 +19,7 @@ public:
     virtual bool  handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 private:
     PluginManager *mPluginManager;
+    QPointF mCurrentPressPoint;
 };
 
 class PluginManager : public QObject

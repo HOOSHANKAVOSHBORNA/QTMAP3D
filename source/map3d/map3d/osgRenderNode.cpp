@@ -20,7 +20,7 @@
 #include <osgViewer/config/SphericalDisplay>
 #include <QOpenGLFramebufferObject>
 #include <QQuickOpenGLUtils>
-#include "osgViewerItem.h""
+#include "osgViewerItem.h"
 #include <osg/GraphicsContext>
 OSGRenderNode::OSGRenderNode(OsgViewerItem *parent):
     QSGRenderNode(),

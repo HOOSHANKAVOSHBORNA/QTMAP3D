@@ -21,6 +21,7 @@ struct StatusNodeData: public osg::Referenced
     double longitude;
     double latitude;
     double altitude;
+    std::string command{"ADD"};
     ParenticAnnotationLayer* layer{nullptr};
     std::vector<NodeFieldData> fieldData;
 };
@@ -39,6 +40,7 @@ struct NodeData: public osg::Referenced
     double longitude;
     double altitude;
     double speed;
+    std::string command{"ADD"};
     std::vector<ParenticAnnotationLayer*> layers;
     std::vector<NodeFieldData> fieldData;
 };
@@ -49,6 +51,7 @@ struct PolyLineData: public osg::Referenced
     std::string name;
     std::string color;
     int width;
+    std::string command{"ADD"};
     ParenticAnnotationLayer* layer{nullptr};
     std::vector<osg::Vec3d> points;
 };
@@ -65,6 +68,7 @@ struct CircleData: public osg::Referenced
     double longitude;
     double altitude;
     double radius;
+    std::string command{"ADD"};
     ParenticAnnotationLayer* layer{nullptr};
 };
 
@@ -84,7 +88,7 @@ class ServiceManager: public QObject
 public:
     ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
 
-    void layersData(QJsonArray layers);
+    void layersData(QJsonObject layers);
     void flyableNodeData(QJsonObject jsonObject);
     void statusNodeData(QJsonObject jsonObject);
     void messageData(QString jsonData);

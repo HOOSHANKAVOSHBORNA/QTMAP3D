@@ -63,6 +63,9 @@ public:
     bool getShowAltitude() const;
     void setShowAltitude(bool showAltitude);
 
+    PolyLineData *polyLineData() const;
+    void setPolyLineData(PolyLineData *newPolyLineData);
+
 private:
     struct LabelData {
 //        QImage *qImage{nullptr};
@@ -99,6 +102,7 @@ private:
 //    static constexpr int LABEL_IMAGE_WIDTH = 100;
 //    static constexpr int LABEL_IMAGE_HEIGHT = 27;
     int mCount{0};
+    PolyLineData *mPolyLineData{nullptr};
 
 };
 

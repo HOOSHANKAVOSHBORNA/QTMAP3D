@@ -25,16 +25,43 @@ MovableNodeTest::MovableNodeTest(NetworkManager *networkManager):
                 }
         });
         timerUpdateMovable->start(1000);
+
+        QTimer *timerRemoveAircraft = new QTimer();
+        QObject::connect(timerRemoveAircraft, &QTimer::timeout, [this](){
+            if (mMovableDataList.size() > 0){
+                QJsonObject jsonObject = mMovableDataList[0].movableDoc.object();
+                QJsonObject jsonStatusObject = mMovableDataList[0].statusDoc.object();
+                QJsonObject jsonLineObject = mMovableDataList[0].lineDoc.object();
+
+                jsonObject.remove("COMMAND");
+                jsonObject.insert("COMMAND", "REMOVE");
+                jsonStatusObject.remove("COMMAND");
+                jsonStatusObject.insert("COMMAND", "REMOVE");
+                jsonLineObject.remove("COMMAND");
+                jsonLineObject.insert("COMMAND", "REMOVE");
+
+                mMovableDataList.pop_front();
+
+                QJsonDocument jsonDoc(jsonObject);
+                QJsonDocument jsonStatusDoc(jsonStatusObject);
+                QJsonDocument jsonLineDoc(jsonLineObject);
+
+                mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(jsonLineDoc.toJson(QJsonDocument::Compact));
+            }
+        });
+        timerRemoveAircraft->start(7000);
     });
 }
 
 void MovableNodeTest::createMovableInfo()
 {
-    if(mMovableDataList.count() >= mMaxMovableNumber)
+    if(mCount >= mMaxMovableNumber)
         return;
     //---------------------------------------------------------
-    QString name = "Movable" + QString::number(mMovableDataList.count());
-    int id = 40000 + mMovableDataList.count();
+    QString name = "Movable" + QString::number(mCount);
+    int id = 40000 + mCount++;
     QColor color("red");
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
@@ -46,6 +73,7 @@ void MovableNodeTest::createMovableInfo()
     QJsonObject jsonObject;
 
     jsonObject.insert("Type", "Movable");
+    jsonObject.insert("COMMAND", "ADD");
 
     QJsonObject jsonData;
     QJsonObject nameObject;
@@ -100,6 +128,7 @@ void MovableNodeTest::createMovableInfo()
     QJsonObject jsonObjectStatus;
 
     jsonObjectStatus.insert("Type", "Status");
+    jsonObjectStatus.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectStatusData;
     jsonObjectStatusData.insert("Name", name);
@@ -124,6 +153,7 @@ void MovableNodeTest::createMovableInfo()
     QJsonObject jsonObjectLine;
 
     jsonObjectLine.insert("Type", "Line");
+    jsonObjectLine.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectLineData;
     jsonObjectLineData.insert("Name", name);
@@ -202,6 +232,7 @@ void MovableNodeTest::updateMovableInfo()
 
         QJsonObject jsonObject;
         jsonObject.insert("Type", "Movable");
+        jsonObject.insert("COMMAND", "UPDATE");
         jsonObject.insert("Data", dataObject);
         movableData.movableDoc.setObject(jsonObject);
         //--status node-----------------------------------------------
@@ -213,6 +244,7 @@ void MovableNodeTest::updateMovableInfo()
         QString name = dataObject["Name"].toObject().value("value").toString();
 
         jsonObjectStatus.insert("Type", "Status");
+        jsonObjectStatus.insert("COMMAND", "UPDATE");
         jsonObjectStatusData.insert("Name", name);
         jsonObjectStatusData.insert("Id", id);
         jsonObjectStatusData.insert("Longitude", longitude);
@@ -237,6 +269,7 @@ void MovableNodeTest::updateMovableInfo()
         QJsonObject jsonObjectLine;
 
         jsonObjectLine.insert("Type", "Line");
+        jsonObjectLine.insert("COMMAND", "UPDATE");
 
         QJsonObject jsonObjectLineData;
         jsonObjectLineData.insert("Name", name);

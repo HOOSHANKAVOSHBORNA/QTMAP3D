@@ -22,6 +22,7 @@ public:
 private slots:
     void onCircleItemCheck (bool check);
 private:
+    void circleDataReceived(CircleData *circleData);
     void addUpdateCircle(CircleData *circleData);
     void initDraw(const osgEarth::GeoPoint &geoPos) override;
     void drawing(const osgEarth::GeoPoint &geoPos) override;
