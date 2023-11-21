@@ -4,7 +4,7 @@ import QtQuick.Controls
 
 QmlNode {
     property double farRange: 50000
-    property double scaledNodeRadius: nodeRadius > 50000 ? 15 : 30
+    property double scaledNodeRadius: nodeRadius /*> 50000 ? 15 : 30*/
     width: 0
     height: 0
     property var cppModel : ListModel{}

@@ -9,12 +9,11 @@
 
 class QmlNode;
 
-class QmlNodeEventHandler: public osgGA::GUIEventHandler
+class QmlNodeCallback : public osg::NodeCallback
 {
-
 public:
-    QmlNodeEventHandler(QmlNode *qmlNode);
-    virtual bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
+    QmlNodeCallback(QmlNode *qmlNode);
+    void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
 
 private:
     QmlNode *mQmlNode;
@@ -37,13 +36,17 @@ public:
     double nodeRadius() const;
     void setNodeRadius(double newNodeRadius);
 
+    bool isShow() const;
+    void show(bool show);
+
 signals:
     void nodeRadiusChanged();
 
 private:
+    bool mIsShow{false};
     QQmlEngine *mEngine;
     osgEarth::Annotation::GeoPositionNode *mOsgNode;
-    QmlNodeEventHandler *mQmlNodeEventHandler{nullptr};
+    osg::NodeCallback *mNodeCallback{nullptr};
     double mNodeRadius;
 };
 
