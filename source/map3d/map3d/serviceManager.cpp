@@ -243,9 +243,9 @@ void ServiceManager::polygonData(QJsonObject jsonObject)
     int layerId = jsonObjectData.value("LayerId").toInt();
     auto layer = findParenticLayer(layerId);
     polygonData->layer = layer;
-    if (layer){
+//    if (layer){
         emit polygonDataReceived(polygonData);
-    }
+//    }
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)

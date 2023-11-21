@@ -108,7 +108,7 @@ void DataManager::movableNodeDataReceived(NodeData *nodeData)
     if (nodeData->command == "REMOVE"){
         removeNodeData(nodeData);
     } else if (nodeData->command == "UPDATE") {
-        addUpdateNode(nodeData);
+        addUpdateMovableNode(nodeData);
     }
     else {
         addUpdateMovableNode(nodeData);

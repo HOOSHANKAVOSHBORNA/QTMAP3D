@@ -67,6 +67,16 @@ float Circle::getStrokeWidth()
     return style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width().get();
 }
 
+CircleData *Circle::circleData() const
+{
+    return mCircleData;
+}
+
+void Circle::setCircleData(CircleData *newCircleData)
+{
+    mCircleData = newCircleData;
+}
+
 
 
 
