@@ -1,9 +1,7 @@
 #include "toolboxManager.h"
-
 #include <QHeaderView>
 #include <QQmlComponent>
 #include <QQuickItem>
-
 #include "plugininterface.h"
 
 TreeItem::TreeItem(const QList<QVariant> &data, ToolboxItem *toolbox, TreeItem *parent)

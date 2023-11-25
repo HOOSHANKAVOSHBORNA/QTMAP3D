@@ -13,6 +13,11 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
 
     connect(mMapItem->getMapObject(), &MapObject::nodeToLayerAdded, this , &SearchNodeModel::addNode);
     connect(mMapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,  this , &SearchNodeModel::removeNode);
+    mTypeListModel = new TypeListModel;
+//    mTypeListModel->append(QString::fromStdString("sssssssssss"));
+//    mTypeListModel->append(QString::fromStdString("dd"));
+//    mTypeListModel->append(QString::fromStdString("ddssssss"));
+
 }
 
 int SearchNodeModel::rowCount(const QModelIndex &parent) const
@@ -37,6 +42,7 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
 {
     NodeData *nodeData = dynamic_cast<NodeData*>(node->getUserData());
     if(nodeData)
+        mTypeListModel->append(QString::fromStdString(nodeData->type));
         if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
             beginInsertRows(QModelIndex(), mNodes.size(), mNodes.size());
             mNodes.push_back(node);
@@ -66,6 +72,11 @@ void SearchNodeModel::onNodeClicked(const QModelIndex &current)
         mMapItem->getCameraController()->goToPosition(node->getPosition(),
                                                       mMapItem->getCameraController()->getViewpoint().getRange(), 0);
     }
+}
+
+TypeListModel *SearchNodeModel::getTypeListModel() const
+{
+    return mTypeListModel;
 }
 
 void SearchNodeModel::init()
@@ -124,6 +135,70 @@ void SearchNodeProxyModel::onNodeClicked(const int current)
     static_cast<SearchNodeModel*>(sourceModel())->onNodeClicked(mindex);
 }
 
+TypeListModel *SearchNodeProxyModel::getTypeListModel() const
+{
+    return dynamic_cast<SearchNodeModel*>(sourceModel())->getTypeListModel();
+}
 
 
 
+//----------------------------------------------
+TypeListModel::TypeListModel(QObject *parent)
+    :QAbstractListModel(parent)
+{
+
+}
+
+void TypeListModel::append(QString type)
+{
+    beginInsertRows(QModelIndex(), mTypes.size(), mTypes.size());
+    mTypes.push_back(type);
+    endInsertRows();
+
+}
+
+QVariant TypeListModel::data(const QModelIndex &index, int role) const
+{
+    return mTypes[index.row()];
+}
+
+///////////////////////////////////////////////// --------------
+
+
+//SearchNodeManager::SearchNodeManager(MapItem *mapItem, QObject *parent) : QObject(parent)
+//{
+//    mSearchNodeModel = new SearchNodeModel(mapItem, this);
+//    mSearchNodeProxyModel = new SearchNodeProxyModel(this);
+//    mSearchNodeProxyModel->setSourceModel(mSearchNodeModel);
+//}
+
+//void SearchNodeManager::addNode(osg::Node *node, osgEarth::Layer *layer)
+//{
+//    mSearchNodeModel->addNode(node, layer);
+
+//}
+
+//void SearchNodeManager::removeNode(osg::Node *node, osgEarth::Layer *layer)
+//{
+//    mSearchNodeModel->removeNode(node, layer);
+//}
+
+//void SearchNodeManager::onNodeClicked(int current)
+//{
+//    mSearchNodeProxyModel->onNodeClicked(current);
+//}
+
+//SearchNodeModel *SearchNodeManager::getSearchNodeModel() const
+//{
+//    return mSearchNodeModel;
+//}
+
+//SearchNodeProxyModel *SearchNodeManager::getSearchNodeProxyModel() const
+//{
+//    return mSearchNodeProxyModel;
+//}
+
+//TypeListModel *SearchNodeManager::getTypeListModel() const
+//{
+//    return mSearchNodeModel->getTypeListModel();
+//}

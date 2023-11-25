@@ -473,6 +473,7 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     NodeData* nodeData = new NodeData();
     //    flyableNodeData->id = 100;
     nodeData->name = name + std::to_string(mCount);
+    nodeData->type = name;
     nodeData->longitude = geoPos.x();
     nodeData->latitude = geoPos.y();
     nodeData->altitude = geoPos.z();

@@ -139,7 +139,8 @@ Rectangle {
 
                             ToolTip {
                                 visible: btnDelegate.hovered
-
+                                x:35
+                                y:0
                                 contentItem: Text {
                                     id: tooltipText
                                     anchors.margins: 7 / Style.monitorRatio

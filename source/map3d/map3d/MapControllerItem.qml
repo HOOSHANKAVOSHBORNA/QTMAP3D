@@ -78,6 +78,8 @@ MapController {
         anchors.top: parent.top
         anchors.topMargin: itemMargin
         model: map.searchNodeProxyModel()
+
+
     }
     MultiEffect {
         source: searcbar
