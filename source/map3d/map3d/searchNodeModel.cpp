@@ -9,7 +9,7 @@
 SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
     QAbstractListModel(parent), mMapItem(mapItem)
 {
-//    init();
+    //    init();
 
     connect(mMapItem->getMapObject(), &MapObject::nodeToLayerAdded, this , &SearchNodeModel::addNode);
     connect(mMapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,  this , &SearchNodeModel::removeNode);
@@ -43,14 +43,15 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
     qDebug()<< QString::fromStdString(node->getName());
     qDebug()<<  " ----------------------------------  ";
     NodeData *nodeData = dynamic_cast<NodeData*>(node->getUserData());
-    if(nodeData)
-//        qDebug() << "sex ziadddddddddddddddddddddddddddddddddddddddddddddddddddd";
+    if(nodeData){
+        qDebug() << "nodeData: "<<nodeData->name<<", "<<nodeData->type;
         mTypeListModel->append(QString::fromStdString(nodeData->type));
         if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
             beginInsertRows(QModelIndex(), mNodes.size(), mNodes.size());
             mNodes.push_back(node);
             endInsertRows();
         }
+    }
 }
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
