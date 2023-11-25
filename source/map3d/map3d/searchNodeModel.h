@@ -18,11 +18,11 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    void addNode(osg::Node *node,osgEarth::Layer *layer);
-    void removeNode( osg::Node *node,osgEarth::Layer *layer);
     void onNodeClicked(const QModelIndex &current);
 
 public slots:
+    void addNode(osg::Node *node,osgEarth::Layer *layer);
+    void removeNode( osg::Node *node,osgEarth::Layer *layer);
     TypeListModel *getTypeListModel() const;
 
 
@@ -51,10 +51,7 @@ private:
 
 };
 
-inline int TypeListModel::rowCount(const QModelIndex &parent) const
-{
-    return mTypes.size();
-}
+
 //---------------
 
 class SearchNodeProxyModel : public QSortFilterProxyModel
