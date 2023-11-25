@@ -6,7 +6,7 @@ import "style"
     Rectangle{
         id:colorBoxInput
         width: 250/ Style.monitorRatio
-        height: 350/ Style.monitorRatio
+        height: 370/ Style.monitorRatio
         radius: 15/ Style.monitorRatio
         color: Style.backgroundColor
         property int oldIndex: 0
@@ -53,11 +53,11 @@ import "style"
 
             Text{
                 text: "Select Color"
-                font.pointSize: 12
+                font.pointSize: 12/ Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.leftMargin: 5
-                Layout.topMargin: 5
+                Layout.leftMargin: 5/ Style.monitorRatio
+                Layout.topMargin: 5/ Style.monitorRatio
             }
 
             ListModel{
@@ -72,50 +72,55 @@ import "style"
                 ListElement {imageVisible:false; colorSelect: "green" } ListElement {imageVisible:false; colorSelect: "blue" }   ListElement {imageVisible:false; colorSelect: "pink" }
                 ListElement {imageVisible:false; colorSelect: "red" }   ListElement {imageVisible:false; colorSelect: "orange" } ListElement {imageVisible:false; colorSelect: "yellow" }
             }
-
-                GridView{
-                    id:grdView
-                    cellWidth: 30.5 / Style.monitorRatio
-                    cellHeight: 30 / Style.monitorRatio
-                    interactive: false
-                    Layout.leftMargin: 5
-                    Layout.preferredWidth: 250
-                    Layout.preferredHeight: 70
+            GridLayout{
+                Layout.fillWidth: true
+                Layout.leftMargin: 5 / Style.monitorRatio
+                rows: 3
+                columns: 9
+                Repeater{
+                    id:lstModelRepeater
                     model: lstModel
+                    Button{
+                              required property color colorSelect
+                              required property bool imageVisible
+                              required property int index
+                              implicitWidth: 26 / Style.monitorRatio
+                              implicitHeight: 26 / Style.monitorRatio
+                              checkable: true
 
-                        delegate: Rectangle{
-                            id:delegateRect
-                            required property color colorSelect
-                            required property bool imageVisible
-                            implicitWidth: 26 / Style.monitorRatio
-                            implicitHeight: 26 / Style.monitorRatio
-                            radius: width
-                            color: colorSelect
-                            Image {
-                                id:checkIcon
-                                anchors.centerIn: parent
-                                width: 17 / Style.monitorRatio
-                                height: 17 / Style.monitorRatio
-                                source: "qrc:/Resources/add-place-color-select.png"
-                                visible: imageVisible
-                            }
+                              background: Rectangle{
+                                  radius: width
+                                  color: colorSelect
+                              }
 
-                            MouseArea{
-                                anchors.fill: parent
-                                onClicked: {
-                                    /*to clear the previous index after selecting a new one*/
-                                    lstModel.setProperty(oldIndex,"imageVisible",false)
-                                 //   colorCircle.color = colorSelect
-                                    selectedColor = colorSelect
-                                 //   textUpdate()
-                                    newIndex = grdView.indexAt(parent.x+5,parent.y+5)
-                                    lstModel.setProperty(newIndex,"imageVisible",true)
-                                    addHistory(colorSelect)
-                                    oldIndex = grdView.indexAt(parent.x+5,parent.y+5)
-                                }
-                            }
-                        }
+                              Image {
+                                  id:checkIcon
+                                  anchors.centerIn: parent
+                                  width: 17 / Style.monitorRatio
+                                  height: 17 / Style.monitorRatio
+                                  source: "qrc:/Resources/add-place-color-select.png"
+                                  visible: imageVisible
+                              }
+                                  onClicked: {
+                                      /*to clear the previous index after selecting a new one*/
+                                      lstModel.setProperty(oldIndex,"imageVisible",false)
+                                      newIndex = index
+                                      if(oldIndex !== newIndex){
+                                          lstModelRepeater.itemAt(oldIndex).checked = false
+                                      }
+                                      lstModel.setProperty(newIndex,"imageVisible",checked)
+                                      if(checked){
+                                          selectedColor = colorSelect
+                                          addHistory(colorSelect)
+                                          oldIndex = index
+                                      }
+                                      else
+                                          selectedColor = "#FFFFFF"
+                                  }
+                    }
                 }
+            }
+
             Text{
                 text: "Custom"
                 font.pointSize: 12 / Style.monitorRatio
@@ -125,7 +130,7 @@ import "style"
                 Layout.topMargin: 10 / Style.monitorRatio
             }
             RowLayout{
-                Layout.leftMargin: 5
+                Layout.leftMargin: 5/ Style.monitorRatio
                 spacing: 2 / Style.monitorRatio
 
                 Rectangle{
@@ -148,7 +153,7 @@ import "style"
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
-                    radius: 5
+                    radius: 5/ Style.monitorRatio
                     TextInput{
                       id:hexInput
                       anchors.fill: parent
@@ -215,7 +220,7 @@ import "style"
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
-                    radius: 5
+                    radius: 5/ Style.monitorRatio
                     TextInput{
                       id:gInput
                       anchors.fill: parent
@@ -250,7 +255,7 @@ import "style"
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
-                    radius: 5
+                    radius: 5/ Style.monitorRatio
                     TextInput{
                       id:bInput
                       anchors.fill: parent
@@ -291,7 +296,7 @@ import "style"
                 }
                 Slider {
                     id: slider
-                    value: 0.5
+                    value: 1
                     background: Rectangle {
                         x: slider.leftPadding
                         y: slider.topPadding + slider.availableHeight / 2 - height / 2
@@ -337,25 +342,27 @@ import "style"
                 Layout.leftMargin: 5 / Style.monitorRatio
                 Layout.topMargin: 5 / Style.monitorRatio
             }
-            GridView{
-                id:historyGridView
-                cellWidth: 28 / Style.monitorRatio
-                cellHeight: 28 / Style.monitorRatio
-                interactive: false
-                Layout.alignment: Qt.AlignHCenter
+            GridLayout{
                 Layout.fillWidth: true
-                Layout.preferredHeight: 25
-                Layout.leftMargin: 5
-                model: history
+                Layout.leftMargin: 5 / Style.monitorRatio
+                rows:1
+                columns: 9
+                Repeater{
+                    id:historyRepeater
+                    model: history
 
-                delegate: Rectangle{
-                    id:historyDelegateRect
+                  Button{
                     required property color historyColorSelect
                     required property bool historyImageVisible
+                    required property int index
                     implicitWidth: 24 / Style.monitorRatio
                     implicitHeight: 24 / Style.monitorRatio
-                    radius: width
-                    color: historyColorSelect
+                    checkable: true
+                    background: Rectangle{
+                        radius: width
+                        color: historyColorSelect
+                    }
+
                     Image {
                         id:historyCheckIcon
                         anchors.centerIn: parent
@@ -364,21 +371,24 @@ import "style"
                         source: "qrc:/Resources/add-place-color-select.png"
                         visible: historyImageVisible
                     }
-                    MouseArea{
-                        anchors.fill: parent
                         onClicked: {
-                          history.setProperty(historyOldIndex,"historyImageVisible",false)
-                          lstModel.setProperty(oldIndex,"imageVisible",false)
-                          //colorCircle.color = historyColorSelect
-                          selectedColor = historyColorSelect
-                        //  textUpdate()
-                          historyNewIndex = historyGridView.indexAt(parent.x+5,parent.y+5)
-                          history.setProperty(historyNewIndex,"historyImageVisible",true)
-                          historyOldIndex = historyGridView.indexAt(parent.x+5,parent.y+5)
+                            history.setProperty(historyOldIndex,"historyImageVisible",false)
+                            historyNewIndex = index
+                            if(historyOldIndex !== historyNewIndex){
+                                historyRepeater.itemAt(historyOldIndex).checked = false
+                            }
+                            history.setProperty(historyNewIndex,"historyImageVisible",checked)
+                            if(checked){
+                                selectedColor = historyColorSelect
+                                historyOldIndex = index
+                            }
+                            else
+                                selectedColor = "#FFFFFF"
                         }
-                    }
                 }
             }
+          }
+
 
             RowLayout{
                 Layout.fillWidth: true
@@ -419,11 +429,13 @@ import "style"
                         verticalAlignment: Text.AlignVCenter
                     }
                     background: Rectangle{
-                        radius: 10
+                        radius: 10/ Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     onClicked: {
-                       colorBoxInput.visible = false
+                        colorSelectCircle.color = selectedColor
+                     //   addIconImage.visible = false
+                        colorBoxInput.visible = false
                     }
                 }
             }
