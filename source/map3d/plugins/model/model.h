@@ -7,15 +7,17 @@
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include "simpleModelNode.h"
+#include "flyableModelNode.h"
+#include "moveableModelNode.h"
 #include <osg/PolygonMode>
 #include <osg/Fog>
 #include "dataManager.h"
+#include <circle.h>
 
 #define MODEL "Model"
 #define TREE "Tree"
 #define CAR "Car"
 #define AIRPLANE "Airplane"
-#define ATTACKERS "Attacker"
 
 class Model : public PluginInterface
 {
@@ -28,15 +30,13 @@ public:
         NONE,
         READY,
         MOVING,
-        ATTACKING,
         CANCEL,
         CONFIRM
     };
     enum class Type{
         SIMPLE,
         MOVEABLE,
-        FLYABLE,
-        ATTACKER
+        FLYABLE
     };
 
 public:
@@ -48,18 +48,15 @@ public:
     Model::State state() const;
     void setState(Model::State newState);
 
-    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
-    bool mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+    bool mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
-    bool mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
     static osgEarth::Symbology::Style &getDefaultStyle();
 public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
-    void onTankItemCheck (bool check);
     void onStatusItemCheck (bool check);
     void onModeChanged(bool is3DView);
 
@@ -71,18 +68,14 @@ protected:
 
 private:
     SimpleModelNode* pick(float x, float y);
-    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, osgEarth::GeoPoint geopos);
+    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc, osgEarth::GeoPoint geopos);
 
 private:
     Type mType;
     static int mCount;
     bool mIs3D;
     State mState{State::NONE};
-    bool mIsAttackActive = false;
     int mBulletID;
-    osg::ref_ptr<osgEarth::Annotation::ModelNode> mDragModelNode;
-    osg::ref_ptr<SimpleModelNode> mAttackerNode;
-    osg::ref_ptr<SimpleModelNode> mTargetNode;
 
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
@@ -90,7 +83,6 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mAttackNodeLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     NodeData* mNodeData{nullptr};
 

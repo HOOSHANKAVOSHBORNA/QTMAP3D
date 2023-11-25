@@ -202,7 +202,8 @@ Item {
 
             visible: propertyContainer.children.length
 
-            Layout.preferredHeight: 300 / Style.monitorRatio
+//            Layout.preferredHeight: 300 / Style.monitorRatio
+            Layout.preferredHeight: 450 / Style.monitorRatio
             Layout.fillWidth: true
             color: 'transparent'
 
@@ -219,7 +220,7 @@ Item {
                     font.pixelSize: 20 / Style.monitorRatio
 
                     Layout.bottomMargin: 1
-                    Layout.topMargin: 25 / Style.monitorRatio
+//                    Layout.topMargin: 25 / Style.monitorRatio
                     Layout.leftMargin: 3 / Style.monitorRatio
                 }
 

@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>FloatSpinBox.qml</file>
+        <file>StepSpinBox.qml</file>
         <file>Properties.qml</file>
         <file>ColorBox.qml</file>
+        <file>FloatSpinbox.qml</file>
+        <file>ColorBoxInput.qml</file>
     </qresource>
 </RCC>

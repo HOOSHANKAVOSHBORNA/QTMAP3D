@@ -2,62 +2,51 @@
 #include "qquickwindow.h"
 
 #include <QQmlEngine>
+#include <QQmlContext>
+#include <QQuickView>
 
-NodeInformation::NodeInformation(QQmlEngine* Engine,QObject *parent):QStandardItemModel(parent)
+NodeInformationModel::NodeInformationModel(QObject *parent):QStandardItemModel(parent)
 {
     setColumnCount(1);
-    rootItem = invisibleRootItem();
-    QQmlComponent* comp = new QQmlComponent(Engine, this);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
-        if(status == QQmlComponent::Error){
-            qDebug()<<"Can not load this: "<<comp->errorString();
-        }
-
-        if(status == QQmlComponent::Ready){
-            mWnd = qobject_cast<QQuickWindow*>(comp->create());
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/NodeInformation.qml"));
-    mWnd->setProperty("nodeinfo", QVariant::fromValue<NodeInformation*>(this));
+    mRootItem = invisibleRootItem();
 }
 
-NodeInformation::~NodeInformation()
+NodeInformationModel::~NodeInformationModel()
 {
 
 }
 
-void NodeInformation::addUpdateNodeInformationItem(NodeData *nodeData)
+void NodeInformationModel::setNodeData(NodeData *nodeData)
 {
     mNodeData = nodeData;
-    emit informationChanged();
-    // ----------------------------------------remove category if is not in new data ---------------
-    for (auto& [key, value] : mCategories) {
-        value->removeRows(0, value->rowCount());
+    // --clear category child and remove category if is not in new data ---------------
+    for (auto& [categoryText, categoryItem] : mCategoryItemMap) {
+        categoryItem->removeRows(0, categoryItem->rowCount());
         auto it = std::find_if(nodeData->fieldData.begin(), nodeData->fieldData.end(), [&](const NodeFieldData& n){
-            return n.name == key;
+            return n.category == categoryText;
         });
-        if (it != nodeData->fieldData.end())
-            mCategories.erase(it->name);
+        if (it == nodeData->fieldData.end())
+            mCategoryItemMap.erase(categoryText);
     }
 
-    for(NodeFieldData nodeFieldData:nodeData->fieldData){
+    for(NodeFieldData& nodeFieldData: nodeData->fieldData){
         QStandardItem *item = new QStandardItem;
         QString category = nodeFieldData.category;
-        // -----------------add category if it doesn't exist ---------------------------------------------------
-        if (mCategories.find(category) == mCategories.end()){
-            QStandardItem *p = new QStandardItem(category);
-            p->setData(QVariant::fromValue(nodeFieldData.categorySrc), iconImageSource);
-            mCategories[category] = p;
-            rootItem->appendRow(p);
+        // --add category if it doesn't exist ---------------------------------------------------
+        if (mCategoryItemMap.find(category) == mCategoryItemMap.end()){
+            QStandardItem *categoryItem = new QStandardItem(category);
+            categoryItem->setData(QVariant::fromValue(nodeFieldData.categoryIconSrc), iconImageSource);
+            mCategoryItemMap[category] = categoryItem;
+            mRootItem->appendRow(categoryItem);
         }
         item->setData(QVariant::fromValue(nodeFieldData.name), nameText);
         item->setData(QVariant::fromValue(nodeFieldData.value), valueText);
-        mCategories[category]->appendRow(item);
+        mCategoryItemMap[category]->appendRow(item);
     }
 }
 
 
-QHash<int, QByteArray> NodeInformation::roleNames() const
+QHash<int, QByteArray> NodeInformationModel::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
 
@@ -67,55 +56,54 @@ QHash<int, QByteArray> NodeInformation::roleNames() const
     return hash;
 }
 
-void NodeInformation::show()
-{
-    mWnd->show();
-}
+//QString NodeInformationModel::imageUrl() const
+//{
+//    return mNodeData ? QString::fromStdString(mNodeData->imgSrc) : "";
+//}
 
-QQuickWindow *NodeInformation::wnd() const
-{
-    return mWnd;
-}
+//QString NodeInformationModel::icnUrl() const
+//{
+//    return mNodeData ? QString::fromStdString(mNodeData->iconSrc) : "";
+//}
 
-QString NodeInformation::imageUrl() const
-{
-    return mNodeData ? QString::fromStdString(mNodeData->imgSrc) : "";
-}
+//QString NodeInformationModel::title() const
+//{
+//    return mNodeData ? QString::fromStdString(mNodeData->name) : "";
+//}
 
-QString NodeInformation::icnUrl() const
-{
-    return mNodeData ? QString::fromStdString(mNodeData->iconSrc) : "";
-}
+//bool NodeInformationModel::bookmarkStatus() const
+//{
+//    return mBookmarkStatus;
+//}
 
-QString NodeInformation::title() const
-{
-    return mNodeData ? QString::fromStdString(mNodeData->name) : "";
-}
+//void NodeInformationModel::changeBookmarkStatus(bool status)
+//{
+//    mBookmarkStatus = status;
+//    emit bookmarkChecked(mBookmarkStatus);
+//}
 
-bool NodeInformation::bookmarkStatus() const
+NodeInformationManager::NodeInformationManager(QQmlEngine *Engine, QQuickWindow *parent):QObject(parent)
 {
-    return mBookmarkStatus;
-}
 
-void NodeInformation::changeBookmarkStatus(bool status)
-{
-    mBookmarkStatus = status;
-    emit bookmarkChecked(mBookmarkStatus);
-}
 
-NodeInformationManager::NodeInformationManager(QQmlEngine *Engine, QObject *parent):QObject(parent)
-{
-    mNodeInformation = new NodeInformation(Engine);
+    mNodeInformationModel = new NodeInformationModel(Engine);
 
-    connect(mNodeInformation,&NodeInformation::bookmarkChecked,this,[&](bool check){
-        emit bookmarkChecked(check);
+    QQmlComponent* comp = new QQmlComponent(Engine, this);
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load this: "<<comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready){
+            mWindow = qobject_cast<QQuickWindow*>(comp->create());
+            mWindow->setProperty("nodeInfoModel", QVariant::fromValue<NodeInformationModel*>(mNodeInformationModel));
+
+            connect(parent, &QQuickWindow::closing, mWindow, &QQuickWindow::close);
+            connect(mWindow, SIGNAL(goToPosition()), this, SIGNAL(goToPosition()));
+            connect(mWindow, SIGNAL(track()), this, SIGNAL(track()));
+        }
     });
-    connect(mNodeInformation,&NodeInformation::itemGoToPostition,this,[&](){
-        emit itemGoToPostition();
-    });
-    connect(mNodeInformation,&NodeInformation::itemTracked,this,[&](){
-        emit itemTracked();
-    });
+    comp->loadUrl(QUrl("qrc:/NodeInformation.qml"));
 
 }
 
@@ -124,28 +112,34 @@ NodeInformationManager::~NodeInformationManager()
 
 }
 
-void NodeInformationManager::addUpdateNodeInformationItem(NodeData *nodeData)
+void NodeInformationManager::setNodeData(NodeData *nodeData)
 {
-    mNodeInformation->addUpdateNodeInformationItem(nodeData);
+    qDebug()<<QString::fromStdString(nodeData->imgSrc);
+    mWindow->setTitle(QString::fromStdString(nodeData->name));
+    mWindow->setProperty("iconUrl", QVariant(QString::fromStdString(nodeData->iconSrc)));
+    mWindow->setProperty("imageUrl", QVariant::fromValue<QString>(QString::fromStdString(nodeData->imgSrc)));
+
+    mNodeInformationModel->setNodeData(nodeData);
 }
 
 void NodeInformationManager::show()
 {
-    mNodeInformation->show();
+    mWindow->show();
+    mWindow->requestActivate();
 }
 
-QQuickWindow *NodeInformationManager::wnd() const
+NodeInformationModel *NodeInformationManager::nodeInformationModel() const
 {
-    mNodeInformation->wnd();
+    return mNodeInformationModel;
 }
 
-NodeInformation *NodeInformationManager::getNodeInformation() const
-{
-    return mNodeInformation;
-}
+//void NodeInformationManager::changeBookmarkStatus(bool status)
+//{
+////    mNodeInformationModel->changeBookmarkStatus(status);
+//}
 
-void NodeInformationManager::changeBookmarkStatus(bool status)
+QQuickWindow *NodeInformationManager::window() const
 {
-   mNodeInformation->changeBookmarkStatus(status);
+    return mWindow;
 }
 

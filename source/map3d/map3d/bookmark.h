@@ -11,15 +11,16 @@
 struct BookmarkItem: public QObject {
     Q_OBJECT
 public:
-    BookmarkItem(QString parent, QString text, QQuickWindow *wnd, QString imgUrl);
-    QString parent;
+    BookmarkItem();
+    void setInfo(QString category, QString text, QQuickWindow *wnd, QString imgUrl);
+    QString category;
     QString text;
     QQuickWindow *wnd;
     QString imgUrl;
 signals:
-    void itemDeleted();
-    void itemGoToPostition();
-    void itemTracked();
+    void fromBookmarkRemoved();
+    void goToPosition();
+    void track();
 };
 
 class BookmarkProxyModel : public QSortFilterProxyModel

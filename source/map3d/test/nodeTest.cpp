@@ -22,17 +22,49 @@ NodeTest::NodeTest(NetworkManager *networkManager):
                 mNetworkManager->sendData(nodeData.polygonDoc.toJson(QJsonDocument::Compact));
             }
         });
-        timerUpdateAircraft->start(5000);
+        timerUpdateAircraft->start(2000);
+
+        QTimer *timerRemoveAircraft = new QTimer();
+        QObject::connect(timerRemoveAircraft, &QTimer::timeout, [this](){
+            if (mNodeDataList.size() > 0){
+                QJsonObject jsonObject = mNodeDataList[0].nodeDoc.object();
+                QJsonObject jsonStatusObject = mNodeDataList[0].statusDoc.object();
+                QJsonObject jsonCircleObject = mNodeDataList[0].circleDoc.object();
+                QJsonObject jsonPolygonObject = mNodeDataList[0].polygonDoc.object();
+
+                jsonObject.remove("COMMAND");
+                jsonObject.insert("COMMAND", "REMOVE");
+                jsonStatusObject.remove("COMMAND");
+                jsonStatusObject.insert("COMMAND", "REMOVE");
+                jsonCircleObject.remove("COMMAND");
+                jsonCircleObject.insert("COMMAND", "REMOVE");
+                jsonPolygonObject.remove("COMMAND");
+                jsonPolygonObject.insert("COMMAND", "REMOVE");
+
+                mNodeDataList.pop_front();
+
+                QJsonDocument jsonDoc(jsonObject);
+                QJsonDocument jsonStatusDoc(jsonStatusObject);
+                QJsonDocument jsonCircleDoc(jsonCircleObject);
+                QJsonDocument jsonPolygonDoc(jsonPolygonObject);
+
+                mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(jsonCircleDoc.toJson(QJsonDocument::Compact));
+                mNetworkManager->sendData(jsonPolygonDoc.toJson(QJsonDocument::Compact));
+            }
+        });
+        timerRemoveAircraft->start(7000);
     });
 }
 
 void NodeTest::createInfo()
 {
-    if(mNodeDataList.count() >= mMaxNumber)
+    if(mCount >= mMaxNumber)
         return;
     //---------------------------------------------------------
-    QString name = "Node" + QString::number(mNodeDataList.count());
-    int id = 30000 + mNodeDataList.count();
+    QString name = "Node" + QString::number(mCount);
+    int id = 30000 + mCount++;
     QColor color("yellow");
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
@@ -42,6 +74,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObject;
 
     jsonObject.insert("Type", "Node");
+    jsonObject.insert("COMMAND", "ADD");
 
     QJsonObject jsonData;
 
@@ -90,6 +123,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectStatus;
 
     jsonObjectStatus.insert("Type", "Status");
+    jsonObjectStatus.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectStatusData;
     jsonObjectStatusData.insert("Name", name);
@@ -116,6 +150,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectCircle;
 
     jsonObjectCircle.insert("Type", "Circle");
+    jsonObjectCircle.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectCircleData;
     jsonObjectCircleData.insert("Name", name + " circle");
@@ -140,6 +175,7 @@ void NodeTest::createInfo()
     QJsonObject jsonObjectPolygon;
 
     jsonObjectPolygon.insert("Type", "Polygon");
+    jsonObjectPolygon.insert("COMMAND", "ADD");
 
     QJsonObject jsonObjectPolygonData;
     jsonObjectPolygonData.insert("Name", name + " polygon");
@@ -223,6 +259,7 @@ void NodeTest::updateInfo()
 
 //        QJsonObject jsonObject;
 //        jsonObject.insert("Type", "Flyable");
+//        jsonObject.insert("COMMAND", "UPDATE");
 //        jsonObject.insert("Data", dataObject);
 //        flaybleData.flyableDoc.setObject(jsonObject);
 //        //--status node-----------------------------------------------
@@ -251,6 +288,7 @@ void NodeTest::updateInfo()
 //        QJsonObject jsonObjectLine;
 
 //        jsonObjectLine.insert("Type", "Route");
+//        jsonObjectLine.insert("COMMAND", "UPDATE");
 
 //        QJsonObject jsonObjectLineData;
 //        jsonObjectLineData.insert("Name", name);

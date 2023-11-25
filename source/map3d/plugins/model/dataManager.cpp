@@ -18,14 +18,14 @@ FlyableModelNode *DataManager::addUpdateFlyableNode(NodeData *nodeData)
     osgEarth::GeoPoint geoPoint(mMapItem->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<FlyableModelNode> flyableNode;
 
-    if(!mFlyableNodeMap.contains(nodeData->id)){
+    if(!mNodeMap.contains(nodeData->id)){
         flyableNode = new FlyableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         flyableNode->setPosition(geoPoint);
-        mFlyableNodeMap[nodeData->id] = flyableNode;
-        flyableNode->setBookmark(mMainWindow->getBookmarkManager());
+        mNodeMap[nodeData->id] = flyableNode;
+        flyableNode->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
-        flyableNode = mFlyableNodeMap[nodeData->id];
+        flyableNode = mNodeMap[nodeData->id]->asFlyableModelNode();
         for(auto layer: flyableNode->nodeData()->layers){
             layer->removeChild(flyableNode);
         }
@@ -49,7 +49,7 @@ SimpleModelNode *DataManager::addUpdateNode(NodeData *nodeData)
         node = new SimpleModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         node->setPosition(geoPoint);
         mNodeMap[nodeData->id] = node;
-        node->setBookmark(mMainWindow->getBookmarkManager());
+        node->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
         node = mNodeMap[nodeData->id];
@@ -71,14 +71,14 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
     osgEarth::GeoPoint geoPoint(mMapItem->getMapObject()->getSRS(), nodeData->longitude, nodeData->latitude, nodeData->altitude);
     osg::ref_ptr<MoveableModelNode> movableNode;
 
-    if(!mMovableNodeMap.contains(nodeData->id)){
+    if(!mNodeMap.contains(nodeData->id)){
         movableNode = new MoveableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         movableNode->setPosition(geoPoint);
-        mMovableNodeMap[nodeData->id] = movableNode;
-        movableNode->setBookmark(mMainWindow->getBookmarkManager());
+        mNodeMap[nodeData->id] = movableNode;
+        movableNode->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
-        movableNode = mMovableNodeMap[nodeData->id];
+        movableNode = mNodeMap[nodeData->id]->asMoveableModelNode();
         for(auto layer: movableNode->nodeData()->layers){
             layer->removeChild(movableNode);
         }
@@ -92,24 +92,72 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
     return movableNode;
 }
 
-void DataManager::removeFlyableNodeData(NodeData *nodeData)
+void DataManager::flyableNodeDataReceived(NodeData *nodeData)
 {
-    for (auto &layer: nodeData->layers)
-        layer->removeChild(mFlyableNodeMap[nodeData->id]);
-    mFlyableNodeMap.remove(nodeData->id);
+    if (nodeData->command == "REMOVE"){
+        removeNodeData(nodeData);
+    } else if (nodeData->command == "UPDATE") {
+        addUpdateFlyableNode(nodeData);
+    } else {
+        addUpdateFlyableNode(nodeData);
+    }
 }
 
-void DataManager::removeMovableNodeData(NodeData *nodeData)
+void DataManager::movableNodeDataReceived(NodeData *nodeData)
 {
-    for (auto &layer: nodeData->layers)
-        if (mMovableNodeMap.contains(nodeData->id))
-            layer->removeChild(mMovableNodeMap[nodeData->id]);
-    mMovableNodeMap.remove(nodeData->id);
+    if (nodeData->command == "REMOVE"){
+        removeNodeData(nodeData);
+    } else if (nodeData->command == "UPDATE") {
+        addUpdateMovableNode(nodeData);
+    }
+    else {
+        addUpdateMovableNode(nodeData);
+    }
 }
+
+void DataManager::nodeDataReceived(NodeData *nodeData)
+{
+    if (nodeData->command == "REMOVE"){
+        removeNodeData(nodeData);
+    } else if (nodeData->command == "UPDATE") {
+        addUpdateNode(nodeData);
+    }
+    else {
+        addUpdateNode(nodeData);
+    }
+}
+
+//void DataManager::removeFlyableNodeData(NodeData *nodeData)
+//{
+//    for (auto &layer: nodeData->layers)
+//        layer->removeChild(mNodeMap[nodeData->id]);
+//    mNodeMap.remove(nodeData->id);
+//}
+
+//void DataManager::removeMovableNodeData(NodeData *nodeData)
+//{
+//    for (auto &layer: nodeData->layers)
+//            layer->removeChild(mNodeMap[nodeData->id]);
+//    mNodeMap.remove(nodeData->id);
+//}
 
 void DataManager::removeNodeData(NodeData *nodeData)
 {
-    for (auto &layer: nodeData->layers)
-        layer->removeChild(mNodeMap[nodeData->id]);
-    mNodeMap.remove(nodeData->id);
+    if(mNodeMap.contains(nodeData->id)){
+        for(auto layer: mNodeMap[nodeData->id]->nodeData()->layers){
+            layer->removeChild(mNodeMap[nodeData->id]);
+        }
+        mNodeMap[nodeData->id].release();
+        mNodeMap.remove(nodeData->id);
+    }
+}
+
+int DataManager::nodeCount()
+{
+    return mNodeMap.count();
+}
+
+SimpleModelNode *DataManager::getNodeAtIndex(int index)
+{
+    return mNodeMap.values().at(index);
 }

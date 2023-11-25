@@ -4,6 +4,7 @@
 #include <QColor>
 #include <QVector3D>
 #include <osgEarth/Color>
+#include <osgEarthSymbology/Style>
 
 namespace osgEarth {
 class GeoPoint;
@@ -18,6 +19,7 @@ public:
     static osgEarth::Color qColor2osgEarthColor(const QColor &color);
     static osgEarth::GeoPoint qVector3DToosgEarthGeoPoint(const QVector3D &position, const osgEarth::SpatialReference *srs);
     static QVector3D osgEarthGeoPointToQvector3D(const osgEarth::GeoPoint &position);
+    static osgEarth::Symbology::Style &getDefaultStyle();
 };
 
 #endif // UTILITY_H

@@ -17,7 +17,7 @@ LayerTest::LayerTest(NetworkManager *networkManager):
 QJsonDocument LayerTest::createLayers()
 {
     QJsonObject layers;
-    QJsonObject layersData;
+    QJsonArray layersData;
     layers.insert("Type", "Layer");
     //--flayable node layer------------------------------------------------
     QJsonObject flyable;
@@ -25,6 +25,7 @@ QJsonDocument LayerTest::createLayers()
     flyable.insert("ParentId", 0);
     flyable.insert("Text", "Flyable");
     flyable.insert("Order", 1);
+    flyable.insert("Command", "ADD");
     QJsonArray flableChildren;
     {
         QJsonObject flyableNode;
@@ -32,6 +33,7 @@ QJsonDocument LayerTest::createLayers()
         flyableNode.insert("ParentId", 100);
         flyableNode.insert("Text", "Flyable");
         flyableNode.insert("Order", 1);
+        flyableNode.insert("Command", "ADD");
         QJsonArray flyableNodeChildren;
         {
             QJsonObject unknown;
@@ -39,6 +41,7 @@ QJsonDocument LayerTest::createLayers()
             unknown.insert("ParentId", 101);
             unknown.insert("Text", "Unknown");
             unknown.insert("Order", 1);
+            unknown.insert("Command", "ADD");
             flyableNodeChildren.push_back(unknown);
 
             QJsonObject speedUp200;
@@ -46,6 +49,7 @@ QJsonDocument LayerTest::createLayers()
             speedUp200.insert("ParentId", 101);
             speedUp200.insert("Text", "SpeedUp200");
             speedUp200.insert("Order", 2);
+            speedUp200.insert("Command", "ADD");
             flyableNodeChildren.push_back(speedUp200);
 
             QJsonObject speedDown200;
@@ -53,6 +57,7 @@ QJsonDocument LayerTest::createLayers()
             speedDown200.insert("ParentId", 101);
             speedDown200.insert("Text", "SpeedDown200");
             speedDown200.insert("Order", 3);
+            speedDown200.insert("Command", "ADD");
             flyableNodeChildren.push_back(speedDown200);
         }
         flyableNode.insert("Children", flyableNodeChildren);
@@ -63,6 +68,7 @@ QJsonDocument LayerTest::createLayers()
         route.insert("ParentId", 100);
         route.insert("Text", "Route");
         route.insert("Order", 2);
+        route.insert("Command", "ADD");
         flableChildren.push_back(route);
 
         QJsonObject status;
@@ -70,16 +76,18 @@ QJsonDocument LayerTest::createLayers()
         status.insert("ParentId", 100);
         status.insert("Text", "Status");
         status.insert("Order", 3);
+        status.insert("Command", "ADD");
         flableChildren.push_back(status);
     }
     flyable.insert("Children", flableChildren);
-    layersData.insert("Flyable", flyable);
+    layersData.push_back(flyable);
     //--moveable layer------------------------------------------------------
     QJsonObject movable;
     movable.insert("Id", 200);
     movable.insert("ParentId", 0);
     movable.insert("Text", "Movable");
     movable.insert("Order", 1);
+    movable.insert("Command", "ADD");
     QJsonArray movableChildren;
     {
         QJsonObject movableNode;
@@ -87,6 +95,7 @@ QJsonDocument LayerTest::createLayers()
         movableNode.insert("ParentId", 200);
         movableNode.insert("Text", "Movable");
         movableNode.insert("Order", 1);
+        movableNode.insert("Command", "ADD");
         QJsonArray movableNodeChildren;
         {
             QJsonObject unknown;
@@ -94,6 +103,7 @@ QJsonDocument LayerTest::createLayers()
             unknown.insert("ParentId", 201);
             unknown.insert("Text", "Unknown");
             unknown.insert("Order", 1);
+            unknown.insert("Command", "ADD");
             movableNodeChildren.push_back(unknown);
 
             QJsonObject speedUp200;
@@ -101,6 +111,7 @@ QJsonDocument LayerTest::createLayers()
             speedUp200.insert("ParentId", 201);
             speedUp200.insert("Text", "SpeedUp200");
             speedUp200.insert("Order", 2);
+            speedUp200.insert("Command", "ADD");
             movableNodeChildren.push_back(speedUp200);
 
             QJsonObject speedDown200;
@@ -108,6 +119,7 @@ QJsonDocument LayerTest::createLayers()
             speedDown200.insert("ParentId", 201);
             speedDown200.insert("Text", "SpeedDown200");
             speedDown200.insert("Order", 3);
+            speedDown200.insert("Command", "ADD");
             movableNodeChildren.push_back(speedDown200);
         }
         movableNode.insert("Children", movableNodeChildren);
@@ -118,6 +130,7 @@ QJsonDocument LayerTest::createLayers()
         route.insert("ParentId", 200);
         route.insert("Text", "Route");
         route.insert("Order", 2);
+        route.insert("Command", "ADD");
         movableChildren.push_back(route);
 
         QJsonObject status;
@@ -125,10 +138,11 @@ QJsonDocument LayerTest::createLayers()
         status.insert("ParentId", 200);
         status.insert("Text", "Status");
         status.insert("Order", 3);
+        status.insert("Command", "ADD");
         movableChildren.push_back(status);
     }
     movable.insert("Children", movableChildren);
-    layersData.insert("Movable", movable);
+    layersData.push_back(movable);
 
     //--node layer---------------------------------------------------------------
     QJsonObject node;
@@ -136,6 +150,7 @@ QJsonDocument LayerTest::createLayers()
     node.insert("ParentId", 0);
     node.insert("Text", "Node");
     node.insert("Order", 3);
+    node.insert("Command", "ADD");
     QJsonArray nodeChildren;
     {
         QJsonObject nodeChild;
@@ -143,6 +158,7 @@ QJsonDocument LayerTest::createLayers()
         nodeChild.insert("ParentId", 300);
         nodeChild.insert("Text", "Node");
         nodeChild.insert("Order", 1);
+        nodeChild.insert("Command", "ADD");
         QJsonArray nodeChildChildren;
         {
             QJsonObject active;
@@ -150,6 +166,7 @@ QJsonDocument LayerTest::createLayers()
             active.insert("ParentId", 301);
             active.insert("Text", "Active");
             active.insert("Order", 1);
+            active.insert("Command", "ADD");
             nodeChildChildren.push_back(active);
 
             QJsonObject inactive;
@@ -157,6 +174,7 @@ QJsonDocument LayerTest::createLayers()
             inactive.insert("ParentId", 301);
             inactive.insert("Text", "Inactive");
             inactive.insert("Order", 2);
+            inactive.insert("Command", "ADD");
             nodeChildChildren.push_back(inactive);
         }
         nodeChild.insert("Children", nodeChildChildren);
@@ -167,6 +185,7 @@ QJsonDocument LayerTest::createLayers()
         circle.insert("ParentId", 300);
         circle.insert("Text", "Circle");
         circle.insert("Order", 2);
+        circle.insert("Command", "ADD");
         nodeChildren.push_back(circle);
 
         QJsonObject status;
@@ -174,6 +193,7 @@ QJsonDocument LayerTest::createLayers()
         status.insert("ParentId", 300);
         status.insert("Text", "Status");
         status.insert("Order", 3);
+        status.insert("Command", "ADD");
         nodeChildren.push_back(status);
 
         QJsonObject polygon;
@@ -181,10 +201,11 @@ QJsonDocument LayerTest::createLayers()
         polygon.insert("ParentId", 300);
         polygon.insert("Text", "Polygon");
         polygon.insert("Order", 4);
+        polygon.insert("Command", "ADD");
         nodeChildren.push_back(polygon);
     }
     node.insert("Children", nodeChildren);
-    layersData.insert("Node", node);
+    layersData.push_back(node);
     //---------------------------------------------------------------------------
     layers.insert("Data", layersData);
     QJsonDocument doc;

@@ -2,6 +2,7 @@
 #define CIRCLE_H
 #include <osgEarthAnnotation/CircleNode>
 #include "mapItem.h"
+#include "serviceManager.h"
 
 
 
@@ -20,9 +21,13 @@ public:
     osgEarth::Color getStrokeColor();
     float getStrokeWidth();
 
+    CircleData *circleData() const;
+    void setCircleData(CircleData *newCircleData);
+
 private:
     osgEarth::Symbology::Style circleStyle;
     MapItem* mMapItem{nullptr};
+    CircleData* mCircleData{nullptr};
 };
 
 #endif // Circle_H

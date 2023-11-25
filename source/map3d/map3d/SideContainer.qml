@@ -30,8 +30,10 @@ Item {
         Text {
             visible: visibleCount !== 0
             text: 'Qarch'
-            Layout.topMargin: 40 / Style.monitorRatio
-            Layout.bottomMargin: 30 / Style.monitorRatio
+//            Layout.topMargin: 40 / Style.monitorRatio
+//            Layout.bottomMargin: 30 / Style.monitorRatio
+            Layout.topMargin: 10 / Style.monitorRatio
+            Layout.bottomMargin: 5 / Style.monitorRatio
             color: Style.foregroundColor
             font.pixelSize: 30 / Style.monitorRatio
             font.family: Style.fontFamily
