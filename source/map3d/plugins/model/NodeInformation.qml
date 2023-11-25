@@ -10,9 +10,15 @@ Window {
     width:310/Style.monitorRatio
     height:612/Style.monitorRatio
     color: "transparent"
-    title: nodeinfo ? nodeinfo.title : ""
+//    title: nodeInfoModel ? nodeInfoModel.title : ""
 
-    property var nodeinfo
+    property var nodeInfoModel
+    property string iconUrl: ""
+    property string imageUrl: ""
+
+    signal track();
+    signal goToPosition();
+
     Rectangle{
         color: Style.backgroundColor
         anchors.fill: parent
@@ -34,27 +40,27 @@ Window {
                     Layout.preferredHeight: 22/Style.monitorRatio
                     Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.leftMargin: 15
-                    source: nodeinfo ? nodeinfo.icnUrl : ""
+                    source: iconUrl
                 }
                 Text{
-                    text: nodeinfo ? nodeinfo.title : ""
+                    text: title
                     color: Style.foregroundColor
                     font.pixelSize: 17/Style.monitorRatio
                     Layout.fillWidth: true
                 }
-                Button{
-                    id: bookBtn
-                    Layout.preferredWidth: 22/Style.monitorRatio
-                    Layout.preferredHeight: 22/Style.monitorRatio
-                    background:IconImage{
-                        width: 22/Style.monitorRatio
-                        height: 22/Style.monitorRatio
-                        source: nodeinfo ? nodeinfo.bookmarkStatus ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png": ""
-                    }
-                    onClicked: {
-                        nodeinfo.changeBookmarkStatus(!nodeinfo.bookmarkStatus)
-                    }
-                }
+//                Button{
+//                    id: bookBtn
+//                    Layout.preferredWidth: 22/Style.monitorRatio
+//                    Layout.preferredHeight: 22/Style.monitorRatio
+//                    background:IconImage{
+//                        width: 22/Style.monitorRatio
+//                        height: 22/Style.monitorRatio
+//                        source: nodeInfoModel ? nodeInfoModel.bookmarkStatus ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png": ""
+//                    }
+//                    onClicked: {
+//                        nodeInfoModel.changeBookmarkStatus(!nodeInfoModel.bookmarkStatus)
+//                    }
+//                }
                 Button{
                     Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.preferredHeight: 22/Style.monitorRatio
@@ -85,7 +91,7 @@ Window {
                 id:image
                 anchors.fill: parent
 
-                source:nodeinfo ? nodeinfo.imageUrl :""
+                source: imageUrl
 
             }
             Rectangle{
@@ -107,7 +113,8 @@ Window {
                             source: "qrc:/Resources/track-icon.png"
                         }
                         onClicked:{
-                            nodeinfo.itemTracked()
+//                            nodeInfoModel.itemTracked()
+                            track()
                         }
                     }
 
@@ -136,7 +143,8 @@ Window {
                             source: "qrc:/Resources/easy-to-find.png"
                         }
                         onClicked: {
-                            nodeinfo.itemGoToPostition()
+//                            nodeInfoModel.itemGoToPostition()
+                            goToPosition();
                         }
                     }
                     Text{
@@ -161,7 +169,7 @@ Window {
                 id:treeView
                 anchors.fill: parent
                 anchors.centerIn: parent
-                model: nodeinfo
+                model: nodeInfoModel
                 rowSpacing: 10
 
                 delegate: Item {

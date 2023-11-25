@@ -90,31 +90,9 @@ bool SimpleModelNode::isSelect() const
 
 void SimpleModelNode::select()
 {
-    //    if (mNodeData) {
-    //        if (!mNodeInformation){
-    //            if (!mEnigine){
-    //                qDebug() << "first set engine to show info";
-    //                return;
-    //            }
-    //            mNodeInformation = new NodeInformationManager(mEnigine, this);
-
-    //             connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
-    //                 mapItem()->getCameraController()->goToPosition(getPosition(), 500);
-    //             });
-    //             connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
-    //                 mapItem()->getCameraController()->setTrackNode(getGeoTransform(), 400);
-    //             });
-    //             if (mBookmarkManager)
-    //                connect(mNodeInformation, &NodeInformationManager::bookmarkChecked, this, &SimpleModelNode::onBookmarkChecked);
-    //             mNodeInformation->addUpdateNodeInformationItem(mNodeData);
-    //        }
-    ////        mNodeInformation->show();
-    //    }
     mIsSelected = !mIsSelected;
     mCircularMenu->show(mIsSelected);
     mSwitchNode->setValue(2, mIsSelected);
-
-
 }
 
 bool SimpleModelNode::isHighlight() const
@@ -156,11 +134,11 @@ void SimpleModelNode::setNodeData(NodeData *newNodeData)
     updateUrl(mNodeData->url3D, mNodeData->url2D);
     setColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
-        mNodeInformation->addUpdateNodeInformationItem(newNodeData);
+        mNodeInformation->setNodeData(newNodeData);
     if(mBookmarkItem)
         mBookmarkItem->setInfo(QString::fromStdString(mNodeData->type),
                                QString::fromStdString(mNodeData->name),
-                               mNodeInformation->wnd(),
+                               mNodeInformation->window(),
                                QString::fromStdString(mNodeData->imgSrc));
 
     //TODO add signal for update data--------------------
@@ -409,12 +387,12 @@ void SimpleModelNode::createCircularMenu()
 
 void SimpleModelNode::createNodeInformation()
 {
-    mNodeInformation = new NodeInformationManager(mEnigine, this);
+    mNodeInformation = new NodeInformationManager(mEnigine, mMapItem->window());
 
-    connect(mNodeInformation,&NodeInformationManager::itemGoToPostition,[&](){
+    connect(mNodeInformation,&NodeInformationManager::goToPosition,[&](){
         mMapItem->getCameraController()->goToPosition(getPosition(), 500);
     });
-    connect(mNodeInformation,&NodeInformationManager::itemTracked,[&](){
+    connect(mNodeInformation,&NodeInformationManager::track,[&](){
         mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
     });
 }
@@ -424,11 +402,11 @@ void SimpleModelNode::createBookmarkItem()
     mBookmarkItem = new BookmarkItem();
 
     connect(mBookmarkItem, &BookmarkItem::goToPosition, [&](){
-        emit mNodeInformation->itemGoToPostition();
+        emit mNodeInformation->goToPosition();
     });
 
     connect(mBookmarkItem, &BookmarkItem::track, [&](){
-        emit mNodeInformation->itemTracked();
+        emit mNodeInformation->track();
     });
 
     connect(mBookmarkItem, &BookmarkItem::fromBookmarkRemoved, [&](){

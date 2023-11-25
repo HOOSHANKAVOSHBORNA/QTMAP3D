@@ -236,7 +236,8 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
     QString name;
     switch (mType) {
     case Type::SIMPLE:
-        mNodeData = sampleNodeData("Tree", "../data/models/tree/tree.png", "../data/models/tree/tree.osgb", "", geoPos);
+        mNodeData = sampleNodeData("Tree", "../data/models/tree/tree.png", "../data/models/tree/tree.osgb",
+                                   "../data/models/airplane/airplane.png", "qrc:/resources/tree.png", geoPos);
         mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mSimpleNodeLayer)){
             mSimpleNodeLayer->clear();
@@ -246,7 +247,8 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         mCurrentModel = mDataManager->addUpdateNode(mNodeData);
         break;
     case Type::MOVEABLE:
-        mNodeData = sampleNodeData("Car", "../data/models/car/car.png", "../data/models/car/car.osgb", "", geoPos);
+        mNodeData = sampleNodeData("Car", "../data/models/car/car.png", "../data/models/car/car.osgb",
+                                   "../data/models/airplane/airplane.png","qrc:/resources/car.png", geoPos);
         mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mMoveableNodeLayer)){
             mMoveableNodeLayer->clear();
@@ -256,7 +258,8 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
         break;
     case Type::FLYABLE:
-        mNodeData = sampleNodeData("Airplane", "../data/models/airplane/airplane.png", "../data/models/airplane/airplane.osgb", "", geoPos);
+        mNodeData = sampleNodeData("Airplane", "../data/models/airplane/airplane.png", "../data/models/airplane/airplane.osgb",
+                                   "../data/models/airplane/airplane.png","qrc:/resources/airplane.png", geoPos);
         mNodeData->id = 500 + mCount;
         if(!mModelNodeLayer->containsLayer(mFlyableNodelLayer)){
             mFlyableNodelLayer->clear();
@@ -372,7 +375,7 @@ SimpleModelNode *Model::pick(float x, float y)
     return simpleModelNode;
 }
 
-NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc,
+NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc,
                                 osgEarth::GeoPoint geoPos)
 {
     NodeData* nodeData = new NodeData();
@@ -385,6 +388,7 @@ NodeData *Model::sampleNodeData(std::string name, std::string url2d, std::string
     nodeData->url2D = url2d;
     nodeData->url3D = url3d;
     nodeData->imgSrc = imgSrc;
+    nodeData->iconSrc = iconSrc;
     nodeData->color = QColor("white").name().toStdString();
     nodeData->speed = 100;
     nodeData->fieldData.push_back(NodeFieldData{"name", "Aircraft" + QString::number(mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
