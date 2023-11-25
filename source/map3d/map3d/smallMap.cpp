@@ -20,8 +20,8 @@ SmallMap::SmallMap(QQuickItem *parent):
 {
     getViewer()->getCamera()->setClearColor(osg::Vec4(0,0,0,0));
     getViewer()->getCamera()->setClearMask(GL_DEPTH_BUFFER_BIT);
-    getViewer()->getCamera()->setProjectionResizePolicy( osg::Camera::FIXED );
-    getViewer()->getCamera()->setProjectionMatrixAsPerspective(30.0, double(100) / double(100), 1.0, 1000.0);
+//    getViewer()->getCamera()->setProjectionResizePolicy( osg::Camera::FIXED );
+//    getViewer()->getCamera()->setProjectionMatrixAsPerspective(30.0, double(100) / double(100), 1.0, 1000.0);
 
     mCameraManipulator = new osgEarth::Util::EarthManipulator;
     getViewer()->setCameraManipulator(mCameraManipulator);
@@ -34,8 +34,6 @@ SmallMap::SmallMap(QQuickItem *parent):
 void SmallMap::setMainMapItem(MapItem *mapItem)
 {
     mMapItem = mapItem;
-    //    getViewer()->getCamera()->setGraphicsContext( mMapItem->getViewer()->getCamera()->getGraphicsContext());
-    //    compile(false);
 }
 
 void SmallMap::compile(bool geocentric)
@@ -45,9 +43,9 @@ void SmallMap::compile(bool geocentric)
     createMapNode(geocentric);
 
     osgEarth::Drivers::GDALOptions gdal;
-//        gdal.maxDataLevelOverride() = 700000;
-//        gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
-//        gdal.L2CacheSize() = 2048;
+//    gdal.maxDataLevelOverride() = 7000000;
+//    gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_AVERAGE;
+//    gdal.L2CacheSize() = 2048;
     gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world_simple.tif")).toStdString();
     osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
     mMap->addLayer(imlayer);
@@ -84,11 +82,9 @@ void SmallMap::createMapNode(bool geocentric)
 void SmallMap::frame()
 {
     if(mMapItem){
-        osgEarth::Viewpoint tmpVP;
         tmpVP = mCameraManipulator->getViewpoint();
         tmpVP.focalPoint() = mMapItem->getCameraController()->getViewpoint().focalPoint();
         mCameraManipulator->setViewpoint(tmpVP);
-
     }
 }
 

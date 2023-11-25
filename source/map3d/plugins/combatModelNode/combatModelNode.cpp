@@ -154,7 +154,6 @@ bool CombatModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
         for (int var = 0; var < mBulletID.length(); ++var) {
             if(mCombatManager->getBulletPosition(mBulletID.at(var)) == mCombatManager->getBulletTargetModel(mBulletID.at(var))->getPosition()){
                 mCombatManager->attackResult(true,mBulletID.at(var));
-                //                mCombatManager->getBulletTargetModel(mBulletID.at(var))->deleteLater();
                 mBulletID.removeAt(var);
             }
         }

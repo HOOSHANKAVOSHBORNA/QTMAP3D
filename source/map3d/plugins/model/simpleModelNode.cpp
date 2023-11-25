@@ -345,22 +345,22 @@ void SimpleModelNode::compile()
     else
         m2DNode->accept(cbv);
     mCircleSelectNode = new Circle();
-    mCircleSelectNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
-    mCircleSelectNode->setStrokeColor(osg::Vec4f(0,1,0,0.5));
+    mCircleSelectNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
+    mCircleSelectNode->setStrokeColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
     mCircleSelectNode->setStrokeWidth(2);
     mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
     mCircleSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
 
-    mConeSelecteNode = new Cone();
-    mConeSelecteNode->setFillColor(osg::Vec4f(0,1,0,0.2));
-    mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius()/4, osgEarth::Units::METERS));
-    mConeSelecteNode->setHeight(osgEarth::Distance(cbv.getBoundingBox().radius()/2, osgEarth::Units::METERS));
-    mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
-    mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
-    mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
+//    mConeSelecteNode = new Cone();
+//    mConeSelecteNode->setFillColor(osg::Vec4f(0,1,0,0.2));
+//    mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius()/4, osgEarth::Units::METERS));
+//    mConeSelecteNode->setHeight(osgEarth::Distance(cbv.getBoundingBox().radius()/2, osgEarth::Units::METERS));
+//    mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
+//    mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
+//    mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
 
     selectGroup->addChild(mCircleSelectNode);
-    selectGroup->addChild(mConeSelecteNode);
+//    selectGroup->addChild(mConeSelecteNode);
     //--highlight node-------------------------------------------------
     mCircleHighlightNode = new Circle();
     mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
