@@ -11,7 +11,7 @@ ListWindow::ListWindow(QQuickWindow *parent) :
 {
     mTabbarModel = new TabbarModel;
 
-    mTabbarModel->appendRow(new TabbarItem{"something", nullptr});
+//    mTabbarModel->appendRow(new TabbarItem{"something", nullptr});
 }
 
 

@@ -67,7 +67,6 @@ public:
                 QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
                 item->setProperty("title", newTitle);
 
-                qDebug () << "something here";
                 appendTest(new TabbarItem{newTitle, item});
 
                 //                                    ToolboxManager::createSingletonInstance(nullptr, nullptr)->addPropertyItem(item, QStringLiteral("Test Item"));

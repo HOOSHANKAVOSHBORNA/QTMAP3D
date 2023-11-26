@@ -12,8 +12,8 @@ Item {
         border.width: 1
         border.color: 'grey'
         anchors.fill: parent
-        anchors.margins: 5
-        radius: 5
+//        anchors.margins: 5
+//        radius: 5
 
         Text {
             anchors.centerIn: parent
