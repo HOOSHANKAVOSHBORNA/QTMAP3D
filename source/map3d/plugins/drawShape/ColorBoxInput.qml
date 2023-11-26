@@ -14,6 +14,7 @@ import "style"
         property int historyOldIndex: 0
         property int historyNewIndex: 0
         property color selectedColor : Style.backgroundColor
+        property color opacityColor: Style.backgroundColor
 
         function textUpdate(){
             rInput.text = parseInt(colorCircle.color.toString().replace("#","").substring(0,2),16)
@@ -110,12 +111,15 @@ import "style"
                                       }
                                       lstModel.setProperty(newIndex,"imageVisible",checked)
                                       if(checked){
+                                          opacityColor = colorSelect
                                           selectedColor = colorSelect
                                           addHistory(colorSelect)
                                           oldIndex = index
                                       }
-                                      else
+                                      else{
+                                          opacityColor = "#FFFFFF"
                                           selectedColor = "#FFFFFF"
+                                      }
                                   }
                     }
                 }
@@ -166,6 +170,7 @@ import "style"
                       }
                       onAccepted: {
                           colorCircle.color = "#" + "0".repeat(6 - text.length) + text
+                          opacityColor = colorCircle.color
                           selectedColor = colorCircle.color
                           rInput.text = parseInt(colorCircle.color.toString().replace("#","").substring(0,2),16)
                           gInput.text = parseInt(colorCircle.color.toString().replace("#","").substring(2,4),16)
@@ -202,6 +207,7 @@ import "style"
                           var subStringValue = colorCircle.color.toString().substring(3,7)
                           colorCircle.color = "#" + "0".repeat(2 - parseInt(text, 10).toString(16).length) +
                                   parseInt(text, 10).toString(16) + subStringValue
+                          opacityColor = colorCircle.color
                           selectedColor = colorCircle.color
                           hexInput.text = colorCircle.color.toString().replace("#","")
                           addHistory(colorCircle.color)
@@ -237,6 +243,7 @@ import "style"
                           var subStringValue2 = colorCircle.color.toString().substring(5,7)
                           colorCircle.color = "#" + subStringValue1 + "0".repeat(2 - parseInt(text, 10).toString(16).length) +
                                   parseInt(text, 10).toString(16) + subStringValue2
+                          opacityColor = colorCircle.color
                           selectedColor = colorCircle.color
                           hexInput.text = colorCircle.color.toString().replace("#","")
                           addHistory(colorCircle.color)
@@ -271,6 +278,7 @@ import "style"
                           var subStringValue = colorCircle.color.toString().substring(1,5)
                           colorCircle.color = "#" + subStringValue + "0".repeat(2 - parseInt(text, 10).toString(16).length) +
                                   parseInt(text, 10).toString(16)
+                          opacityColor = colorCircle.color
                           selectedColor = colorCircle.color
                           hexInput.text = colorCircle.color.toString().replace("#","")
                           addHistory(colorCircle.color)
@@ -311,11 +319,13 @@ import "style"
                             orientation: Gradient.Horizontal
                             GradientStop {
                                 position: 0.0
-                                color: "#00" + selectedColor.toString().replace("#","")
+                               // color: "#00" + selectedColor.toString().replace("#","")
+                                color: "#00" + opacityColor.toString().replace("#","")
                             }
                             GradientStop {
                                 position: 1.0
-                                color: "#FF" + selectedColor.toString().replace("#","")
+                               // color: "#FF" + selectedColor.toString().replace("#","")
+                                color: "#FF" + opacityColor.toString().replace("#","")
                             }
                         }
                     }
@@ -379,11 +389,14 @@ import "style"
                             }
                             history.setProperty(historyNewIndex,"historyImageVisible",checked)
                             if(checked){
+                                opacityColor = historyColorSelect
                                 selectedColor = historyColorSelect
                                 historyOldIndex = index
                             }
-                            else
+                            else{
+                                opacityColor = "#FFFFFF"
                                 selectedColor = "#FFFFFF"
+                            }
                         }
                 }
             }
@@ -433,6 +446,7 @@ import "style"
                         color: Style.foregroundColor
                     }
                     onClicked: {
+                        selectedColor.a = slider.value
                         colorSelectCircle.color = selectedColor
                      //   addIconImage.visible = false
                         colorBoxInput.visible = false
