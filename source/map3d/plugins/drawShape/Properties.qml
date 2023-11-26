@@ -1355,7 +1355,7 @@ Item {
                                                             rootItem.model.pointsColor = propertyColorSelect
                                                         }
                                                         else{
-                                                           // rootItem.model.fillColor = "#FFFFFF"
+                                                            rootItem.model.pointsColor = "transparent"
                                                         }
                                                     }
                                                  }
@@ -1391,16 +1391,16 @@ Item {
                                              }
                                          }
 
-                                         ColorDialog {
-                                             visible: false
-                                             id:  pointColorDialog
-                                             title: "Please choose a color"
-                                             onAccepted: {
-                                                 var currentColor = pointColorDialog.selectedColor
-                                                 currentColor.a = pointOpacityValue.value / 100
-                                                 rootItem.model.pointsColor = currentColor
-                                             }
-                                         }
+//                                         ColorDialog {
+//                                             visible: false
+//                                             id:  pointColorDialog
+//                                             title: "Please choose a color"
+//                                             onAccepted: {
+//                                                 var currentColor = pointColorDialog.selectedColor
+//                                                 currentColor.a = pointOpacityValue.value / 100
+//                                                 rootItem.model.pointsColor = currentColor
+//                                             }
+//                                         }
                                      }
                                      StepSpinBox {
                                          id: pointOpacityValue
