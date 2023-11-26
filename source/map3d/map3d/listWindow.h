@@ -33,6 +33,7 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void appendRow(TabbarItem *newLocationItem);
+    Q_INVOKABLE void removeRow(const QModelIndex &index);
 
 private:
     QVector<TabbarItem *> mTabbarItems;

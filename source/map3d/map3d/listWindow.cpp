@@ -53,6 +53,13 @@ void TabbarModel::appendRow(TabbarItem *newTabbarItem)
     endInsertRows();
 }
 
+void TabbarModel::removeRow(const QModelIndex &index)
+{
+    beginRemoveRows(QModelIndex(), index.row(), index.row());
+    mTabbarItems.removeAt(index.row());
+    endRemoveRows();
+}
+
 TabbarModel *ListWindow::tabbarModel() const
 {
     return mTabbarModel;
