@@ -366,11 +366,12 @@ void SimpleModelNode::compile()
         mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
+    th
     osgEarth::Symbology::Style  rootStyle ;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
 //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
-    applyStyle(rootStyle);
-    // setStyle(rootStyle);
+    // applyStyle(rootStyle);
+    setStyle(rootStyle);
     setColor(mColor);
 }
 

@@ -36,6 +36,7 @@ private:
     osg::ref_ptr<osg::Group> mMapRoot{nullptr};
     osg::ref_ptr<osgEarth::Map> mMap;
     osg::ref_ptr<osgEarth::Util::EarthManipulator> mCameraManipulator;
+    osgEarth::Viewpoint tmpVP;
 
 };
 

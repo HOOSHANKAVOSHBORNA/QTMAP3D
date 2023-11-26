@@ -85,6 +85,7 @@ private:
     bool mInClickProcess = false;
     double mFps = 0.0f;
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
+    TypeListModel* mTypeListModel{nullptr};
     StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D m_compassDirection;
     SmallMap *mSmallMap{nullptr};

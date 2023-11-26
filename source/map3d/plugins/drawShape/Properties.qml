@@ -70,7 +70,7 @@ Item {
                 }
 
                 ColorBoxInput{
-                    id:testInput
+                    id:colorBox
                     visible: false
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -80,7 +80,7 @@ Item {
                     id:fillcolorSec
                     Layout.fillWidth: true
                     visible: rootItem.model ? rootItem.model.fillColorStatus : false
-
+                    spacing: 2 / Style.monitorRatio
                     Text {
                         Layout.preferredWidth: lblWidth
                         text: "Color"
@@ -88,12 +88,12 @@ Item {
                         color: Style.foregroundColor
                     }
                     RowLayout{
-                        spacing:3
+                        spacing:12 / Style.monitorRatio
                         Repeater{
                             model: ["red","orange","yellow","green","blue","white"]
                             Rectangle{
-                                implicitWidth: 20 / Style.monitorRatio
-                                implicitHeight: 20 / Style.monitorRatio
+                                implicitWidth: 24 / Style.monitorRatio
+                                implicitHeight: 24 / Style.monitorRatio
                                 radius: width
                                 color: modelData
                                 MouseArea{
@@ -106,13 +106,15 @@ Item {
                         }
 
                         Rectangle{
-                            implicitWidth: 20 / Style.monitorRatio
-                            implicitHeight: 20 / Style.monitorRatio
+                            id:colorSelectCircle
+                            implicitWidth: 24 / Style.monitorRatio
+                            implicitHeight: 24 / Style.monitorRatio
                             radius: width
                             border.width:1 / Style.monitorRatio
                             border.color:Style.foregroundColor
                             IconImage{
-                                Layout.alignment: Qt.AlignCenter
+                                id:addIconImage
+                                anchors.centerIn: parent
                                 width: 20 / Style.monitorRatio
                                 height: 20 / Style.monitorRatio
                                 source: "qrc:/Resources/location-add.png"
@@ -120,7 +122,7 @@ Item {
                             MouseArea{
                                 anchors.fill: parent
                                // onClicked: fillColorDialog.visible = true
-                                onClicked: testInput.visible = true
+                                onClicked: colorBox.visible = true
 
                             }
                         }

@@ -7,21 +7,23 @@
 #include <QSortFilterProxyModel>
 #include "mapItem.h"
 Q_DECLARE_METATYPE(QModelIndex)
+
+class TypeListModel;
 class SearchNodeModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-//    enum myRoles {
-//        displayTextt = Qt::UserRole + 100
-//    };
+
     SearchNodeModel(MapItem *mapItem, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-//    QHash<int, QByteArray> roleNames() const override;
+    void onNodeClicked(const QModelIndex &current);
+
+public slots:
     void addNode(osg::Node *node,osgEarth::Layer *layer);
     void removeNode( osg::Node *node,osgEarth::Layer *layer);
-    void onNodeClicked(const QModelIndex &current);
+    TypeListModel *getTypeListModel() const;
 
 
 private:
@@ -29,11 +31,28 @@ private:
 private:
     MapItem *mMapItem{nullptr};
     std::vector<osg::ref_ptr<osg::Node>> mNodes;
+    TypeListModel *mTypeListModel{nullptr};
 };
 
 //----------------------------------------------
+class TypeListModel : public QAbstractListModel
+{
+    Q_OBJECT
+public:
+    TypeListModel(QObject *parent = nullptr);
+    void append(QString type);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    //    void addNode(osg::Node *node,osgEarth::Layer *layer);
 
 
+//private:
+    std::vector<QString> mTypes{};
+
+};
+
+
+//---------------
 
 class SearchNodeProxyModel : public QSortFilterProxyModel
 {
@@ -44,6 +63,7 @@ public:
 public slots:
     void setFilterString(const QString &filterString);
     void onNodeClicked(const int current);
+    TypeListModel *getTypeListModel() const;
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
@@ -52,7 +72,25 @@ signals:
 
 private:
     QString mFilterString = "";
+    TypeListModel *mTypeListModel{nullptr};
 
 };
+
+// -------------  Manager
+//class searchNodeManager : public QObject
+//{
+//    Q_OBJECT
+
+//    void addNode(osg::Node *node,osgEarth::Layer *layer);
+
+//private:
+//    MapItem *mMapItem{nullptr};
+
+//    SearchNodeProxyModel *mSearchNodeProxyModel;
+//};
+
+
+
+
 
 #endif // SEARCHNODEMODEL_H

@@ -45,15 +45,12 @@ Item {
     // ----------------------------------------- fake background
     Rectangle {
         id: fakeOuterCircle
-
         visible: false
-
         width: outerRadius * 2
         height: outerRadius * 2
         radius: outerRadius
         opacity: 0.5
         color: 'transparent'
-//                color: 'pink'
         anchors.centerIn: parent
 
         Rectangle {
@@ -62,7 +59,7 @@ Item {
             height: innerRadius * 2
             radius: innerRadius
             opacity: 0.6
-            color: 'gold'
+            color: 'transparent'
             anchors.centerIn: parent
         }
     }
@@ -77,8 +74,6 @@ Item {
                 animationStarter = false
             }
         }
-
-//        id:         anchors.fill: parent
         model: listModel
 
         CircularCut {

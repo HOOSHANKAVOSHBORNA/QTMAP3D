@@ -154,7 +154,6 @@ bool CombatModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
         for (int var = 0; var < mBulletID.length(); ++var) {
             if(mCombatManager->getBulletPosition(mBulletID.at(var)) == mCombatManager->getBulletTargetModel(mBulletID.at(var))->getPosition()){
                 mCombatManager->attackResult(true,mBulletID.at(var));
-                //                mCombatManager->getBulletTargetModel(mBulletID.at(var))->deleteLater();
                 mBulletID.removeAt(var);
             }
         }
@@ -220,7 +219,6 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
     mAttackerNode->setAttacker(true);
     mAttackerNode->setPosition(geoPos);
     mCurrentModel = mAttackerNode;
-
     setState(State::MOVING);
     mCount++;
 }
@@ -288,9 +286,6 @@ SimpleModelNode *CombatModelNode::pick(float x, float y)
                     _selectionBox->addChild( geode.get() );
                     osg::StateSet* ss = _selectionBox->getOrCreateStateSet();
                     ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-                    //                    ss->setAttributeAndModes(new osg::PolygonMode(
-                    //                        osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
-
                     osg::BoundingBox bb = hit.drawable->getBoundingBox();
                     qDebug()<<"radius: "<<bb.radius();
                     osg::Vec3 worldCenter = bb.center() *
@@ -300,7 +295,6 @@ SimpleModelNode *CombatModelNode::pick(float x, float y)
                                            bb.yMax()-bb.yMin(),
                                            bb.zMax()-bb.zMin()) *
                         osg::Matrix::translate(worldCenter) );
-
                     return simpleModelNode;
                 }
             }
