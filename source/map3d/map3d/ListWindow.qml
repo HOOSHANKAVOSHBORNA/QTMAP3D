@@ -9,8 +9,8 @@ CListWindow {
     id: rootItem
     width: 1000
     height: 600
-    color: 'transparent'
-    flags: Qt.FramelessWindowHint
+//    color: 'transparent'
+//    flags: Qt.FramelessWindowHint
 
     Rectangle {
         color: Style.backgroundColor
@@ -154,6 +154,13 @@ CListWindow {
 //            }
 //        }
         // just for test
+    }
+
+    Component.onCompleted: {
+        appendTest('ayfirst')
+        appendTest('aysecond')
+        appendTest('aythird')
+        appendTest('ayforth')
     }
 
 }
