@@ -15,6 +15,7 @@ import "style"
         property int historyNewIndex: 0
         property color selectedColor : Style.backgroundColor
         property color opacityColor: Style.backgroundColor
+        signal colorChosen()
 
         function textUpdate(){
             rInput.text = parseInt(colorCircle.color.toString().replace("#","").substring(0,2),16)
@@ -447,8 +448,7 @@ import "style"
                     }
                     onClicked: {
                         selectedColor.a = slider.value
-                        colorSelectCircle.color = selectedColor
-                     //   addIconImage.visible = false
+                        colorChosen()
                         colorBoxInput.visible = false
                     }
                 }
