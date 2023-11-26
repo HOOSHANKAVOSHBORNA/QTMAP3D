@@ -129,30 +129,30 @@ CListWindow {
 
 
         // --------------------- just for test
-        RowLayout {
-            height: 50
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: 10
+//        RowLayout {
+//            height: 50
+//            anchors.bottom: parent.bottom
+//            anchors.left: parent.left
+//            anchors.right: parent.right
+//            anchors.margins: 10
 
-            TextField {
-                id: addNewTitle
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                text: 'newTitle'
-            }
+//            TextField {
+//                id: addNewTitle
+//                Layout.fillHeight: true
+//                Layout.fillWidth: true
+//                text: 'newTitle'
+//            }
 
-            Button {
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                text: 'add'
+//            Button {
+//                Layout.fillHeight: true
+//                Layout.fillWidth: true
+//                text: 'add'
 
-                onClicked: {
-                    appendTest(addNewTitle.text)
-                }
-            }
-        }
+//                onClicked: {
+//                    appendTest(addNewTitle.text)
+//                }
+//            }
+//        }
         // just for test
     }
 
