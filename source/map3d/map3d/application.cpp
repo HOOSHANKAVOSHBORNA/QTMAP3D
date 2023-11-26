@@ -10,7 +10,7 @@
 
 #include "application.h"
 #include "mainwindow.h"
-#include "listwindow.h"
+#include "listWindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
 
@@ -98,8 +98,10 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         mMainWindow = mainWnd;
         mMainWindow->initComponent();
     }
+
     if (listWnd) {
         mListWindow = listWnd;
+
         mMainWindow->setListWindow(mListWindow);
         onUICreated();
     }

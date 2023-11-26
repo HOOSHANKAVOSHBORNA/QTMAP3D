@@ -14,7 +14,7 @@
 
 #include "mainwindow.h"
 #include "mapItem.h"
-#include "listwindow.h"
+#include "listWindow.h"
 #include "qqmlcontext.h"
 #include "mapControllerItem.h"
 #include "layerManager.h"
@@ -182,11 +182,11 @@ void MainWindow::hideInfoItem(QQuickItem *item)
 void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 {
     if (mListWindow) {
-        QMetaObject::invokeMethod(mListWindow,
-                                  "addTab",
-                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
-                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
-                                  );
+//        QMetaObject::invokeMethod(mListWindow,
+//                                  "addTab",
+//                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
+//                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
+//                                  );
 
     }
 }
