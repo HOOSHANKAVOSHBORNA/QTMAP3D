@@ -27,7 +27,7 @@ add_executable(Map3d
         pluginmanager.cpp   pluginmanager.h
         serviceManager.h serviceManager.cpp
         defenseDataManager.cpp  defenseDataManager.h
-        listwindow.cpp  listwindow.h
+        listWindow.cpp  listWindow.h
         layerManager.cpp layerManager.h
         osgRenderNode.cpp   osgRenderNode.h
         osgViewerItem.cpp osgViewerItem.h

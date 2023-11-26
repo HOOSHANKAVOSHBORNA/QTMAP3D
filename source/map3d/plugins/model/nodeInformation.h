@@ -27,17 +27,17 @@ private:
     NodeData *mNodeData{nullptr};
 };
 
-class NodeInformationManager:public QObject
+class NodeInformation:public QObject
 {
     Q_OBJECT
 public:
-    explicit NodeInformationManager(QQmlEngine* Engine, QQuickWindow *parent = nullptr);
-    ~NodeInformationManager();
+    explicit NodeInformation(QQmlEngine* Engine, QQuickWindow *parent = nullptr);
+    ~NodeInformation();
 
     void setNodeData(NodeData* nodeData);
     void show();
 
-    NodeInformationModel *nodeInformationModel() const;
+    NodeInformationModel *model() const;
     QQuickWindow *window() const;
 
 signals:

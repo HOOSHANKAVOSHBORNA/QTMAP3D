@@ -1,4 +1,4 @@
-#include "nodeInformationManager.h"
+#include "nodeInformation.h"
 #include "qquickwindow.h"
 
 #include <QQmlEngine>
@@ -56,33 +56,7 @@ QHash<int, QByteArray> NodeInformationModel::roleNames() const
     return hash;
 }
 
-//QString NodeInformationModel::imageUrl() const
-//{
-//    return mNodeData ? QString::fromStdString(mNodeData->imgSrc) : "";
-//}
-
-//QString NodeInformationModel::icnUrl() const
-//{
-//    return mNodeData ? QString::fromStdString(mNodeData->iconSrc) : "";
-//}
-
-//QString NodeInformationModel::title() const
-//{
-//    return mNodeData ? QString::fromStdString(mNodeData->name) : "";
-//}
-
-//bool NodeInformationModel::bookmarkStatus() const
-//{
-//    return mBookmarkStatus;
-//}
-
-//void NodeInformationModel::changeBookmarkStatus(bool status)
-//{
-//    mBookmarkStatus = status;
-//    emit bookmarkChecked(mBookmarkStatus);
-//}
-
-NodeInformationManager::NodeInformationManager(QQmlEngine *Engine, QQuickWindow *parent):QObject(parent)
+NodeInformation::NodeInformation(QQmlEngine *Engine, QQuickWindow *parent):QObject(parent)
 {
 
 
@@ -107,33 +81,40 @@ NodeInformationManager::NodeInformationManager(QQmlEngine *Engine, QQuickWindow 
 
 }
 
-NodeInformationManager::~NodeInformationManager()
+NodeInformation::~NodeInformation()
 {
 
 }
 
-void NodeInformationManager::setNodeData(NodeData *nodeData)
+void NodeInformation::setNodeData(NodeData *nodeData)
 {
-    qDebug()<<QString::fromStdString(nodeData->imgSrc);
     mWindow->setTitle(QString::fromStdString(nodeData->name));
-    mWindow->setProperty("iconUrl", QVariant(QString::fromStdString(nodeData->iconSrc)));
-    mWindow->setProperty("imageUrl", QVariant::fromValue<QString>(QString::fromStdString(nodeData->imgSrc)));
+
+    QString iconUrl = QString::fromStdString(nodeData->iconSrc);
+    if(!iconUrl.contains("qrc"))
+        iconUrl = "file:" + iconUrl;
+    mWindow->setProperty("iconUrl", iconUrl);
+
+    QString imgUrl = QString::fromStdString(nodeData->imgSrc);
+    if(!imgUrl.contains("qrc"))
+        imgUrl = "file:" + imgUrl;
+    mWindow->setProperty("imageUrl", imgUrl);
 
     mNodeInformationModel->setNodeData(nodeData);
 }
 
-void NodeInformationManager::show()
+void NodeInformation::show()
 {
     mWindow->show();
     mWindow->requestActivate();
 }
 
-NodeInformationModel *NodeInformationManager::nodeInformationModel() const
+NodeInformationModel *NodeInformation::model() const
 {
     return mNodeInformationModel;
 }
 
-QQuickWindow *NodeInformationManager::window() const
+QQuickWindow *NodeInformation::window() const
 {
     return mWindow;
 }

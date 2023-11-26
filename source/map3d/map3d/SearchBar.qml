@@ -8,29 +8,6 @@ Item{
     property var model
     property int iconSize: 26/Style.monitorRatio
     readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
-//Rectangle{
-//width: 250
-//height:250
-//y:30
-//x:-300
-
-
-//ListView{
-//    anchors.fill: parent
-//    model:rootItem.model.getTypeListModel()
-//    delegate: Button{
-//        width: 50
-//        height: 50
-//        text: model.display
-//        onClicked: {
-//            print("model.getTypeListModel")
-//            print(rootItem.model.getTypeListModel())
-//        }
-//    }
-//}
-
-//color:"lightblue"
-//}
     id: rootItem
     width: searchRect.width
     height: 240/Style.monitorRatio
@@ -170,6 +147,7 @@ Item{
                                 width: 1
 
                             }
+                            visible: false
 
                             RowLayout{
                                 id:shortCut
@@ -205,9 +183,6 @@ Item{
                     id:listView
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    //                anchors.fill: parent
-                    //                anchors.margins: 5
-                    //                Layout.topMargin:  searchRect.height + 5
                     clip: true
                     model: rootItem.model
                     delegate: Button

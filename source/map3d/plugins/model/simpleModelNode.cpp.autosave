@@ -366,10 +366,12 @@ void SimpleModelNode::compile()
         mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
+    th
     osgEarth::Symbology::Style  rootStyle ;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
 //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
-     setStyle(rootStyle);
+    // applyStyle(rootStyle);
+    setStyle(rootStyle);
     setColor(mColor);
 }
 
@@ -393,12 +395,12 @@ void SimpleModelNode::createCircularMenu()
 
 void SimpleModelNode::createNodeInformation()
 {
-    mNodeInformation = new NodeInformation(mEnigine, mMapItem->window());
+    mNodeInformation = new NodeInformationManager(mEnigine, mMapItem->window());
 
-    connect(mNodeInformation,&NodeInformation::goToPosition,[&](){
+    connect(mNodeInformation,&NodeInformationManager::goToPosition,[&](){
         mMapItem->getCameraController()->goToPosition(getPosition(), 500);
     });
-    connect(mNodeInformation,&NodeInformation::track,[&](){
+    connect(mNodeInformation,&NodeInformationManager::track,[&](){
         mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
     });
 }

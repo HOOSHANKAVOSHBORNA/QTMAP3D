@@ -46,7 +46,7 @@ public:
     //    void addNode(osg::Node *node,osgEarth::Layer *layer);
 
 
-private:
+//private:
     std::vector<QString> mTypes{};
 
 };

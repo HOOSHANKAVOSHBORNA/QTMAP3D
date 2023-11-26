@@ -178,9 +178,7 @@ Rectangle {
                         display: AbstractButton.IconOnly
                         checkable: true
                         checked: false
-                        onToggled: {
-
-                        }
+                        onToggled: mainWindow.showListWindow()
 
                         ToolTip {
                             y: 0

@@ -14,9 +14,6 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
     connect(mMapItem->getMapObject(), &MapObject::nodeToLayerAdded, this , &SearchNodeModel::addNode);
     connect(mMapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,  this , &SearchNodeModel::removeNode);
     mTypeListModel = new TypeListModel;
-    mTypeListModel->append(QString::fromStdString("sssssssssss"));
-    mTypeListModel->append(QString::fromStdString("dd"));
-    mTypeListModel->append(QString::fromStdString("ddssssss"));
 
 }
 
@@ -38,21 +35,22 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
 }
 
 
-void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
-{
-    qDebug()<< QString::fromStdString(node->getName());
-    qDebug()<<  " ----------------------------------  ";
+void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
     NodeData *nodeData = dynamic_cast<NodeData*>(node->getUserData());
-    if(nodeData){
-        qDebug() << "nodeData: "<<nodeData->name<<", "<<nodeData->type;
-        mTypeListModel->append(QString::fromStdString(nodeData->type));
-        if(std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
+    if (nodeData) {
+        QString typeToAdd = QString::fromStdString(nodeData->type);
+        auto typeExists = std::find(mTypeListModel->mTypes.begin(), mTypeListModel->mTypes.end(), typeToAdd);
+        if (typeExists == mTypeListModel->mTypes.end()) {
+            mTypeListModel->append(typeToAdd);
+        }
+        if (std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
             beginInsertRows(QModelIndex(), mNodes.size(), mNodes.size());
             mNodes.push_back(node);
             endInsertRows();
         }
     }
 }
+
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
 {
