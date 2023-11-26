@@ -45,6 +45,8 @@ public:
 
     bool isSelect() const;
     void select();
+    void showMenu();
+
 
     bool isHighlight() const;
     void highlight(bool isHighlight);
@@ -97,6 +99,7 @@ private:
     bool mIsAttacker{false};
     bool mIsAutoScale{true};
     bool mIsSelected{false};
+    bool mIsMenuVisible{false};
     NodeData* mNodeData{nullptr};
     osgEarth::Color mColor{osgEarth::Color::White};
     NodeInformationManager* mNodeInformation{nullptr};
