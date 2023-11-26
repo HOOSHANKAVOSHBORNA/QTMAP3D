@@ -141,7 +141,6 @@ Rectangle {
                                 y: 0
                                 x: 35
                                 visible: btnDelegate.hovered
-
                                 contentItem: Text {
                                     id: tooltipText
                                     anchors.margins: 7 / Style.monitorRatio

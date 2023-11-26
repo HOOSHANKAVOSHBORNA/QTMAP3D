@@ -11,14 +11,15 @@ MapControllerItem::MapControllerItem():
 {
     initializeOsgEarth();
     qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
+//    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
     mSearchNodeProxyModel = new SearchNodeProxyModel();
     mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(this));
+
     StatusBar *status = new StatusBar();
     mStatusBar = new StatusBarSearchModel();
     mStatusBar->setSourceModel(status);
-
 
 
     mStatusBar->addMessage("Also is based on \"OpenSceneGraph\" and \"OSG Earth !!!\" ");

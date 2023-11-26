@@ -11,7 +11,7 @@ struct NodeFieldData
     QString name;
     QVariant value;
     QString category;
-    QString categorySrc;
+    QString categoryIconSrc;
 };
 
 struct StatusNodeData: public osg::Referenced
