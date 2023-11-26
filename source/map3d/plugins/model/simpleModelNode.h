@@ -7,7 +7,7 @@
 #include <QObject>
 #include <osgEarthAnnotation/ModelNode>
 #include "modelAutoScaler.h"
-#include "nodeInformationManager.h"
+#include "nodeInformation.h"
 #include <osgFX/Outline>
 #include <osgFX/Scribe>
 #include <QQmlEngine>
@@ -102,7 +102,7 @@ private:
     bool mIsMenuVisible{false};
     NodeData* mNodeData{nullptr};
     osgEarth::Color mColor{osgEarth::Color::White};
-    NodeInformationManager* mNodeInformation{nullptr};
+    NodeInformation* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
     QQmlEngine *mEnigine{nullptr};
     BookmarkManager *mBookmarkManager;

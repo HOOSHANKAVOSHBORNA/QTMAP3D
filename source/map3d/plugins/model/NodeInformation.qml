@@ -7,10 +7,9 @@ Window {
     readonly property color verticalBarColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.10)
     readonly property color parentColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
     flags: Qt.Window | Qt.FramelessWindowHint
-    width:310/Style.monitorRatio
-    height:612/Style.monitorRatio
+    width: 310/Style.monitorRatio
+    height: 612/Style.monitorRatio
     color: "transparent"
-//    title: nodeInfoModel ? nodeInfoModel.title : ""
 
     property var nodeInfoModel
     property string iconUrl: ""
@@ -34,37 +33,28 @@ Window {
             Layout.fillWidth:true
             RowLayout{
                 anchors.fill: parent
-                spacing:0
+                anchors.leftMargin: 15
+                anchors.rightMargin: 15
+                anchors.topMargin: 5
+                anchors.bottomMargin: 5
+                spacing:5
 
                 IconImage{
                     Layout.preferredHeight: 22/Style.monitorRatio
                     Layout.preferredWidth: 22/Style.monitorRatio
-                    Layout.leftMargin: 15
                     source: iconUrl
+                    color: Style.foregroundColor
                 }
                 Text{
                     text: title
                     color: Style.foregroundColor
                     font.pixelSize: 17/Style.monitorRatio
                     Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignCenter
                 }
-//                Button{
-//                    id: bookBtn
-//                    Layout.preferredWidth: 22/Style.monitorRatio
-//                    Layout.preferredHeight: 22/Style.monitorRatio
-//                    background:IconImage{
-//                        width: 22/Style.monitorRatio
-//                        height: 22/Style.monitorRatio
-//                        source: nodeInfoModel ? nodeInfoModel.bookmarkStatus ? "qrc:/Resources/filled-bookmark.png" : "qrc:/Resources/bookmark.png": ""
-//                    }
-//                    onClicked: {
-//                        nodeInfoModel.changeBookmarkStatus(!nodeInfoModel.bookmarkStatus)
-//                    }
-//                }
                 Button{
                     Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.preferredHeight: 22/Style.monitorRatio
-                    Layout.rightMargin: 15
                     background:IconImage{
                         width: 22/Style.monitorRatio
                         height: 22/Style.monitorRatio
@@ -76,13 +66,13 @@ Window {
                 }
             }
 
-           MouseArea{
-               anchors.fill: parent
-               onPositionChanged: startSystemMove();
-               z:-1
-           }
+            MouseArea{
+                anchors.fill: parent
+                onPositionChanged: startSystemMove();
+                z:-1
+            }
 
-}
+        }
         Item{
             id:mainImageItem
             Layout.fillWidth: true
@@ -103,57 +93,80 @@ Window {
                 RowLayout{
                     anchors.fill: parent
                     spacing: 0
+
                     Button{
                         Layout.preferredHeight: 28
                         Layout.preferredWidth: 28
-                        Layout.leftMargin: 44
-                        background:IconImage{
-                            width: 28/Style.monitorRatio
-                            height: 28/Style.monitorRatio
-                            source: "qrc:/Resources/track-icon.png"
+                        Layout.alignment: Qt.AlignHCenter
+                        text: "Track"
+                        contentItem:Row{
+//                            anchors.centerIn: parent
+                            IconImage{
+                                anchors.verticalCenter: parent.verticalCenter
+                                source: "qrc:/Resources/track-icon.png"
+                                width: 28/Style.monitorRatio
+                                height: 28/Style.monitorRatio
+                                color: Style.foregroundColor
+                            }
+
+                            Text{
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Track"
+                                color: Style.foregroundColor
+                                font.pixelSize: 13/Style.monitorRatio
+                                Layout.fillWidth: true
+                                Layout.leftMargin: 2
+                                font.family: Style.fontFamily
+                            }
+                        }
+
+                        background:Rectangle{
+                            color: "transparent"
                         }
                         onClicked:{
-//                            nodeInfoModel.itemTracked()
                             track()
                         }
                     }
 
-                    Text{
-                        text: "Track"
-                        color: Style.foregroundColor
-                        font.pixelSize: 13/Style.monitorRatio
-                        Layout.fillWidth: true
-                        Layout.leftMargin: 2
-                        font.family: Style.fontFamily
 
-                    }
                     Rectangle{
                         id:verticalbar
                         color: verticalBarColor
                         Layout.preferredHeight: 30/Style.monitorRatio
                         Layout.preferredWidth: 2/Style.monitorRatio
+                        Layout.alignment: Qt.AlignHCenter
                     }
                     Button{
                         Layout.preferredHeight: 28/Style.monitorRatio
                         Layout.preferredWidth: 28/Style.monitorRatio
-                        Layout.leftMargin: 44
-                        background:IconImage{
-                            width: 28/Style.monitorRatio
-                            height: 28/Style.monitorRatio
-                            source: "qrc:/Resources/easy-to-find.png"
+                        Layout.alignment: Qt.AlignHCenter
+                        contentItem:Row{
+//                            anchors.centerIn: parent
+                            IconImage{
+                                anchors.verticalCenter: parent.verticalCenter
+                                source: "qrc:/Resources/easy-to-find.png"
+                                width: 28/Style.monitorRatio
+                                height: 28/Style.monitorRatio
+                                color: Style.foregroundColor
+                            }
+
+                            Text{
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Go to"
+                                color: Style.foregroundColor
+                                font.pixelSize: 13/Style.monitorRatio
+                                Layout.fillWidth: true
+                                Layout.leftMargin: 2
+                                font.family: Style.fontFamily
+                            }
+                        }
+
+                        background:Rectangle{
+                            color: "transparent"
                         }
                         onClicked: {
-//                            nodeInfoModel.itemGoToPostition()
                             goToPosition();
                         }
-                    }
-                    Text{
-                        text: "Go to"
-                        color: Style.foregroundColor
-                        font.pixelSize: 13/Style.monitorRatio
-                        Layout.fillWidth: true
-                        Layout.leftMargin: 2
-                        font.family: Style.fontFamily
                     }
                 }
             }
