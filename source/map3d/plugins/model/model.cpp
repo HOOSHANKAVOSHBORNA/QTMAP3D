@@ -99,6 +99,7 @@ void Model::setState(State newState)
 bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
+
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
         if(modelNode) {
             modelNode->select();
@@ -124,6 +125,12 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON ) {
         if(mState == State::MOVING){
             cancel();
+        }else if(mState == State::NONE){
+            SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
+            if(modelNode) {
+                modelNode->showMenu();
+                return false;
+            }
         }
         return false;
     }
