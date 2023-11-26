@@ -133,11 +133,6 @@ NodeInformationModel *NodeInformationManager::nodeInformationModel() const
     return mNodeInformationModel;
 }
 
-//void NodeInformationManager::changeBookmarkStatus(bool status)
-//{
-////    mNodeInformationModel->changeBookmarkStatus(status);
-//}
-
 QQuickWindow *NodeInformationManager::window() const
 {
     return mWindow;

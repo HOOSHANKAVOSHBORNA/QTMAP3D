@@ -7,6 +7,7 @@ import "style"
 Item{
     property var model
     property int iconSize: 26/Style.monitorRatio
+    readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
     id: rootItem
     width: searchRect.width
     height: 240/Style.monitorRatio
@@ -115,34 +116,96 @@ Item{
             height: rootItem.height
             z: -1
             radius: searchRect.radius
-            ListView{
-                id:listView
+            ColumnLayout{
                 anchors.fill: parent
                 anchors.margins: 5
                 anchors.topMargin: searchRect.height + 5
-                clip: true
-                model: rootItem.model
-                delegate: Button
-                {
-                    id:delegateBtn
-                    width: listView.width
-                    hoverEnabled: true
-                    contentItem: Text {
-                        text: model.display
+                Label {
+                    background: Rectangle {
+                        color: "transparent"
+                    }
+                    Text {
+                        color: Style.disableColor
+                        font.pixelSize: 14/Style.monitorRatio
+                        text: "Shortcut To Find "
                         font.family: Style.fontFamily
-                        font.pointSize: Style.fontPointSize + 2
-                        color: Style.foregroundColor
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        elide: Text.ElideRight
                     }
-                    onClicked:{
-                        rootItem.model.onNodeClicked(index)
+                }
+                Flow{
+                    width: closeButton.visible ? 344/Style.monitorRatio: 0
+                    spacing: 2
+
+                    Repeater {
+                        model: rootItem.model.getTypeListModel()
+                        Rectangle{
+                            implicitHeight: 31/Style.monitorRatio
+                            implicitWidth:  shortCut.implicitWidth
+                            color:"transparent"
+                            radius: 20
+                            border{
+                                color: Style.disableColor
+                                width: 1
+
+                            }
+
+                            RowLayout{
+                                id:shortCut
+
+                                anchors.fill: parent
+                                IconImage {
+
+                                    id: searchIcon
+                                    source: "qrc:/Resources/search.png"
+                                    Layout.preferredHeight: 19/Style.monitorRatio
+                                    Layout.preferredWidth: 19/Style.monitorRatio
+                                    Layout.leftMargin: 4/Style.monitorRatio
+
+                                    color: Style.foregroundColor
+                                }
+                                Text {
+                                    id: itemText
+                                    Layout.alignment: Qt.AlignLeft
+                                    Layout.rightMargin: 6/Style.monitorRatio
+                                    text:display
+                                    font.family: Style.fontFamily
+                                    font.pixelSize: 16/Style.monitorRatio
+                                    color: Style.foregroundColor
+                                    Layout.fillWidth: true
+                                }
+                            }
+                        }
                     }
-                    background: Rectangle
+                }
+                //                }
+
+                ListView{
+                    id:listView
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+                    model: rootItem.model
+                    delegate: Button
                     {
-                        color: parent.hovered ? Style.hoverColor : "transparent"
-                        radius:height/2
+                        id:delegateBtn
+                        width: listView.width
+                        hoverEnabled: true
+                        contentItem: Text {
+                            text: model.display
+                            font.family: Style.fontFamily
+                            font.pointSize: Style.fontPointSize + 2
+                            color: Style.foregroundColor
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                        }
+                        onClicked:{
+                            rootItem.model.onNodeClicked(index)
+                        }
+                        background: Rectangle
+                        {
+                            color: parent.hovered ? Style.hoverColor : "transparent"
+                            radius:height/2
+                        }
                     }
                 }
             }
