@@ -14,7 +14,6 @@ ListWindow::ListWindow(QQuickWindow *parent) :
 //    mTabbarModel->appendRow(new TabbarItem{"something", nullptr});
 }
 
-
 int TabbarModel::rowCount(const QModelIndex &parent) const
 {
     return mTabbarItems.size();
