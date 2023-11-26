@@ -147,6 +147,7 @@ Item{
                                 width: 1
 
                             }
+                            visible: false
 
                             RowLayout{
                                 id:shortCut
