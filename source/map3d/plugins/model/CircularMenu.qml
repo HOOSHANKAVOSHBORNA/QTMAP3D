@@ -30,21 +30,21 @@ Item {
 
 
     // ----------------------------------------- animation
-    PropertyAnimation on outerRadius {
-        easing.type: Easing.OutElastic
-        from: 0
-        to: outerRadius
-        duration: parseInt(animationDuration)
-        running: animationStarter
-    }
+//    PropertyAnimation on outerRadius {
+//        easing.type: Easing.OutElastic
+//        from: 0
+//        to: outerRadius
+//        duration: parseInt(animationDuration)
+//        running: animationStarter
+//    }
 
-    PropertyAnimation on innerRadius {
-        easing.type: Easing.OutElastic
-        from: 0
-        to: innerRadius
-        duration: parseInt(animationDuration)
-        running: animationStarter
-    }
+//    PropertyAnimation on innerRadius {
+//        easing.type: Easing.OutElastic
+//        from: 0
+//        to: innerRadius
+//        duration: parseInt(animationDuration)
+//        running: animationStarter
+//    }
 
     // ----------------------------------------- fake background
     //    Rectangle {
