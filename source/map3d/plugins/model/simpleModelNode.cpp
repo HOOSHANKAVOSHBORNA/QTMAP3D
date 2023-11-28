@@ -248,6 +248,16 @@ void SimpleModelNode::onAttackChecked()
 
 }
 
+void SimpleModelNode::onGoToPosition()
+{
+    mMapItem->getCameraController()->goToPosition(getPosition(), 500);
+}
+
+void SimpleModelNode::onTrack()
+{
+    mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
+}
+
 void SimpleModelNode::compile()
 {
     //--read node and image----------------------------------------------
@@ -395,25 +405,17 @@ void SimpleModelNode::createNodeInformation()
 {
     mNodeInformation = new NodeInformation(mEnigine, mMapItem->window());
 
-    connect(mNodeInformation,&NodeInformation::goToPosition,[&](){
-        mMapItem->getCameraController()->goToPosition(getPosition(), 500);
-    });
-    connect(mNodeInformation,&NodeInformation::track,[&](){
-        mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
-    });
+    connect(mNodeInformation,&NodeInformation::goToPosition, this, &SimpleModelNode::onGoToPosition);
+    connect(mNodeInformation,&NodeInformation::track, this, &SimpleModelNode::onTrack);
 }
 
 void SimpleModelNode::createBookmarkItem()
 {
     mBookmarkItem = new BookmarkItem();
 
-    connect(mBookmarkItem, &BookmarkItem::goToPosition, [&](){
-        emit mNodeInformation->goToPosition();
-    });
+    connect(mBookmarkItem, &BookmarkItem::goToPosition, this, &SimpleModelNode::onGoToPosition);
 
-    connect(mBookmarkItem, &BookmarkItem::track, [&](){
-        emit mNodeInformation->track();
-    });
+    connect(mBookmarkItem, &BookmarkItem::track, this, &SimpleModelNode::onTrack);
 
     connect(mBookmarkItem, &BookmarkItem::fromBookmarkRemoved, [&](){
         mIsBookmarked = false;

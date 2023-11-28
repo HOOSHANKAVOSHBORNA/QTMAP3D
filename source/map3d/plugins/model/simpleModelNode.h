@@ -72,6 +72,8 @@ private slots:
     void onBookmarkChecked(bool status);
     void onTargetChecked();
     void onAttackChecked();
+    void onGoToPosition();
+    void onTrack();
 
 private:
     void compile();
