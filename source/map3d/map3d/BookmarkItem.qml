@@ -100,20 +100,21 @@ Item {
                         anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
                         radius: height/2
                         color: (selected && mousearea.containsMouse) ? hoverColor2 :
-                               (selected || mousearea.containsMouse) ? hoverColor : "transparent"
+                                                                       (selected || mousearea.containsMouse) ? hoverColor : "transparent"
                         RowLayout{
                             anchors.fill: parent
                             Layout.fillHeight: true
                             Layout.fillWidth: true
                             spacing: 0
-                            Image {
+                            IconImage {
                                 id: itemIcon
-                                source: imageSource ?? ""
+                                source: categoryIcon ?? ""
                                 Layout.preferredWidth: 24
                                 Layout.preferredHeight: 24
                                 Layout.leftMargin: 10
                                 Layout.alignment: Qt.AlignVCenter
                                 visible: hasChildren
+                                color: Style.foregroundColor
                             }
                             Text {
                                 id: itemText
@@ -128,8 +129,11 @@ Item {
                                 MouseArea{
                                     anchors.fill: parent
                                     onClicked: {
-                                     itemSource.show()
-                                     rootItem.model.select(treeView.index(row,column))
+                                        if(window){
+                                            window.show()
+                                            window.requestActivate();
+                                        }
+                                        rootItem.model.select(treeView.index(row,column))
 
                                     }
                                 }
@@ -195,10 +199,10 @@ Item {
                             hoverEnabled: true
                             propagateComposedEvents: true
                             onPressed:  (mouse)=> {
-                                rootItem.model.select(treeView.index(row,column))
-                                treeView.toggleExpanded(row)
-                                mouse.accepted = false
-                            }
+                                            rootItem.model.select(treeView.index(row,column))
+                                            treeView.toggleExpanded(row)
+                                            mouse.accepted = false
+                                        }
                         }
                     }
                 }

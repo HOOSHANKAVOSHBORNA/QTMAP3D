@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Shapes
 import QtQuick.Controls.Material
 import QtQuick.Layouts
+import "style"
 
 Item {
     id: rootItem
@@ -10,11 +11,14 @@ Item {
     property double outerRadius: 200
     property double innerRadius: 150
     property double midAngle: -90
-    property double startAngle: midAngle - currentCutLen * listModel.rowCount() / 2
+//    property double startAngle: midAngle - currentCutLen * listModel.rowCount() / 2
+    property double startAngle: -180
     property double currentCutLen: 45
     property double animationDuration: 2000
     property bool animationStarter: false
     property bool animationEnder: false
+    property color styleHoverColor: Style.hoverColor
+    property color hover20: Qt.rgba(styleHoverColor.red, styleHoverColor.green, styleHoverColor.blue, 0.20)
 
     readonly property double scaleNameLen: 10
 
@@ -26,50 +30,78 @@ Item {
 
 
     // ----------------------------------------- animation
-    PropertyAnimation on outerRadius {
-        easing.type: Easing.OutElastic
-        from: 0
-        to: outerRadius
-        duration: parseInt(animationDuration)
-        running: animationStarter
-    }
+//    PropertyAnimation on outerRadius {
+//        easing.type: Easing.OutElastic
+//        from: 0
+//        to: outerRadius
+//        duration: parseInt(animationDuration)
+//        running: animationStarter
+//    }
 
-    PropertyAnimation on innerRadius {
-        easing.type: Easing.OutElastic
-        from: 0
-        to: innerRadius
-        duration: parseInt(animationDuration)
-        running: animationStarter
-    }
+//    PropertyAnimation on innerRadius {
+//        easing.type: Easing.OutElastic
+//        from: 0
+//        to: innerRadius
+//        duration: parseInt(animationDuration)
+//        running: animationStarter
+//    }
 
     // ----------------------------------------- fake background
-    Rectangle {
-        id: fakeOuterCircle
-        visible: false
-        width: outerRadius * 2
-        height: outerRadius * 2
-        radius: outerRadius
-        opacity: 0.5
-        color: 'transparent'
-        anchors.centerIn: parent
+    //    Rectangle {
+    //        id: fakeOuterCircle
+    //        visible: false
+    //        width: outerRadius * 2
+    //        height: outerRadius * 2
+    //        radius: outerRadius
+    //        opacity: 0.5
+    //        color: 'transparent'
+    //        anchors.centerIn: parent
 
-        Rectangle {
-            id: fakeInnerCircle
-            width: innerRadius * 2
-            height: innerRadius * 2
-            radius: innerRadius
-            opacity: 0.6
-            color: 'transparent'
+    //        Rectangle {
+    //            id: fakeInnerCircle
+    //            width: innerRadius * 2
+    //            height: innerRadius * 2
+    //            radius: innerRadius
+    //            opacity: 0.6
+    //            color: 'transparent'
+    //            anchors.centerIn: parent
+    //        }
+    //    }
+
+    // ----------------------------------------- real background
+    Item {
+        anchors.fill: parent
+
+        Shape {
             anchors.centerIn: parent
+            containsMode: Shape.FillContains
+
+            ShapePath {
+                strokeColor: Qt.rgba(0, 0.68, 0.84, 0.20)
+                strokeWidth: 25
+                fillColor: 'transparent'
+                capStyle: ShapePath.RoundCap
+
+                PathAngleArc {
+                    centerX: 0
+                    centerY: 0
+                    radiusX: outerRadius - 25/2
+                    radiusY: outerRadius - 25/2
+                    startAngle: -180
+                    sweepAngle: 180
+                }
+            }
         }
     }
+
 
     // ----------------------------------------- Circular Menu
     Repeater {
         onVisibleChanged: {
             if (visible) {
                 animationStarter = true
-                startAngle = midAngle - currentCutLen * listModel.rowCount() / 2
+//                startAngle = midAngle - currentCutLen * listModel.rowCount() / 2
+                currentCutLen = 180 / listModel.rowCount()
             } else {
                 animationStarter = false
             }
