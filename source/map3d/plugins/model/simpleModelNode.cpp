@@ -399,6 +399,9 @@ void SimpleModelNode::createCircularMenu()
     mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
     mCircularMenu->appendMenuItem(targetMenuItem);
+
+    // just for test
+    mCircularMenu->appendMenuItem(targetMenuItem);
 }
 
 void SimpleModelNode::createNodeInformation()
