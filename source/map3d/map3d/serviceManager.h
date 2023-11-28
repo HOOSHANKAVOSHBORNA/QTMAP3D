@@ -92,6 +92,7 @@ public:
     void flyableNodeData(QJsonObject jsonObject);
     void statusNodeData(QJsonObject jsonObject);
     void messageData(QString jsonData);
+    void sendAction(const QString &action);
     void polylineData(QJsonObject polyline);
     void movableNodeData(QJsonObject jsonObject);
 
@@ -108,6 +109,7 @@ signals:
     void nodeDataReceived(NodeData *nodeData);
     void circleDataReceived(CircleData *circleData);
     void polygonDataReceived(PolygonData *polygonData);
+    void actionSent(const QString &action);
 private:
     void nodeData(QJsonObject jsonObject);
     void circleData(QJsonObject jsonObject);

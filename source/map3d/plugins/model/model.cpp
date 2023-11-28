@@ -103,6 +103,7 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
         if(modelNode) {
             modelNode->select();
+            // serviceManager()->sendAction("select");
             return false;
         }
 

@@ -110,6 +110,11 @@ void ServiceManager::messageData(QString jsonData)
     }
 }
 
+void ServiceManager::sendAction(const QString& action)
+{
+    emit actionSent(action);
+}
+
 void ServiceManager::polylineData(QJsonObject polyline)
 {
     QJsonObject jsonObjectData = polyline.value("Data").toObject();
