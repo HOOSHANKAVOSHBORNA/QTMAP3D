@@ -19,15 +19,22 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
 
 int SearchNodeModel::rowCount(const QModelIndex &parent) const
 {
-    return mNodes.size();
+
+    return mNodes1.size();
 }
 
 QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
 {
+
     switch (role) {
     case Qt::DisplayRole:
-        return QVariant::fromValue<QString>(QString::fromStdString(mNodes[index.row()].get()->getName()));
+        return QVariant::fromValue<QString>(QString::fromStdString(mNodes1[index.row()]->data->name));
         break;
+    case iD_:
+        return mNodes1[index.row()]->data->id ;
+        break;
+    case text_:
+        return "sex";
     default:
         return QVariant::fromValue<QString>(QString(""));
         break;
@@ -43,13 +50,15 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
         if (typeExists == mTypeListModel->mTypes.end()) {
             mTypeListModel->append(typeToAdd);
         }
-        if (std::find(mNodes.begin(), mNodes.end(), node) == mNodes.end()) {
-            beginInsertRows(QModelIndex(), mNodes.size(), mNodes.size());
-            mNodes.push_back(node);
+        auto geonode = dynamic_cast<osgEarth::Annotation::GeoPositionNode*>(node);
+        if (std::find(mNodes1.begin(), mNodes1.end(), new NodeInformation{geonode, nodeData}) == mNodes1.end()) {
+            beginInsertRows(QModelIndex(), mNodes1.size(), mNodes1.size());
+            mNodes1.push_back(new NodeInformation{geonode, nodeData});
             endInsertRows();
         }
     }
 }
+
 
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
@@ -74,6 +83,15 @@ void SearchNodeModel::onNodeClicked(const QModelIndex &current)
         mMapItem->getCameraController()->goToPosition(node->getPosition(),
                                                       mMapItem->getCameraController()->getViewpoint().getRange(), 0);
     }
+}
+
+QHash<int, QByteArray> SearchNodeModel::roleNames() const
+{
+    QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
+    hash[iD_] = "id_";
+    hash[text_]="text_";
+    return hash;
+
 }
 
 TypeListModel *SearchNodeModel::getTypeListModel() const

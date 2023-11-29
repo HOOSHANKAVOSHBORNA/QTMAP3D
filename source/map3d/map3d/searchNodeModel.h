@@ -5,23 +5,32 @@
 #include <QObject>
 #include <osgEarthAnnotation/AnnotationNode>
 #include <QSortFilterProxyModel>
+#include <osgEarthAnnotation/GeoPositionNode>
 #include "mapItem.h"
+#include "serviceManager.h"
 Q_DECLARE_METATYPE(QModelIndex)
+
+struct NodeInformation{
+    osgEarth::Annotation::GeoPositionNode *node;
+    NodeData *data;
+};
 
 class TypeListModel;
 class SearchNodeModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-
+    enum myRoles{
+        iD_ = Qt::UserRole,
+        text_
+    };
     SearchNodeModel(MapItem *mapItem, QObject *parent = nullptr);
-
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     void onNodeClicked(const QModelIndex &current);
-
+QHash<int, QByteArray> roleNames() const override;
 public slots:
-    void addNode(osg::Node *node,osgEarth::Layer *layer);
+    void addNode(osg::Node *node, osgEarth::Layer *layer);
     void removeNode( osg::Node *node,osgEarth::Layer *layer);
     TypeListModel *getTypeListModel() const;
 
@@ -31,6 +40,8 @@ private:
 private:
     MapItem *mMapItem{nullptr};
     std::vector<osg::ref_ptr<osg::Node>> mNodes;
+    std::vector<NodeInformation *> mNodes1;
+
     TypeListModel *mTypeListModel{nullptr};
 };
 
