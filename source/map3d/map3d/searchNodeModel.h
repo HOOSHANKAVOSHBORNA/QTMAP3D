@@ -10,7 +10,7 @@
 #include "serviceManager.h"
 Q_DECLARE_METATYPE(QModelIndex)
 
-struct NodeInformation{
+struct NodeInfo{
     osgEarth::Annotation::GeoPositionNode *node;
     NodeData *data;
 };
@@ -40,7 +40,7 @@ private:
 private:
     MapItem *mMapItem{nullptr};
     std::vector<osg::ref_ptr<osg::Node>> mNodes;
-    std::vector<NodeInformation *> mNodes1;
+    std::vector<NodeInfo *> mNodes1;
 
     TypeListModel *mTypeListModel{nullptr};
 };
