@@ -3,8 +3,10 @@ import Crystal
 import QtQuick.Controls
 
 QmlNode {
-    property double scaledNodeRadius: nodeRadius
-//    property double scaledNodeRadius: 40
+    property double outerScale: 1.5
+    property double maximumRadius: 60
+    property double nodeInnerRadius: nodeRadius < maximumRadius ? nodeRadius : maximumRadius
+//    property double nodeInnerRadius: 40
 
     width: 0
     height: 0
@@ -12,8 +14,8 @@ QmlNode {
 
     CircularMenu {
         id: circularMenu
-        outerRadius: scaledNodeRadius + 25
-        innerRadius: scaledNodeRadius
+        outerRadius: nodeInnerRadius * outerScale
+        innerRadius: nodeInnerRadius
         listModel: cppModel
         onClicked: (index) => {
                         cppModel.onItemClicked(cppModel.index(index, 0))

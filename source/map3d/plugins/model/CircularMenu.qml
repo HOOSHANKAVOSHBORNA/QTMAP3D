@@ -10,6 +10,7 @@ Item {
     property var listModel // {name, iconUrl, checkable, checked}
     property double outerRadius: 200
     property double innerRadius: 150
+    property double thickness: outerRadius - innerRadius
     property double midAngle: -90
     property double startAngle: midAngle - currentCutLen * listModel.rowCount() / 2
 //    property double startAngle: -180
@@ -19,6 +20,8 @@ Item {
     property bool animationEnder: false
     property color styleHoverColor: Style.hoverColor
     property color hover20: Qt.rgba(styleHoverColor.r, styleHoverColor.g, styleHoverColor.b, 0.20)
+
+    property double maximumIconSize: 35
 
     readonly property double scaleNameLen: 10
 
@@ -79,7 +82,7 @@ Item {
             containsMode: Shape.FillContains
 
             ShapePath {
-                strokeColor: Qt.rgba(0, 0.68, 0.84, 0.20)
+                strokeColor: hover20
                 strokeWidth: 25
                 fillColor: 'transparent'
                 capStyle: ShapePath.RoundCap
@@ -87,8 +90,8 @@ Item {
                 PathAngleArc {
                     centerX: 0
                     centerY: 0
-                    radiusX: outerRadius - 25/2
-                    radiusY: outerRadius - 25/2
+                    radiusX: rootItem.outerRadius - thickness/2
+                    radiusY: rootItem.outerRadius - thickness/2
                     startAngle: rootItem.startAngle
                     sweepAngle: (midAngle - startAngle) * 2
                 }
@@ -122,7 +125,7 @@ Item {
             startAngle: rootItem.startAngle + model.index * currentCutLen
             len: currentCutLen
             iconSource: model.iconUrl
-            iconSize: 35
+            iconSize: thickness + 10 < maximumIconSize ? thickness + 10 : maximumIconSize
             onClicked: rootItem.clicked(model.index)
             onToggled: rootItem.toggled(model.index, checked)
         }
