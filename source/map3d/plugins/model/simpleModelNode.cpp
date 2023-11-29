@@ -334,21 +334,11 @@ void SimpleModelNode::compile()
     mCircleSelectNode->setStrokeWidth(2);
     mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
     mCircleSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
-
-//    mConeSelecteNode = new Cone();
-//    mConeSelecteNode->setFillColor(osg::Vec4f(0,1,0,0.2));
-//    mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius()/4, osgEarth::Units::METERS));
-//    mConeSelecteNode->setHeight(osgEarth::Distance(cbv.getBoundingBox().radius()/2, osgEarth::Units::METERS));
-//    mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
-//    mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
-//    mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
-
     selectGroup->addChild(mCircleSelectNode);
-//    selectGroup->addChild(mConeSelecteNode);
     //--highlight node-------------------------------------------------
     mCircleHighlightNode = new Circle();
     mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
-    mCircleHighlightNode->setStrokeColor(osg::Vec4f(0.12,1,1,0.5));
+    mCircleHighlightNode->setStrokeColor(osg::Vec4f(0,0.20784313725490197,0.4117647058823529,0.8));
     mCircleHighlightNode->setStrokeWidth(2);
     mCircleHighlightNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius() - 0.1*cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
     mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
@@ -366,11 +356,12 @@ void SimpleModelNode::compile()
         mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
+    // this.
     osgEarth::Symbology::Style  rootStyle ;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
 //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
-    applyStyle(rootStyle);
-    // setStyle(rootStyle);
+    // applyStyle(rootStyle);
+    setStyle(rootStyle);
     setColor(mColor);
 }
 
