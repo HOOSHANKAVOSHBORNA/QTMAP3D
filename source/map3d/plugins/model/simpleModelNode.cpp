@@ -163,9 +163,9 @@ void SimpleModelNode::setColor(osgEarth::Color color)
 {
     if(mColor != color){
         //--recolor 3D Node----------------------------------------------------
-        osg::ref_ptr<osg::Material> mat = new osg::Material;
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
-        mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+//        osg::ref_ptr<osg::Material> mat = new osg::Material;
+//        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
+//        mSimpleNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
         //--recolor 2D Node----------------------------------------------------
         osg::Vec4 imageColor = color;
         for(int i=0; i<mImage->s(); ++i) {
@@ -380,12 +380,42 @@ void SimpleModelNode::compile()
         mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
+    osg::ref_ptr<osgFX::Outline> outline = new osgFX::Outline;
+    outline->setWidth(5);
+    outline->setColor( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
+    outline->addChild( mSwitchNode.get() );
+//    outline->getOrCreateStateSet()->setMode( GL_LIGHTING,
+//                                                    osg::StateAttribute::OFF );
+    outline->getOrCreateStateSet()->setMode( GL_LIGHT0,
+                                         osg::StateAttribute::ON );
+    osg::ref_ptr<osg::Light> light = new osg::Light;
+    light->setLightNum( 0 );
+    light->setDiffuse( osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f) );
+    light->setPosition( osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f) );
+
+    osg::ref_ptr<osg::LightSource> lightSource = new
+        osg::LightSource;
+    lightSource->setLight( light );
+    osg::ref_ptr<osg::MatrixTransform> sourceTrans =
+        new osg::MatrixTransform;
+    sourceTrans->setMatrix( osg::Matrix::translate(osg::Vec3(-20.0f,0.0f,0.0f)) );
+    sourceTrans->addChild( lightSource.get() );
+    outline->addChild(sourceTrans);
+
     osgEarth::Symbology::Style  rootStyle ;
-    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
+    rootStyle.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//    rootStyle.getOrCreate<osgEarth::Symbology::RenderSymbol>()->lighting() = true;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(outline);
     //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
     setStyle(rootStyle);
+    osg::DisplaySettings::instance()->setMinimumNumStencilBits( 1 );
+    mMapItem->getViewer()->getCamera()->setClearMask(
+        GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
+        );
+
 
     setColor(mColor);
+
 }
 
 void SimpleModelNode::createCircularMenu()
