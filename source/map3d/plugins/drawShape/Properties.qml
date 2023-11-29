@@ -14,7 +14,6 @@ Item {
     readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.30)
     property string _headerTitleSTR: "Properties"
     property CProperty model
-    //property int lblWidth: 100
     property int swtchWidth: 80
     property int lblWidth: 50
     property int valHeight: 30
@@ -104,12 +103,12 @@ Item {
                         spacing:12 / Style.monitorRatio
                         ListModel{
                             id:colorModel
-                            ListElement{checkIconVisible:false; propertyColorSelect: "red"}
-                            ListElement{checkIconVisible:false; propertyColorSelect: "orange"}
-                            ListElement{checkIconVisible:false; propertyColorSelect: "yellow"}
-                            ListElement{checkIconVisible:false; propertyColorSelect: "green"}
-                            ListElement{checkIconVisible:false; propertyColorSelect: "blue"}
-                            ListElement{checkIconVisible:false; propertyColorSelect: "pink"}
+                            ListElement{checkIconVisible:false; propertyColorSelect: "#EF2929"}
+                            ListElement{checkIconVisible:false; propertyColorSelect: "#FCAF3E"}
+                            ListElement{checkIconVisible:false; propertyColorSelect: "#FCE94F"}
+                            ListElement{checkIconVisible:false; propertyColorSelect: "#8AE234"}
+                            ListElement{checkIconVisible:false; propertyColorSelect: "#729FCF"}
+                            ListElement{checkIconVisible:false; propertyColorSelect: "#FFFFFF"}
                         }
 
                         Repeater{
@@ -150,7 +149,7 @@ Item {
                                         rootItem.model.fillColor = propertyColorSelect
                                     }
                                     else{
-                                        rootItem.model.fillColor = "transparent"
+                                        rootItem.model.fillColor = "#FFFFFF"
                                     }
                                 }
                             }
@@ -181,6 +180,7 @@ Item {
 
                             MouseArea{
                                 anchors.fill: parent
+                                //onClicked: colorBox.show()
                                 onClicked: colorBox.visible = true
                             }
                         }
@@ -223,12 +223,12 @@ Item {
                                     Layout.leftMargin: 2 / Style.monitorRatio
                                     ListModel{
                                         id:strokeColorModel
-                                        ListElement{checkIconVisible:false; propertyColorSelect: "red"}
-                                        ListElement{checkIconVisible:false; propertyColorSelect: "orange"}
-                                        ListElement{checkIconVisible:false; propertyColorSelect: "yellow"}
-                                        ListElement{checkIconVisible:false; propertyColorSelect: "green"}
-                                        ListElement{checkIconVisible:false; propertyColorSelect: "blue"}
-                                        ListElement{checkIconVisible:false; propertyColorSelect: "pink"}
+                                        ListElement{checkIconVisible:false; propertyColorSelect: "#EF2929"}
+                                        ListElement{checkIconVisible:false; propertyColorSelect: "#FCAF3E"}
+                                        ListElement{checkIconVisible:false; propertyColorSelect: "#FCE94F"}
+                                        ListElement{checkIconVisible:false; propertyColorSelect: "#8AE234"}
+                                        ListElement{checkIconVisible:false; propertyColorSelect: "#729FCF"}
+                                        ListElement{checkIconVisible:false; propertyColorSelect: "#FFFFFF"}
                                     }
                                     Repeater{
                                         id:strokeColorModelRepeater
@@ -267,7 +267,7 @@ Item {
                                                   strokePreviousIndex = index
                                               }
                                               else{
-                                                  rootItem.model.strokeColor = "transparent"
+                                                  rootItem.model.strokeColor = "#FFFFFF"
                                               }
                                           }
                                         }
@@ -302,10 +302,9 @@ Item {
                                     }
                                 }
                             }
-                            StepSpinBox {
+                            FloatSpinbox {
                                 id: strokeWidthValue
                                 editable: true
-                                stepComboboxVisible: false
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignCenter
                                 Layout.topMargin: 2 / Style.monitorRatio
@@ -666,10 +665,9 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            StepSpinBox {
+                            FloatSpinbox {
                                 id: startArcValue
                                 editable: true
-                                stepComboboxVisible: false
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100 / Style.monitorRatio
                                 Layout.rightMargin: 2 / Style.monitorRatio
@@ -696,10 +694,9 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            StepSpinBox {
+                            FloatSpinbox {
                                 id: endArcValue
                                 editable: true
-                                stepComboboxVisible: false
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100 / Style.monitorRatio
                                 Layout.rightMargin: 2 / Style.monitorRatio
@@ -1097,9 +1094,8 @@ Item {
                         font.pointSize: 10 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
-                    StepSpinBox {
+                    FloatSpinbox {
                         id: tesselationValue
-                        stepComboboxVisible: false
                         editable: true
                         from : 0
                         to: 2000
@@ -1311,12 +1307,12 @@ Item {
 
                                              ListModel{
                                                  id:pointColorModel
-                                                 ListElement{checkIconVisible:false; propertyColorSelect: "red"}
-                                                 ListElement{checkIconVisible:false; propertyColorSelect: "orange"}
-                                                 ListElement{checkIconVisible:false; propertyColorSelect: "yellow"}
-                                                 ListElement{checkIconVisible:false; propertyColorSelect: "green"}
-                                                 ListElement{checkIconVisible:false; propertyColorSelect: "blue"}
-                                                 ListElement{checkIconVisible:false; propertyColorSelect: "pink"}
+                                                 ListElement{checkIconVisible:false; propertyColorSelect: "#EF2929"}
+                                                 ListElement{checkIconVisible:false; propertyColorSelect: "#FCAF3E"}
+                                                 ListElement{checkIconVisible:false; propertyColorSelect: "#FCE94F"}
+                                                 ListElement{checkIconVisible:false; propertyColorSelect: "#8AE234"}
+                                                 ListElement{checkIconVisible:false; propertyColorSelect: "#729FCF"}
+                                                 ListElement{checkIconVisible:false; propertyColorSelect: "#FFFFFF"}
                                              }
                                              Repeater{
                                                  id:pointColorRepeater
@@ -1355,7 +1351,7 @@ Item {
                                                             rootItem.model.pointsColor = propertyColorSelect
                                                         }
                                                         else{
-                                                            rootItem.model.pointsColor = "transparent"
+                                                            rootItem.model.pointsColor = "#FFFFFF"
                                                         }
                                                     }
                                                  }
@@ -1386,7 +1382,6 @@ Item {
                                                  MouseArea{
                                                      anchors.fill: parent
                                                      onClicked: colorBoxPointColor.visible = true
-                                                     //onClicked: pointColorDialog.visible = true
                                                  }
                                              }
                                          }
@@ -1402,11 +1397,10 @@ Item {
 //                                             }
 //                                         }
                                      }
-                                     StepSpinBox {
+                                     FloatSpinbox {
                                          id: pointOpacityValue
                                          Layout.fillWidth: true
                                          editable: true
-                                         stepComboboxVisible: false
                                          height: valHeight
                                          from : 0
                                          to : 100
@@ -1431,10 +1425,11 @@ Item {
                              Layout.fillHeight: true
                              onColorChosen: {
                                  pointColorCircle.color = selectedColor
-                                 rootItem.model.pointsColor = propertyColorSelect
+                                 rootItem.model.pointsColor = selectedColor
                                  pointColorAddIcon.visible = false
                                  pointColorCheckIcon.visible = true
                                  pointColorModel.setProperty(pointColorPreviousIndex,"checkIconVisible",false)
+                                 console.log(rootItem.model.pointsColor)
                              }
                          }
 
@@ -1445,10 +1440,9 @@ Item {
                                  Layout.preferredWidth: swtchWidth
                                  color: Style.foregroundColor
                              }
-                             StepSpinBox {
+                             FloatSpinbox {
                                  id: pointWidthValue
                                  editable: true
-                                 stepComboboxVisible: false
                                  enabled: pointVisible.checked
                                  Layout.fillWidth: true
                                  height: valHeight / Style.monitorRatio

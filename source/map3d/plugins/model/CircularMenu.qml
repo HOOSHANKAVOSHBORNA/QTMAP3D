@@ -10,15 +10,18 @@ Item {
     property var listModel // {name, iconUrl, checkable, checked}
     property double outerRadius: 200
     property double innerRadius: 150
+    property double thickness: outerRadius - innerRadius
     property double midAngle: -90
-//    property double startAngle: midAngle - currentCutLen * listModel.rowCount() / 2
-    property double startAngle: -180
+    property double startAngle: midAngle - currentCutLen * listModel.rowCount() / 2
+//    property double startAngle: -180
     property double currentCutLen: 45
     property double animationDuration: 2000
     property bool animationStarter: false
     property bool animationEnder: false
     property color styleHoverColor: Style.hoverColor
-    property color hover20: Qt.rgba(styleHoverColor.red, styleHoverColor.green, styleHoverColor.blue, 0.20)
+    property color hover20: Qt.rgba(styleHoverColor.r, styleHoverColor.g, styleHoverColor.b, 0.20)
+
+    property double maximumIconSize: 35
 
     readonly property double scaleNameLen: 10
 
@@ -31,18 +34,20 @@ Item {
 
     // ----------------------------------------- animation
 //    PropertyAnimation on outerRadius {
+//        id: outerAnimation
 //        easing.type: Easing.OutElastic
 //        from: 0
 //        to: outerRadius
-//        duration: parseInt(animationDuration)
+//        duration: animationDuration
 //        running: animationStarter
 //    }
 
 //    PropertyAnimation on innerRadius {
+//        id: innerAnimation
 //        easing.type: Easing.OutElastic
 //        from: 0
 //        to: innerRadius
-//        duration: parseInt(animationDuration)
+//        duration: animationDuration
 //        running: animationStarter
 //    }
 
@@ -77,7 +82,7 @@ Item {
             containsMode: Shape.FillContains
 
             ShapePath {
-                strokeColor: Qt.rgba(0, 0.68, 0.84, 0.20)
+                strokeColor: hover20
                 strokeWidth: 25
                 fillColor: 'transparent'
                 capStyle: ShapePath.RoundCap
@@ -85,10 +90,10 @@ Item {
                 PathAngleArc {
                     centerX: 0
                     centerY: 0
-                    radiusX: outerRadius - 25/2
-                    radiusY: outerRadius - 25/2
-                    startAngle: -180
-                    sweepAngle: 180
+                    radiusX: rootItem.outerRadius - thickness/2
+                    radiusY: rootItem.outerRadius - thickness/2
+                    startAngle: rootItem.startAngle
+                    sweepAngle: (midAngle - startAngle) * 2
                 }
             }
         }
@@ -101,7 +106,8 @@ Item {
             if (visible) {
                 animationStarter = true
 //                startAngle = midAngle - currentCutLen * listModel.rowCount() / 2
-                currentCutLen = 180 / listModel.rowCount()
+//                currentCutLen = 180 / listModel.rowCount()
+                startAngle = midAngle - currentCutLen * listModel.rowCount() / 2
             } else {
                 animationStarter = false
             }
@@ -119,6 +125,7 @@ Item {
             startAngle: rootItem.startAngle + model.index * currentCutLen
             len: currentCutLen
             iconSource: model.iconUrl
+            iconSize: thickness + 10 < maximumIconSize ? thickness + 10 : maximumIconSize
             onClicked: rootItem.clicked(model.index)
             onToggled: rootItem.toggled(model.index, checked)
         }
