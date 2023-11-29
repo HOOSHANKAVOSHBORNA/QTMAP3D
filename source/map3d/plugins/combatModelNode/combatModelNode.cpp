@@ -288,7 +288,7 @@ SimpleModelNode *CombatModelNode::pick(float x, float y)
                     osg::StateSet* ss = _selectionBox->getOrCreateStateSet();
                     ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
                     osg::BoundingBox bb = hit.drawable->getBoundingBox();
-                    qDebug()<<"radius: "<<bb.radius();
+//                    qDebug()<<"radius: "<<bb.radius();
                     osg::Vec3 worldCenter = bb.center() *
                                             osg::computeLocalToWorld(hit.nodePath);
                     _selectionBox->setMatrix(

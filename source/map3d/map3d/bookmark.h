@@ -11,12 +11,18 @@
 struct BookmarkItem: public QObject {
     Q_OBJECT
 public:
-    BookmarkItem();
-    void setInfo(QString category, QString text, QQuickWindow *wnd, QString imgUrl);
+    BookmarkItem(){};
+    void setInfo(QString category, QString text, QQuickWindow *window, QString categoryIconUrl)
+    {
+        this->category = category;
+        this->text = text;
+        this->categoryIconUrl = categoryIconUrl;
+        this->window = window;
+    }
     QString category;
     QString text;
-    QQuickWindow *wnd;
-    QString imgUrl;
+    QQuickWindow *window;
+    QString categoryIconUrl;
 signals:
     void fromBookmarkRemoved();
     void goToPosition();
@@ -28,34 +34,38 @@ class BookmarkProxyModel : public QSortFilterProxyModel
     Q_OBJECT
     Q_PROPERTY(QString searchedText READ searchedText WRITE setSearchedText NOTIFY searchedTextChanged)
     enum CustomRoles {
-        imageSource = Qt::UserRole + 100,
-        itemSource = Qt::UserRole + 101
+        CategoryIconRole = Qt::UserRole + 1,
+        WindowRole,
+        BookmarkItemRole
     };
 public:
     BookmarkProxyModel(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
-    QString searchedText() const;
+
     void addBookmarkItem(BookmarkItem *bookmarkItem);
+    void removeBookmarkItem(BookmarkItem *bookmarkItem);
+
+    QString searchedText() const;
     Q_INVOKABLE void setSearchedText(const QString &newSearchedText);
+
     Q_INVOKABLE QItemSelectionModel *selectioModel() const;
+    Q_INVOKABLE void select(const QModelIndex index);
+
     Q_INVOKABLE void removeBookmarkItem(const QModelIndex index);
     Q_INVOKABLE void goToPosition(const QModelIndex index);
     Q_INVOKABLE void trackItem(const QModelIndex index);
-    void removeBookmarkItem(BookmarkItem *bookmarkItem);
-    void goToPosition(BookmarkItem *bookmarkItem);
-    void trackItem(BookmarkItem *bookmarkItem);
-    Q_INVOKABLE void select(const QModelIndex index);
-    void select(BookmarkItem *bookmarkItem);
+
+//    void select(BookmarkItem *bookmarkItem);
 signals:
     void searchedTextChanged();
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+    void removeItem(QStandardItem *item);
 private:
     QString mSearchedText;
     QStandardItem *rootItem;
     QStandardItemModel *mStandardItemModel;
     QItemSelectionModel *mSelectioModel;
-    std::map<QString, std::pair<BookmarkItem*, QStandardItem*>> mItems;
 };
 
 class BookmarkManager : public QObject
@@ -68,12 +78,10 @@ public:
     static BookmarkManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
     ~BookmarkManager();
 
-    // --------------- Interface ---------------------------------
     void addBookmarkItem(BookmarkItem *bookmarkItem);
     void removeBookmarkItem(BookmarkItem *bookmarkItem);
-    void select(BookmarkItem *bookmarkItem);
+//    void select(BookmarkItem *bookmarkItem);
 
-    // --------------- getters -----------------------------------
     Q_INVOKABLE QItemSelectionModel *getSelectioModel() const;
     Q_INVOKABLE BookmarkProxyModel *getBookmarkProxyModel() const;
 

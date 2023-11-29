@@ -25,8 +25,8 @@ add_library(model SHARED
     modelautoscaler.cpp
     model.json
     model.qrc
-    nodeInformationManager.h
-    nodeInformationManager.cpp
+    nodeInformation.h
+    nodeInformation.cpp
     dataManager.h dataManager.cpp
     circularMenu.h circularMenu.cpp
 )

@@ -32,7 +32,7 @@ void NetworkManager::dataMessageReceived()
         return;
 
     QAmqpMessage message = queue->dequeue();
-//    qDebug() << "message: " << message.payload();
+   qDebug() << "message: " << message.payload();
     mServiceManager->messageData(message.payload());
 }
 
@@ -40,8 +40,20 @@ void NetworkManager::clientConnected()
 {
     qDebug() << "Client connected.";
     QAmqpQueue *dataQueue = mClient.createQueue("data");
+    QAmqpQueue *actionQueue = mClient.createQueue("action");
     disconnect(dataQueue, 0, 0, 0); // in case this is a reconnect
+    disconnect(actionQueue, 0, 0, 0);
     connect(dataQueue, &QAmqpQueue::declared, this, &NetworkManager::dataQueueDeclared);
+    connect(actionQueue, &QAmqpQueue::declared, this, &NetworkManager::sendData);
     dataQueue->declare();
+    actionQueue->declared();
+}
 
+void NetworkManager::sendData()
+{
+    connect(mServiceManager, &ServiceManager::actionSent, [&](const QString &action){
+        QAmqpExchange *exchange = mClient.createExchange();
+        exchange->publish(action, "action");
+        qDebug() << "Sent action: "<<action;
+    });
 }
