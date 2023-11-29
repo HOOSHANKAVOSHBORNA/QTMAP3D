@@ -51,9 +51,9 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
             mTypeListModel->append(typeToAdd);
         }
         auto geonode = dynamic_cast<osgEarth::Annotation::GeoPositionNode*>(node);
-        if (std::find(mNodes1.begin(), mNodes1.end(), new NodeInformation{geonode, nodeData}) == mNodes1.end()) {
+        if (std::find(mNodes1.begin(), mNodes1.end(), new NodeInfo{geonode, nodeData}) == mNodes1.end()) {
             beginInsertRows(QModelIndex(), mNodes1.size(), mNodes1.size());
-            mNodes1.push_back(new NodeInformation{geonode, nodeData});
+            mNodes1.push_back(new NodeInfo{geonode, nodeData});
             endInsertRows();
         }
     }
