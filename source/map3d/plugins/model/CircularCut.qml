@@ -103,7 +103,7 @@ Item {
                 source: iconSource
                 width: hovered ? iconSize + 10 : iconSize
                 height: hovered ? iconSize + 10 : iconSize
-                color: checked ? iconHoverColor : iconColor
+//                color: checked ? iconHoverColor : iconColor
             }
 
             display: AbstractButton.IconOnly
