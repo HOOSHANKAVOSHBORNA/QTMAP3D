@@ -99,6 +99,9 @@ void SimpleModelNode::showMenu()
     mIsMenuVisible = !mIsMenuVisible;
     mCircularMenu->show(mIsMenuVisible);
 
+    mIsSelected = mIsMenuVisible;
+    mSwitchNode->setValue(2, mIsSelected);
+
 }
 
 bool SimpleModelNode::isHighlight() const
@@ -188,7 +191,7 @@ void SimpleModelNode::setAttacker(bool attacker)
     mIsAttacker = attacker;
 
     if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
-        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/attacker.png", true};
+        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", true};
         QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onAttackChecked);
 
         mCircularMenu->appendMenuItem(mAttackerMenuItem);
@@ -204,20 +207,21 @@ void SimpleModelNode::onModeChanged(bool is3DView)
         mSwitchNode->setValue(0,true);
         mSwitchNode->setValue(1, false);
 
-        m3DNode->accept(cbv);
+        //        m3DNode->accept(cbv);
     }
     else{
         mSwitchNode->setValue(0, false);
         mSwitchNode->setValue(1,true);
 
-        m2DNode->accept(cbv);
+        //        m2DNode->accept(cbv);
     }
+    mSwitchNode->setValue(2, mSwitchNode->getValue(2));
 
-    mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
-    mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius()/4, osgEarth::Units::METERS));
-    mConeSelecteNode->setHeight(osgEarth::Distance(cbv.getBoundingBox().radius()/2, osgEarth::Units::METERS));
-    mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
-    mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
+    //    mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    //    mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius()/4, osgEarth::Units::METERS));
+    //    mConeSelecteNode->setHeight(osgEarth::Distance(cbv.getBoundingBox().radius()/2, osgEarth::Units::METERS));
+    //    mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
+    //    mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
 }
 
 void SimpleModelNode::onInfoClicked()
@@ -246,6 +250,16 @@ void SimpleModelNode::onTargetChecked()
 void SimpleModelNode::onAttackChecked()
 {
 
+}
+
+void SimpleModelNode::onGoToPosition()
+{
+    mMapItem->getCameraController()->goToPosition(getPosition(), 500);
+}
+
+void SimpleModelNode::onTrack()
+{
+    mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
 }
 
 void SimpleModelNode::compile()
@@ -322,7 +336,7 @@ void SimpleModelNode::compile()
     m2DNode->setStateSet(geodeStateSet);
     m2DNode->addDrawable(imgGeom);
     //--select node---------------------------------------------------
-    osg::ref_ptr<osg::Group> selectGroup = new osg::Group;
+    //    osg::ref_ptr<osg::Group> selectGroup = new osg::Group;
     osg::ComputeBoundsVisitor cbv;
     if(mIs3D)
         m3DNode->accept(cbv);
@@ -333,18 +347,18 @@ void SimpleModelNode::compile()
     mCircleSelectNode->setStrokeColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
     mCircleSelectNode->setStrokeWidth(2);
     mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
-    mCircleSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
+//    mCircleSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
 
-//    mConeSelecteNode = new Cone();
-//    mConeSelecteNode->setFillColor(osg::Vec4f(0,1,0,0.2));
-//    mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius()/4, osgEarth::Units::METERS));
-//    mConeSelecteNode->setHeight(osgEarth::Distance(cbv.getBoundingBox().radius()/2, osgEarth::Units::METERS));
-//    mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
-//    mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
-//    mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
+        mConeSelecteNode = new Cone();
+        mConeSelecteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
+        mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+        mConeSelecteNode->setHeight(osgEarth::Distance(0, osgEarth::Units::METERS));
+//        mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
+//        mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
+//        mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
 
-    selectGroup->addChild(mCircleSelectNode);
-//    selectGroup->addChild(mConeSelecteNode);
+    //    selectGroup->addChild(mCircleSelectNode);
+    //    selectGroup->addChild(mConeSelecteNode);
     //--highlight node-------------------------------------------------
     mCircleHighlightNode = new Circle();
     mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
@@ -356,20 +370,21 @@ void SimpleModelNode::compile()
     if(mIs3D){
         mSwitchNode->addChild(m3DNode, true);
         mSwitchNode->addChild(m2DNode, false);
-        mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(mConeSelecteNode, false);
         mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     else{
         mSwitchNode->addChild(m3DNode, false);
         mSwitchNode->addChild(m2DNode, true);
-        mSwitchNode->addChild(selectGroup, false);
+        mSwitchNode->addChild(mConeSelecteNode, false);
         mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
     osgEarth::Symbology::Style  rootStyle ;
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
-//    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
-     setStyle(rootStyle);
+    //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
+    setStyle(rootStyle);
+
     setColor(mColor);
 }
 
@@ -377,17 +392,17 @@ void SimpleModelNode::createCircularMenu()
 {
     mCircularMenu = new CircularMenu(mMapItem, this);
     mCircularMenu->show(false);
-    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
+    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
-    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/filled-bookmark.png", true};
+    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true};
     QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
-    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/target.png", true};
+    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", true};
     QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
 
-    mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
+    mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(targetMenuItem);
 }
 
@@ -395,25 +410,17 @@ void SimpleModelNode::createNodeInformation()
 {
     mNodeInformation = new NodeInformation(mEnigine, mMapItem->window());
 
-    connect(mNodeInformation,&NodeInformation::goToPosition,[&](){
-        mMapItem->getCameraController()->goToPosition(getPosition(), 500);
-    });
-    connect(mNodeInformation,&NodeInformation::track,[&](){
-        mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
-    });
+    connect(mNodeInformation,&NodeInformation::goToPosition, this, &SimpleModelNode::onGoToPosition);
+    connect(mNodeInformation,&NodeInformation::track, this, &SimpleModelNode::onTrack);
 }
 
 void SimpleModelNode::createBookmarkItem()
 {
     mBookmarkItem = new BookmarkItem();
 
-    connect(mBookmarkItem, &BookmarkItem::goToPosition, [&](){
-        emit mNodeInformation->goToPosition();
-    });
+    connect(mBookmarkItem, &BookmarkItem::goToPosition, this, &SimpleModelNode::onGoToPosition);
 
-    connect(mBookmarkItem, &BookmarkItem::track, [&](){
-        emit mNodeInformation->track();
-    });
+    connect(mBookmarkItem, &BookmarkItem::track, this, &SimpleModelNode::onTrack);
 
     connect(mBookmarkItem, &BookmarkItem::fromBookmarkRemoved, [&](){
         mIsBookmarked = false;

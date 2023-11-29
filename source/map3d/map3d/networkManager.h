@@ -15,7 +15,7 @@ public:
 
 private slots:
     void clientConnected();
-
+    void sendData();
     void dataQueueDeclared();
     void dataMessageReceived();
 signals:

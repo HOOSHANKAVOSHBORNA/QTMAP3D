@@ -13,7 +13,7 @@ Item {
     property string iconSource: 'qrc:/Resources/hand.png'
     property double outerRadius: 400
     property double innerRadius: 300
-    property double iconSize: 30
+    property double iconSize: 35
 
     required property double startAngle
     property double len: 90
@@ -86,8 +86,8 @@ Item {
             x: 0
             y: 0
             padding: 0
-            width: iconSize
-            height: iconSize
+            width: hovered ? iconSize + 10 : iconSize
+            height: hovered ? iconSize + 10 : iconSize
             hoverEnabled: true
 
             anchors {
@@ -101,22 +101,20 @@ Item {
 
             icon {
                 source: iconSource
-                width: iconSize
-                height: iconSize
-                color: hovered ? checked ? iconColor : iconHoverColor : checked ? iconHoverColor : iconColor
+                width: hovered ? iconSize + 10 : iconSize
+                height: hovered ? iconSize + 10 : iconSize
+//                color: checked ? iconHoverColor : iconColor
             }
-
-
 
             display: AbstractButton.IconOnly
 
             background: Rectangle {
                 id: btnBck
-                x: 7.5
+                x: 5
                 y: 0
                 width: iconSize
                 height: iconSize
-                color: backgroundColor
+                color: 'transparent'/*backgroundColor*/
                 radius: width / 2
             }
 

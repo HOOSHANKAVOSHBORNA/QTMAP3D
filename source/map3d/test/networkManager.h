@@ -16,6 +16,8 @@ public:
 private slots:
     void clientConnected();
     void clientError(QAMQP::Error error);
+    void actionQueueReceived();
+    void actionQueueDeclared();
 signals:
     void dataQueueDeclared();
 private:

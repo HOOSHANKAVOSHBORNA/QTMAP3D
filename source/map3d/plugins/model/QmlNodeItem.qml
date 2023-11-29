@@ -3,22 +3,22 @@ import Crystal
 import QtQuick.Controls
 
 QmlNode {
-    property double farRange: 50000
-    property double scaledNodeRadius: nodeRadius /*> 50000 ? 15 : 30*/
+    property double outerScale: 1.5
+    property double maximumRadius: 60
+    property double nodeInnerRadius: nodeRadius < maximumRadius ? nodeRadius : maximumRadius
+//    property double nodeInnerRadius: 40
+
     width: 0
     height: 0
     property var cppModel : ListModel{}
 
     CircularMenu {
         id: circularMenu
-        //        visible: nodeRadius < 80000
-        outerRadius: scaledNodeRadius + 30
-        innerRadius: scaledNodeRadius
+        outerRadius: nodeInnerRadius * outerScale
+        innerRadius: nodeInnerRadius
         listModel: cppModel
         onClicked: (index) => {
-                            //                            console.log(cppModel.index)
                         cppModel.onItemClicked(cppModel.index(index, 0))
-
                     }
         onToggled: (index, checked) =>{
                        cppModel.onItemChecked(cppModel.index(index, 0), checked)
