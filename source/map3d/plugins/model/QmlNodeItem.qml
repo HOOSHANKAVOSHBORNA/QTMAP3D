@@ -3,7 +3,6 @@ import Crystal
 import QtQuick.Controls
 
 QmlNode {
-    property double farRange: 50000
     property double scaledNodeRadius: nodeRadius
 //    property double scaledNodeRadius: 40
 
