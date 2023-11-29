@@ -6,6 +6,7 @@ import "style"
 
 Item{
     property var model
+    property bool flag: false
     property int iconSize: 26/Style.monitorRatio
     readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
     id: rootItem
@@ -13,7 +14,7 @@ Item{
     height: 240/Style.monitorRatio
     Rectangle {
         id:searchRect
-        width: searchBtn.width + searchText.implicitWidth + (closeButton.visible? closeButton.width : 0)
+        width: flag? 340 /Style.monitorRatio: searchBtn.width + searchText.implicitWidth + (closeButton.visible? closeButton.width : 0)
         height: 40/Style.monitorRatio
         radius: height/2
         color:Style.backgroundColor
@@ -37,6 +38,7 @@ Item{
                 }
                 onClicked: {
                     icon.color = Style.disableColor
+                    flag = true
                     closeButton.visible = true
                     textonFocus.running =true
                     searchText.focus = true
@@ -99,6 +101,7 @@ Item{
                     color: Style.foregroundColor
                 }
                 onClicked: {
+                    flag=false
                     closeButton.visible = false
                     textlostFocus.running =true
                     searchText.clear()
@@ -111,7 +114,7 @@ Item{
             id:dropDown
             color: Style.backgroundColor
             opacity: 0.5
-            visible:true
+            visible:flag
             width: closeButton.visible ? rootItem.width: 0
             height: rootItem.height
             z: -1
@@ -124,20 +127,25 @@ Item{
                     background: Rectangle {
                         color: "transparent"
                     }
+
                     Text {
                         color: Style.disableColor
                         font.pixelSize: 14/Style.monitorRatio
                         text: "Shortcut To Find "
                         font.family: Style.fontFamily
                     }
+                    visible: flag
                 }
-                Flow{
-                    width: closeButton.visible ? 344/Style.monitorRatio: 0
-                    spacing: 2
+
+                GridLayout{
+                    width: flag ? 344/Style.monitorRatio: 0
+                    flow: GridLayout.LeftToRight
 
                     Repeater {
+                        id:typesRepeater
                         model: rootItem.model.getTypeListModel()
                         Rectangle{
+                            id:typeHolder
                             implicitHeight: 31/Style.monitorRatio
                             implicitWidth:  shortCut.implicitWidth
                             color:"transparent"
@@ -147,7 +155,14 @@ Item{
                                 width: 1
 
                             }
-                            visible: false
+                            Component.onCompleted: {
+                                if (typesRepeater.model.rowCount()){
+                                seperator.visible = true
+                                    idLabel.visible = true
+                                    nameLabel.visible=true
+                                }
+                            }
+                            visible: flag
 
                             RowLayout{
                                 id:shortCut
@@ -177,27 +192,78 @@ Item{
                         }
                     }
                 }
-                //                }
+                RowLayout{
+                    Layout.leftMargin: 5
+                    Layout.fillWidth: true
+                    spacing: listView.width/3
 
+
+                    Label {
+                        id:idLabel
+                        text: "id :"
+                        font.pixelSize:16/Style.monitorRatio
+                        font.family: Style.fontFamily
+                        color: Style.foregroundColor
+                        visible:typesRepeater.model.rowCount()
+                    }
+                    Label {
+                        id:nameLabel
+                        text: "Name :"
+                        font.pixelSize:16/Style.monitorRatio
+                        font.family: Style.fontFamily
+                        color: Style.foregroundColor
+                        visible:typesRepeater.model.rowCount()
+                    }}
+                Rectangle{
+                    id:seperator
+                    Layout.fillWidth: true
+                    height: 1
+                    color: Style.foregroundColor
+                    opacity: .2
+                    visible:typesRepeater.model.rowCount()
+                    Component.onCompleted:{ print(typesRepeater.model.rowCount())
+
+                print("ssssssssssse--------------------------------------")}
+                }
+ScrollView{
+    Layout.fillWidth: true
+    Layout.fillHeight: true
                 ListView{
                     id:listView
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     clip: true
                     model: rootItem.model
-                    delegate: Button
+                    delegate:
+                              Button
                     {
                         id:delegateBtn
                         width: listView.width
+                        height: 20
                         hoverEnabled: true
-                        contentItem: Text {
-                            text: model.display
-                            font.family: Style.fontFamily
-                            font.pointSize: Style.fontPointSize + 2
-                            color: Style.foregroundColor
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
+
+                        contentItem:Item {
+                            anchors.fill: parent
+
+                            Text {
+                                anchors.left: id.right
+                                anchors.leftMargin: delegateBtn.width/3
+                                text: model.display
+                                font.family: Style.fontFamily
+                                font.pointSize: Style.fontPointSize + 2
+                                color: Style.foregroundColor
+
+                                elide: Text.ElideRight
+                            }
+                            Text {
+                                id:id
+                                text: model.id_
+                                font.family: Style.fontFamily
+                                font.pointSize: Style.fontPointSize + 2
+                                color: Style.foregroundColor
+
+                                elide: Text.ElideRight
+                            }
                         }
                         onClicked:{
                             rootItem.model.onNodeClicked(index)
@@ -208,7 +274,9 @@ Item{
                             radius:height/2
                         }
                     }
+
                 }
+            }
             }
         }
     }
