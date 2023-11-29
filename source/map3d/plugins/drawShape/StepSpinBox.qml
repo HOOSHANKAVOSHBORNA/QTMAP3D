@@ -1,20 +1,21 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import QtQuick.Effects
 import "style"
 
+RowLayout{
 
-FloatSpinbox{
-    id:stepSpinBox
-    property alias stepComboboxVisible: stepCombobox.visible
-    stepSize: stepCombobox.currentValue
-    contentItem:RowLayout {
-        spacing: 0
+    property alias value:floatSpinBox.value
+    property alias from: floatSpinBox.from
+    property alias to: floatSpinBox.to
+    property alias decimals: floatSpinBox.decimals
+    property alias editable: floatSpinBox.editable
+
         ComboBox {
             id:stepCombobox
-            Layout.preferredWidth: 45
-            Layout.fillHeight: true
+            implicitWidth: 60
+            implicitHeight: 25
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01 ]
             currentIndex: 3
             font.pointSize: 10
@@ -31,8 +32,7 @@ FloatSpinbox{
             }
 
             background: Rectangle{
-
-                color: foregroundColor
+                color: backgroundColor
                        radius: 15
                            IconImage{
                                width: 15
@@ -47,75 +47,13 @@ FloatSpinbox{
 
             }
         }
-       Rectangle{
-           color: foregroundColor
-           radius: 15
-           implicitHeight: 20
-           Layout.fillWidth: true
-           Layout.alignment: Qt.AlignVCenter
-           Layout.leftMargin: 5
-           RowLayout{
-               spacing: 0
-               anchors.fill: parent
-               Button{
-                   implicitHeight: 15
-                   implicitWidth: 15
-                   Layout.alignment: Qt.AlignVCenter
-                   background:Rectangle{
-                       color: "transparent"
-                       Image {
-                          anchors.fill: parent
-                          source: "qrc:/Resources/minus.png"
-                          }
-                   }
-                   onClicked: decrement()
-               }
 
-               TextInput{
-                           id:textInput
-                           text: textFromValue()
-                           color: Style.foregroundColor
-                           selectionColor: "#21be2b"
-                           selectedTextColor: "#ffffff"
-                           Layout.alignment: Qt.AlignCenter
-                           //Layout.fillWidth: true
-                           readOnly: !editable
-                           validator: validator
-                           inputMethodHints: Qt.ImhFormattedNumbersOnly
-                           onAccepted: {
-                               value = text
-                           }
-                       }
+        FloatSpinbox{
+              id:floatSpinBox
+              stepSize: stepCombobox.currentValue
+              Layout.fillWidth: true
+        }
 
-               Button{
-                  implicitHeight: 15
-                  implicitWidth: 15
-                   Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-
-                   background: Rectangle{
-                       color: "transparent"
-                       Image {
-                          anchors.fill: parent
-                          source: "qrc:/Resources/add.png"
-                          }
-                   }
-
-                   onClicked: increment()
-               }
-           }
-       }
-    }
-
-    up.indicator: Item {
-
-    }
-    down.indicator: Item{
-
-    }
-    background: Rectangle{
-        color: foregroundColor
-        radius: 15
-    }
 }
 
 

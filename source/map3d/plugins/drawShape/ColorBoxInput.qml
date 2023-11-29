@@ -5,10 +5,12 @@ import "style"
 
     Rectangle{
         id:colorBoxInput
-        width: 250/ Style.monitorRatio
-        height: 370/ Style.monitorRatio
-        radius: 15/ Style.monitorRatio
+        width: 288/ Style.monitorRatio
+        height: 450/ Style.monitorRatio
+       // color: "transparent"
+        radius: 20/ Style.monitorRatio
         color: Style.backgroundColor
+      //  flags: Qt.Window | Qt.FramelessWindowHint
         property int oldIndex: 0
         property int newIndex: 0
         property int historyOldIndex: 0
@@ -47,6 +49,13 @@ import "style"
             }
           history.setProperty(historyOldIndex,"historyImageVisible",false)
         }
+
+//        Rectangle{
+//            anchors.fill: parent
+//            radius: 20/ Style.monitorRatio
+//            color: Style.backgroundColor
+//        }
+
         ListModel{
             id:history
         }
@@ -55,28 +64,36 @@ import "style"
 
             Text{
                 text: "Select Color"
-                font.pointSize: 12/ Style.monitorRatio
+                font.pointSize: 17 / Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.leftMargin: 5/ Style.monitorRatio
-                Layout.topMargin: 5/ Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                Layout.topMargin: 15 / Style.monitorRatio
+                Layout.bottomMargin: 10 / Style.monitorRatio
             }
 
             ListModel{
                 id:lstModel
-                ListElement {imageVisible:false; colorSelect: "red" }   ListElement {imageVisible:false; colorSelect: "orange" } ListElement {imageVisible:false; colorSelect: "yellow" }
-                ListElement {imageVisible:false; colorSelect: "green" } ListElement {imageVisible:false; colorSelect: "blue" }   ListElement {imageVisible:false; colorSelect: "pink" }
-                ListElement {imageVisible:false; colorSelect: "red" }   ListElement {imageVisible:false; colorSelect: "orange" } ListElement {imageVisible:false; colorSelect: "yellow" }
-                ListElement {imageVisible:false; colorSelect: "green" } ListElement {imageVisible:false; colorSelect: "blue" }   ListElement {imageVisible:false; colorSelect: "pink" }
-                ListElement {imageVisible:false; colorSelect: "red" }   ListElement {imageVisible:false; colorSelect: "orange" } ListElement {imageVisible:false; colorSelect: "yellow" }
-                ListElement {imageVisible:false; colorSelect: "green" } ListElement {imageVisible:false; colorSelect: "blue" }   ListElement {imageVisible:false; colorSelect: "pink" }
-                ListElement {imageVisible:false; colorSelect: "red" }   ListElement {imageVisible:false; colorSelect: "orange" } ListElement {imageVisible:false; colorSelect: "yellow" }
-                ListElement {imageVisible:false; colorSelect: "green" } ListElement {imageVisible:false; colorSelect: "blue" }   ListElement {imageVisible:false; colorSelect: "pink" }
-                ListElement {imageVisible:false; colorSelect: "red" }   ListElement {imageVisible:false; colorSelect: "orange" } ListElement {imageVisible:false; colorSelect: "yellow" }
+
+                ListElement {imageVisible:false; colorSelect: "#EF2929" }   ListElement {imageVisible:false; colorSelect: "#FCAF3E" } ListElement {imageVisible:false; colorSelect: "#FCE94F" }
+                ListElement {imageVisible:false; colorSelect: "#8AE234" } ListElement {imageVisible:false; colorSelect: "#729FCF" }   ListElement {imageVisible:false; colorSelect: "#AD7FA8" }
+                ListElement {imageVisible:false; colorSelect: "#E9B96E" }   ListElement {imageVisible:false; colorSelect: "#888A85" } ListElement {imageVisible:false; colorSelect: "#EEEEEC" }
+
+                ListElement {imageVisible:false; colorSelect: "#C00" } ListElement {imageVisible:false; colorSelect: "#F57900" }   ListElement {imageVisible:false; colorSelect: "#EDD400" }
+                ListElement {imageVisible:false; colorSelect: "#73D216" }   ListElement {imageVisible:false; colorSelect: "#346594" } ListElement {imageVisible:false; colorSelect: "#75507B" }
+                ListElement {imageVisible:false; colorSelect: "#C17D11" } ListElement {imageVisible:false; colorSelect: "#555753" }   ListElement {imageVisible:false; colorSelect: "#D3D7CF" }
+
+                ListElement {imageVisible:false; colorSelect: "#A40000" }   ListElement {imageVisible:false; colorSelect: "#CE5C00" } ListElement {imageVisible:false; colorSelect: "#C4A000" }
+                ListElement {imageVisible:false; colorSelect: "#4E9A06" } ListElement {imageVisible:false; colorSelect: "#204A87" }   ListElement {imageVisible:false; colorSelect: "#5C3566" }
+                ListElement {imageVisible:false; colorSelect: "#8F5902" }   ListElement {imageVisible:false; colorSelect: "#2E3436" } ListElement {imageVisible:false; colorSelect: "#BABDB6" }
+
             }
             GridLayout{
                 Layout.fillWidth: true
-                Layout.leftMargin: 5 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                Layout.bottomMargin: 15 / Style.monitorRatio
+                rowSpacing: 3 / Style.monitorRatio
+                columnSpacing: 4 / Style.monitorRatio
                 rows: 3
                 columns: 9
                 Repeater{
@@ -128,21 +145,20 @@ import "style"
 
             Text{
                 text: "Custom"
-                font.pointSize: 12 / Style.monitorRatio
+                font.pointSize: 15 / Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.leftMargin: 5 / Style.monitorRatio
-                Layout.topMargin: 10 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                Layout.bottomMargin: 5 / Style.monitorRatio
             }
             RowLayout{
-                Layout.leftMargin: 5/ Style.monitorRatio
-                spacing: 2 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                Layout.bottomMargin: 15 / Style.monitorRatio
 
                 Rectangle{
                     id:colorCircle
-                  //  color: Style.backgroundColor
-                    width: 24 / Style.monitorRatio
-                    height: 24 / Style.monitorRatio
+                    width: 26 / Style.monitorRatio
+                    height: 26 / Style.monitorRatio
                     radius: width/2
                     border.color: Style.foregroundColor
                     border.width: 1 / Style.monitorRatio
@@ -150,19 +166,19 @@ import "style"
                 Text{
                     text: "HEX"
                     font.pointSize: 10 / Style.monitorRatio
+                    Layout.leftMargin: 9 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
                 Rectangle{
-                    Layout.preferredHeight: 15 / Style.monitorRatio
-                    Layout.preferredWidth: 80 / Style.monitorRatio
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 70 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
-                    radius: 5/ Style.monitorRatio
+                    radius: 5 / Style.monitorRatio
                     TextInput{
                       id:hexInput
                       anchors.fill: parent
-                  //    text: Style.backgroundColor.toString().replace("#","")
                       font.pointSize: 8 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
@@ -187,8 +203,8 @@ import "style"
                     color: Style.foregroundColor
                 }
                 Rectangle{
-                    Layout.preferredHeight: 15 / Style.monitorRatio
-                    Layout.preferredWidth: 35 / Style.monitorRatio
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 20 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
@@ -196,7 +212,6 @@ import "style"
                     TextInput{
                       id:rInput
                       anchors.fill: parent
-                  //    text: Style.backgroundColor.toString().replace("#","").substring(0,2)
                       font.pointSize: 8 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
@@ -222,8 +237,8 @@ import "style"
                     color: Style.foregroundColor
                 }
                 Rectangle{
-                    Layout.preferredHeight: 15 / Style.monitorRatio
-                    Layout.preferredWidth: 35 / Style.monitorRatio
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 20 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
@@ -231,7 +246,6 @@ import "style"
                     TextInput{
                       id:gInput
                       anchors.fill: parent
-                   //   text: Style.backgroundColor.toString().replace("#","").substring(2,4)
                       font.pointSize: 8 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
@@ -258,8 +272,8 @@ import "style"
                     color: Style.foregroundColor
                 }
                 Rectangle{
-                    Layout.preferredHeight: 15 / Style.monitorRatio
-                    Layout.preferredWidth: 35 / Style.monitorRatio
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 20 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
@@ -267,7 +281,6 @@ import "style"
                     TextInput{
                       id:bInput
                       anchors.fill: parent
-                   //   text: Style.backgroundColor.toString().replace("#","").substring(4,6)
                       font.pointSize: 8 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
@@ -290,14 +303,15 @@ import "style"
             }
             Text{
                 text: "Opacity"
-                font.pointSize: 12/ Style.monitorRatio
+                font.pointSize: 15/ Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.leftMargin: 5 / Style.monitorRatio
-                Layout.topMargin: 5 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                Layout.bottomMargin: 3 / Style.monitorRatio
             }
             RowLayout{
-                Layout.leftMargin: 5 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                Layout.bottomMargin: 15 / Style.monitorRatio
                 Text{
                     text: Math.trunc(slider.value*100).toString() + "%"
                     color: Style.foregroundColor
@@ -309,7 +323,7 @@ import "style"
                     background: Rectangle {
                         x: slider.leftPadding
                         y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                        implicitWidth: 250 / Style.monitorRatio
+                        implicitWidth: 230 / Style.monitorRatio
                         implicitHeight: 10 / Style.monitorRatio
                         border.width: 1 / Style.monitorRatio
                         border.color: Style.foregroundColor
@@ -320,12 +334,10 @@ import "style"
                             orientation: Gradient.Horizontal
                             GradientStop {
                                 position: 0.0
-                               // color: "#00" + selectedColor.toString().replace("#","")
                                 color: "#00" + opacityColor.toString().replace("#","")
                             }
                             GradientStop {
                                 position: 1.0
-                               // color: "#FF" + selectedColor.toString().replace("#","")
                                 color: "#FF" + opacityColor.toString().replace("#","")
                             }
                         }
@@ -347,17 +359,17 @@ import "style"
 
             Text{
                 text: "Recent Color"
-                font.pointSize: 12/ Style.monitorRatio
+                font.pointSize: 15/ Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.leftMargin: 5 / Style.monitorRatio
-                Layout.topMargin: 5 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                Layout.bottomMargin: 10 / Style.monitorRatio
             }
-            GridLayout{
+            RowLayout{
                 Layout.fillWidth: true
-                Layout.leftMargin: 5 / Style.monitorRatio
-                rows:1
-                columns: 9
+                Layout.preferredHeight: 26 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
+                spacing: 4 / Style.monitorRatio
                 Repeater{
                     id:historyRepeater
                     model: history
@@ -366,8 +378,8 @@ import "style"
                     required property color historyColorSelect
                     required property bool historyImageVisible
                     required property int index
-                    implicitWidth: 24 / Style.monitorRatio
-                    implicitHeight: 24 / Style.monitorRatio
+                    implicitWidth: 26 / Style.monitorRatio
+                    implicitHeight: 26 / Style.monitorRatio
                     checkable: true
                     background: Rectangle{
                         radius: width
@@ -406,16 +418,18 @@ import "style"
 
             RowLayout{
                 Layout.fillWidth: true
+                Layout.topMargin: 5 / Style.monitorRatio
+                Layout.bottomMargin: 20 / Style.monitorRatio
                 Item{
                     Layout.fillWidth: true
                 }
-
                 Button{
-                    implicitHeight: 25 / Style.monitorRatio
-                    implicitWidth: 50 / Style.monitorRatio
+                    implicitHeight: 24 / Style.monitorRatio
+                    implicitWidth: 65 / Style.monitorRatio
                     Layout.leftMargin: 25 / Style.monitorRatio
                     contentItem: Text{
                         text: "Cancel"
+                        font.pointSize: 15 / Style.monitorRatio
                         color: Style.foregroundColor
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -427,17 +441,18 @@ import "style"
                         border.color: Style.foregroundColor
                     }
                     onClicked: {
-                       colorBoxInput.visible = false
+                      colorBoxInput.visible = false
                     }
                 }
 
                 Button{
                     Layout.alignment: Qt.AlignRight
                     Layout.rightMargin: 5 / Style.monitorRatio
-                    implicitHeight: 25 / Style.monitorRatio
-                    implicitWidth: 50 / Style.monitorRatio
+                    implicitHeight: 24 / Style.monitorRatio
+                    implicitWidth: 55 / Style.monitorRatio
                     contentItem: Text{
                         text: "Done"
+                        font.pointSize: 15 / Style.monitorRatio
                         color: Style.backgroundColor
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -454,10 +469,6 @@ import "style"
                 }
             }
 
-            Item{
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-            }
         }
     }
 
