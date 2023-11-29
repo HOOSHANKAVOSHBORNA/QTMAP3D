@@ -137,8 +137,8 @@ Item{
                     visible: flag
                 }
 
-                GridLayout{
-                    width: flag ? 344/Style.monitorRatio: 0
+                Flow{
+                    Layout.fillWidth: true
                     flow: GridLayout.LeftToRight
 
                     Repeater {
@@ -150,6 +150,15 @@ Item{
                             implicitWidth:  shortCut.implicitWidth
                             color:"transparent"
                             radius: 20
+                            MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+
+print(itemText.text)
+                                        rootItem.model.setFilterString(itemText.text)
+//                                        rootItem.model.filterByType(itemText.text)
+                                    }
+                                }
                             border{
                                 color: Style.disableColor
                                 width: 1
@@ -157,7 +166,7 @@ Item{
                             }
                             Component.onCompleted: {
                                 if (typesRepeater.model.rowCount()){
-                                seperator.visible = true
+                                    seperator.visible = true
                                     idLabel.visible = true
                                     nameLabel.visible=true
                                 }
@@ -213,7 +222,8 @@ Item{
                         font.family: Style.fontFamily
                         color: Style.foregroundColor
                         visible:typesRepeater.model.rowCount()
-                    }}
+                    }
+                }
                 Rectangle{
                     id:seperator
                     Layout.fillWidth: true
@@ -221,62 +231,59 @@ Item{
                     color: Style.foregroundColor
                     opacity: .2
                     visible:typesRepeater.model.rowCount()
-                    Component.onCompleted:{ print(typesRepeater.model.rowCount())
-
-                print("ssssssssssse--------------------------------------")}
                 }
-ScrollView{
-    Layout.fillWidth: true
-    Layout.fillHeight: true
-                ListView{
-                    id:listView
+                ScrollView{
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    clip: true
-                    model: rootItem.model
-                    delegate:
-                              Button
-                    {
-                        id:delegateBtn
-                        width: listView.width
-                        height: 20
-                        hoverEnabled: true
-
-                        contentItem:Item {
-                            anchors.fill: parent
-
-                            Text {
-                                anchors.left: id.right
-                                anchors.leftMargin: delegateBtn.width/3
-                                text: model.display
-                                font.family: Style.fontFamily
-                                font.pointSize: Style.fontPointSize + 2
-                                color: Style.foregroundColor
-
-                                elide: Text.ElideRight
-                            }
-                            Text {
-                                id:id
-                                text: model.id_
-                                font.family: Style.fontFamily
-                                font.pointSize: Style.fontPointSize + 2
-                                color: Style.foregroundColor
-
-                                elide: Text.ElideRight
-                            }
-                        }
-                        onClicked:{
-                            rootItem.model.onNodeClicked(index)
-                        }
-                        background: Rectangle
+                    ListView{
+                        id:listView
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        clip: true
+                        model: rootItem.model
+                        delegate:
+                            Button
                         {
-                            color: parent.hovered ? Style.hoverColor : "transparent"
-                            radius:height/2
-                        }
-                    }
+                            id:delegateBtn
+                            width: listView.width
+                            height: 20
+                            hoverEnabled: true
 
+                            contentItem:Item {
+                                anchors.fill: parent
+
+                                Text {
+                                    anchors.left: id.right
+                                    anchors.leftMargin: delegateBtn.width/3
+                                    text: model.display
+                                    font.family: Style.fontFamily
+                                    font.pointSize: Style.fontPointSize + 2
+                                    color: Style.foregroundColor
+
+                                    elide: Text.ElideRight
+                                }
+                                Text {
+                                    id:id
+                                    text: model.id_
+                                    font.family: Style.fontFamily
+                                    font.pointSize: Style.fontPointSize + 2
+                                    color: Style.foregroundColor
+
+                                    elide: Text.ElideRight
+                                }
+                            }
+                            onClicked:{
+                                rootItem.model.onNodeClicked(index)
+                            }
+                            background: Rectangle
+                            {
+                                color: parent.hovered ? Style.hoverColor : "transparent"
+                                radius:height/2
+                            }
+                        }
+
+                    }
                 }
-            }
             }
         }
     }

@@ -33,8 +33,6 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
     case iD_:
         return mNodes1[index.row()]->data->id ;
         break;
-    case text_:
-        return "sex";
     default:
         return QVariant::fromValue<QString>(QString(""));
         break;
@@ -59,29 +57,34 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
     }
 }
 
+void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer) {
+    auto iterator = std::remove_if(
+        mNodes1.begin(),
+        mNodes1.end(),
+        [&](NodeInfo *item) {
+            return item->node == node;
+        }
+        );
 
-
-void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
-{
-    auto iterator = std::remove_if(mNodes.begin(),mNodes.end(),[&](const osg::Node* item){
-        return node == item;
-    });
-
-    if (iterator!= mNodes.end()){
-        int d = std::distance(mNodes.begin(), iterator);
+    if (iterator != mNodes1.end()) {
+        int d = std::distance(mNodes1.begin(), iterator);
         beginRemoveRows(QModelIndex(), d, d);
-        mNodes.erase(iterator);
+        delete *iterator;
+        mNodes1.erase(iterator);
         endRemoveRows();
-        emit dataChanged(createIndex(0, 0), createIndex(rowCount()-1, 0));
+        emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
     }
 }
 
-void SearchNodeModel::onNodeClicked(const QModelIndex &current)
-{
-    osgEarth::Annotation::GeoPositionNode *node = dynamic_cast<osgEarth::Annotation::GeoPositionNode*>(mNodes[current.row()].get());
-    if (node){
-        mMapItem->getCameraController()->goToPosition(node->getPosition(),
-                                                      mMapItem->getCameraController()->getViewpoint().getRange(), 0);
+
+
+void SearchNodeModel::onNodeClicked(const QModelIndex &current) {
+    if (current.isValid() && current.row() >= 0 && current.row() < static_cast<int>(mNodes1.size())) {
+        osgEarth::Annotation::GeoPositionNode *node = mNodes1[current.row()]->node;
+        if (node) {
+            mMapItem->getCameraController()->goToPosition(
+                node->getPosition(),mMapItem->getCameraController()->getViewpoint().getRange(),0);
+        }
     }
 }
 
@@ -101,7 +104,7 @@ TypeListModel *SearchNodeModel::getTypeListModel() const
 
 void SearchNodeModel::init()
 {
-    std::vector< osg::ref_ptr<osgEarth::Layer>> layers;
+    std::vector<osg::ref_ptr<osgEarth::Layer>> layers;
     mMapItem->getMapObject()->getLayers(layers);
     for (auto& layer : layers){
         ParenticAnnotationLayer* l1 = dynamic_cast<ParenticAnnotationLayer*>(layer.get());
@@ -142,6 +145,7 @@ QString SearchNodeProxyModel::filterString() const
 {
     return mFilterString;
 }
+
 
 void SearchNodeProxyModel::setFilterString(const QString &filterString)
 {
