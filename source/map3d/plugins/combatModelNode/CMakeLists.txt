@@ -19,10 +19,10 @@ add_library(combatModelNode SHARED
     combatModelNode.json
     bulletNode.h    bulletNode.cpp
     combatManager.h combatManager.cpp
+    assignLine.h    assignLine.cpp
 )
 
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawLine")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawSphere")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCircle")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCone")
@@ -31,7 +31,6 @@ target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
 
 target_link_libraries(combatModelNode PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
-target_link_libraries(combatModelNode PRIVATE drawLine)
 target_link_libraries(combatModelNode PRIVATE drawSphere)
 target_link_libraries(combatModelNode PRIVATE drawCircle)
 target_link_libraries(combatModelNode PRIVATE drawCone)

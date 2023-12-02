@@ -4,6 +4,7 @@
 
 #include "bulletNode.h"
 #include "lineNode.h"
+#include "assignLine.h"
 #include <simpleModelNode.h>
 
 struct assignmentData

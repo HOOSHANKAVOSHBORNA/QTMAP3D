@@ -19,7 +19,7 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
 
 void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , MapItem *map)
 {
-    osg::ref_ptr<LineNode> line = new LineNode(map);
+    osg::ref_ptr<AssignLine> line = new AssignLine(map);
     line->addPoint(attacker->getPosition());
     line->addPoint(target->getPosition());
     line->setTessellation(50);
