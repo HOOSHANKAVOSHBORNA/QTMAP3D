@@ -191,7 +191,7 @@ void SimpleModelNode::setAttacker(bool attacker)
     mIsAttacker = attacker;
 
     if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
-        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/attacker.png", true};
+        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", true};
         QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onAttackChecked);
 
         mCircularMenu->appendMenuItem(mAttackerMenuItem);
@@ -403,20 +403,17 @@ void SimpleModelNode::createCircularMenu()
 {
     mCircularMenu = new CircularMenu(mMapItem, this);
     mCircularMenu->show(false);
-    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
+    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
-    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/filled-bookmark.png", true};
+    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true};
     QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
-    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/target.png", true};
+    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", true};
     QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
 
-    mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
-    mCircularMenu->appendMenuItem(targetMenuItem);
-
-    // just for test
+    mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(targetMenuItem);
 }
 

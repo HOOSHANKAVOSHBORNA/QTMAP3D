@@ -28,10 +28,13 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     void onNodeClicked(const QModelIndex &current);
-QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
+
+
 public slots:
     void addNode(osg::Node *node, osgEarth::Layer *layer);
     void removeNode( osg::Node *node,osgEarth::Layer *layer);
+
     TypeListModel *getTypeListModel() const;
 
 
@@ -71,6 +74,7 @@ class SearchNodeProxyModel : public QSortFilterProxyModel
 public:
     explicit SearchNodeProxyModel(QObject *parent = nullptr);
     QString filterString() const;
+
 public slots:
     void setFilterString(const QString &filterString);
     void onNodeClicked(const int current);

@@ -509,5 +509,9 @@
         <file>Resources/sidebar-pin.png</file>
         <file>Resources/target.png</file>
         <file>Resources/attacker.png</file>
+        <file>Resources/menu-attack.png</file>
+        <file>Resources/menu-bookmark.png</file>
+        <file>Resources/menu-info.png</file>
+        <file>Resources/menu-target.png</file>
     </qresource>
 </RCC>
