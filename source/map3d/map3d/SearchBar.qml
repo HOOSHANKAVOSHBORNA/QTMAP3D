@@ -9,6 +9,7 @@ Item{
     property bool flag: false
     property int iconSize: 26/Style.monitorRatio
     readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
+
     id: rootItem
     width: searchRect.width
     height: 240/Style.monitorRatio
@@ -136,6 +137,7 @@ Item{
                     }
                     visible: flag
                 }
+                //----------
 
                 Flow{
                     Layout.fillWidth: true
@@ -154,9 +156,12 @@ Item{
                                     anchors.fill: parent
                                     onClicked: {
 
-print(itemText.text)
+rootItem.model.toggleItem(itemText.text)
                                         rootItem.model.setFilterString(itemText.text)
-//                                        rootItem.model.filterByType(itemText.text)
+
+//print(itemText.text)
+//                                        rootItem.model.setFilterString(itemText.text)
+////                                        rootItem.model.filterByType(itemText.text)
                                     }
                                 }
                             border{
@@ -196,6 +201,7 @@ print(itemText.text)
                                     font.pixelSize: 16/Style.monitorRatio
                                     color: Style.foregroundColor
                                     Layout.fillWidth: true
+
                                 }
                             }
                         }
