@@ -9,18 +9,18 @@ AssignLine::AssignLine(MapItem *map):
     auto style = getStyle();
     // style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->color() = mColor;
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->lineCap() = osgEarth::Symbology::Stroke::LINECAP_ROUND;
-    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 0;
+    style.getOrCreate<osgEarth::Symbology::LineSymbol>()->stroke()->width() = 20;
     style.getOrCreate<osgEarth::Symbology::LineSymbol>()->tessellation() = 50;
-    style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = osgEarth::Color(0.5,0.3,0.4,1.0);
-    style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = 10;
+    // style.getOrCreate<osgEarth::Symbology::PointSymbol>()->fill()->color() = osgEarth::Color(0.5,0.3,0.4,1.0);
+    // style.getOrCreate<osgEarth::Symbology::PointSymbol>()->size() = 10;
     // style.getOrCreate<osgEarth::Symbology::PointSymbol>()
-    osg::ref_ptr<Circle> mCircleHighlightNode = new Circle();
-    mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
-    mCircleHighlightNode->setStrokeColor(osg::Vec4f(1,0.20784313725490197,0.0,0.8));
-    mCircleHighlightNode->setStrokeWidth(2);
-    mCircleHighlightNode->setRadius(2000);
-    mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
-    style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mCircleHighlightNode);
+    // osg::ref_ptr<Circle> mCircleHighlightNode = new Circle();
+    // mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
+    // mCircleHighlightNode->setStrokeColor(osg::Vec4f(1,0.20784313725490197,0.0,0.8));
+    // mCircleHighlightNode->setStrokeWidth(2);
+    // mCircleHighlightNode->setRadius(2000);
+    // mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
+    // style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mCircleHighlightNode);
     setStyle(style);
 }
 

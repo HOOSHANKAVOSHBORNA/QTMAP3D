@@ -2,7 +2,8 @@
 
 CombatManager::CombatManager(MapItem *map)
 {
-    mEdgeDataList = new QList<assignmentData>;
+    // mEdgeDataList = new QList<assignmentData>;
+    mAssignmentDataMap = new QMap<QString,assignmentData>;
     mBulletList = new QList<osg::ref_ptr<BulletNode>>;
     mMapItem = map;
 }
@@ -17,49 +18,93 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
     return mCombatLayer;
 }
 
-void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , MapItem *map)
+void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , State state)
 {
-    osg::ref_ptr<AssignLine> line = new AssignLine(map);
+    qDebug() << target->nodeData()->id;
+    QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
+    if(mAssignmentDataMap->contains(assignmentID)){
+        removeAssignment(attacker,target);
+    }
+    osg::ref_ptr<LineNode> line = new LineNode(mMapItem);
     line->addPoint(attacker->getPosition());
     line->addPoint(target->getPosition());
     line->setTessellation(50);
+    line->setWidth(20);
     mCombatLayer->addChild(line);
+    switch (state) {
+    case PREASSIGN:
+        line->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case HOVERED:
+        line->setFillColor(osgEarth::Color(osg::Vec4f(0.2,0.2,0.5,1)));
+        break;
+    case SELECTED:
+        line->setFillColor(osgEarth::Color(osg::Vec4f(0,1,0,1)));
+        break;
+    case ASSIGNED:
+        line->setFillColor(osgEarth::Color(osg::Vec4f(1,0,0,1)));
+        break;
+    case SEARCH:
+        line->setFillColor(osgEarth::Color(osg::Vec4f(0,0,0,1)));
+        break;
+    case LOCK:
+        line->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case FIRE:
+        line->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case SUCCEED:
+        line->setNodeMask(false);
+        break;
+    case FAILED:
+        line->setNodeMask(false);
+        break;
+    default:
+        line->setFillColor(osgEarth::Color("white"));
+        break;
+    }
     attacker->highlight(true);
     target->highlight(true);
-    assignmentData data = {attacker , target , line};
-    mEdgeDataList->append(data);
+    assignmentData data = {attacker , target , line , state};
+    mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
 
 void CombatManager::removeAssignment(SimpleModelNode *attacker, SimpleModelNode *target)
 {
-    for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var).attacker == attacker && mEdgeDataList->at(var).target == target){
-            mEdgeDataList->removeAt(var);
-        }
+    QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
+    try {
+        mAssignmentDataMap->remove(assignmentID);
+    } catch (...) {
     }
+
 }
 
 void CombatManager::deleteAttackerNode(SimpleModelNode *attacker)
 {
-    for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var).attacker == attacker){
-            mEdgeDataList->removeAt(var);
+    QString attackerID = QString::number(attacker->nodeData()->id);
+    for (auto i = mAssignmentDataMap->cbegin(), end = mAssignmentDataMap->cend(); i != end; ++i)
+        if(i.key().startsWith(attackerID)){
+            mAssignmentDataMap->remove(i.key());
         }
-    }
 }
 
 void CombatManager::deleteTargetNode(SimpleModelNode *target)
 {
-    for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var).target == target){
-            mEdgeDataList->removeAt(var);
+    QString targetID = QString::number(target->nodeData()->id);
+    for (auto i = mAssignmentDataMap->cbegin(), end = mAssignmentDataMap->cend(); i != end; ++i)
+        if(i.key().endsWith(targetID)){
+            mAssignmentDataMap->remove(i.key());
         }
-    }
 }
 
-QList<assignmentData> *CombatManager::getAssignmentData()
+void CombatManager::setState(assignmentData data, State state)
 {
-    return mEdgeDataList;
+    // data.
+}
+
+QMap<QString, assignmentData> *CombatManager::getAssignmentData()
+{
+    return mAssignmentDataMap;
 }
 
 int CombatManager::readyBulletFor(SimpleModelNode *attacker, const std::string &url3D, const std::string &url2D)

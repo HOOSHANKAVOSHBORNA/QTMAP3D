@@ -33,6 +33,7 @@ FlyableModelNode *DataManager::addUpdateFlyableNode(NodeData *nodeData)
     }
 
     flyableNode->setName(nodeData->name);
+    flyableNode->setAttacker(nodeData->isAttacker);
     flyableNode->setNodeData(nodeData);
     //add to layer after set data
     for(auto layer: nodeData->layers){
@@ -61,6 +62,7 @@ SimpleModelNode *DataManager::addUpdateNode(NodeData *nodeData)
     }
     node->setName(nodeData->name);
     node->setPosition(geoPoint);
+    node->setAttacker(nodeData->isAttacker);
     node->setNodeData(nodeData);
     //add to layer after set data
     for(auto layer: nodeData->layers){
@@ -89,6 +91,7 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
     }
     movableNode->setName(nodeData->name);
     movableNode->setNodeData(nodeData);
+    movableNode->setAttacker(nodeData->isAttacker);
     //add to layer after set data
     for(auto layer: nodeData->layers){
         layer->addChild(movableNode);
