@@ -7,11 +7,8 @@ import "style"
         id:colorBoxInput
         width: 288/ Style.monitorRatio
         height: 371/ Style.monitorRatio
-       // color: "transparent"
         radius: 20/ Style.monitorRatio
         color: Style.backgroundColor
-
-       // flags: Qt.Window | Qt.FramelessWindowHint
         property int oldIndex: 0
         property int newIndex: 0
         property int historyOldIndex: 0
@@ -55,11 +52,7 @@ import "style"
           history.setProperty(historyOldIndex,"historyImageVisible",false)
         }
 
-//        Rectangle{
-//            anchors.fill: parent
-//            radius: 20/ Style.monitorRatio
-//            color: Style.backgroundColor
-//        }
+
 
         ListModel{
             id:history

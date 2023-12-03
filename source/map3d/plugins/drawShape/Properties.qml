@@ -126,21 +126,6 @@ Item {
                     }
                 }
 
-//                ColorBoxInput{
-//                    id:colorBox
-//                    visible: false
-//                    Layout.fillWidth: true
-//                    Layout.fillHeight: true
-
-//                    onColorChosen: {
-//                         colorSelectCircle.color = selectedColor
-//                         rootItem.model.fillColor = selectedColor
-//                         addIconImage.visible = false
-//                         propertyCheckIcon.visible = true
-//                         colorModel.setProperty(previousIndex,"checkIconVisible",false)
-//                    }
-//                }
-
                 RowLayout{
                     id:fillcolorSec
                     Layout.fillWidth: true
@@ -380,20 +365,6 @@ Item {
                         }
                     }
                 }
-
-//                ColorBoxInput{
-//                    id:colorBoxStroke
-//                    visible: false
-//                    Layout.fillWidth: true
-//                    Layout.fillHeight: true
-//                    onColorChosen: {
-//                        strokeColorCircle.color = selectedColor
-//                        rootItem.model.strokeColor = selectedColor
-//                        strokeColorAddIcon.visible = false
-//                        strokeCheckIcon.visible = true
-//                        strokeColorModel.setProperty(strokePreviousIndex,"checkIconVisible",false)
-//                    }
-//                }
 
                 ////////////---------------------Location--------------------/////////////
                 RowLayout{
@@ -1469,20 +1440,6 @@ Item {
                              }
                          }
 
-//                         ColorBoxInput{
-//                             id:colorBoxPointColor
-//                             visible: false
-//                             Layout.fillWidth: true
-//                             Layout.fillHeight: true
-//                             onColorChosen: {
-//                                 pointColorCircle.color = selectedColor
-//                                 rootItem.model.pointsColor = selectedColor
-//                                 pointColorAddIcon.visible = false
-//                                 pointColorCheckIcon.visible = true
-//                                 pointColorModel.setProperty(pointColorPreviousIndex,"checkIconVisible",false)
-//                                 console.log(rootItem.model.pointsColor)
-//                             }
-//                         }
 
                          RowLayout{
                              Text {
