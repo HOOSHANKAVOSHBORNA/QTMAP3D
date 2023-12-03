@@ -20,52 +20,19 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
 
 void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , State state)
 {
-    qDebug() << target->nodeData()->id;
+
     QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
     if(mAssignmentDataMap->contains(assignmentID)){
-        removeAssignment(attacker,target);
-    }
-    osg::ref_ptr<LineNode> line = new LineNode(mMapItem);
-    line->addPoint(attacker->getPosition());
-    line->addPoint(target->getPosition());
-    line->setTessellation(50);
-    line->setWidth(20);
-    mCombatLayer->addChild(line);
-    switch (state) {
-    case PREASSIGN:
-        line->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
-        break;
-    case HOVERED:
-        line->setFillColor(osgEarth::Color(osg::Vec4f(0.2,0.2,0.5,1)));
-        break;
-    case SELECTED:
-        line->setFillColor(osgEarth::Color(osg::Vec4f(0,1,0,1)));
-        break;
-    case ASSIGNED:
-        line->setFillColor(osgEarth::Color(osg::Vec4f(1,0,0,1)));
-        break;
-    case SEARCH:
-        line->setFillColor(osgEarth::Color(osg::Vec4f(0,0,0,1)));
-        break;
-    case LOCK:
-        line->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
-        break;
-    case FIRE:
-        line->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
-        break;
-    case SUCCEED:
-        line->setNodeMask(false);
-        break;
-    case FAILED:
-        line->setNodeMask(false);
-        break;
-    default:
-        line->setFillColor(osgEarth::Color("white"));
-        break;
+        mAssignmentDataMap->value(assignmentID).setState(state);
     }
     attacker->highlight(true);
     target->highlight(true);
-    assignmentData data = {attacker , target , line , state};
+    assignmentData data ;
+    data.attacker = attacker;
+    data.target = target;
+    data.setLine(mMapItem);
+    data.setState(state);
+    mCombatLayer->addChild(data.getLine());
     mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
 
@@ -168,4 +135,55 @@ void CombatManager::attackResult(bool result, int bulletID)
     }else{
         mBulletList->at(bulletID)->setNodeMask(0);
     }
+}
+
+void assignmentData::setState(State state)
+{
+
+    switch (state) {
+    case PREASSIGN:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case HOVERED:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0.2,0.2,0.5,1)));
+        break;
+    case SELECTED:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0,1,0,1)));
+        break;
+    case ASSIGNED:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,0,0,1)));
+        break;
+    case SEARCH:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0,0,0,1)));
+        break;
+    case LOCK:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case FIRE:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case SUCCEED:
+        mRelationLine->setNodeMask(false);
+        break;
+    case FAILED:
+        mRelationLine->setNodeMask(false);
+        break;
+    default:
+        mRelationLine->setFillColor(osgEarth::Color("white"));
+        break;
+    }
+}
+
+void assignmentData::setLine(MapItem *map)
+{
+    mRelationLine = new LineNode(map);
+    mRelationLine->addPoint(attacker->getPosition());
+    mRelationLine->addPoint(target->getPosition());
+    mRelationLine->setTessellation(50);
+    mRelationLine->setWidth(20);
+}
+
+LineNode *assignmentData::getLine()
+{
+    return mRelationLine;
 }

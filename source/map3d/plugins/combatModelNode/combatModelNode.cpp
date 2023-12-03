@@ -221,7 +221,6 @@ void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
     mNodeData->layers.push_back(mAttackNodeLayer);
     mCurrentModel = mDataManager->addUpdateNode(mNodeData);
 
-
     // mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
     // mAttackNodeLayer->addChild(mAttackerNode);
     // mCombatManager->setCombatLayer(mAttackNodeLayer);

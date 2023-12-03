@@ -10,7 +10,7 @@
 #include "simpleModelNode.h"
 #include "dataManager.h"
 
-#define COMBATMODELNODE "Combat Model Node"
+#define COMBATMODELNODE "Combat"
 #define TANK "Tank"
 
 

@@ -4,7 +4,7 @@
 
 #include "bulletNode.h"
 #include "lineNode.h"
-#include "assignLine.h"
+// #include "assignLine.h"
 #include <simpleModelNode.h>
 
 
@@ -26,8 +26,13 @@ struct assignmentData
 public:
     osg::ref_ptr<SimpleModelNode> attacker{nullptr};
     osg::ref_ptr<SimpleModelNode> target{nullptr};
-    osg::ref_ptr<LineNode> relationLine{nullptr};
-    State state{PREASSIGN};
+    void setState(State state);
+    void setLine(MapItem* map);
+    LineNode* getLine();
+
+private:
+    osg::ref_ptr<LineNode> mRelationLine{nullptr};
+    State mState{PREASSIGN};
 };
 
 
