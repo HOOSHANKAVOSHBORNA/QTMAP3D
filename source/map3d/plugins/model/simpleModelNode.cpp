@@ -403,13 +403,13 @@ void SimpleModelNode::createCircularMenu()
 {
     mCircularMenu = new CircularMenu(mMapItem, this);
     mCircularMenu->show(false);
-    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false};
+    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false, "qrc:/Resources/menu-info.png"};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
-    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true};
+    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true, "qrc:/Resources/menu-bookmark-checked.png"};
     QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
-    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", true};
+    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png"};
     QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
 
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);

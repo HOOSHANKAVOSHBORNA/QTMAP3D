@@ -513,5 +513,6 @@
         <file>Resources/menu-bookmark.png</file>
         <file>Resources/menu-info.png</file>
         <file>Resources/menu-target.png</file>
+        <file>Resources/menu-bookmark-checked.png</file>
     </qresource>
 </RCC>
