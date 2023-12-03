@@ -137,53 +137,22 @@ SearchNodeProxyModel::SearchNodeProxyModel(QObject *parent)
 
 bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-    //    std::vector types = dynamic_cast<SearchNodeModel*>(sourceModel())->getTypeListModel()->mTypes;
-    qDebug()<< myVector ;
-    std::cout << "---------------------";
+
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-
-    //    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive)) {
-    //        QString dataString = index.data(SearchNodeModel::type_).toString();
-    //        if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()) {
-    //            return true;
-    //        }
-    //        else {/*if(myVector.size() == 0){*/
-    //                    return true;
-    ////                }
-
-
-    //        }
-    //         return true;
-    //    }
-    //    return false;
-    //}
-
     QString dataString = index.data(SearchNodeModel::type_).toString();
-    if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
-        if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive)) {
-            return true;
-        }
-
-
-        if (std::find(myVector.begin(), myVector.end(), dataString) == myVector.end()){
-            return false;
-        }
-        return true;
-    }
-    else{
-        if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive)) {
-            return true;
-        }
-    }
-
     if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive)) {
-        return true;
+        if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
+            return true;
+        }
+        else{
+            if(myVector.size()==0){
+                return true;
+            }
+                return false;
+        }
     }
-
     return false;
-}
-
-
+    }
 
 QString SearchNodeProxyModel::filterString() const
 {

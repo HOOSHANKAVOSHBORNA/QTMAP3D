@@ -147,23 +147,20 @@ Item{
                         id:typesRepeater
                         model: rootItem.model.getTypeListModel()
                         Rectangle{
+                            property bool checked: true
                             id:typeHolder
                             implicitHeight: 31/Style.monitorRatio
                             implicitWidth:  shortCut.implicitWidth
-                            color:"transparent"
+                            color:checked ? "transparent" : Style.hoverColor
                             radius: 20
                             MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-
-rootItem.model.toggleItem(itemText.text)
-                                        rootItem.model.setFilterString(itemText.text)
-
-//print(itemText.text)
-//                                        rootItem.model.setFilterString(itemText.text)
-////                                        rootItem.model.filterByType(itemText.text)
-                                    }
+                                anchors.fill: parent
+                                onClicked: {
+                                    checked =!checked
+                                    rootItem.model.toggleItem(itemText.text)
+                                    rootItem.model.setFilterString(searchText.text)
                                 }
+                            }
                             border{
                                 color: Style.disableColor
                                 width: 1
@@ -259,6 +256,7 @@ rootItem.model.toggleItem(itemText.text)
                                 anchors.fill: parent
 
                                 Text {
+                                    id:lvText
                                     anchors.left: id.right
                                     anchors.leftMargin: delegateBtn.width/3
                                     text: model.display
