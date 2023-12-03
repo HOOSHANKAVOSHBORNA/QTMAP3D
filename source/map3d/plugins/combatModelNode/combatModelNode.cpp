@@ -29,6 +29,8 @@ bool CombatModelNode::setup()
     mCombatModelNodeLayer->setName(COMBATMODELNODE);
     mapItem()->getMapObject()->addLayer(mCombatModelNodeLayer);
 
+    mDataManager = new DataManager(mapItem(), mainWindow());
+
     auto tankToolboxItem =  new ToolboxItem{"Tank", COMBATMODELNODE, "qrc:/resources/tank.png", true};
     QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &CombatModelNode::onTankItemCheck);
     toolbox()->addItem(tankToolboxItem);
@@ -87,11 +89,11 @@ bool CombatModelNode::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
         if(mState == State::MOVING){
             cancel();
         }else if(mState == State::NONE && !mCombatManager->getAssignmentData()->empty()){
-            for (int var = 0; var < mCombatManager->getAssignmentData()->length(); ++var) {
-                int bulletID = mCombatManager->readyBulletFor(mCombatManager->getAssignmentData()->at(var).attacker,"../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
-                mCombatManager->attackTo(bulletID,mCombatManager->getAssignmentData()->at(var).target->getPosition());
-                mCombatManager->setBulletTargetModel(bulletID,mCombatManager->getAssignmentData()->at(var).target);
-                mBulletID.append(bulletID);
+            for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
+                // int bulletID = mCombatManager->readyBulletFor(mCombatManager->getAssignmentData()->(var).attacker,"../data/models/missile/missile.osgb", "../data/models/missile/missile.png");
+                // mCombatManager->attackTo(bulletID,mCombatManager->getAssignmentData()->at(var).target->getPosition());
+                // mCombatManager->setBulletTargetModel(bulletID,mCombatManager->getAssignmentData()->at(var).target);
+                // mBulletID.append(bulletID);
             }
         }
         return false;
@@ -130,7 +132,7 @@ bool CombatModelNode::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA:
 
         if(targetModelNode)
         {
-            mCombatManager->assign(mAttackerNode,targetModelNode,mapItem());
+            mCombatManager->assign(mAttackerNode,targetModelNode);
         }
         mapItem()->removeNode(mDragModelNode);
         mDragModelNode = nullptr;
@@ -209,16 +211,23 @@ void CombatModelNode::onModeChanged(bool is3DView)
 }
 
 void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
-    mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
+    mNodeData = sampleNodeData("tank", "../data/models/tank/tank.png", "../data/models/tank/tank.osg",
+                               "../data/models/tank/tank.png", "qrc:/resources/tank.png", geoPos);
+    mNodeData->id = 500 + mCount;
     if(!mCombatModelNodeLayer->containsLayer(mAttackNodeLayer)){
         mAttackNodeLayer->clear();
         mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
     }
-    mAttackNodeLayer->addChild(mAttackerNode);
-    mCombatManager->setCombatLayer(mAttackNodeLayer);
-    mAttackerNode->setAttacker(true);
-    mAttackerNode->setPosition(geoPos);
-    mCurrentModel = mAttackerNode;
+    mNodeData->layers.push_back(mAttackNodeLayer);
+    mCurrentModel = mDataManager->addUpdateNode(mNodeData);
+
+    // mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
+    // mAttackNodeLayer->addChild(mAttackerNode);
+    // mCombatManager->setCombatLayer(mAttackNodeLayer);
+    // mAttackerNode->setAttacker(true);
+    // // mAttackerNode->setColor(osgEarth::Color(0,0,0,1));
+    // mAttackerNode->setPosition(geoPos);
+    // mCurrentModel = mAttackerNode;
     setState(State::MOVING);
     mCount++;
 }
@@ -317,4 +326,28 @@ osgEarth::Annotation::ModelNode *CombatModelNode::getDragModel()
 }
 
 
+NodeData* CombatModelNode::sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc,osgEarth::GeoPoint geoPos)
+{
+    NodeData* nodeData = new NodeData();
+    //    flyableNodeData->id = 100;
+    nodeData->name = name + std::to_string(mCount);
+    nodeData->type = name;
+    nodeData->longitude = geoPos.x();
+    nodeData->latitude = geoPos.y();
+    nodeData->altitude = geoPos.z();
+    nodeData->url2D = url2d;
+    nodeData->url3D = url3d;
+    nodeData->imgSrc = imgSrc;
+    nodeData->iconSrc = iconSrc;
+    nodeData->color = QColor("white").name().toStdString();
+    nodeData->speed = 100;
+    nodeData->isAttacker = true;
+    nodeData->fieldData.push_back(NodeFieldData{"name", "Tank" + QString::number(mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
+    nodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
+    nodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(nodeData->longitude), "Location Information","qrc:/Resources/location.png"});
+    nodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(nodeData->latitude), "Location Information","qrc:/Resources/location.png"});
+    nodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(nodeData->altitude), "Location Information","qrc:/Resources/location.png"});
+    nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
+    return nodeData;
+}
 

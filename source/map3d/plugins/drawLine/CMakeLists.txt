@@ -30,11 +30,11 @@ measureHeight.h
 target_compile_definitions(drawLine PRIVATE CPTEST_LIBRARY)
 
 target_include_directories(drawLine PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_include_directories(drawLine PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
+target_include_directories(drawLine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
 target_include_directories(drawLine PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../information")
 
 target_link_libraries(drawLine PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
-target_link_libraries(drawLine PRIVATE drawShape)
+target_link_libraries(drawLine PUBLIC drawShape)
 target_link_libraries(drawLine PRIVATE information)
 
 

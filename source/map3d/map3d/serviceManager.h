@@ -36,6 +36,7 @@ struct NodeData: public osg::Referenced
     std::string color;
     std::string imgSrc;
     std::string iconSrc;
+    bool isAttacker;
     double latitude;
     double longitude;
     double altitude;

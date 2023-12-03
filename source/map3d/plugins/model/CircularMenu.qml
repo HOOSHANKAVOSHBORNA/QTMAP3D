@@ -125,6 +125,7 @@ Item {
             startAngle: rootItem.startAngle + model.index * currentCutLen
             len: currentCutLen
             iconSource: model.iconUrl
+            iconSourceChecked: model.iconCheckedUrl ?? "null"
             iconSize: thickness + 10 < maximumIconSize ? thickness + 10 : maximumIconSize
             onClicked: rootItem.clicked(model.index)
             onToggled: rootItem.toggled(model.index, checked)

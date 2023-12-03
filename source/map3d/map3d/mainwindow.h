@@ -49,6 +49,9 @@ public:
     LocationProxyModel *getLocationManager() const;
 
 public:
+    void addToMenuItemContainer(QQuickItem *item, QString title);
+    void removeFromMenuItemContainer(QQuickItem *item);
+
     void addToLeftContainer(QQuickItem *item, QString title);
     void addToRightContainer(QQuickItem *item, QString title);
     void addToCenterCenterContainer(QQuickItem *item);
