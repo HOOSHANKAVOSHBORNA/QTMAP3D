@@ -6,11 +6,12 @@ import "style"
     Rectangle{
         id:colorBoxInput
         width: 288/ Style.monitorRatio
-        height: 450/ Style.monitorRatio
+        height: 371/ Style.monitorRatio
        // color: "transparent"
         radius: 20/ Style.monitorRatio
         color: Style.backgroundColor
-      //  flags: Qt.Window | Qt.FramelessWindowHint
+
+       // flags: Qt.Window | Qt.FramelessWindowHint
         property int oldIndex: 0
         property int newIndex: 0
         property int historyOldIndex: 0
@@ -18,6 +19,10 @@ import "style"
         property color selectedColor : Style.backgroundColor
         property color opacityColor: Style.backgroundColor
         signal colorChosen()
+
+        MouseArea{
+            anchors.fill: parent
+        }
 
         function textUpdate(){
             rInput.text = parseInt(colorCircle.color.toString().replace("#","").substring(0,2),16)
@@ -61,10 +66,10 @@ import "style"
         }
         ColumnLayout{
             anchors.fill: parent
-
+            spacing: 0
             Text{
                 text: "Select Color"
-                font.pointSize: 17 / Style.monitorRatio
+                font.pixelSize: 17 / Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
                 Layout.leftMargin: 15 / Style.monitorRatio
@@ -93,7 +98,7 @@ import "style"
                 Layout.leftMargin: 15 / Style.monitorRatio
                 Layout.bottomMargin: 15 / Style.monitorRatio
                 rowSpacing: 3 / Style.monitorRatio
-                columnSpacing: 4 / Style.monitorRatio
+                columnSpacing: 3 / Style.monitorRatio
                 rows: 3
                 columns: 9
                 Repeater{
@@ -115,8 +120,7 @@ import "style"
                               Image {
                                   id:checkIcon
                                   anchors.centerIn: parent
-                                  width: 17 / Style.monitorRatio
-                                  height: 17 / Style.monitorRatio
+                                  anchors.fill: parent
                                   source: "qrc:/Resources/add-place-color-select.png"
                                   visible: imageVisible
                               }
@@ -145,7 +149,7 @@ import "style"
 
             Text{
                 text: "Custom"
-                font.pointSize: 15 / Style.monitorRatio
+                font.pixelSize: 15 / Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
                 Layout.leftMargin: 15 / Style.monitorRatio
@@ -154,24 +158,25 @@ import "style"
             RowLayout{
                 Layout.leftMargin: 15 / Style.monitorRatio
                 Layout.bottomMargin: 15 / Style.monitorRatio
-
+                spacing: 0
                 Rectangle{
                     id:colorCircle
                     width: 26 / Style.monitorRatio
                     height: 26 / Style.monitorRatio
-                    radius: width/2
+                    radius: 26
                     border.color: Style.foregroundColor
                     border.width: 1 / Style.monitorRatio
                 }
                 Text{
                     text: "HEX"
-                    font.pointSize: 10 / Style.monitorRatio
+                    font.pixelSize: 12 / Style.monitorRatio
                     Layout.leftMargin: 9 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
                 Rectangle{
                     Layout.preferredHeight: 20 / Style.monitorRatio
-                    Layout.preferredWidth: 70 / Style.monitorRatio
+                    Layout.preferredWidth: 60 / Style.monitorRatio
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
@@ -179,7 +184,7 @@ import "style"
                     TextInput{
                       id:hexInput
                       anchors.fill: parent
-                      font.pointSize: 8 / Style.monitorRatio
+                      font.pixelSize: 12 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
                       validator: RegularExpressionValidator {
@@ -199,12 +204,14 @@ import "style"
                 }
                 Text{
                     text: "R"
-                    font.pointSize: 10/ Style.monitorRatio
+                    font.pixelSize: 12/ Style.monitorRatio
+                    Layout.leftMargin: 15 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
                 Rectangle{
                     Layout.preferredHeight: 20 / Style.monitorRatio
                     Layout.preferredWidth: 20 / Style.monitorRatio
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
@@ -212,7 +219,7 @@ import "style"
                     TextInput{
                       id:rInput
                       anchors.fill: parent
-                      font.pointSize: 8 / Style.monitorRatio
+                      font.pixelSize: 12 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
                       validator: IntValidator{
@@ -233,12 +240,14 @@ import "style"
                 }
                 Text{
                     text: "G"
-                    font.pointSize: 10/ Style.monitorRatio
+                    font.pixelSize: 12/ Style.monitorRatio
+                    Layout.leftMargin: 10 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
                 Rectangle{
                     Layout.preferredHeight: 20 / Style.monitorRatio
                     Layout.preferredWidth: 20 / Style.monitorRatio
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
@@ -246,7 +255,7 @@ import "style"
                     TextInput{
                       id:gInput
                       anchors.fill: parent
-                      font.pointSize: 8 / Style.monitorRatio
+                      font.pixelSize: 12 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
                       validator:IntValidator{
@@ -268,12 +277,14 @@ import "style"
                 }
                 Text{
                     text: "B"
-                    font.pointSize: 10/ Style.monitorRatio
+                    font.pixelSize: 12/ Style.monitorRatio
+                    Layout.leftMargin: 10 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
                 Rectangle{
                     Layout.preferredHeight: 20 / Style.monitorRatio
                     Layout.preferredWidth: 20 / Style.monitorRatio
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     border.color: "black"
                     border.width: 1 / Style.monitorRatio
                     color:Style.backgroundColor
@@ -281,7 +292,7 @@ import "style"
                     TextInput{
                       id:bInput
                       anchors.fill: parent
-                      font.pointSize: 8 / Style.monitorRatio
+                      font.pixelSize: 12 / Style.monitorRatio
                       horizontalAlignment: Text.AlignHCenter
                       verticalAlignment: Text.AlignVCenter
                       validator: IntValidator{
@@ -303,7 +314,7 @@ import "style"
             }
             Text{
                 text: "Opacity"
-                font.pointSize: 15/ Style.monitorRatio
+                font.pixelSize: 15/ Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
                 Layout.leftMargin: 15 / Style.monitorRatio
@@ -312,24 +323,27 @@ import "style"
             RowLayout{
                 Layout.leftMargin: 15 / Style.monitorRatio
                 Layout.bottomMargin: 15 / Style.monitorRatio
+                spacing: 0
                 Text{
                     text: Math.trunc(slider.value*100).toString() + "%"
                     color: Style.foregroundColor
-                    font.pointSize: 10 / Style.monitorRatio
+                    font.pixelSize: 12 / Style.monitorRatio
+                    Layout.preferredWidth: 30 / Style.monitorRatio
                 }
                 Slider {
                     id: slider
                     value: 1
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     background: Rectangle {
                         x: slider.leftPadding
                         y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                        implicitWidth: 230 / Style.monitorRatio
+                        implicitWidth: 225 / Style.monitorRatio
                         implicitHeight: 10 / Style.monitorRatio
                         border.width: 1 / Style.monitorRatio
                         border.color: Style.foregroundColor
                         width: slider.availableWidth
                         height: implicitHeight
-                        radius: 8 / Style.monitorRatio
+                        radius: 10 / Style.monitorRatio
                         gradient: Gradient {
                             orientation: Gradient.Horizontal
                             GradientStop {
@@ -359,116 +373,118 @@ import "style"
 
             Text{
                 text: "Recent Color"
-                font.pointSize: 15/ Style.monitorRatio
+                font.pixelSize: 15/ Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
                 Layout.leftMargin: 15 / Style.monitorRatio
                 Layout.bottomMargin: 10 / Style.monitorRatio
             }
-            RowLayout{
-                Layout.fillWidth: true
-                Layout.preferredHeight: 26 / Style.monitorRatio
-                Layout.leftMargin: 15 / Style.monitorRatio
-                spacing: 4 / Style.monitorRatio
-                Repeater{
-                    id:historyRepeater
-                    model: history
 
-                  Button{
-                    required property color historyColorSelect
-                    required property bool historyImageVisible
-                    required property int index
-                    implicitWidth: 26 / Style.monitorRatio
-                    implicitHeight: 26 / Style.monitorRatio
-                    checkable: true
-                    background: Rectangle{
-                        radius: width
-                        color: historyColorSelect
-                    }
 
-                    Image {
-                        id:historyCheckIcon
-                        anchors.centerIn: parent
-                        width: 17 / Style.monitorRatio
-                        height: 17 / Style.monitorRatio
-                        source: "qrc:/Resources/add-place-color-select.png"
-                        visible: historyImageVisible
-                    }
-                        onClicked: {
-                            history.setProperty(historyOldIndex,"historyImageVisible",false)
-                            historyNewIndex = index
-                            if(historyOldIndex !== historyNewIndex){
-                                historyRepeater.itemAt(historyOldIndex).checked = false
+               RowLayout{
+                   Layout.leftMargin: 15 / Style.monitorRatio
+                   Layout.bottomMargin: 15 / Style.monitorRatio
+                   spacing: 3 / Style.monitorRatio
+                   Repeater{
+                       id:historyRepeater
+                       model: history
+
+                     Button{
+                       required property color historyColorSelect
+                       required property bool historyImageVisible
+                       required property int index
+                       implicitWidth: 26 / Style.monitorRatio
+                       implicitHeight: 26 / Style.monitorRatio
+                       checkable: true
+                       background: Rectangle{
+                           radius: width
+                           color: historyColorSelect
+                       }
+
+                       Image {
+                           id:historyCheckIcon
+                           anchors.centerIn: parent
+                           anchors.fill: parent
+                           source: "qrc:/Resources/add-place-color-select.png"
+                           visible: historyImageVisible
+                       }
+                           onClicked: {
+                               history.setProperty(historyOldIndex,"historyImageVisible",false)
+                               historyNewIndex = index
+                               if(historyOldIndex !== historyNewIndex){
+                                   historyRepeater.itemAt(historyOldIndex).checked = false
+                               }
+                               history.setProperty(historyNewIndex,"historyImageVisible",checked)
+                               if(checked){
+                                   opacityColor = historyColorSelect
+                                   selectedColor = historyColorSelect
+                                   historyOldIndex = index
+                               }
+                               else{
+                                   opacityColor = "#FFFFFF"
+                                   selectedColor = "#FFFFFF"
+                               }
+                               lstModel.setProperty(oldIndex,"imageVisible",false)
+                           }
+                   }
+               }
+             }
+
+              Item{
+                  Layout.fillHeight: true
+                  Layout.fillWidth: true
+              }
+        }
+
+                        Button{
+                            id:doneBtn
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            anchors.rightMargin: 15 / Style.monitorRatio
+                            anchors.bottomMargin: 10 / Style.monitorRatio
+                            height: 24 / Style.monitorRatio
+                            width: 55 / Style.monitorRatio
+                            contentItem: Text{
+                                text: "Done"
+                                font.pixelSize: 15 / Style.monitorRatio
+                                color: Style.backgroundColor
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
-                            history.setProperty(historyNewIndex,"historyImageVisible",checked)
-                            if(checked){
-                                opacityColor = historyColorSelect
-                                selectedColor = historyColorSelect
-                                historyOldIndex = index
+                            background: Rectangle{
+                                radius: 10/ Style.monitorRatio
+                                color: Style.foregroundColor
                             }
-                            else{
-                                opacityColor = "#FFFFFF"
-                                selectedColor = "#FFFFFF"
+                            onClicked: {
+                                selectedColor.a = slider.value
+                                colorChosen()
+                                colorBoxInput.visible = false
                             }
                         }
-                }
-            }
-          }
 
+                          Button{
+                              height: 24 / Style.monitorRatio
+                              width: 65 / Style.monitorRatio
+                              anchors.rightMargin: 5 / Style.monitorRatio
+                              anchors.right: doneBtn.left
+                              anchors.bottom: doneBtn.bottom
+                              contentItem: Text{
+                                  text: "Cancel"
+                                  font.pixelSize: 15 / Style.monitorRatio
+                                  color: Style.foregroundColor
+                                  horizontalAlignment: Text.AlignHCenter
+                                  verticalAlignment: Text.AlignVCenter
+                              }
+                              background: Rectangle{
+                                  radius: 10 / Style.monitorRatio
+                                  color: Style.backgroundColor
+                                  border.width: 1 / Style.monitorRatio
+                                  border.color: Style.foregroundColor
+                              }
+                              onClicked: {
+                                colorBoxInput.visible = false
+                              }
+                          }
+                    }
 
-            RowLayout{
-                Layout.fillWidth: true
-                Layout.topMargin: 5 / Style.monitorRatio
-                Layout.bottomMargin: 20 / Style.monitorRatio
-                Item{
-                    Layout.fillWidth: true
-                }
-                Button{
-                    implicitHeight: 24 / Style.monitorRatio
-                    implicitWidth: 65 / Style.monitorRatio
-                    Layout.leftMargin: 25 / Style.monitorRatio
-                    contentItem: Text{
-                        text: "Cancel"
-                        font.pointSize: 15 / Style.monitorRatio
-                        color: Style.foregroundColor
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    background: Rectangle{
-                        radius: 10 / Style.monitorRatio
-                        color: Style.backgroundColor
-                        border.width: 1 / Style.monitorRatio
-                        border.color: Style.foregroundColor
-                    }
-                    onClicked: {
-                      colorBoxInput.visible = false
-                    }
-                }
-
-                Button{
-                    Layout.alignment: Qt.AlignRight
-                    Layout.rightMargin: 5 / Style.monitorRatio
-                    implicitHeight: 24 / Style.monitorRatio
-                    implicitWidth: 55 / Style.monitorRatio
-                    contentItem: Text{
-                        text: "Done"
-                        font.pointSize: 15 / Style.monitorRatio
-                        color: Style.backgroundColor
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    background: Rectangle{
-                        radius: 10/ Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                    onClicked: {
-                        selectedColor.a = slider.value
-                        colorChosen()
-                        colorBoxInput.visible = false
-                    }
-                }
-            }
-
-        }
-    }
 

@@ -35,6 +35,57 @@ Item {
         anchors.margins: 6 / Style.monitorRatio
         radius: 10 / Style.monitorRatio
 
+        ColorBoxInput{
+            id:colorBox
+            z:mainLayout.z + 10
+            x:nameSec.x
+            y:nameSec.y
+            width: frame.width
+            visible: false
+            onColorChosen: {
+              colorSelectCircle.color = selectedColor
+              rootItem.model.fillColor = selectedColor
+              addIconImage.visible = false
+              propertyCheckIcon.visible = true
+              colorModel.setProperty(previousIndex,"checkIconVisible",false)
+            }
+        }
+
+        ColorBoxInput{
+            id:colorBoxStroke
+            z:mainLayout.z + 10
+            x:nameSec.x
+            y:nameSec.y
+            width: frame.width
+            visible: false
+            onColorChosen: {
+                strokeColorCircle.color = selectedColor
+                rootItem.model.strokeColor = selectedColor
+                strokeColorAddIcon.visible = false
+                strokeCheckIcon.visible = true
+                strokeColorModel.setProperty(strokePreviousIndex,"checkIconVisible",false)
+            }
+        }
+
+        ColorBoxInput{
+            id:colorBoxPointColor
+            z:mainLayout.z + 10
+            x:nameSec.x
+            y:nameSec.y
+            width: frame.width
+            visible: false
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            onColorChosen: {
+                pointColorCircle.color = selectedColor
+                rootItem.model.pointsColor = selectedColor
+                pointColorAddIcon.visible = false
+                pointColorCheckIcon.visible = true
+                pointColorModel.setProperty(pointColorPreviousIndex,"checkIconVisible",false)
+                console.log(rootItem.model.pointsColor)
+            }
+        }
+
         ScrollView {
             id: frame
             clip: true
@@ -43,6 +94,7 @@ Item {
             /////////////////////// components Grid ////////////////////////////
             ColumnLayout{
                 id: mainLayout
+                z:0
                 anchors.fill: parent
                 anchors.margins: 5 / Style.monitorRatio
                 ////////////////////////////////// Name ////////////////////////////////////////////////
@@ -74,19 +126,20 @@ Item {
                     }
                 }
 
-                ColorBoxInput{
-                    id:colorBox
-                    visible: false
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    onColorChosen: {
-                         colorSelectCircle.color = selectedColor
-                         rootItem.model.fillColor = selectedColor
-                         addIconImage.visible = false
-                         propertyCheckIcon.visible = true
-                         colorModel.setProperty(previousIndex,"checkIconVisible",false)
-                    }
-                }
+//                ColorBoxInput{
+//                    id:colorBox
+//                    visible: false
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
+
+//                    onColorChosen: {
+//                         colorSelectCircle.color = selectedColor
+//                         rootItem.model.fillColor = selectedColor
+//                         addIconImage.visible = false
+//                         propertyCheckIcon.visible = true
+//                         colorModel.setProperty(previousIndex,"checkIconVisible",false)
+//                    }
+//                }
 
                 RowLayout{
                     id:fillcolorSec
@@ -185,7 +238,6 @@ Item {
                             }
                         }
                     }
-
                 }
                 RowLayout{
                     Text{
@@ -329,19 +381,19 @@ Item {
                     }
                 }
 
-                ColorBoxInput{
-                    id:colorBoxStroke
-                    visible: false
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    onColorChosen: {
-                        strokeColorCircle.color = selectedColor
-                        rootItem.model.strokeColor = selectedColor
-                        strokeColorAddIcon.visible = false
-                        strokeCheckIcon.visible = true
-                        strokeColorModel.setProperty(strokePreviousIndex,"checkIconVisible",false)
-                    }
-                }
+//                ColorBoxInput{
+//                    id:colorBoxStroke
+//                    visible: false
+//                    Layout.fillWidth: true
+//                    Layout.fillHeight: true
+//                    onColorChosen: {
+//                        strokeColorCircle.color = selectedColor
+//                        rootItem.model.strokeColor = selectedColor
+//                        strokeColorAddIcon.visible = false
+//                        strokeCheckIcon.visible = true
+//                        strokeColorModel.setProperty(strokePreviousIndex,"checkIconVisible",false)
+//                    }
+//                }
 
                 ////////////---------------------Location--------------------/////////////
                 RowLayout{
@@ -1282,7 +1334,6 @@ Item {
                                  visible:rootItem.model ? rootItem.model.strokeStatus : false
                              }
                              GroupBox{
-
                                  padding: 0
                                  Layout.fillWidth: true
                                  Layout.margins: 0
@@ -1418,20 +1469,20 @@ Item {
                              }
                          }
 
-                         ColorBoxInput{
-                             id:colorBoxPointColor
-                             visible: false
-                             Layout.fillWidth: true
-                             Layout.fillHeight: true
-                             onColorChosen: {
-                                 pointColorCircle.color = selectedColor
-                                 rootItem.model.pointsColor = selectedColor
-                                 pointColorAddIcon.visible = false
-                                 pointColorCheckIcon.visible = true
-                                 pointColorModel.setProperty(pointColorPreviousIndex,"checkIconVisible",false)
-                                 console.log(rootItem.model.pointsColor)
-                             }
-                         }
+//                         ColorBoxInput{
+//                             id:colorBoxPointColor
+//                             visible: false
+//                             Layout.fillWidth: true
+//                             Layout.fillHeight: true
+//                             onColorChosen: {
+//                                 pointColorCircle.color = selectedColor
+//                                 rootItem.model.pointsColor = selectedColor
+//                                 pointColorAddIcon.visible = false
+//                                 pointColorCheckIcon.visible = true
+//                                 pointColorModel.setProperty(pointColorPreviousIndex,"checkIconVisible",false)
+//                                 console.log(rootItem.model.pointsColor)
+//                             }
+//                         }
 
                          RowLayout{
                              Text {
