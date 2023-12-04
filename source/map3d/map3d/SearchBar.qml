@@ -268,7 +268,7 @@ Item{
                                     text: model.id_
                                     font.family: Style.fontFamily
                                     font.pointSize: Style.fontPointSize + 2
-                                    color: Style.foregroundColor
+                                    color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
 
                                     elide: Text.ElideRight
                                 }
@@ -277,7 +277,7 @@ Item{
                                     text: model.display
                                     font.family: Style.fontFamily
                                     font.pointSize: Style.fontPointSize + 2
-                                    color: Style.foregroundColor
+                                    color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
 
                                     elide: Text.ElideRight
                                 }
@@ -287,7 +287,7 @@ Item{
                             }
                             background: Rectangle
                             {
-                                color: parent.hovered ? Style.hoverColor : "transparent"
+                                color: /*parent.hovered ? Style.hoverColor : */"transparent"
                                 radius:height/2
                             }
                         }
