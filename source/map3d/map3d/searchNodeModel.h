@@ -22,7 +22,8 @@ class SearchNodeModel : public QAbstractListModel
 public:
     enum myRoles{
         iD_ = Qt::UserRole,
-        text_
+        text_,
+        type_
     };
     SearchNodeModel(MapItem *mapItem, QObject *parent = nullptr);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -39,7 +40,7 @@ public slots:
 
 
 private:
-    void init();
+//    void init();
 private:
     MapItem *mMapItem{nullptr};
     std::vector<osg::ref_ptr<osg::Node>> mNodes;
@@ -57,10 +58,7 @@ public:
     void append(QString type);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    //    void addNode(osg::Node *node,osgEarth::Layer *layer);
 
-
-//private:
     std::vector<QString> mTypes{};
 
 };
@@ -71,10 +69,11 @@ public:
 class SearchNodeProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+
 public:
     explicit SearchNodeProxyModel(QObject *parent = nullptr);
     QString filterString() const;
-
+    Q_INVOKABLE void toggleItem(const QString &itemText);
 public slots:
     void setFilterString(const QString &filterString);
     void onNodeClicked(const int current);
@@ -84,10 +83,16 @@ protected:
 
 signals:
     void filterStringChanged();
-
+public:
+    std::vector<QString> myVector;
 private:
     QString mFilterString = "";
     TypeListModel *mTypeListModel{nullptr};
+
+
+
+ //----------------------
+
 
 };
 

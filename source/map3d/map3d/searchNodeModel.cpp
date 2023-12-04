@@ -33,6 +33,8 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
     case iD_:
         return mNodes1[index.row()]->data->id ;
         break;
+    case type_:
+        return QVariant::fromValue<QString>(QString::fromStdString(mNodes1[index.row()]->data->type));
     default:
         return QVariant::fromValue<QString>(QString(""));
         break;
@@ -93,6 +95,7 @@ QHash<int, QByteArray> SearchNodeModel::roleNames() const
     QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
     hash[iD_] = "id_";
     hash[text_]="text_";
+    hash[type_]="type_";
     return hash;
 
 }
@@ -102,27 +105,26 @@ TypeListModel *SearchNodeModel::getTypeListModel() const
     return mTypeListModel;
 }
 
-void SearchNodeModel::init()
-{
-    std::vector<osg::ref_ptr<osgEarth::Layer>> layers;
-    mMapItem->getMapObject()->getLayers(layers);
-    for (auto& layer : layers){
-        ParenticAnnotationLayer* l1 = dynamic_cast<ParenticAnnotationLayer*>(layer.get());
-        osgEarth::Annotation::AnnotationLayer* l2 = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer.get());
-        if (!(l1 || l2)){
-            mNodes.push_back(layer->getNode());
-        }
-        else{
-            if(l1)
-                for (int i = 0; i < l1->getNumberOfNodes(); ++i)
-                    mNodes.push_back(l1->getGroup()->getChild(i));
-            else
-                for (int i = 0; i < l1->getNumberOfNodes(); ++i)
-                    mNodes.push_back(l2->getGroup()->getChild(i));
-        }
-    }
-}
-
+//void SearchNodeModel::init()
+//{
+//    std::vector<osg::ref_ptr<osgEarth::Layer>> layers;
+//    mMapItem->getMapObject()->getLayers(layers);
+//    for (auto& layer : layers){
+//        ParenticAnnotationLayer* l1 = dynamic_cast<ParenticAnnotationLayer*>(layer.get());
+//        osgEarth::Annotation::AnnotationLayer* l2 = dynamic_cast<osgEarth::Annotation::AnnotationLayer*>(layer.get());
+//        if (!(l1 || l2)){
+//            mNodes.push_back(layer->getNode());
+//        }
+//        else{
+//            if(l1)
+//                for (int i = 0; i < l1->getNumberOfNodes(); ++i)
+//                    mNodes.push_back(l1->getGroup()->getChild(i));
+//            else
+//                for (int i = 0; i < l1->getNumberOfNodes(); ++i)
+//                    mNodes.push_back(l2->getGroup()->getChild(i));
+//        }
+//    }
+//}
 
 
 
@@ -135,15 +137,36 @@ SearchNodeProxyModel::SearchNodeProxyModel(QObject *parent)
 
 bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
+
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive))
-        return true;
+    QString dataString = index.data(SearchNodeModel::type_).toString();
+    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive)) {
+        if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
+            return true;
+        }
+        else{
+            if(myVector.size()==0){
+                return true;
+            }
+                return false;
+        }
+    }
     return false;
-}
+    }
 
 QString SearchNodeProxyModel::filterString() const
 {
     return mFilterString;
+}
+
+void SearchNodeProxyModel::toggleItem(const QString &itemText) {
+    auto it = std::find(myVector.begin(), myVector.end(), itemText);
+    if (it == myVector.end()) {
+        myVector.push_back(itemText);
+    } else {
+        myVector.erase(it);
+    }
+    invalidateFilter();
 }
 
 

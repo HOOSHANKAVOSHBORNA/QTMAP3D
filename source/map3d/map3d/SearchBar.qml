@@ -9,6 +9,7 @@ Item{
     property bool flag: false
     property int iconSize: 26/Style.monitorRatio
     readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
+
     id: rootItem
     width: searchRect.width
     height: 240/Style.monitorRatio
@@ -122,8 +123,9 @@ Item{
             ColumnLayout{
                 anchors.fill: parent
                 anchors.margins: 5
-                anchors.topMargin: searchRect.height + 5
+                anchors.topMargin: searchRect.height + 10
                 Label {
+                    Layout.leftMargin: 7/Style.monitorRatio
                     background: Rectangle {
                         color: "transparent"
                     }
@@ -133,9 +135,11 @@ Item{
                         font.pixelSize: 14/Style.monitorRatio
                         text: "Shortcut To Find "
                         font.family: Style.fontFamily
+
                     }
                     visible: flag
                 }
+                //----------
 
                 Flow{
                     Layout.fillWidth: true
@@ -145,29 +149,40 @@ Item{
                         id:typesRepeater
                         model: rootItem.model.getTypeListModel()
                         Rectangle{
+                            property bool checked: true
                             id:typeHolder
                             implicitHeight: 31/Style.monitorRatio
                             implicitWidth:  shortCut.implicitWidth
-                            color:"transparent"
+                            color:checked ? "transparent" : Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.1)
                             radius: 20
-                            MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
 
-print(itemText.text)
-                                        rootItem.model.setFilterString(itemText.text)
-//                                        rootItem.model.filterByType(itemText.text)
-                                    }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    checked =!checked
+                                    rootItem.model.toggleItem(itemText.text)
+                                    rootItem.model.setFilterString(searchText.text)
                                 }
+                                hoverEnabled: true
+                                onEntered: {typeHolder.border.color=Style.hoverColor
+                                            itemText.color = Style.hoverColor
+                                            searchIcon.color = Style.hoverColor}
+                                onExited: {
+
+                                    typeHolder.border.color=typeHolder.checked?Style.disableColor:Qt.rgba(Style.hoverColor.r, Style.hoverColor.g, Style.hoverColor.b, 0.3)
+                                            itemText.color = typeHolder.checked?Style.foregroundColor:Style.hoverColor
+                                            searchIcon.color = typeHolder.checked?Style.foregroundColor:Style.hoverColor
+                                }
+                            }
                             border{
+
                                 color: Style.disableColor
                                 width: 1
 
                             }
                             Component.onCompleted: {
                                 if (typesRepeater.model.rowCount()){
-                                    seperator.visible = true
-                                    idLabel.visible = true
                                     nameLabel.visible=true
                                 }
                             }
@@ -185,17 +200,18 @@ print(itemText.text)
                                     Layout.preferredWidth: 19/Style.monitorRatio
                                     Layout.leftMargin: 4/Style.monitorRatio
 
-                                    color: Style.foregroundColor
+                                    color: typeHolder.checked?Style.foregroundColor : Style.hoverColor
                                 }
                                 Text {
                                     id: itemText
                                     Layout.alignment: Qt.AlignLeft
-                                    Layout.rightMargin: 6/Style.monitorRatio
+                                    Layout.rightMargin: 10/Style.monitorRatio
                                     text:display
                                     font.family: Style.fontFamily
                                     font.pixelSize: 16/Style.monitorRatio
-                                    color: Style.foregroundColor
+                                    color: typeHolder.checked ? Style.foregroundColor : Style.hoverColor
                                     Layout.fillWidth: true
+
                                 }
                             }
                         }
@@ -207,31 +223,24 @@ print(itemText.text)
                     spacing: listView.width/3
 
 
-                    Label {
-                        id:idLabel
-                        text: "id :"
-                        font.pixelSize:16/Style.monitorRatio
-                        font.family: Style.fontFamily
-                        color: Style.foregroundColor
-                        visible:typesRepeater.model.rowCount()
-                    }
+//                    Label {
+//                        id:idLabel
+//                        text: "id :"
+//                        font.pixelSize:16/Style.monitorRatio
+//                        font.family: Style.fontFamily
+//                        color: Style.foregroundColor
+//                        visible:typesRepeater.model.rowCount()
+//                    }
                     Label {
                         id:nameLabel
-                        text: "Name :"
-                        font.pixelSize:16/Style.monitorRatio
+                        text: "Object"
+                        font.pixelSize:14/Style.monitorRatio
                         font.family: Style.fontFamily
-                        color: Style.foregroundColor
+                        color: rootItem.fg
                         visible:typesRepeater.model.rowCount()
                     }
                 }
-                Rectangle{
-                    id:seperator
-                    Layout.fillWidth: true
-                    height: 1
-                    color: Style.foregroundColor
-                    opacity: .2
-                    visible:typesRepeater.model.rowCount()
-                }
+
                 ScrollView{
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -253,21 +262,22 @@ print(itemText.text)
                                 anchors.fill: parent
 
                                 Text {
-                                    anchors.left: id.right
-                                    anchors.leftMargin: delegateBtn.width/3
-                                    text: model.display
+                                    id:id
+                                    anchors.left: lvText.right
+                                    anchors.leftMargin: 15 / Style.monitorRatio
+                                    text: model.id_
                                     font.family: Style.fontFamily
                                     font.pointSize: Style.fontPointSize + 2
-                                    color: Style.foregroundColor
+                                    color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
 
                                     elide: Text.ElideRight
                                 }
                                 Text {
-                                    id:id
-                                    text: model.id_
+                                    id:lvText
+                                    text: model.display
                                     font.family: Style.fontFamily
                                     font.pointSize: Style.fontPointSize + 2
-                                    color: Style.foregroundColor
+                                    color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
 
                                     elide: Text.ElideRight
                                 }
@@ -277,7 +287,7 @@ print(itemText.text)
                             }
                             background: Rectangle
                             {
-                                color: parent.hovered ? Style.hoverColor : "transparent"
+                                color: /*parent.hovered ? Style.hoverColor : */"transparent"
                                 radius:height/2
                             }
                         }
