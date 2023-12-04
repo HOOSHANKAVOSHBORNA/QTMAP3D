@@ -11,7 +11,8 @@
 #include <QtQml>
 #include <qmlNode.h>
 #include <utility.h>
-
+#include <osg/Stencil>
+#include "highlightLine.h"
 
 const float RANGE3D = 835;
 
@@ -91,7 +92,7 @@ bool SimpleModelNode::isSelect() const
 void SimpleModelNode::select()
 {
     mIsSelected = !mIsSelected;
-    mSwitchNode->setValue(2, mIsSelected);
+    setOutline(mIsSelected);
 }
 
 void SimpleModelNode::showMenu()
@@ -100,7 +101,7 @@ void SimpleModelNode::showMenu()
     mCircularMenu->show(mIsMenuVisible);
 
     mIsSelected = mIsMenuVisible;
-    mSwitchNode->setValue(2, mIsSelected);
+    setOutline(mIsSelected);
 
 }
 
@@ -112,7 +113,7 @@ bool SimpleModelNode::isHighlight() const
 void SimpleModelNode::highlight(bool isHighlight)
 {
     mIsHighlight = isHighlight;
-    mSwitchNode->setValue(3, isHighlight);
+    mSwitchNode->setValue(2, isHighlight);
 }
 
 bool SimpleModelNode::isAutoScale() const
@@ -328,6 +329,9 @@ void SimpleModelNode::compile()
     m3DNode = new osg::LOD;
 
     m3DNode->addChild(mSimpleNode, 0, std::numeric_limits<float>::max());
+
+    // create outline effect
+    mHighlightLine = new HighlightLine;
     //--2D node---------------------------------------------------------
     m2DNode = new osg::Geode();
     osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
@@ -342,17 +346,17 @@ void SimpleModelNode::compile()
         m3DNode->accept(cbv);
     else
         m2DNode->accept(cbv);
-    mCircleSelectNode = new Circle();
-    mCircleSelectNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
-    mCircleSelectNode->setStrokeColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
-    mCircleSelectNode->setStrokeWidth(2);
-    mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    // mCircleSelectNode = new Circle();
+    // mCircleSelectNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
+    // mCircleSelectNode->setStrokeColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
+    // mCircleSelectNode->setStrokeWidth(2);
+    // mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
 //    mCircleSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
 
-        mConeSelecteNode = new Cone();
-        mConeSelecteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
-        mConeSelecteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
-        mConeSelecteNode->setHeight(osgEarth::Distance(0, osgEarth::Units::METERS));
+        mConeHighliteNode = new Cone();
+        mConeHighliteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
+        mConeHighliteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+        mConeHighliteNode->setHeight(osgEarth::Distance(0, osgEarth::Units::METERS));
 //        mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
 //        mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
 //        mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
@@ -360,29 +364,36 @@ void SimpleModelNode::compile()
     //    selectGroup->addChild(mCircleSelectNode);
     //    selectGroup->addChild(mConeSelecteNode);
     //--highlight node-------------------------------------------------
-    mCircleHighlightNode = new Circle();
-    mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
-    mCircleHighlightNode->setStrokeColor(osg::Vec4f(0.12,1,1,0.5));
-    mCircleHighlightNode->setStrokeWidth(2);
-    mCircleHighlightNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius() - 0.1*cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
-    mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
+    // mCircleHighlightNode = new Circle();
+    // mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
+    // mCircleHighlightNode->setStrokeColor(osg::Vec4f(0.12,1,1,0.5));
+    // mCircleHighlightNode->setStrokeWidth(2);
+    // mCircleHighlightNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius() - 0.1*cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    // mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
     //--setting--------------------------------------------------------
+    // create outline effect
+    mHighlightLine->addChild(m3DNode);
     if(mIs3D){
-        mSwitchNode->addChild(m3DNode, true);
+        mSwitchNode->addChild(mHighlightLine, true);
         mSwitchNode->addChild(m2DNode, false);
-        mSwitchNode->addChild(mConeSelecteNode, false);
-        mSwitchNode->addChild(mCircleHighlightNode, false);
+        mSwitchNode->addChild(mConeHighliteNode, false);
+        // mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     else{
-        mSwitchNode->addChild(m3DNode, false);
+        mSwitchNode->addChild(mHighlightLine, false);
         mSwitchNode->addChild(m2DNode, true);
-        mSwitchNode->addChild(mConeSelecteNode, false);
-        mSwitchNode->addChild(mCircleHighlightNode, false);
+        mSwitchNode->addChild(mConeHighliteNode, false);
+        // mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
     osgEarth::Symbology::Style  rootStyle ;
+
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
-    //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
+    osg::DisplaySettings::instance()->setMinimumNumStencilBits( 1 );
+    mMapItem->getViewer()->getCamera()->setClearMask(
+        GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
+        );
+
     setStyle(rootStyle);
 
     setColor(mColor);
@@ -426,4 +437,14 @@ void SimpleModelNode::createBookmarkItem()
         mIsBookmarked = false;
         mBookmarkMenuItem->checked = false;
     });
+}
+
+void SimpleModelNode::setOutline(bool state)
+{
+    if (state){
+        mHighlightLine->setWidth(6);
+        mHighlightLine->setColor(osg::Vec4(0.12,1,1,0.5));
+    } else {
+        mHighlightLine->setColor(osg::Vec4(0.0,0.0,0.0,0));
+    }
 }

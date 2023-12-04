@@ -326,8 +326,9 @@ void MapItem::frame()
     // Set SkyNode sun light rotate with camera
     //
     auto sunLight = mSkyNode->getSunLight();
-    sunLight->setAmbient(osg::Vec4(0.01f, 0.01f, 0.01f, 1));
-    sunLight->setDiffuse(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
+
+    sunLight->setAmbient(osg::Vec4(0.04f, 0.04f, 0.04f, 1));
+    sunLight->setDiffuse(osg::Vec4(0.35f, 0.35f, 0.35f, 1));
     sunLight->setSpecular(osg::Vec4(0.5f, 0.5f, 0.5f, 1));
 
     float splen = sunLight->getPosition().length();
