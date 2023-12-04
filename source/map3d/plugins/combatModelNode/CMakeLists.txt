@@ -20,6 +20,7 @@ add_library(combatModelNode SHARED
     bulletNode.h    bulletNode.cpp
     combatManager.h combatManager.cpp
     assignLine.h    assignLine.cpp
+    combatListModel.h combatListModel.cpp
 )
 
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

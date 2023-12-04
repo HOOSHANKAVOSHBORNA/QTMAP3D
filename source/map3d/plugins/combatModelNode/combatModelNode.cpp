@@ -3,6 +3,7 @@
 #include <osgEarth/GLUtils>
 #include <moveableModelNode.h>
 #include <flyableModelNode.h>
+#include "combatManager.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 
@@ -132,7 +133,7 @@ bool CombatModelNode::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA:
 
         if(targetModelNode)
         {
-            mCombatManager->assign(mAttackerNode,targetModelNode);
+            mCombatManager->assign(mAttackerNode,targetModelNode,AssignState::ASSIGNED);
         }
         mapItem()->removeNode(mDragModelNode);
         mDragModelNode = nullptr;

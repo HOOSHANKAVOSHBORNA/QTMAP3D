@@ -8,7 +8,7 @@
 #include <simpleModelNode.h>
 
 
- enum State{
+ enum AssignState{
     PREASSIGN,
     HOVERED,
     SELECTED,
@@ -26,13 +26,13 @@ struct assignmentData
 public:
     osg::ref_ptr<SimpleModelNode> attacker{nullptr};
     osg::ref_ptr<SimpleModelNode> target{nullptr};
-    void setState(State state);
+    void setState(AssignState state);
     void setLine(MapItem* map);
     LineNode* getLine();
 
 private:
     osg::ref_ptr<LineNode> mRelationLine{nullptr};
-    State mState{PREASSIGN};
+    AssignState mState{PREASSIGN};
 };
 
 
@@ -40,18 +40,15 @@ private:
 class CombatManager
 {
 public:
-
-
     CombatManager(MapItem *map);
     //--setupFunctions-----------------------------------------------------------------------
     void setCombatLayer(ParenticAnnotationLayer* layer);
     ParenticAnnotationLayer *getCombatLayer();
     //--dataManagementFunctions--------------------------------------------------------------
-    void assign(SimpleModelNode *attacker, SimpleModelNode *target, State state=PREASSIGN);
+    void assign(SimpleModelNode *attacker, SimpleModelNode *target, AssignState state=PREASSIGN);
     void removeAssignment(SimpleModelNode *attacker,SimpleModelNode *target);
     void deleteAttackerNode(SimpleModelNode *attacker);
     void deleteTargetNode(SimpleModelNode *target);
-    void setState(assignmentData data, State state);
     QMap<QString,assignmentData> *getAssignmentData();
     //--bulletManagementFunctions----------------------------------------------------------------------
     int readyBulletFor(SimpleModelNode *attacker,const std::string &url3D , const std::string &url2D);

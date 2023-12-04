@@ -1,7 +1,12 @@
 import QtQuick
 import QtQuick.Layouts
 
+
+
 Item {
+
+    property var combatModel
+
     width: parent.width/2
     height: 60
     Rectangle{
