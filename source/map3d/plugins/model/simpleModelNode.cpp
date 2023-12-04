@@ -346,11 +346,6 @@ void SimpleModelNode::compile()
         m3DNode->accept(cbv);
     else
         m2DNode->accept(cbv);
-    // mCircleSelectNode = new Circle();
-    // mCircleSelectNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
-    // mCircleSelectNode->setStrokeColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
-    // mCircleSelectNode->setStrokeWidth(2);
-    // mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
 //    mCircleSelectNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
 
         mConeHighliteNode = new Cone();
@@ -363,6 +358,7 @@ void SimpleModelNode::compile()
 
     //    selectGroup->addChild(mCircleSelectNode);
     //    selectGroup->addChild(mConeSelecteNode);
+
     //--highlight node-------------------------------------------------
     // mCircleHighlightNode = new Circle();
     // mCircleHighlightNode->setFillColor(osg::Vec4f(0,0.0,0.0,0));
@@ -370,6 +366,7 @@ void SimpleModelNode::compile()
     // mCircleHighlightNode->setStrokeWidth(2);
     // mCircleHighlightNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius() - 0.1*cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
     // mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
+
     //--setting--------------------------------------------------------
     // create outline effect
     mHighlightLine->addChild(m3DNode);
@@ -386,15 +383,21 @@ void SimpleModelNode::compile()
         // mSwitchNode->addChild(mCircleHighlightNode, false);
     }
     //--------------------------------------------------------------------------
+    // this.
     osgEarth::Symbology::Style  rootStyle ;
 
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
+
     osg::DisplaySettings::instance()->setMinimumNumStencilBits( 1 );
     mMapItem->getViewer()->getCamera()->setClearMask(
         GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
         );
 
+
     setStyle(rootStyle);
+
+    //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
+    // setStyle(rootStyle);
 
     setColor(mColor);
 }
@@ -403,13 +406,13 @@ void SimpleModelNode::createCircularMenu()
 {
     mCircularMenu = new CircularMenu(mMapItem, this);
     mCircularMenu->show(false);
-    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false};
+    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false, "qrc:/Resources/menu-info.png"};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
-    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true};
+    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true, "qrc:/Resources/menu-bookmark-checked.png"};
     QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
-    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", true};
+    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png"};
     QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
 
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);

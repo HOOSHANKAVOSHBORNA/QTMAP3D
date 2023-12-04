@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>resources/tank.png</file>
         <file>resources/drone.png</file>
+        <file>resources/CombatMenu.qml</file>
     </qresource>
 </RCC>

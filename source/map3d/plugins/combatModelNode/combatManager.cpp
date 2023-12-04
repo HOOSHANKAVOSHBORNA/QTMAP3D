@@ -2,7 +2,8 @@
 
 CombatManager::CombatManager(MapItem *map)
 {
-    mEdgeDataList = new QList<assignmentData>;
+    // mEdgeDataList = new QList<assignmentData>;
+    mAssignmentDataMap = new QMap<QString,assignmentData>;
     mBulletList = new QList<osg::ref_ptr<BulletNode>>;
     mMapItem = map;
 }
@@ -17,49 +18,55 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
     return mCombatLayer;
 }
 
-void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , MapItem *map)
+void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , AssignState state)
 {
-    osg::ref_ptr<LineNode> line = new LineNode(map);
-    line->addPoint(attacker->getPosition());
-    line->addPoint(target->getPosition());
-    line->setTessellation(50);
-    mCombatLayer->addChild(line);
+
+    QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
+    if(mAssignmentDataMap->contains(assignmentID)){
+        mAssignmentDataMap->value(assignmentID).setState(state);
+    }
     attacker->highlight(true);
     target->highlight(true);
-    assignmentData data = {attacker , target , line};
-    mEdgeDataList->append(data);
+    assignmentData data ;
+    data.attacker = attacker;
+    data.target = target;
+    data.setLine(mMapItem);
+    data.setState(state);
+    mCombatLayer->addChild(data.getLine());
+    mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
 
 void CombatManager::removeAssignment(SimpleModelNode *attacker, SimpleModelNode *target)
 {
-    for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var).attacker == attacker && mEdgeDataList->at(var).target == target){
-            mEdgeDataList->removeAt(var);
-        }
+    QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
+    try {
+        mAssignmentDataMap->remove(assignmentID);
+    } catch (...) {
     }
+
 }
 
 void CombatManager::deleteAttackerNode(SimpleModelNode *attacker)
 {
-    for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var).attacker == attacker){
-            mEdgeDataList->removeAt(var);
+    QString attackerID = QString::number(attacker->nodeData()->id);
+    for (auto i = mAssignmentDataMap->cbegin(), end = mAssignmentDataMap->cend(); i != end; ++i)
+        if(i.key().startsWith(attackerID)){
+            mAssignmentDataMap->remove(i.key());
         }
-    }
 }
 
 void CombatManager::deleteTargetNode(SimpleModelNode *target)
 {
-    for (int var = 0; var < mEdgeDataList->length() ; ++var) {
-        if(mEdgeDataList->at(var).target == target){
-            mEdgeDataList->removeAt(var);
+    QString targetID = QString::number(target->nodeData()->id);
+    for (auto i = mAssignmentDataMap->cbegin(), end = mAssignmentDataMap->cend(); i != end; ++i)
+        if(i.key().endsWith(targetID)){
+            mAssignmentDataMap->remove(i.key());
         }
-    }
 }
 
-QList<assignmentData> *CombatManager::getAssignmentData()
+QMap<QString, assignmentData> *CombatManager::getAssignmentData()
 {
-    return mEdgeDataList;
+    return mAssignmentDataMap;
 }
 
 int CombatManager::readyBulletFor(SimpleModelNode *attacker, const std::string &url3D, const std::string &url2D)
@@ -123,4 +130,55 @@ void CombatManager::attackResult(bool result, int bulletID)
     }else{
         mBulletList->at(bulletID)->setNodeMask(0);
     }
+}
+
+void assignmentData::setState(AssignState state)
+{
+
+    switch (state) {
+    case PREASSIGN:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case HOVERED:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0.2,0.2,0.5,1)));
+        break;
+    case SELECTED:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0,1,0,1)));
+        break;
+    case ASSIGNED:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,0,0,1)));
+        break;
+    case SEARCH:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0,0,0,1)));
+        break;
+    case LOCK:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case FIRE:
+        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
+        break;
+    case SUCCEED:
+        mRelationLine->setNodeMask(false);
+        break;
+    case FAILED:
+        mRelationLine->setNodeMask(false);
+        break;
+    default:
+        mRelationLine->setFillColor(osgEarth::Color("white"));
+        break;
+    }
+}
+
+void assignmentData::setLine(MapItem *map)
+{
+    mRelationLine = new LineNode(map);
+    mRelationLine->addPoint(attacker->getPosition());
+    mRelationLine->addPoint(target->getPosition());
+    mRelationLine->setTessellation(50);
+    mRelationLine->setWidth(20);
+}
+
+LineNode *assignmentData::getLine()
+{
+    return mRelationLine;
 }

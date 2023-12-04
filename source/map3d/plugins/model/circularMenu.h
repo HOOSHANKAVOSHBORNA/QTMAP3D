@@ -17,11 +17,13 @@ public:
     CircularMenuItem(
         QString _name      = QString(),
         QString _iconUrl   = QString(),
-        bool    _checkable = false
-        ):
-        name     (_name     ),
-        iconUrl  (_iconUrl  ),
-        checkable(_checkable)
+        bool    _checkable = false,
+        QString _iconCheckedUrl = QString()
+    ):
+        name            (_name     ),
+        iconUrl         (_iconUrl  ),
+        checkable       (_checkable),
+        iconCheckedUrl  (_iconCheckedUrl)
     {
 
     }
@@ -30,6 +32,7 @@ public:
     QString iconUrl;
     bool    checkable = false;
     bool    checked = false;
+    QString iconCheckedUrl;
 
 signals:
     void itemClicked();
@@ -63,7 +66,8 @@ class CircularMenuModel : public QAbstractListModel
         NameRole,
         IconUrlRole,
         CheckableRole,
-        CheckedRole
+        CheckedRole,
+        IconChehckedUrlRole
     };
 
 public:

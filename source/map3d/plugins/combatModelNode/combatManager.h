@@ -4,15 +4,38 @@
 
 #include "bulletNode.h"
 #include "lineNode.h"
+// #include "assignLine.h"
 #include <simpleModelNode.h>
+
+
+ enum AssignState{
+    PREASSIGN,
+    HOVERED,
+    SELECTED,
+    ASSIGNED,
+    BUSY,
+    SEARCH,
+    LOCK,
+    FIRE,
+    SUCCEED,
+    FAILED
+};
 
 struct assignmentData
 {
 public:
     osg::ref_ptr<SimpleModelNode> attacker{nullptr};
     osg::ref_ptr<SimpleModelNode> target{nullptr};
-    osg::ref_ptr<LineNode> relationLine{nullptr};
+    void setState(AssignState state);
+    void setLine(MapItem* map);
+    LineNode* getLine();
+
+private:
+    osg::ref_ptr<LineNode> mRelationLine{nullptr};
+    AssignState mState{PREASSIGN};
 };
+
+
 
 class CombatManager
 {
@@ -22,11 +45,11 @@ public:
     void setCombatLayer(ParenticAnnotationLayer* layer);
     ParenticAnnotationLayer *getCombatLayer();
     //--dataManagementFunctions--------------------------------------------------------------
-    void assign(SimpleModelNode *attacker, SimpleModelNode *target, MapItem *map);
+    void assign(SimpleModelNode *attacker, SimpleModelNode *target, AssignState state=PREASSIGN);
     void removeAssignment(SimpleModelNode *attacker,SimpleModelNode *target);
     void deleteAttackerNode(SimpleModelNode *attacker);
     void deleteTargetNode(SimpleModelNode *target);
-    QList<assignmentData> *getAssignmentData();
+    QMap<QString,assignmentData> *getAssignmentData();
     //--bulletManagementFunctions----------------------------------------------------------------------
     int readyBulletFor(SimpleModelNode *attacker,const std::string &url3D , const std::string &url2D);
     void removeBullet(int bulletID);
@@ -41,7 +64,8 @@ private:
     MapItem *mMapItem{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mCombatLayer;
     QList<osg::ref_ptr<BulletNode>> *mBulletList;
-    QList<assignmentData> *mEdgeDataList;
+    // QList<assignmentData> *mEdgeDataList;
+    QMap<QString,assignmentData> *mAssignmentDataMap;
 };
 
 #endif // COMBATMANAGER_H
