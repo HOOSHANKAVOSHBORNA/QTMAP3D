@@ -408,10 +408,10 @@ Item {
                                     Layout.minimumWidth: 100 / Style.monitorRatio
                                     Layout.rightMargin: 5 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
-                                    height: valHeight
+                                    height: valHeight / Style.monitorRatio
                                     decimals: 4
-                                    from: -2000
-                                    to: 2000
+                                    from: -180
+                                    to: 180
                                     onValueChanged: {
                                         rootItem.model.location.x = value
                                     }
@@ -438,7 +438,7 @@ Item {
                                     Layout.minimumWidth: 100 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
                                     Layout.rightMargin: 5 / Style.monitorRatio
-                                    height: valHeight
+                                    height: valHeight / Style.monitorRatio
                                     decimals: 4
                                     from: -2000
                                     to: 2000
@@ -993,7 +993,7 @@ Item {
                                 radius: 10 / Style.monitorRatio
                                 border.color: "transparent"
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 25 / Style.monitorRatio
+                                Layout.preferredHeight: valHeight / Style.monitorRatio
                                 Layout.rightMargin: 15 / Style.monitorRatio
                                 StepSpinBox {
                                     id:widthValue
@@ -1002,7 +1002,8 @@ Item {
                                     anchors.rightMargin: 5 / Style.monitorRatio
                                     anchors.left: parent.left
                                     anchors.right: parent.right
-                                    height: 28 / Style.monitorRatio
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    height: 30 / Style.monitorRatio
                                     decimals: 2
                                     from : 0
                                     to: 2000
