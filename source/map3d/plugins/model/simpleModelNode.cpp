@@ -89,20 +89,16 @@ bool SimpleModelNode::isSelect() const
     return mIsSelected;
 }
 
-void SimpleModelNode::select()
+void SimpleModelNode::select(bool value)
 {
-    mIsSelected = !mIsSelected;
+    mIsSelected = value;
     setOutline(mIsSelected);
 }
 
-void SimpleModelNode::showMenu()
+void SimpleModelNode::showMenu(bool value)
 {
-    mIsMenuVisible = !mIsMenuVisible;
+    mIsMenuVisible = value;
     mCircularMenu->show(mIsMenuVisible);
-
-    mIsSelected = mIsMenuVisible;
-    setOutline(mIsSelected);
-
 }
 
 bool SimpleModelNode::isHighlight() const

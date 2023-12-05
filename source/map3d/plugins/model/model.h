@@ -84,8 +84,9 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
-    NodeData* mNodeData{nullptr};
+    osg::ref_ptr<SimpleModelNode> mPickModelNode {nullptr};
 
+    NodeData* mNodeData{nullptr};
     DataManager *mDataManager;
 };
 

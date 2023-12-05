@@ -46,8 +46,8 @@ public:
     void setBookmarkManager(BookmarkManager *bookmarkManager);
 
     bool isSelect() const;
-    void select();
-    void showMenu();
+    void select(bool value);
+    void showMenu(bool value);
 
 
     bool isHighlight() const;
