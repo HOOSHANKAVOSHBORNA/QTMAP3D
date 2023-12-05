@@ -28,7 +28,7 @@ enum {
 struct LocationItem
 {
 public:
-    osgEarth::Viewpoint viewpoint;
+    osgEarth::Viewpoint *viewpoint;
     QString description;
     QString imageSource;
     QString color;
@@ -58,51 +58,17 @@ private:
     LocationProxyModel* mLocationProxyModel;
 };
 
-// ------------------------------------------------------------ model
-class LocationModel : public QAbstractListModel
-{
-    Q_OBJECT
-
-public:
-    explicit LocationModel(MapItem *mapItem);
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-
-    Q_INVOKABLE void myRemoveRow(QModelIndex index);
-    Q_INVOKABLE void goToLocation(QModelIndex index);
-    Q_INVOKABLE void myAppendRow(const LocationItem &newLocationItem);
-    Q_INVOKABLE void myEditRow(QModelIndex index, const LocationItem &newLocationItem);
-
-    QVector<LocationItem> locations() const;
-    void setLocations(const QVector<LocationItem> &newLocations);
-
-    virtual QHash<int, QByteArray> roleNames() const override;
-
-    MapItem *mapItem() const;
-
-private:
-    MapItem *mMapItem;
-    QVector<LocationItem> mLocations;
-};
-
 // ------------------------------------------------------------ proxy model
 class LocationProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
     Q_PROPERTY(QString searchedName READ searchedName WRITE setSearchedName NOTIFY searchedNameChanged FINAL)
 
-private:
-    explicit LocationProxyModel();
-
 public:
-    static LocationProxyModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
-
+    explicit LocationProxyModel();
     Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
     Q_INVOKABLE void goToLocation(const QModelIndex &index);
-    Q_INVOKABLE void printCurrentLocation(); // for debugging
+    Q_INVOKABLE void printCurrentLocation();
     Q_INVOKABLE void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
     Q_INVOKABLE QVector3D getCurrentXYZ();
     Q_INVOKABLE void editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor);
@@ -120,6 +86,33 @@ private:
 protected:
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     virtual bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
+};
+
+// ------------------------------------------------------------ model
+class LocationModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+public:
+    explicit LocationModel(MapItem *mapItem);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    Q_INVOKABLE void myRemoveRow(QModelIndex index);
+    Q_INVOKABLE void goToLocation(QModelIndex index);
+    Q_INVOKABLE void myAppendRow(const LocationItem &newLocationItem);
+    Q_INVOKABLE void myEditRow(QModelIndex index, const LocationItem &newLocationItem);
+
+    QVector<LocationItem *> locations() const;
+    void setLocations(const QVector<LocationItem *> &newLocations);
+
+    virtual QHash<int, QByteArray> roleNames() const override;
+
+    MapItem *mapItem() const;
+
+private:
+    MapItem *mMapItem;
+    QVector<LocationItem *> mLocations;
 };
 
 #endif // LOCATIONMANAGER_H

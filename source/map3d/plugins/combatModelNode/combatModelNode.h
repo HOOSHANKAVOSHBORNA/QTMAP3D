@@ -9,6 +9,7 @@
 #include <osgEarthAnnotation/AnnotationLayer>
 #include "simpleModelNode.h"
 #include "dataManager.h"
+#include "combatListModel.h"
 
 #define COMBATMODELNODE "Combat"
 #define TANK "Tank"
@@ -50,6 +51,8 @@ public:
 public slots:
     void onTankItemCheck (bool check);
     void onModeChanged(bool is3DView);
+    void onTargetMenuChecked();
+    void onAttackMenuChecked();
 
 protected:
     void initModel(osgEarth::GeoPoint &geoPos);;
@@ -64,6 +67,7 @@ private:
 
 private:
     CombatManager *mCombatManager;
+    CombatList *mCombatList;
     QList<int> mBulletID;
     static int mCount;
     bool mIs3D;
@@ -75,7 +79,8 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mAttackNodeLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     NodeData* mNodeData{nullptr};
-    DataManager *mDataManager;
+    DataManager *mDataManager{nullptr};
+    QQmlEngine *mEngine{nullptr};
 };
 
 #endif // COMBATMODELNODE_H

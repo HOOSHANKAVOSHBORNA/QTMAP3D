@@ -83,7 +83,7 @@ Item {
 
             ShapePath {
                 strokeColor: hover20
-                strokeWidth: 25
+                strokeWidth: thickness
                 fillColor: 'transparent'
                 capStyle: ShapePath.RoundCap
 

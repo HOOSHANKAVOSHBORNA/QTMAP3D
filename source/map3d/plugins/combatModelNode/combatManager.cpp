@@ -18,7 +18,7 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
     return mCombatLayer;
 }
 
-void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , State state)
+void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , AssignState state)
 {
 
     QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
@@ -62,11 +62,6 @@ void CombatManager::deleteTargetNode(SimpleModelNode *target)
         if(i.key().endsWith(targetID)){
             mAssignmentDataMap->remove(i.key());
         }
-}
-
-void CombatManager::setState(assignmentData data, State state)
-{
-    // data.
 }
 
 QMap<QString, assignmentData> *CombatManager::getAssignmentData()
@@ -137,7 +132,7 @@ void CombatManager::attackResult(bool result, int bulletID)
     }
 }
 
-void assignmentData::setState(State state)
+void assignmentData::setState(AssignState state)
 {
 
     switch (state) {

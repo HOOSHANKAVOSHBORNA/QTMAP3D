@@ -1,20 +1,22 @@
+#include <osgEarth/Viewpoint>
+
 #include "locationManager.h"
-#include "osgEarth/Viewpoint"
+
 
 LocationModel::LocationModel(MapItem *mapItem)
 {
     mMapItem = mapItem;
 
+    // test
     osgEarth::GeoPoint gp{mapItem->getMapSRS(), -165, 90, 0};
-    osgEarth::Viewpoint vp;
-    vp.name() = "North";
-    vp.setHeading(0);
-    vp.setPitch(-20);
-    vp.setRange(5000000);
-    vp.focalPoint() = gp;
-    LocationItem ld1 = LocationItem{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"};
+    osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
+    vp->name() = "North";
+    vp->setHeading(0);
+    vp->setPitch(-20);
+    vp->setRange(5000000);
+    vp->focalPoint() = gp;
 
-    mLocations.append(ld1);
+    mLocations.append(new LocationItem{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"});
 }
 
 int LocationModel::rowCount(const QModelIndex &parent) const
@@ -24,77 +26,34 @@ int LocationModel::rowCount(const QModelIndex &parent) const
 
 QVariant LocationModel::data(const QModelIndex &index, int role) const
 {
-    const LocationItem ld = mLocations.at(index.row());
+    const LocationItem *ld = mLocations.at(index.row());
 
     switch (role) {
     case NameRole:
-        return QVariant(QString::fromStdString(ld.viewpoint.name().get()));
+        return QVariant(QString::fromStdString(ld->viewpoint->name().get()));
     case LonRole:
-        return QVariant(ld.viewpoint.focalPoint().get().x());
+        return QVariant(ld->viewpoint->focalPoint().get().x());
     case LatRole:
-        return QVariant(ld.viewpoint.focalPoint().get().y());
+        return QVariant(ld->viewpoint->focalPoint().get().y());
     case ZRole:
-        return QVariant(ld.viewpoint.focalPoint().get().z());
+        return QVariant(ld->viewpoint->focalPoint().get().z());
     case HeadingRole:
-        return QVariant(ld.viewpoint.heading()->as(osgEarth::Units::DEGREES));
+        return QVariant(ld->viewpoint->heading()->as(osgEarth::Units::DEGREES));
     case PitchRole:
-        return QVariant(ld.viewpoint.pitch()->as(osgEarth::Units::DEGREES));
+        return QVariant(ld->viewpoint->pitch()->as(osgEarth::Units::DEGREES));
     case RangeRole:
-        return QVariant(ld.viewpoint.range()->as(osgEarth::Units::METERS));
+        return QVariant(ld->viewpoint->range()->as(osgEarth::Units::METERS));
     case DescriptionRole:
-        return QVariant(ld.description);
+        return QVariant(ld->description);
     case ImageSourceRole:
-        return QVariant(ld.imageSource);
+        return QVariant(ld->imageSource);
     case ColorRole:
-        return QVariant(ld.color);
+        return QVariant(ld->color);
     default:
         break;
     }
 
     return QVariant(false);
-}
-
-bool LocationModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    LocationItem ld = mLocations.at(index.row());
-
-    switch (role) {
-    case NameRole:
-        ld.viewpoint.name() = value.toString().toStdString();
-        break;
-//    case LonRole:
-//        ld.viewpoint.focalPoint().get().x() = value.toDouble();
-//        break;
-//    case LatRole:
-//        ld.viewpoint.focalPoint().get().y() = value.toDouble();
-//        break;
-//    case ZRole:
-//        ld.viewpoint.focalPoint().get().z() = value.toDouble();
-//        break;
-//    case HeadingRole:
-//        ld.viewpoint.setHeading(value.toDouble());
-//        break;
-//    case PitchRole:
-//        ld.viewpoint.setPitch(value.toDouble());
-//        break;
-//    case RangeRole:
-//        ld.viewpoint.setRange(value.toDouble());
-//        break;
-//    case DescriptionRole:
-//        ld.description = value.toString();
-//        break;
-//    case ImageSourceRole:
-//        ld.imageSource = value.toString();
-//        break;
-//    case ColorRole:
-//        ld.color = value.toString();
-//        break;
-//    default:
-//        break;
-    }
-
-    emit dataChanged(index, index, {role});
-    return true;
 }
 
 void LocationModel::myRemoveRow(QModelIndex index)
@@ -106,29 +65,30 @@ void LocationModel::myRemoveRow(QModelIndex index)
 
 void LocationModel::goToLocation(QModelIndex index)
 {
-    mMapItem->getCameraController()->setViewpoint(mLocations.at(index.row()).viewpoint, 0);
+    mMapItem->getCameraController()->setViewpoint(*(mLocations.at(index.row())->viewpoint), 0);
 }
 
 void LocationModel::myAppendRow(const LocationItem &newLocationItem)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    mLocations.append(newLocationItem);
+    LocationItem *li = new LocationItem(newLocationItem);
+    mLocations.append(li);
     endInsertRows();
 }
 
 void LocationModel::myEditRow(QModelIndex index, const LocationItem &newLocationItem)
 {
-    beginResetModel();
-    mLocations[index.row()] = newLocationItem;
-    endResetModel();
+    LocationItem *li = new LocationItem(newLocationItem);
+    mLocations[index.row()] = li;
+    emit dataChanged(this->index(index.row(), 0), this->index(index.row(), 0));
 }
 
-QVector<LocationItem> LocationModel::locations() const
+QVector<LocationItem *> LocationModel::locations() const
 {
     return mLocations;
 }
 
-void LocationModel::setLocations(const QVector<LocationItem> &newLocations)
+void LocationModel::setLocations(const QVector<LocationItem *> &newLocations)
 {
     mLocations = newLocations;
 }
@@ -157,19 +117,9 @@ MapItem *LocationModel::mapItem() const
 }
 
 // ------------------------------------------------------- proxy model methods
-LocationProxyModel *LocationProxyModel::mInstance = nullptr;
-
 LocationProxyModel::LocationProxyModel()
 {
 
-}
-
-LocationProxyModel *LocationProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new LocationProxyModel(); }
-    return mInstance;
 }
 
 void LocationProxyModel::myRemoveRow(const QModelIndex &index)
@@ -201,7 +151,9 @@ void LocationProxyModel::addNewLocation(QString newName, QString newDescription,
     osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
     vp.name() = newName.toStdString();
 
-    dynamic_cast<LocationModel*>(sourceModel())->myAppendRow(LocationItem{vp, newDescription, newImageSource, newColor});
+    osgEarth::Viewpoint *vpPointer = new osgEarth::Viewpoint(vp);
+
+    dynamic_cast<LocationModel*>(sourceModel())->myAppendRow(LocationItem{vpPointer, newDescription, newImageSource, newColor});
 }
 
 QVector3D LocationProxyModel::getCurrentXYZ()
@@ -220,7 +172,9 @@ void LocationProxyModel::editLocation(const QModelIndex &index, QString newName,
     osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
     vp.name() = newName.toStdString();
 
-    dynamic_cast<LocationModel*>(sourceModel())->myEditRow(mapToSource(index), LocationItem{vp, newDescription, newImageSource, newColor});
+    osgEarth::Viewpoint *vpPointer = new osgEarth::Viewpoint(vp);
+
+    dynamic_cast<LocationModel*>(sourceModel())->myEditRow(mapToSource(index), LocationItem{vpPointer, newDescription, newImageSource, newColor});
 }
 
 QString LocationProxyModel::searchedName() const
@@ -258,7 +212,7 @@ bool LocationProxyModel::lessThan(const QModelIndex &source_left, const QModelIn
 // ----------------------------------------------------- model manager
 LocationManager::LocationManager()
 {
-    mLocationProxyModel = LocationProxyModel::createSingletonInstance(nullptr, nullptr);
+    mLocationProxyModel = new LocationProxyModel;
 }
 
 LocationManager *LocationManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)

@@ -2,6 +2,19 @@
 
 # قراردادهای برنامه نویسی C++
 
+</div>
+
+## File Classes Orders
+
+### Manager Design Pattern file
+
+1. Manager Class
+2. Proxy Model Class
+3. Model Class
+
+
+<div dir="rtl">
+
 ## داخل کلاس را با این ترتیب پر کنید
 
 </div>
@@ -78,7 +91,7 @@ private: // Private variables
 
 - برای تعریف `Constructor` یک کلاس اگر میتوانید حتما از ‍*Initializer List* استفاده کنید.
 
-مثال: 
+مثال:
 
 </div>
 
@@ -95,7 +108,7 @@ public:
             x = i;
             y = j;
         }
-    */ 
+    */
 ...
 ```
 
@@ -104,7 +117,7 @@ public:
 > برای *initialization of non-static const data members* و *initialization of reference members*  حتی کامپایلر
 > ما را مجبور به این کار میکند.
 
-- یک مورد خیلی کاربردی ‍`Initializer List` هم تعیین پارامترهای کلاس پدر یا 
+- یک مورد خیلی کاربردی ‍`Initializer List` هم تعیین پارامترهای کلاس پدر یا
 `Base Class` است. مثال:
 
 </div>
@@ -112,28 +125,28 @@ public:
 ```CPP
 #include <iostream>
 using namespace std;
- 
+
 class A {
     int i;
 public:
     A(int );
 };
- 
+
 A::A(int arg) {
     i = arg;
     cout << "A's Constructor called: Value of i: " << i << endl;
 }
- 
+
 // Class B is derived from A
 class B: A {
 public:
     B(int );
 };
- 
+
 B::B(int x):A(x) { //Initializer list must be used
     cout << "B's Constructor called";
 }
- 
+
 int main() {
     B obj(10);
     return 0;
