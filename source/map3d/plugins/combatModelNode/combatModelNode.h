@@ -10,7 +10,7 @@
 #include "simpleModelNode.h"
 #include "dataManager.h"
 
-#define COMBATMODELNODE "Combat Model Node"
+#define COMBATMODELNODE "Combat"
 #define TANK "Tank"
 
 
@@ -60,6 +60,7 @@ protected:
 private:
     SimpleModelNode* pick(float x, float y);
     osgEarth::Annotation::ModelNode *getDragModel();
+    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc,osgEarth::GeoPoint geoPos);
 
 private:
     CombatManager *mCombatManager;

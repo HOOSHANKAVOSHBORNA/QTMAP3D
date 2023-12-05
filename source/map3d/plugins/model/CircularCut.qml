@@ -11,6 +11,7 @@ Item {
     property color iconColor: '#003569'
     property color iconHoverColor: '#01AED6'
     property string iconSource: 'qrc:/Resources/hand.png'
+    property string iconSourceChecked: 'qrc:/Resources/hand.png'
     property double outerRadius: 400
     property double innerRadius: 300
     property double iconSize: 35
@@ -100,20 +101,20 @@ Item {
             //            rotation: 90 + (2 * startAngle + len) / 2
 
             icon {
-                source: iconSource
+                source: checkable && checked ? iconSourceChecked : iconSource
                 width: hovered ? iconSize + 10 : iconSize
                 height: hovered ? iconSize + 10 : iconSize
-//                color: checked ? iconHoverColor : iconColor
+//                color: !checkable ? "transparent" : checked ? 'white' : "#01AED6"
             }
 
             display: AbstractButton.IconOnly
 
             background: Rectangle {
                 id: btnBck
-                x: 5
-                y: 0
-                width: iconSize
-                height: iconSize
+                x: -5
+                y: -5
+                width: iconSize + 10
+                height: iconSize + 10
                 color: 'transparent'/*backgroundColor*/
                 radius: width / 2
             }
@@ -135,7 +136,7 @@ Item {
                     id: tooltipText
                     anchors.margins: 7
                     text: rootItem.text
-                    font.pixelSize: 17
+                    font.pixelSize: 15
                     color: 'white'
                 }
 

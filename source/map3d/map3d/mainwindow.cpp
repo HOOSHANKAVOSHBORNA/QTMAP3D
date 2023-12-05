@@ -132,6 +132,20 @@ LocationProxyModel *MainWindow::getLocationManager() const
     return LocationProxyModel::createSingletonInstance(nullptr, nullptr);
 }
 
+void MainWindow::addToMenuItemContainer(QQuickItem *item, QString title)
+{
+    QMetaObject::invokeMethod(this, "addToMenuItemContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
+}
+
+void MainWindow::removeFromMenuItemContainer(QQuickItem *item)
+{
+    QMetaObject::invokeMethod(this, "removeFromMenuItemContainer",
+                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
+                              );
+}
+
 void MainWindow::addToCenterCenterContainer(QQuickItem *item)
 {
     QMetaObject::invokeMethod(this, "addToCenterCenterContainer",

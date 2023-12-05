@@ -96,6 +96,8 @@ QVariant CircularMenuModel::data(const QModelIndex &index, int role) const
         return QVariant(cmi->checkable);
     case CheckedRole:
         return QVariant(cmi->checked);
+    case IconChehckedUrlRole:
+        return QVariant(cmi->iconCheckedUrl);
     default:
         break;
     }
@@ -111,6 +113,7 @@ QHash<int, QByteArray> CircularMenuModel::roleNames() const
     itemFields[IconUrlRole] = "iconUrl";
     itemFields[CheckableRole] = "checkable";
     itemFields[CheckedRole] = "checked";
+    itemFields[IconChehckedUrlRole] = "iconCheckedUrl";
 
     return itemFields;
 }
