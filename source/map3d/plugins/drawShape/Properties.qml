@@ -440,8 +440,8 @@ Item {
                                     Layout.rightMargin: 5 / Style.monitorRatio
                                     height: valHeight / Style.monitorRatio
                                     decimals: 4
-                                    from: -2000
-                                    to: 2000
+                                    from: -180
+                                    to: 180
                                     onValueChanged: {
                                         rootItem.model.location.y = value
                                     }
@@ -471,8 +471,8 @@ Item {
                                     Layout.rightMargin: 5 / Style.monitorRatio
                                     height: valHeight / Style.monitorRatio
                                     decimals: 4
-                                    from: -2000
-                                    to: 2000
+                                    from: -180
+                                    to: 180
                                     onValueChanged: {
                                         rootItem.model.location.z = value
                                     }
@@ -530,7 +530,6 @@ Item {
                     }
                 }
 
-                //                }
                 ///////////-----------------------center-------------------//////////////
 
                 RowLayout{
@@ -577,8 +576,8 @@ Item {
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 height: valHeight / Style.monitorRatio
                                 decimals: 2
-                                from: -2000
-                                to: 2000
+                                from: -180
+                                to: 180
                                 onValueChanged: {
                                     rootItem.model.center.x = value
                                 }
@@ -607,8 +606,8 @@ Item {
                                 Layout.rightMargin: 5 / Style.monitorRatio
                                 height: valHeight / Style.monitorRatio
                                 decimals: 2
-                                from: -2000
-                                to: 2000
+                                from: -180
+                                to: 180
                                 onValueChanged: {
                                     rootItem.model.center.y =value
                                 }
@@ -636,10 +635,10 @@ Item {
                                 Layout.rightMargin: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 Layout.bottomMargin: 5 / Style.monitorRatio
-                                height: valHeight
+                                height: valHeight / Style.monitorRatio
                                 decimals: 2
-                                from: -2000
-                                to: 2000
+                                from: -180
+                                to: 180
                                 onValueChanged: {
                                     rootItem.model.center.z =value
                                 }
@@ -772,10 +771,11 @@ Item {
                                 anchors.rightMargin: 5 / Style.monitorRatio
                                 anchors.left: parent.left
                                 anchors.right: parent.right
-                                height: 28 / Style.monitorRatio
+                                anchors.verticalCenter: parent.verticalCenter
+                                height: 30 / Style.monitorRatio
                                 decimals: 2
                                 from : 0
-                                to: 2000
+                                to: 20000000
                                 onValueChanged: {
                                     rootItem.model.radius = value
                                 }
@@ -822,7 +822,7 @@ Item {
                             height: 20 / Style.monitorRatio
                             decimals: 2
                             from : 0
-                            to: 2000
+                            to: 20000000
                             onValueChanged: {
                                 rootItem.model.radiusMinor = value
                             }
@@ -869,7 +869,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             decimals: 2
                             from : 0
-                            to: 2000
+                            to: 20000000
                             onValueChanged: {
                                 rootItem.model.radiusMajor = value
                             }
@@ -899,7 +899,7 @@ Item {
                         }
                         Rectangle{
                             color: foregroundColor
-                            radius: 10
+                            radius: 10 / Style.monitorRatio
                             border.color: "transparent"
                             Layout.rightMargin: 15 / Style.monitorRatio
                             Layout.fillWidth: true
@@ -916,7 +916,7 @@ Item {
                                 height: 30 / Style.monitorRatio
                                 decimals: 2
                                 from : 0
-                                to: 2000
+                                to: 20000000
                                 onValueChanged: {
                                     rootItem.model.heighT= value
                                 }
@@ -961,7 +961,7 @@ Item {
                                     height: 30 / Style.monitorRatio
                                     decimals: 2
                                     from : 0
-                                    to: 2000
+                                    to: 20000000
                                     onValueChanged: {
                                         rootItem.model.lenghT = value
                                     }
@@ -1006,7 +1006,7 @@ Item {
                                     height: 30 / Style.monitorRatio
                                     decimals: 2
                                     from : 0
-                                    to: 2000
+                                    to: 20000000
                                     onValueChanged: {
                                         rootItem.model.widtH = value
                                     }
@@ -1153,7 +1153,7 @@ Item {
                             anchors.rightMargin: 5 / Style.monitorRatio
                             anchors.verticalCenter: parent.verticalCenter
                             from : 0
-                            to: 2000
+                            to: 20000000
                             height: 20 / Style.monitorRatio
                             onValueChanged: {
                                 rootItem.model.tesselation = value
@@ -1471,7 +1471,7 @@ Item {
                              }
                              Rectangle{
                                  color: foregroundColor
-                                 radius: 10
+                                 radius: 10 / Style.monitorRatio
                                  border.color: "transparent"
                                  Layout.rightMargin: 15 / Style.monitorRatio
                                  Layout.fillWidth: true
@@ -1490,6 +1490,7 @@ Item {
                                      anchors.verticalCenter: parent.verticalCenter
                                      height: 20 / Style.monitorRatio
                                      from: 0
+                                     to:20000000
                                      onValueChanged: {
                                          rootItem.model.pointsWidth = value
                                      }
