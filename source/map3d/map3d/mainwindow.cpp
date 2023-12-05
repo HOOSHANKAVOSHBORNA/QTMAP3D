@@ -129,7 +129,7 @@ BookmarkManager *MainWindow::getBookmarkManager() const
 
 LocationProxyModel *MainWindow::getLocationManager() const
 {
-    return LocationProxyModel::createSingletonInstance(nullptr, nullptr);
+    return LocationManager::createSingletonInstance(nullptr, nullptr)->locationProxyModel();
 }
 
 void MainWindow::addToMenuItemContainer(QQuickItem *item, QString title)
