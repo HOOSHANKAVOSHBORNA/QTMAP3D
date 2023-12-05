@@ -5,6 +5,8 @@
 
 #include "mapItem.h"
 #include <QObject>
+#include <osg/CullFace>
+#include <osg/PolygonMode>
 #include <osgEarthAnnotation/ModelNode>
 #include "modelAutoScaler.h"
 #include "nodeInformation.h"
@@ -14,12 +16,12 @@
 #include <bookmark.h>
 #include <qmlNode.h>
 #include <osg/ComputeBoundsVisitor>
-
+#include <osg/Stencil>
 #include "circle.h"
 #include "cone.h"
 #include "circularMenu.h"
 
-
+class HighlightLine;
 class MoveableModelNode;
 class FlyableModelNode;
 
@@ -81,15 +83,17 @@ private:
     void createCircularMenu();
     void createNodeInformation();
     void createBookmarkItem();
+    void setOutline(bool state);
 
 private:
     osg::ref_ptr<osg::Image> mImage;
     osg::ref_ptr<osg::Node> mSimpleNode;
     osg::ref_ptr<osg::Switch> mSwitchNode;
     osg::ref_ptr<osg::LOD> m3DNode;
+    osg::ref_ptr<HighlightLine> mHighlightLine;
     osg::ref_ptr<osg::Geode> m2DNode;
     osg::ref_ptr<Circle> mCircleSelectNode;
-    osg::ref_ptr<Cone> mConeSelecteNode;
+    osg::ref_ptr<Cone> mConeHighliteNode;
     osg::ref_ptr<Circle> mCircleHighlightNode;
     CircularMenuItem *mAttackerMenuItem;
 
