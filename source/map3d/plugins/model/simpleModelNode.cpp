@@ -378,19 +378,11 @@ void SimpleModelNode::compile()
     osgEarth::Symbology::Style  rootStyle ;
 
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
-
-    osg::DisplaySettings::instance()->setMinimumNumStencilBits( 1 );
-    mMapItem->getViewer()->getCamera()->setClearMask(
-        GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
-        );
-
-
+    //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
     setStyle(rootStyle);
 
-    //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
-    // setStyle(rootStyle);
-
     setColor(mColor);
+
 }
 
 void SimpleModelNode::createCircularMenu()
