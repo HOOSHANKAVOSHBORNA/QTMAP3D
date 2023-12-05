@@ -14,8 +14,8 @@ RowLayout{
 
         ComboBox {
             id:stepCombobox
-            implicitWidth: 60
-            implicitHeight: 25
+            implicitWidth: 69
+            implicitHeight: 20
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01 ]
             currentIndex: 3
             font.pointSize: 10

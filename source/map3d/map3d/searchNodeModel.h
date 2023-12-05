@@ -74,6 +74,8 @@ public:
     explicit SearchNodeProxyModel(QObject *parent = nullptr);
     QString filterString() const;
     Q_INVOKABLE void toggleItem(const QString &itemText);
+
+
 public slots:
     void setFilterString(const QString &filterString);
     void onNodeClicked(const int current);
