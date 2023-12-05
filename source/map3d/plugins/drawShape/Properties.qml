@@ -14,8 +14,8 @@ Item {
     readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.30)
     property string _headerTitleSTR: "Properties"
     property CProperty model
-    property int swtchWidth: 80
-    property int lblWidth: 50
+    property int swtchWidth: 100
+    property int lblWidth: 85
     property int valHeight: 30
     property int previousIndex:0
     property int nextIndex:0
@@ -31,7 +31,6 @@ Item {
         height: rootItem.height
         anchors.fill: parent
         color: "transparent"
-     //   opacity: 0.9
         anchors.margins: 6 / Style.monitorRatio
         radius: 10 / Style.monitorRatio
 
@@ -96,15 +95,16 @@ Item {
                 id: mainLayout
                 z:0
                 anchors.fill: parent
-                anchors.margins: 5 / Style.monitorRatio
+                spacing: 2 / Style.monitorRatio
                 ////////////////////////////////// Name ////////////////////////////////////////////////
                 RowLayout{
                     id:nameSec
                     Layout.fillWidth: true
+                    spacing: 0
                     Text {
                         Layout.preferredWidth: lblWidth  / Style.monitorRatio
                         text: "Name"
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     TextField {
@@ -112,6 +112,7 @@ Item {
                         Layout.preferredWidth: 200 / Style.monitorRatio
                         Layout.minimumWidth: 100 / Style.monitorRatio
                         Layout.fillWidth: true
+                        Layout.rightMargin: 15 / Style.monitorRatio
                         height: valHeight
                         text: rootItem.model ? rootItem.model.name : ""
                         font.pointSize: 10  / Style.monitorRatio
@@ -130,15 +131,17 @@ Item {
                     id:fillcolorSec
                     Layout.fillWidth: true
                     visible: rootItem.model ? rootItem.model.fillColorStatus : false
-                    spacing: 2 / Style.monitorRatio
+                    spacing:0
                     Text {
-                        Layout.preferredWidth: lblWidth
+                        Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Color"
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     RowLayout{
-                        spacing:12 / Style.monitorRatio
+                        Layout.rightMargin: 15 / Style.monitorRatio
+                        Layout.fillWidth: true
+                        spacing:3 / Style.monitorRatio
                         ListModel{
                             id:colorModel
                             ListElement{checkIconVisible:false; propertyColorSelect: "#EF2929"}
@@ -158,16 +161,14 @@ Item {
                                 required property int index
 
                                 checkable: true
-                                implicitWidth: 24 / Style.monitorRatio
-                                implicitHeight: 24 / Style.monitorRatio
+                                implicitWidth: 26 / Style.monitorRatio
+                                implicitHeight: 26 / Style.monitorRatio
                                 background: Rectangle{
                                     radius: width
                                     color:propertyColorSelect
                                 }
                                 Image{
-                                    anchors.centerIn: parent
-                                    width: 20 / Style.monitorRatio
-                                    height: 20 / Style.monitorRatio
+                                    anchors.fill: parent
                                     source: "qrc:/Resources/add-place-color-select.png"
                                     visible: checkIconVisible
                                 }
@@ -195,8 +196,8 @@ Item {
 
                         Rectangle{
                             id:colorSelectCircle
-                            implicitWidth: 24 / Style.monitorRatio
-                            implicitHeight: 24 / Style.monitorRatio
+                            implicitWidth: 26 / Style.monitorRatio
+                            implicitHeight: 26 / Style.monitorRatio
                             radius: width
                             border.width:1 / Style.monitorRatio
                             border.color:Style.foregroundColor
@@ -218,17 +219,17 @@ Item {
 
                             MouseArea{
                                 anchors.fill: parent
-                                //onClicked: colorBox.show()
                                 onClicked: colorBox.visible = true
                             }
                         }
                     }
                 }
                 RowLayout{
+                    spacing: 0
                     Text{
                         text: "Stroke"
                         color: Style.foregroundColor
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         visible:rootItem.model ? rootItem.model.strokeStatus : false
@@ -236,7 +237,7 @@ Item {
                     GroupBox{
                         id: strokeSec
                         visible:rootItem.model ? rootItem.model.strokeStatus : false
-
+                        Layout.rightMargin: 15 / Style.monitorRatio
                         padding: 0
                         Layout.fillWidth: true
                         Layout.margins: 0
@@ -250,14 +251,10 @@ Item {
                         ColumnLayout{
                             anchors.fill: parent
 
-                            RowLayout{
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                Layout.topMargin: 2 / Style.monitorRatio
-
                                 RowLayout{
-                                    spacing: 12 / Style.monitorRatio
-                                    Layout.leftMargin: 2 / Style.monitorRatio
+                                    spacing: 3 / Style.monitorRatio
+                                    Layout.leftMargin: 7 / Style.monitorRatio
+                                    Layout.topMargin: 5 / Style.monitorRatio
                                     ListModel{
                                         id:strokeColorModel
                                         ListElement{checkIconVisible:false; propertyColorSelect: "#EF2929"}
@@ -275,16 +272,15 @@ Item {
                                             required property bool checkIconVisible
                                             required property int index
                                             checkable: true
-                                            implicitWidth: 24 / Style.monitorRatio
-                                            implicitHeight: 24 / Style.monitorRatio
+                                            implicitWidth: 26 / Style.monitorRatio
+                                            implicitHeight: 26 / Style.monitorRatio
                                             background:Rectangle{
                                                 radius: width
                                                 color: propertyColorSelect
                                             }
                                             Image{
                                                 anchors.centerIn: parent
-                                                width: 20 / Style.monitorRatio
-                                                height: 20 / Style.monitorRatio
+                                                anchors.fill: parent
                                                 source: "qrc:/Resources/add-place-color-select.png"
                                                 visible: checkIconVisible
                                             }
@@ -312,8 +308,8 @@ Item {
 
                                     Rectangle{
                                         id:strokeColorCircle
-                                        implicitWidth: 24 / Style.monitorRatio
-                                        implicitHeight: 24 / Style.monitorRatio
+                                        implicitWidth: 26 / Style.monitorRatio
+                                        implicitHeight: 26 / Style.monitorRatio
                                         radius: width
                                         border.width:1 / Style.monitorRatio
                                         border.color:Style.foregroundColor
@@ -326,9 +322,7 @@ Item {
                                         }
                                         IconImage{
                                             id:strokeCheckIcon
-                                            anchors.centerIn: parent
-                                            width: 20 / Style.monitorRatio
-                                            height: 20 / Style.monitorRatio
+                                            anchors.fill: parent
                                             source: "qrc:/Resources/add-place-color-select.png"
                                             visible: false
                                         }
@@ -338,17 +332,17 @@ Item {
                                         }
                                     }
                                 }
-                            }
+
                             FloatSpinbox {
                                 id: strokeWidthValue
                                 editable: true
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignCenter
-                                Layout.topMargin: 2 / Style.monitorRatio
-                                Layout.bottomMargin: 2 / Style.monitorRatio
-                                Layout.rightMargin: 2 / Style.monitorRatio
-                                Layout.leftMargin: 2 / Style.monitorRatio
-                                height: 25 / Style.monitorRatio
+                                Layout.topMargin: 10 / Style.monitorRatio
+                                Layout.bottomMargin: 5 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
+                                Layout.leftMargin: 5 / Style.monitorRatio
+                                height: 20 / Style.monitorRatio
                                 from: 0
 
                                 onValueChanged: {
@@ -368,12 +362,13 @@ Item {
 
                 ////////////---------------------Location--------------------/////////////
                 RowLayout{
+                    spacing: 0
                     Text{
                         text: "Location"
                         color: Style.foregroundColor
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         Layout.alignment: Qt.AlignTop
-                        Layout.preferredWidth: lblWidth
+                        Layout.preferredWidth: (lblWidth / Style.monitorRatio)
                         visible:rootItem.model ? rootItem.model.locationStatus : false
                     }
 
@@ -381,6 +376,8 @@ Item {
                         id: locationSec
                         visible:rootItem.model ? rootItem.model.locationStatus : false
                         Layout.fillWidth: true
+                        Layout.preferredWidth: 200 / Style.monitorRatio
+                        Layout.rightMargin: 15 / Style.monitorRatio
                         padding: 0
 
                         background: Rectangle{
@@ -409,8 +406,8 @@ Item {
                                     editable: true
                                     Layout.fillWidth: true
                                     Layout.minimumWidth: 100 / Style.monitorRatio
-                                    Layout.rightMargin: 2 / Style.monitorRatio
-                                    Layout.topMargin: 2 / Style.monitorRatio
+                                    Layout.rightMargin: 5 / Style.monitorRatio
+                                    Layout.topMargin: 5 / Style.monitorRatio
                                     height: valHeight
                                     decimals: 4
                                     from: -2000
@@ -439,7 +436,8 @@ Item {
                                     editable: true
                                     Layout.fillWidth: true
                                     Layout.minimumWidth: 100 / Style.monitorRatio
-                                    Layout.rightMargin: 2 / Style.monitorRatio
+                                    Layout.topMargin: 5 / Style.monitorRatio
+                                    Layout.rightMargin: 5 / Style.monitorRatio
                                     height: valHeight
                                     decimals: 4
                                     from: -2000
@@ -469,7 +467,8 @@ Item {
                                     editable: true
                                     Layout.fillWidth: true
                                     Layout.minimumWidth: 100 / Style.monitorRatio
-                                    Layout.rightMargin: 2 / Style.monitorRatio
+                                    Layout.topMargin: 5 / Style.monitorRatio
+                                    Layout.rightMargin: 5 / Style.monitorRatio
                                     height: valHeight / Style.monitorRatio
                                     decimals: 4
                                     from: -2000
@@ -501,19 +500,17 @@ Item {
                                                      }
 
                                 indicator: Rectangle {
-                                    implicitWidth: 15 / Style.monitorRatio
-                                    implicitHeight: 15 / Style.monitorRatio
+                                    implicitWidth: 11 / Style.monitorRatio
+                                    implicitHeight: 11 / Style.monitorRatio
                                     x: relative.leftPadding  / Style.monitorRatio
                                     y: (parent.height / 2 - height / 2) / Style.monitorRatio
-                                    radius: 3 / Style.monitorRatio
+                                    radius: (height/2) / Style.monitorRatio
                                     border.color: relative.down ? "black" : "#313131"
 
                                     Rectangle {
-                                        width: 10 / Style.monitorRatio
-                                        height: 10 / Style.monitorRatio
-                                        x: 3 / Style.monitorRatio
-                                        y: 3 / Style.monitorRatio
-                                        radius: 2 / Style.monitorRatio
+                                        width: 11 / Style.monitorRatio
+                                        height: 11 / Style.monitorRatio
+                                        radius: (height/2) / Style.monitorRatio
                                         color: relative.down ? "black" : "dark green"
                                         visible: relative.checked
                                     }
@@ -537,10 +534,11 @@ Item {
                 ///////////-----------------------center-------------------//////////////
 
                 RowLayout{
+                    spacing: 0
                     Text{
                         text: "Center"
                         color: Style.foregroundColor
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         visible:rootItem.model ? rootItem.model.centerStatus : false
@@ -550,7 +548,7 @@ Item {
                         visible:rootItem.model ? rootItem.model.centerStatus : false
                         padding: 0
                         Layout.fillWidth: true
-
+                        Layout.rightMargin: 15 / Style.monitorRatio
                         background: Rectangle{
                             color: foregroundColor
                             radius: 10 / Style.monitorRatio
@@ -575,8 +573,8 @@ Item {
                                 editable: true
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 2 / Style.monitorRatio
-                                Layout.topMargin: 2 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
                                 height: valHeight / Style.monitorRatio
                                 decimals: 2
                                 from: -2000
@@ -605,7 +603,8 @@ Item {
                                 editable: true
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 2 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
                                 height: valHeight / Style.monitorRatio
                                 decimals: 2
                                 from: -2000
@@ -634,8 +633,9 @@ Item {
                                 editable: true
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 2 / Style.monitorRatio
-                                Layout.bottomMargin: 2 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                Layout.bottomMargin: 5 / Style.monitorRatio
                                 height: valHeight
                                 decimals: 2
                                 from: -2000
@@ -656,10 +656,11 @@ Item {
 
                 ////////// -------------------- Arc ----------------------//////////////
                 RowLayout{
+                    spacing: 0
                     Text{
                         text: "Arc"
                         color: Style.foregroundColor
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         visible:rootItem.model ? rootItem.model.arcStatus : false
@@ -669,6 +670,7 @@ Item {
                         visible:rootItem.model ? rootItem.model.arcStatus : false
                         padding: 0
                         Layout.fillWidth: true
+                        Layout.rightMargin: 15 / Style.monitorRatio
                         background: Rectangle{
                             color: foregroundColor
                             border.color: "transparent"
@@ -685,7 +687,7 @@ Item {
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 text: "Start "
                                 padding: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: 17 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
                             FloatSpinbox {
@@ -693,9 +695,8 @@ Item {
                                 editable: true
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 2 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
                                 Layout.topMargin: 2 / Style.monitorRatio
-                                height: valHeight
                                 value: 0
                                 from : 0
                                 to : 360
@@ -714,7 +715,7 @@ Item {
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 text: "End "
                                 padding: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: 17 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
                             FloatSpinbox {
@@ -722,10 +723,8 @@ Item {
                                 editable: true
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 2 / Style.monitorRatio
-                                //Layout.topMargin: 2
+                                Layout.rightMargin: 5 / Style.monitorRatio
                                 Layout.bottomMargin: 2 / Style.monitorRatio
-                                height: valHeight
                                 value: 360
                                 from: 0
                                 to: 360
@@ -746,18 +745,16 @@ Item {
                 }
 
                 ////////------------------------- radius------------------//////////////
-                Item{
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 25 / Style.monitorRatio
-                    visible:rootItem.model ? rootItem.model.radiusStatus : false
+
 
                     RowLayout{
                         id:radiusSec
-                        anchors.fill: parent
+                        visible:rootItem.model ? rootItem.model.radiusStatus : false
+                        spacing: 0
                         Text {
-                            Layout.preferredWidth: lblWidth
+                            Layout.preferredWidth: lblWidth / Style.monitorRatio
                             text: "Radius"
-                            font.pointSize: 10 / Style.monitorRatio
+                            font.pixelSize: 17 / Style.monitorRatio
                             color: Style.foregroundColor
                         }
                         Rectangle{
@@ -766,14 +763,15 @@ Item {
                             border.color: "transparent"
                             Layout.fillWidth: true
                             Layout.preferredHeight: valHeight / Style.monitorRatio
+                            Layout.rightMargin: 15 / Style.monitorRatio
 
                             StepSpinBox {
                                 id: radiusValue
                                 editable: true
-                                anchors.leftMargin: 2 / Style.monitorRatio
-                                anchors.rightMargin: 2 / Style.monitorRatio
-                                anchors.centerIn: parent
-                                width: (parent.width - 5) / Style.monitorRatio
+                                anchors.leftMargin: 5 / Style.monitorRatio
+                                anchors.rightMargin: 5 / Style.monitorRatio
+                                anchors.left: parent.left
+                                anchors.right: parent.right
                                 height: 28 / Style.monitorRatio
                                 decimals: 2
                                 from : 0
@@ -790,7 +788,6 @@ Item {
                             }
                         }
                     }
-                }
 
 
                 ////////------------------------- radiusMinor------------------//////////////
@@ -798,31 +795,46 @@ Item {
                 RowLayout{
                     id:radiusMinorSec
                     visible:rootItem.model ? rootItem.model.radiusMinorStatus : false
-                    Layout.fillWidth: true
+                    spacing: 0
                     Text {
-                        Layout.preferredWidth: swtchWidth / Style.monitorRatio
+                        Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Radius Minor "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 14/ Style.monitorRatio
                         color: Style.foregroundColor
                     }
-                    StepSpinBox {
-                        id: radiusMinorValue
-                        editable: true
+
+                    Rectangle{
+                        color: foregroundColor
+                        radius: 10 / Style.monitorRatio
+                        border.color: "transparent"
                         Layout.fillWidth: true
-                        Layout.minimumWidth: 100 / Style.monitorRatio
-                        height: valHeight / Style.monitorRatio
-                        decimals: 2
-                        from : 0
-                        to: 2000
-                        onValueChanged: {
-                            rootItem.model.radiusMinor = value
+                        Layout.preferredHeight: valHeight / Style.monitorRatio
+                        Layout.rightMargin: 15 / Style.monitorRatio
+
+                        StepSpinBox {
+                            id: radiusMinorValue
+                            editable: true
+                            anchors.leftMargin: 5 / Style.monitorRatio
+                            anchors.rightMargin: 5 / Style.monitorRatio
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: 20 / Style.monitorRatio
+                            decimals: 2
+                            from : 0
+                            to: 2000
+                            onValueChanged: {
+                                rootItem.model.radiusMinor = value
+                            }
                         }
-                    }
-                    Binding{
-                        target: radiusMinorValue
-                        property: "value"
-                        value: rootItem.model ? rootItem.model.radiusMinor :0
-                        delayed: true
+                        Binding{
+                            target: radiusMinorValue
+                            property: "value"
+                            value: rootItem.model ? rootItem.model.radiusMinor :0
+                            delayed: true
+                        }
+
+
                     }
                 }
 
@@ -831,46 +843,57 @@ Item {
                 RowLayout{
                     id:radiusMajorSec
                     visible:rootItem.model ? rootItem.model.radiusMajorStatus : false
-                    Layout.fillWidth: true
+                    spacing: 0
                     Text {
-                        Layout.preferredWidth: swtchWidth / Style.monitorRatio
+                        Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Radius Major "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 14 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
-                    StepSpinBox {
-                        id: radiusMajorValue
-                        editable: true
+                    Rectangle{
+                        color: foregroundColor
+                        radius: 10 / Style.monitorRatio
+                        border.color: "transparent"
                         Layout.fillWidth: true
-                        Layout.minimumWidth: 100 / Style.monitorRatio
-                        height: valHeight / Style.monitorRatio
-                        decimals: 2
-                        from : 0
-                        to: 2000
-                        onValueChanged: {
-                            rootItem.model.radiusMajor = value
+                        Layout.preferredHeight: valHeight / Style.monitorRatio
+                        Layout.rightMargin: 15 / Style.monitorRatio
+
+                        StepSpinBox {
+                            id: radiusMajorValue
+                            editable: true
+                            height: 20 / Style.monitorRatio
+                            anchors.leftMargin: 5 / Style.monitorRatio
+                            anchors.rightMargin: 5 / Style.monitorRatio
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            decimals: 2
+                            from : 0
+                            to: 2000
+                            onValueChanged: {
+                                rootItem.model.radiusMajor = value
+                            }
                         }
+                        Binding{
+                            target: radiusMajorValue
+                            property: "value"
+                            value: rootItem.model ? rootItem.model.radiusMajor :0
+                            delayed: true
+                        }
+
                     }
-                    Binding{
-                        target: radiusMajorValue
-                        property: "value"
-                        value: rootItem.model ? rootItem.model.radiusMajor :0
-                        delayed: true
-                    }
+
                 }
                 ////////------------------------- height------------------//////////////
 
-                Item{
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 25 / Style.monitorRatio
-                    visible:rootItem.model ? rootItem.model.heightStatus : false
                     RowLayout{
                         id:heightSec
-                        anchors.fill: parent
+                        visible:rootItem.model ? rootItem.model.heightStatus : false
+                        spacing: 0
                         Text {
                             Layout.preferredWidth: lblWidth / Style.monitorRatio
                             text: "Height "
-                            font.pointSize: 10 / Style.monitorRatio
+                            font.pixelSize: 17 / Style.monitorRatio
                             color: Style.foregroundColor
                             Layout.alignment: Qt.AlignVCenter
                         }
@@ -878,16 +901,18 @@ Item {
                             color: foregroundColor
                             radius: 10
                             border.color: "transparent"
+                            Layout.rightMargin: 15 / Style.monitorRatio
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignVCenter
                             Layout.preferredHeight: valHeight / Style.monitorRatio
+                            Layout.preferredWidth: 200 / Style.monitorRatio
                             StepSpinBox {
                                 id:heightValue
                                 editable: true
-                                anchors.leftMargin: 2 / Style.monitorRatio
-                                anchors.rightMargin: 2 / Style.monitorRatio
-                                anchors.centerIn: parent
-                                width: (parent.width - 5) / Style.monitorRatio
+                                anchors.leftMargin: 5 / Style.monitorRatio
+                                anchors.rightMargin: 5 / Style.monitorRatio
+                                anchors.left: parent.left
+                                anchors.right: parent.right
                                 height: 30 / Style.monitorRatio
                                 decimals: 2
                                 from : 0
@@ -904,40 +929,35 @@ Item {
                             }
                         }
                     }
-                }
 
                 ////////------------------------- lenght ------------------//////////////
 
-                Item{
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 25 / Style.monitorRatio
-                    visible: rootItem.model ? rootItem.model.lenghtStatus : false
                         RowLayout{
                             id:lenghtSec
-                            anchors.fill: parent
-                          //  visible: rootItem.model ? rootItem.model.lenghtStatus : false
+                            spacing: 0
+                            visible: rootItem.model ? rootItem.model.lenghtStatus : false
                             Text {
-                                Layout.preferredWidth: lblWidth
-                                text:  "Lenght "
-                                font.pointSize: 10 / Style.monitorRatio
+                                Layout.preferredWidth: lblWidth / Style.monitorRatio
+                                text:  "Length "
+                                font.pixelSize: 17 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
 
                             Rectangle{
-                               // color: lenghtSec.visible ? foregroundColor : "transparent"
                                 color: foregroundColor
                                 radius: 10
                                 border.color: "transparent"
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: valHeight
+                                Layout.preferredHeight: valHeight / Style.monitorRatio
+                                Layout.rightMargin: 15 / Style.monitorRatio
 
                                 StepSpinBox {
                                     id: lengthValue
                                     editable: true
-                                    anchors.leftMargin: 2 / Style.monitorRatio
-                                    anchors.rightMargin: 2 / Style.monitorRatio
-                                    anchors.centerIn: parent
-                                    width: (parent.width - 5) / Style.monitorRatio
+                                    anchors.leftMargin: 5 / Style.monitorRatio
+                                    anchors.rightMargin: 5 / Style.monitorRatio
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
                                     height: 30 / Style.monitorRatio
                                     decimals: 2
                                     from : 0
@@ -955,20 +975,17 @@ Item {
                             }
                         }
 
-                }
 
                 ////////------------------------- width ------------------//////////////
-                Item{
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 25 / Style.monitorRatio
-                    visible:rootItem.model ? rootItem.model.widthStatus : false
+
                         RowLayout{
                             id:widthSec
-                            anchors.fill: parent
+                            visible:rootItem.model ? rootItem.model.widthStatus : false
+                            spacing: 0
                             Text {
-                                Layout.preferredWidth: lblWidth
+                                Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 text: "Width "
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: 17 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
                             Rectangle{
@@ -977,14 +994,14 @@ Item {
                                 border.color: "transparent"
                                 Layout.fillWidth: true
                                 Layout.preferredHeight: 25 / Style.monitorRatio
-
+                                Layout.rightMargin: 15 / Style.monitorRatio
                                 StepSpinBox {
                                     id:widthValue
                                     editable: true
-                                    anchors.leftMargin: 2 / Style.monitorRatio
-                                    anchors.rightMargin: 2 / Style.monitorRatio
-                                    anchors.centerIn: parent
-                                    width: (parent.width - 5) / Style.monitorRatio
+                                    anchors.leftMargin: 5 / Style.monitorRatio
+                                    anchors.rightMargin: 5 / Style.monitorRatio
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
                                     height: 28 / Style.monitorRatio
                                     decimals: 2
                                     from : 0
@@ -1001,18 +1018,17 @@ Item {
                                 }
                             }
                         }
-                }
 
                 // --------------------------------- clamp -----------------------////////////
 
                 RowLayout{
                     id:clampSec
-                    Layout.fillWidth: true
+                    spacing: 0
                     visible:rootItem.model ? rootItem.model.clampStatus : false
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Clamp "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
 
@@ -1021,6 +1037,7 @@ Item {
                         radius: 10 / Style.monitorRatio
                         border.color: "transparent"
                         Layout.fillWidth: true
+                        Layout.rightMargin: 15 / Style.monitorRatio
                         Layout.preferredHeight: valHeight / Style.monitorRatio
 
                         ComboBox {
@@ -1110,29 +1127,44 @@ Item {
                 RowLayout{
                     id:tesselationSec
                     visible:rootItem.model ? rootItem.model.tesselationStatus : false
-                    Layout.fillWidth: true
+                    spacing: 0
                     Text {
-                        Layout.preferredWidth: swtchWidth / Style.monitorRatio
+                        Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Tesselation "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
-                    FloatSpinbox {
-                        id: tesselationValue
-                        editable: true
-                        from : 0
-                        to: 2000
+
+                    Rectangle{
+                        color: foregroundColor
+                        radius: 10 / Style.monitorRatio
+                        border.color: "transparent"
                         Layout.fillWidth: true
-                        height: valHeight / Style.monitorRatio
-                        onValueChanged: {
-                            rootItem.model.tesselation = value
+                        Layout.preferredHeight: valHeight / Style.monitorRatio
+                        Layout.rightMargin: 15 / Style.monitorRatio
+
+                        FloatSpinbox {
+                            id: tesselationValue
+                            editable: true
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.leftMargin: 5 / Style.monitorRatio
+                            anchors.rightMargin: 5 / Style.monitorRatio
+                            anchors.verticalCenter: parent.verticalCenter
+                            from : 0
+                            to: 2000
+                            height: 20 / Style.monitorRatio
+                            onValueChanged: {
+                                rootItem.model.tesselation = value
+                            }
                         }
-                    }
-                    Binding{
-                        target: tesselationValue
-                        property: "value"
-                        value: rootItem.model ? rootItem.model.tesselation: 0
-                        delayed: true
+                        Binding{
+                            target: tesselationValue
+                            property: "value"
+                            value: rootItem.model ? rootItem.model.tesselation: 0
+                            delayed: true
+                        }
+
                     }
                 }
                 ////------------------------ Show lenght -------------------- ///////////////
@@ -1140,12 +1172,12 @@ Item {
                 RowLayout{
                     id:showLenghtSec
                     visible:rootItem.model ? rootItem.model.showLenStatus : false
-                    Layout.fillWidth: true
+                    spacing: 0
 
                     Text {
-                        Layout.preferredWidth: swtchWidth
+                        Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Length "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -1170,11 +1202,11 @@ Item {
                 RowLayout{
                     id:bearingSec
                     visible:rootItem.model ? rootItem.model.bearingStatus : false
-                    Layout.fillWidth: true
+                    spacing: 0
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Bearing "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -1200,11 +1232,11 @@ Item {
                 RowLayout{
                     id:showAltitudeSec
                     visible:rootItem.model ? rootItem.model.altitudeStatus : false
-                    Layout.fillWidth: true
+                    spacing: 0
                     Text {
-                        Layout.preferredWidth: swtchWidth
+                        Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Altitude "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -1232,11 +1264,11 @@ Item {
                 RowLayout{
                     id:slopeSec
                     visible:rootItem.model ? rootItem.model.showSlopStatus : false
-                    Layout.fillWidth: true
+                    spacing: 0
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Slope "
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -1272,10 +1304,11 @@ Item {
                      ColumnLayout{
                          anchors.fill: parent
                           RowLayout{
+                              spacing: 0
                              Text {
                                  Layout.preferredWidth: swtchWidth / Style.monitorRatio
                                  text: "Points "
-                                 font.pointSize: 10 / Style.monitorRatio
+                                 font.pixelSize: 17 / Style.monitorRatio
                                  color: Style.foregroundColor
                              }
                              Switch {
@@ -1296,19 +1329,20 @@ Item {
                              }
                          }
                          RowLayout{
+                             spacing: 0
                              Text{
                                  text: "Point Color"
                                  color: Style.foregroundColor
-                                 font.pointSize: 10 / Style.monitorRatio
+                                 font.pixelSize: 17 / Style.monitorRatio
                                  Layout.alignment: Qt.AlignTop
-                                 Layout.preferredWidth: swtchWidth / Style.monitorRatio
+                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                  visible:rootItem.model ? rootItem.model.strokeStatus : false
                              }
                              GroupBox{
                                  padding: 0
                                  Layout.fillWidth: true
                                  Layout.margins: 0
-
+                                 Layout.rightMargin: 15 / Style.monitorRatio
                                  background: Rectangle{
                                      color: foregroundColor
                                      radius: 10 / Style.monitorRatio
@@ -1318,14 +1352,10 @@ Item {
                                  ColumnLayout{
                                      anchors.fill: parent
 
-                                     RowLayout{
-                                         Layout.fillWidth: true
-                                         Layout.fillHeight: true
-                                         Layout.topMargin: 2 / Style.monitorRatio
-
                                          RowLayout{
-                                             spacing:12 / Style.monitorRatio
-                                             Layout.leftMargin: 2 / Style.monitorRatio
+                                             spacing:3 / Style.monitorRatio
+                                             Layout.leftMargin: 7 / Style.monitorRatio
+                                             Layout.topMargin: 5 / Style.monitorRatio
 
                                              ListModel{
                                                  id:pointColorModel
@@ -1344,16 +1374,14 @@ Item {
                                                      required property bool checkIconVisible
                                                      required property int index
                                                      checkable: true
-                                                     implicitWidth: 18 / Style.monitorRatio
-                                                     implicitHeight: 18 / Style.monitorRatio
+                                                     implicitWidth: 26 / Style.monitorRatio
+                                                     implicitHeight: 26 / Style.monitorRatio
                                                      background:Rectangle{
                                                          radius: width
                                                          color: propertyColorSelect
                                                      }
                                                      Image{
-                                                         anchors.centerIn: parent
-                                                         width: 15 / Style.monitorRatio
-                                                         height: 15 / Style.monitorRatio
+                                                         anchors.fill: parent
                                                          source: "qrc:/Resources/add-place-color-select.png"
                                                          visible: checkIconVisible
                                                      }
@@ -1381,23 +1409,21 @@ Item {
 
                                              Rectangle{
                                                  id:pointColorCircle
-                                                 implicitWidth: 18 / Style.monitorRatio
-                                                 implicitHeight: 18 / Style.monitorRatio
+                                                 implicitWidth: 26 / Style.monitorRatio
+                                                 implicitHeight: 26 / Style.monitorRatio
                                                  radius: width
                                                  border.width:1 / Style.monitorRatio
                                                  border.color:Style.foregroundColor
                                                  IconImage{
                                                      id:pointColorAddIcon
                                                      anchors.centerIn: parent
-                                                     width: 15 / Style.monitorRatio
-                                                     height: 15 / Style.monitorRatio
+                                                     width: 20 / Style.monitorRatio
+                                                     height: 20 / Style.monitorRatio
                                                      source: "qrc:/Resources/location-add.png"
                                                  }
                                                  IconImage{
                                                      id:pointColorCheckIcon
-                                                     anchors.centerIn: parent
-                                                     width: 20 / Style.monitorRatio
-                                                     height: 20 / Style.monitorRatio
+                                                     anchors.fill: parent
                                                      source: "qrc:/Resources/add-place-color-select.png"
                                                      visible: false
                                                  }
@@ -1407,23 +1433,16 @@ Item {
                                                  }
                                              }
                                          }
-
-//                                         ColorDialog {
-//                                             visible: false
-//                                             id:  pointColorDialog
-//                                             title: "Please choose a color"
-//                                             onAccepted: {
-//                                                 var currentColor = pointColorDialog.selectedColor
-//                                                 currentColor.a = pointOpacityValue.value / 100
-//                                                 rootItem.model.pointsColor = currentColor
-//                                             }
-//                                         }
-                                     }
                                      FloatSpinbox {
                                          id: pointOpacityValue
                                          Layout.fillWidth: true
+                                         Layout.preferredHeight: 20 / Style.monitorRatio
+                                         Layout.bottomMargin: 5 / Style.monitorRatio
+                                         Layout.topMargin: 10 / Style.monitorRatio
+                                         Layout.rightMargin: 5 / Style.monitorRatio
+                                         Layout.leftMargin: 5 / Style.monitorRatio
                                          editable: true
-                                         height: valHeight
+                                         height: 20 / Style.monitorRatio
                                          from : 0
                                          to : 100
                                          onValueChanged: {
@@ -1442,37 +1461,54 @@ Item {
 
 
                          RowLayout{
+                             spacing: 0
                              Text {
                                  text: "Point Width "
-                                 font.pointSize: 10 / Style.monitorRatio
-                                 Layout.preferredWidth: swtchWidth
+                                 font.pixelSize: 17 / Style.monitorRatio
+                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                  color: Style.foregroundColor
                              }
-                             FloatSpinbox {
-                                 id: pointWidthValue
-                                 editable: true
-                                 enabled: pointVisible.checked
+                             Rectangle{
+                                 color: foregroundColor
+                                 radius: 10
+                                 border.color: "transparent"
+                                 Layout.rightMargin: 15 / Style.monitorRatio
                                  Layout.fillWidth: true
-                                 height: valHeight / Style.monitorRatio
-                                 from: 0
+                                 Layout.alignment: Qt.AlignVCenter
+                                 Layout.preferredHeight: valHeight / Style.monitorRatio
+                                 Layout.preferredWidth: 200 / Style.monitorRatio
 
-                                 onValueChanged: {
-                                     rootItem.model.pointsWidth = value
+                                 FloatSpinbox {
+                                     id: pointWidthValue
+                                     editable: true
+                                     enabled: pointVisible.checked
+                                     anchors.leftMargin: 5 / Style.monitorRatio
+                                     anchors.rightMargin: 5 / Style.monitorRatio
+                                     anchors.left: parent.left
+                                     anchors.right: parent.right
+                                     anchors.verticalCenter: parent.verticalCenter
+                                     height: 20 / Style.monitorRatio
+                                     from: 0
+                                     onValueChanged: {
+                                         rootItem.model.pointsWidth = value
+                                     }
+                                 }
+                                 Binding{
+                                     target: pointWidthValue
+                                     property: "value"
+                                     value: rootItem.model ? rootItem.model.pointsWidth: 0
+                                     delayed: true
                                  }
 
                              }
-                             Binding{
-                                 target: pointWidthValue
-                                 property: "value"
-                                 value: rootItem.model ? rootItem.model.pointsWidth: 0
-                                 delayed: true
-                             }
+
                          }
                              RowLayout{
+                                 spacing: 0
                                  Text {
-                                     Layout.preferredWidth: swtchWidth
+                                     Layout.preferredWidth: swtchWidth / Style.monitorRatio
                                      text: "Point Smooth "
-                                     font.pointSize: 10 / Style.monitorRatio
+                                     font.pixelSize: 17 / Style.monitorRatio
                                      color: Style.foregroundColor
                                  }
                                  Switch {

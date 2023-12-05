@@ -33,8 +33,8 @@ Item{
     property alias background: spinBox.background
     property alias leftInset: spinBox.leftInset
 
-    width: 200
-    height: 25
+    width: 97
+    height: 20
 
     Binding{
         target: root

@@ -38,7 +38,9 @@ Window {
                 anchors.rightMargin: 15/Style.monitorRatio
                 anchors.topMargin: 5/Style.monitorRatio
                 anchors.bottomMargin: 5/Style.monitorRatio
-                spacing:5/Style.monitorRatio
+               spacing:5/Style.monitorRatio
+               Layout.preferredHeight: 30/Style.monitorRatio
+               Layout.fillWidth: true
 
                 IconImage{
                     Layout.preferredHeight: 22/Style.monitorRatio
@@ -53,6 +55,7 @@ Window {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignCenter
                 }
+
                 Button{
                     Layout.preferredWidth: 22/Style.monitorRatio
                     Layout.preferredHeight: 22/Style.monitorRatio
@@ -65,7 +68,6 @@ Window {
                         window.close()
                     }
                 }
-
             }
             MouseArea{
                 anchors.fill: parent
