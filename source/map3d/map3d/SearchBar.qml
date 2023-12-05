@@ -9,10 +9,33 @@ Item{
     property bool flag: false
     property int iconSize: 26/Style.monitorRatio
     readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
+    property ListModel history: ListModel {
+        id: histModel
+    }
+
+    function addToHistory(newString) {
+        var index = -1;
+        for (var i = 0; i < histModel.count; ++i) {
+            if (histModel.get(i).stringData === newString) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index !== -1) {
+            histModel.remove(index, 1);
+        }
+
+        histModel.insert(0, { stringData: newString });
+
+        if (histModel.count > 3) {
+            histModel.remove(3, histModel.count - 3);
+        }
+    }
 
     id: rootItem
     width: searchRect.width
-    height: 240/Style.monitorRatio
+    height: 360/Style.monitorRatio
     Rectangle {
         id:searchRect
         width: flag? 340 /Style.monitorRatio: searchBtn.width + searchText.implicitWidth + (closeButton.visible? closeButton.width : 0)
@@ -40,6 +63,7 @@ Item{
                 onClicked: {
                     icon.color = Style.disableColor
                     flag = true
+                    dropDown.visible = rootItem.model.rowCount()?dropDown.visible = true: dropDown.visible =false
                     closeButton.visible = true
                     textonFocus.running =true
                     searchText.focus = true
@@ -66,6 +90,17 @@ Item{
                 }
                 onTextChanged: {
                     rootItem.model.setFilterString(text)
+                }
+                onAccepted: {
+                    rootItem.addToHistory(text)
+                    searchText.clear()
+                    if (!typesRepeater.model.rowCount()){
+                        flag=false
+                        dropDown.visible = false
+                        closeButton.visible = false
+                        textlostFocus.running =true
+                        searchBtn.icon.color = Style.foregroundColor
+                    }
                 }
 
                 PropertyAnimation {
@@ -103,6 +138,7 @@ Item{
                 }
                 onClicked: {
                     flag=false
+                    dropDown.visible = false
                     closeButton.visible = false
                     textlostFocus.running =true
                     searchText.clear()
@@ -115,7 +151,7 @@ Item{
             id:dropDown
             color: Style.backgroundColor
             opacity: 0.5
-            visible:flag
+            visible:objectLabel.visible
             width: closeButton.visible ? rootItem.width: 0
             height: rootItem.height
             z: -1
@@ -125,6 +161,7 @@ Item{
                 anchors.margins: 5
                 anchors.topMargin: searchRect.height + 10
                 Label {
+                    id:shortcutLabel
                     Layout.leftMargin: 7/Style.monitorRatio
                     background: Rectangle {
                         color: "transparent"
@@ -135,7 +172,6 @@ Item{
                         font.pixelSize: 14/Style.monitorRatio
                         text: "Shortcut To Find "
                         font.family: Style.fontFamily
-
                     }
                     visible: flag
                 }
@@ -144,11 +180,14 @@ Item{
                 Flow{
                     Layout.fillWidth: true
                     flow: GridLayout.LeftToRight
+                    spacing: 5/Style.monitorRatio
 
                     Repeater {
                         id:typesRepeater
                         model: rootItem.model.getTypeListModel()
                         Rectangle{
+
+                            property bool visiblitySet: true
                             property bool checked: true
                             id:typeHolder
                             implicitHeight: 31/Style.monitorRatio
@@ -162,17 +201,18 @@ Item{
                                 onClicked: {
                                     checked =!checked
                                     rootItem.model.toggleItem(itemText.text)
+                                    rootItem.addToHistory(itemText.text)
                                     rootItem.model.setFilterString(searchText.text)
                                 }
                                 hoverEnabled: true
                                 onEntered: {typeHolder.border.color=Style.hoverColor
-                                            itemText.color = Style.hoverColor
-                                            searchIcon.color = Style.hoverColor}
+                                    itemText.color = Style.hoverColor
+                                    searchIcon.color = Style.hoverColor}
                                 onExited: {
 
                                     typeHolder.border.color=typeHolder.checked?Style.disableColor:Qt.rgba(Style.hoverColor.r, Style.hoverColor.g, Style.hoverColor.b, 0.3)
-                                            itemText.color = typeHolder.checked?Style.foregroundColor:Style.hoverColor
-                                            searchIcon.color = typeHolder.checked?Style.foregroundColor:Style.hoverColor
+                                    itemText.color = typeHolder.checked?Style.foregroundColor:Style.hoverColor
+                                    searchIcon.color = typeHolder.checked?Style.foregroundColor:Style.hoverColor
                                 }
                             }
                             border{
@@ -183,7 +223,7 @@ Item{
                             }
                             Component.onCompleted: {
                                 if (typesRepeater.model.rowCount()){
-                                    nameLabel.visible=true
+                                    objectLabel.visible=true
                                 }
                             }
                             visible: flag
@@ -217,37 +257,63 @@ Item{
                         }
                     }
                 }
+                Label {
+                    id:historyLabel
+                    Layout.leftMargin: 5
+                    text: "Search History"
+                    font.pixelSize:14/Style.monitorRatio
+                    font.family: Style.fontFamily
+                    color: rootItem.fg
+                    visible:rootItem.history.count
+                }
+                Column{
+                    Layout.leftMargin: 5
+                    Layout.fillWidth: true
+                    height: implicitHeight
+                    spacing: 3
+                    Repeater{
+                        id:historyRepeater
+                        model: rootItem.history
+                        delegate:Text {
+                            id: historyText
+                            required property string modelData
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.rightMargin: 10/Style.monitorRatio
+                            text:modelData
+                            font.family: Style.fontFamily
+                            font.pixelSize: 16/Style.monitorRatio
+                            color: Style.foregroundColor
+                            Layout.fillWidth: true
+
+                        }
+                    }
+                }
+
+
                 RowLayout{
                     Layout.leftMargin: 5
                     Layout.fillWidth: true
-                    spacing: listView.width/3
 
-
-//                    Label {
-//                        id:idLabel
-//                        text: "id :"
-//                        font.pixelSize:16/Style.monitorRatio
-//                        font.family: Style.fontFamily
-//                        color: Style.foregroundColor
-//                        visible:typesRepeater.model.rowCount()
-//                    }
                     Label {
-                        id:nameLabel
+                        id:objectLabel
                         text: "Object"
                         font.pixelSize:14/Style.monitorRatio
                         font.family: Style.fontFamily
                         color: rootItem.fg
                         visible:typesRepeater.model.rowCount()
+
                     }
                 }
 
                 ScrollView{
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    Layout.leftMargin: 5
                     ListView{
                         id:listView
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+
                         clip: true
                         model: rootItem.model
                         delegate:
@@ -287,7 +353,7 @@ Item{
                             }
                             background: Rectangle
                             {
-                                color: /*parent.hovered ? Style.hoverColor : */"transparent"
+                                color:"transparent"
                                 radius:height/2
                             }
                         }
