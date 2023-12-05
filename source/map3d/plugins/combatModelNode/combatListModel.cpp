@@ -19,7 +19,6 @@ QHash<int, QByteArray> CombatListModel::roleNames() const
 CombatList::CombatList(QQmlEngine *Engine, QQuickWindow *parent)
 {
         mCombatListModel = new CombatListModel(Engine);
-
         QQmlComponent* comp = new QQmlComponent(Engine, this);
         QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
             if(status == QQmlComponent::Error){
@@ -27,11 +26,12 @@ CombatList::CombatList(QQmlEngine *Engine, QQuickWindow *parent)
             }
             if(status == QQmlComponent::Ready){
                 mWindow = qobject_cast<QQuickWindow*>(comp->create());
-                mWindow->setProperty("combatModel", QVariant::fromValue<CombatListModel*>(mCombatListModel));
-                connect(parent, &QQuickWindow::closing, mWindow, &QQuickWindow::close);
+                // mWindow->setProperty("combatModel", QVariant::fromValue<CombatListModel*>(mCombatListModel));
+                // connect(parent, &QQuickWindow::closing, mWindow, &QQuickWindow::close);
             }
         });
-        comp->loadUrl(QUrl("qrc:/CombatMenu.qml"));
+        comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));
+
 }
 
 CombatList::~CombatList(){}

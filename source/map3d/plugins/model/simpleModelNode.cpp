@@ -243,15 +243,6 @@ void SimpleModelNode::onBookmarkChecked(bool status)
     }
 }
 
-void SimpleModelNode::onTargetChecked()
-{
-
-}
-
-void SimpleModelNode::onAttackChecked()
-{
-
-}
 
 void SimpleModelNode::onGoToPosition()
 {
@@ -387,19 +378,11 @@ void SimpleModelNode::compile()
     osgEarth::Symbology::Style  rootStyle ;
 
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mSwitchNode);
-
-    osg::DisplaySettings::instance()->setMinimumNumStencilBits( 1 );
-    mMapItem->getViewer()->getCamera()->setClearMask(
-        GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT
-        );
-
-
+    //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
     setStyle(rootStyle);
 
-    //    rootStyle.getOrCreate<osgEarth::Symbology::Color(osgEarth::Color::Aqua)>();
-    // setStyle(rootStyle);
-
     setColor(mColor);
+
 }
 
 void SimpleModelNode::createCircularMenu()
@@ -413,7 +396,7 @@ void SimpleModelNode::createCircularMenu()
     QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
     CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png"};
-    QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
+    QObject::connect(targetMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onTargetChecked);
 
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
     mCircularMenu->appendMenuItem(infoMenuItem);

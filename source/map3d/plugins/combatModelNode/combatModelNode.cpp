@@ -21,6 +21,8 @@ CombatModelNode::~CombatModelNode()
 
 bool CombatModelNode::setup()
 {
+
+    mEngine = QQmlEngine::contextForObject(mapItem())->engine();
     mCombatManager = new CombatManager(mapItem());
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(mapItem(), &MapItem::modeChanged, this, &CombatModelNode::onModeChanged);
@@ -39,7 +41,11 @@ bool CombatModelNode::setup()
     mAttackNodeLayer = new ParenticAnnotationLayer();
     mAttackNodeLayer->setName("Attacker");
     mCombatManager->setCombatLayer(mAttackNodeLayer);
+
+
+
     return true;
+
 }
 
 void CombatModelNode::makeIconNode(const QString &fileName)
@@ -97,6 +103,8 @@ bool CombatModelNode::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
                 // mBulletID.append(bulletID);
             }
         }
+        QObject::connect(modelNode, &SimpleModelNode::onAttackChecked, this, &CombatModelNode::onAttackMenuChecked);
+        QObject::connect(modelNode, &SimpleModelNode::onTargetChecked, this, &CombatModelNode::onTargetMenuChecked);
         return false;
     }
     else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
@@ -210,6 +218,18 @@ void CombatModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
 }
+
+void CombatModelNode::onTargetMenuChecked()
+{
+    mCombatList = new CombatList(mEngine);
+}
+
+void CombatModelNode::onAttackMenuChecked()
+{
+    qDebug() << "aaaaaaaaatttttttttttttttttttttttttttttttttt";
+}
+
+
 
 void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
     mNodeData = sampleNodeData("tank", "../data/models/tank/tank.png", "../data/models/tank/tank.osg",
