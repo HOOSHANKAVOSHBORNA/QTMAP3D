@@ -63,6 +63,9 @@ public:
     bool isAttacker() const;
     void setAttacker(bool attacker);
 
+signals:
+    void onTargetChecked();
+    void onAttackChecked();
 //    osgEarth::Annotation::ModelNode *getDragModelNode();
 
 
@@ -70,8 +73,6 @@ private slots:
     void onModeChanged(bool is3DView);
     void onInfoClicked();
     void onBookmarkChecked(bool status);
-    void onTargetChecked();
-    void onAttackChecked();
     void onGoToPosition();
     void onTrack();
 

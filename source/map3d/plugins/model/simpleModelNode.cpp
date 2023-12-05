@@ -242,15 +242,6 @@ void SimpleModelNode::onBookmarkChecked(bool status)
     }
 }
 
-void SimpleModelNode::onTargetChecked()
-{
-
-}
-
-void SimpleModelNode::onAttackChecked()
-{
-
-}
 
 void SimpleModelNode::onGoToPosition()
 {
@@ -410,7 +401,7 @@ void SimpleModelNode::createCircularMenu()
     QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
     CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png"};
-    QObject::connect(targetMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onTargetChecked);
+    QObject::connect(targetMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onTargetChecked);
 
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
     mCircularMenu->appendMenuItem(infoMenuItem);
