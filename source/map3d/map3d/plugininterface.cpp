@@ -9,7 +9,7 @@
 #include <QtQml>
 #include "bookmark.h"
 //-------------------------------------------------------------------------
-MapItem *PluginInterface::mMapItem;
+MapControllerItem *PluginInterface::mMapItem;
 DefenseDataManager *PluginInterface::mDefenseDataManager;
 QQmlEngine *PluginInterface::mQmlEngine;
 Toolbox *PluginInterface::mToolbox;
@@ -22,7 +22,7 @@ PluginInterface::PluginInterface(QObject *parent):
 
 }
 
-MapItem *PluginInterface::mapItem() const
+MapControllerItem *PluginInterface::mapItem() const
 {
     return mMapItem;
 }
