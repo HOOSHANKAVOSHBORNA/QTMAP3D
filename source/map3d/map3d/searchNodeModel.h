@@ -98,21 +98,26 @@ private:
 
 };
 
-// -------------  Manager
-//class searchNodeManager : public QObject
-//{
-//    Q_OBJECT
+class SearchNodeManager : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
 
-//    void addNode(osg::Node *node,osgEarth::Layer *layer);
+public:
+    static SearchNodeManager* createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+    void setMapItem(MapItem *mapItem);
+//    ~SearchNodeManager() override;
+    Q_INVOKABLE SearchNodeProxyModel *searchNodeProxyModel() const;
 
-//private:
-//    MapItem *mMapItem{nullptr};
-
-//    SearchNodeProxyModel *mSearchNodeProxyModel;
-//};
+private:
+    explicit SearchNodeManager();
 
 
+private:
+    inline static SearchNodeManager *mInstance;
+    SearchNodeProxyModel *mSearchNodeProxyModel;
 
+};
 
 
 #endif // SEARCHNODEMODEL_H

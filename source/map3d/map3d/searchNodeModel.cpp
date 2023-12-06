@@ -60,22 +60,22 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
 }
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer) {
-    auto iterator = std::remove_if(
-        mNodes1.begin(),
-        mNodes1.end(),
-        [&](NodeInfo *item) {
-            return item->node == node;
-        }
-        );
+//    auto iterator = std::remove_if(
+//        mNodes1.begin(),
+//        mNodes1.end(),
+//        [&](NodeInfo *item) {
+//            return item->node == node;
+//        }
+//        );
 
-    if (iterator != mNodes1.end()) {
-        int d = std::distance(mNodes1.begin(), iterator);
-        beginRemoveRows(QModelIndex(), d, d);
-        delete *iterator;
-        mNodes1.erase(iterator);
-        endRemoveRows();
-        emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
-    }
+//    if (iterator != mNodes1.end()) {
+//        int d = std::distance(mNodes1.begin(), iterator);
+//        beginRemoveRows(QModelIndex(), d, d);
+//        delete *iterator;
+//        mNodes1.erase(iterator);
+//        endRemoveRows();
+//        emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
+//    }
 }
 
 
@@ -140,7 +140,7 @@ bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
 
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
     QString dataString = index.data(SearchNodeModel::type_).toString();
-    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive)) {
+    if (index.data().toString().startsWith(mFilterString, Qt::CaseInsensitive)) {
         if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
             return true;
         }
@@ -148,6 +148,16 @@ bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
             if(myVector.size()==0){
                 return true;
             }
+                return false;
+        }
+    }else if ((index.data(SearchNodeModel::iD_).toString().contains(mFilterString, Qt::CaseInsensitive))){
+        if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
+                return true;
+        }
+        else{
+                if(myVector.size()==0){
+                return true;
+                }
                 return false;
         }
     }
@@ -253,3 +263,33 @@ int TypeListModel::rowCount(const QModelIndex &parent) const
 //{
 //    return mSearchNodeModel->getTypeListModel();
 //}
+
+SearchNodeManager::SearchNodeManager()
+{   
+    mSearchNodeProxyModel = new SearchNodeProxyModel();
+}
+
+void SearchNodeManager::setMapItem(MapItem *mapItem)
+{
+    mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(mapItem, this));
+}
+
+SearchNodeProxyModel *SearchNodeManager::searchNodeProxyModel() const
+{
+    return mSearchNodeProxyModel;
+}
+
+SearchNodeManager *SearchNodeManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance == nullptr){ mInstance = new SearchNodeManager(); }
+    return mInstance;
+}
+
+//SearchNodeManager::~SearchNodeManager()
+//{
+//    delete mSearchNodeProxyModel;
+//}
+
+

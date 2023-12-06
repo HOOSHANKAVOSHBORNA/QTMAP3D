@@ -9,13 +9,29 @@
 MapControllerItem::MapControllerItem():
     MapItem()
 {
+
     initializeOsgEarth();
-    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
+    mSearchNodeManager = SearchNodeManager::createSingletonInstance(nullptr, nullptr);
+    mSearchNodeManager->setMapItem(this);
+    qmlRegisterSingletonType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManagerInstance", SearchNodeManager::createSingletonInstance);
+
+
+//    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
+
 //    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
+    //------------
+    // Create an instance of SearchNodeManager
+//    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
+
+    // Set the context property to expose to QML
+//    mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", searchNodeManager);
+//    qmlRegisterType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManager");
+//--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-    mSearchNodeProxyModel = new SearchNodeProxyModel();
-    mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(this));
+
+
+//    mSearchNodeManager = new SearchNodeManager();
 
     StatusBar *status = new StatusBar();
     mStatusBar = new StatusBarSearchModel();
@@ -117,9 +133,19 @@ void MapControllerItem::calculateFps()
     }
 }
 
+//SearchNodeManager *MapControllerItem::getSearchNodeManager() const
+//{
+//    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
+//}
+
 StatusBarSearchModel *MapControllerItem::statusBar() const
 {
     return mStatusBar;
+}
+
+SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
+{
+    return mSearchNodeProxyModel;
 }
 
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
@@ -129,11 +155,13 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 //    mSmallMap.
 //    osgEarth::GeoPoint p{mSmallMap->getMapSRS(), getCameraController()->getViewpoint().focalPoint().get()};
 //    mSmallMap->setLocation(p);
+
 }
 
-SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
+
+SearchNodeManager *MapControllerItem::searchNodeManager() const
 {
-    return mSearchNodeProxyModel;
+    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
 }
 
 QVector3D MapControllerItem::mapMouseGeoLocation() const
