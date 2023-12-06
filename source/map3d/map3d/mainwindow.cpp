@@ -107,7 +107,7 @@ QQmlEngine *MainWindow::getQmlEngine()
 }
 
 
-MapItem *MainWindow::getMapItem()
+MapControllerItem *MainWindow::getMapItem()
 {
     return mMapItem;
 }

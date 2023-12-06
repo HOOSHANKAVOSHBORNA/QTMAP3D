@@ -25,6 +25,9 @@ class MapControllerItem : public MapItem
     Q_PROPERTY(QVector3D mapMouseGeoLocation READ mapMouseGeoLocation NOTIFY mouseLocationChanged)
     Q_PROPERTY(QVector3D mapMouseLocation READ mapMouseLocation NOTIFY mouseLocationChanged)
 
+    Q_PROPERTY(QQuickItem* topMenuItem READ topMenuItem WRITE setTopMenuItem NOTIFY topMenuItemChanged FINAL)
+    Q_PROPERTY(bool topMenuVisible READ topMenuVisible WRITE setTopMenuVisible NOTIFY topMenuVisibleChanged FINAL)
+
 public:
     explicit MapControllerItem();
 
@@ -41,6 +44,12 @@ public:
     void setCompassDirection(const QVector2D &newCompassDirection);
 
     void setQmlEngine(QQmlEngine *newQmlEngine);
+
+    QQuickItem *topMenuItem() const;
+    void setTopMenuItem(QQuickItem *newTopMenuItem);
+
+    bool topMenuVisible() const;
+    void setTopMenuVisible(bool newTopMenuVisible);
 
 public slots:
     void setFps(double fps);
@@ -64,6 +73,10 @@ signals:
     void clicked();
     void searchChange();
     void compassDirectionChanged();
+
+    void topMenuItemChanged();
+
+    void topMenuVisibleChanged();
 
 private:
     void tickNavigation(double deltaTime);
@@ -90,9 +103,11 @@ private:
 //    SearchNodeManager *getSearchNodeManager() const;
     TypeListModel* mTypeListModel{nullptr};
     StatusBarSearchModel *mStatusBar{nullptr};
-    QVector2D m_compassDirection;
+    QVector2D mCompassDirection;
     SmallMap *mSmallMap{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
+    QQuickItem *mTopMenuItem = nullptr;
+    bool mTopMenuVisible = false;
 };
 
 #endif // MAPCONTROLLERITEM_H

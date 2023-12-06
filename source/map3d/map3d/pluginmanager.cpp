@@ -68,7 +68,8 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
     case (osgGA::GUIEventAdapter::RELEASE):
         for (auto& item : mPluginManager->mPluginsInfoList) {
             bool res = item->mouseReleaseEvent(ea, aa);
-            if(mCurrentPressPoint.x() == ea.getX() && mCurrentPressPoint.y() == ea.getY())
+            if((ea.getX() - 2) < mCurrentPressPoint.x() &&  mCurrentPressPoint.x() < (ea.getX() + 2)
+                && (ea.getY() - 2) < mCurrentPressPoint.y() && mCurrentPressPoint.y() < (ea.getY() + 2))
                 item->mouseClickEvent(ea, aa);
             if(res)
                 return true;

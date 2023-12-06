@@ -26,6 +26,11 @@ MapController {
         toggleItemsVisible();
     }
 
+//    Rectangle {
+//        anchors.fill: parent
+//        color: Qt.rgba(1, 0, 0, .5)
+//    }
+
     function toggleItemsVisible() {
         if (map.itemVisible === true) {
             itemsShowAnimation.stop();
@@ -37,6 +42,30 @@ MapController {
             itemsShowAnimation.start();
             map.itemVisible = true;
         }
+    }
+
+    Item {
+        id: topMenuContainer
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: topMenuVisible
+        width: 706
+        height: 75
+
+        // just for test
+//        Rectangle {
+//            anchors.horizontalCenter: parent.horizontalCenter
+//            width: 300
+//            height: 60
+//            color: 'blue'
+//        }
+
+        children: topMenuItem ?? []
+//                    children: TestItem { title: 'test item' }
+
+
+
     }
 
     PropertyAnimation {
@@ -207,6 +236,5 @@ MapController {
         sourceModel: map.statusBar().getSourceModel()
 
     }
-
 }
 
