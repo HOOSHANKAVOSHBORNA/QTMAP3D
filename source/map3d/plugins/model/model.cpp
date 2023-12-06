@@ -98,18 +98,29 @@ void Model::setState(State newState)
 
 bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+    //--select model and show menu------------------------------------------
+    if(mPickModelNode){
+        mPickModelNode->select(false);
+        mPickModelNode->showMenu(false);
+    }
+    SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
+    if(modelNode){
+        mPickModelNode = modelNode;
+        if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON){
+            modelNode->select(true);
+            return true;
+        }
+        else if(ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON){
+            modelNode->showMenu(true);
+            modelNode->select(true);
+            return true;
+        }
+    }
+    //--add model----------------------------------------------------------
+    if(mState == State::NONE){
+        return false;
+    }
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
-
-        SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-        if(modelNode) {
-            modelNode->select();
-            // serviceManager()->sendAction("select");
-            return false;
-        }
-
-        if(mState == State::NONE){
-            return false;
-        }
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initModel(geoPos);
@@ -123,23 +134,15 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         }
 
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON ) {
-        if(mState == State::MOVING){
-            cancel();
-        }else if(mState == State::NONE){
-            SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-            if(modelNode) {
-                modelNode->showMenu();
-                return false;
-            }
-        }
-        return false;
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::MOVING) {
+        cancel();
+        return true;
+    }
+    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
+        confirm();
+        return true;
     }
 
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
-            confirm();
-        return false;
-    }
     return false;
 }
 
@@ -241,7 +244,7 @@ void Model::onModeChanged(bool is3DView)
 }
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos){
-    QString name;
+
     switch (mType) {
     case Type::SIMPLE:
         mNodeData = sampleNodeData("Tree", "../data/models/tree/tree.png", "../data/models/tree/tree.osgb",
@@ -366,7 +369,7 @@ SimpleModelNode *Model::pick(float x, float y)
                         osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
 
                     osg::BoundingBox bb = hit.drawable->getBoundingBox();
-//                    qDebug()<<"radius: "<<bb.radius();
+                    //                    qDebug()<<"radius: "<<bb.radius();
                     osg::Vec3 worldCenter = bb.center() *
                                             osg::computeLocalToWorld(hit.nodePath);
                     _selectionBox->setMatrix(
