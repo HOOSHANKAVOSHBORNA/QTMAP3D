@@ -344,7 +344,8 @@ Item {
                                 Layout.leftMargin: 5 / Style.monitorRatio
                                 height: 20 / Style.monitorRatio
                                 from: 0
-
+                                to:20000000
+                                stepSize: 1
                                 onValueChanged: {
                                     if (rootItem.model)
                                         rootItem.model.strokeWidth = value
@@ -397,6 +398,7 @@ Item {
                                     Layout.preferredWidth: 20 / Style.monitorRatio
                                     text: "X "
                                     padding: 5 / Style.monitorRatio
+                                    Layout.topMargin: 5 / Style.monitorRatio
                                     font.pointSize: 10 / Style.monitorRatio
                                     color: Style.foregroundColor
                                 }
@@ -428,6 +430,7 @@ Item {
                                     Layout.preferredWidth: 20 / Style.monitorRatio
                                     text: "Y "
                                     padding: 5 / Style.monitorRatio
+                                    Layout.topMargin: 5 / Style.monitorRatio
                                     font.pointSize: 10 / Style.monitorRatio
                                     color: Style.foregroundColor
                                 }
@@ -458,6 +461,7 @@ Item {
                                     Layout.preferredWidth: 20 / Style.monitorRatio
                                     text: "Z "
                                     padding: 5 / Style.monitorRatio
+                                    Layout.topMargin: 5 / Style.monitorRatio
                                     font.pointSize: 10
                                     color: Style.foregroundColor
                                 }
@@ -564,6 +568,7 @@ Item {
                                 text: "X "
                                 padding: 5 / Style.monitorRatio
                                 font.pointSize: 10 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
 
@@ -594,6 +599,7 @@ Item {
                                 text: "Y "
                                 padding: 5 / Style.monitorRatio
                                 font.pointSize: 10 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
 
@@ -624,6 +630,7 @@ Item {
                                 text: "Z "
                                 padding: 5
                                 font.pointSize: 10 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
 
@@ -697,6 +704,7 @@ Item {
                                 Layout.rightMargin: 5 / Style.monitorRatio
                                 Layout.topMargin: 2 / Style.monitorRatio
                                 value: 0
+                                stepSize: 1
                                 from : 0
                                 to : 360
                                 onValueChanged: {
@@ -725,6 +733,7 @@ Item {
                                 Layout.rightMargin: 5 / Style.monitorRatio
                                 Layout.bottomMargin: 2 / Style.monitorRatio
                                 value: 360
+                                stepSize: 1
                                 from: 0
                                 to: 360
                                 onValueChanged: {
@@ -780,6 +789,7 @@ Item {
                                     rootItem.model.radius = value
                                 }
                             }
+
                             Binding{
                                 target: radiusValue
                                 property: "value"
@@ -1152,6 +1162,7 @@ Item {
                             anchors.leftMargin: 5 / Style.monitorRatio
                             anchors.rightMargin: 5 / Style.monitorRatio
                             anchors.verticalCenter: parent.verticalCenter
+                            stepSize: 1
                             from : 0
                             to: 20000000
                             height: 20 / Style.monitorRatio
@@ -1344,6 +1355,7 @@ Item {
                                  Layout.fillWidth: true
                                  Layout.margins: 0
                                  Layout.rightMargin: 15 / Style.monitorRatio
+                                 enabled: pointVisible.checked
                                  background: Rectangle{
                                      color: foregroundColor
                                      radius: 10 / Style.monitorRatio
@@ -1443,11 +1455,13 @@ Item {
                                          Layout.rightMargin: 5 / Style.monitorRatio
                                          Layout.leftMargin: 5 / Style.monitorRatio
                                          editable: true
+                                         stepSize: 1
                                          height: 20 / Style.monitorRatio
                                          from : 0
                                          to : 100
                                          onValueChanged: {
                                              rootItem.model.pointsColor.a = value/100
+                                             console.log(rootItem.model.pointsColor.a)
                                          }
                                      }
                                      Binding{
@@ -1489,6 +1503,7 @@ Item {
                                      anchors.right: parent.right
                                      anchors.verticalCenter: parent.verticalCenter
                                      height: 20 / Style.monitorRatio
+                                     stepSize: 1
                                      from: 0
                                      to:20000000
                                      onValueChanged: {

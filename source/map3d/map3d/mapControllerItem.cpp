@@ -27,6 +27,10 @@ MapControllerItem::MapControllerItem():
     mStatusBar->addMessage("This application Works on Qt Framwork");
 
     mStatusBar->addMessage("Wellcome To QARCH 2023");
+
+//    setTopMenuVisible(false);
+//    setTopMenuVisible(true);
+
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -125,10 +129,32 @@ StatusBarSearchModel *MapControllerItem::statusBar() const
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 {
     mQmlEngine = newQmlEngine;
+
+    // TEST
+    QQmlComponent* comp = new QQmlComponent(mQmlEngine);
+
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+        if(status == QQmlComponent::Error) {
+            qDebug() << "Can not load this: " << comp->errorString();
+        }
+
+        if(status == QQmlComponent::Ready) {
+            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+            item->setProperty("title", "Test Controller");
+
+            setTopMenuItem(item);
+        }
+    });
+
+    comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+    // END TEST
+
+
 //    mSmallMap = dynamic_cast<SmallMap*>(findChild<QObject*>("SmallMap"));
 //    mSmallMap.
 //    osgEarth::GeoPoint p{mSmallMap->getMapSRS(), getCameraController()->getViewpoint().focalPoint().get()};
 //    mSmallMap->setLocation(p);
+
 }
 
 SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
@@ -247,8 +273,32 @@ QVector2D MapControllerItem::compassDirection() const
 
 void MapControllerItem::setCompassDirection(const QVector2D &newCompassDirection)
 {
-    if (m_compassDirection == newCompassDirection)
+    if (mCompassDirection == newCompassDirection)
         return;
-    m_compassDirection = newCompassDirection;
+    mCompassDirection = newCompassDirection;
     emit compassDirectionChanged();
+}
+
+QQuickItem *MapControllerItem::topMenuItem() const
+{
+    return mTopMenuItem;
+}
+
+void MapControllerItem::setTopMenuItem(QQuickItem *newTopMenuItem)
+{
+    if (mTopMenuItem == newTopMenuItem)
+        return;
+    mTopMenuItem = newTopMenuItem;
+    emit topMenuItemChanged();
+}
+
+bool MapControllerItem::topMenuVisible() const
+{
+    return mTopMenuVisible;
+}
+
+void MapControllerItem::setTopMenuVisible(bool newTopMenuVisible)
+{
+    mTopMenuVisible = newTopMenuVisible;
+    emit topMenuVisibleChanged();
 }

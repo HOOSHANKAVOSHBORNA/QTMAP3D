@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls.Basic
+import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
 import "style"
@@ -12,24 +12,23 @@ RowLayout{
     property alias decimals: floatSpinBox.decimals
     property alias editable: floatSpinBox.editable
 
+
         ComboBox {
+
             id:stepCombobox
-            implicitWidth: 69
-            implicitHeight: 20
+            Layout.preferredHeight: 20
+            Layout.preferredWidth: 69
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01 ]
             currentIndex: 3
             font.pointSize: 10
             displayText:model[currentIndex].toString()
 
-            contentItem: Rectangle{
-                 color: "transparent"
-                 radius: 15
-                 Text{
+            contentItem: Text{
                      text: stepCombobox.displayText
                      color: Style.foregroundColor
-                     anchors.centerIn: parent
+                     horizontalAlignment: Qt.AlignHCenter
+                     verticalAlignment: Qt.AlignVCenter
                  }
-            }
 
             background: Rectangle{
                 color: backgroundColor
@@ -46,6 +45,7 @@ RowLayout{
             indicator: Item{
 
             }
+
         }
 
         FloatSpinbox{
