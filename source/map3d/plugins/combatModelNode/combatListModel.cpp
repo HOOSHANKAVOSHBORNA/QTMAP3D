@@ -30,9 +30,44 @@ QVariant CombatListModel::data(const QModelIndex &index, int role) const
             return QUrl::fromLocalFile(QString::fromStdString(asData.attacker->nodeData()->url2D));
         }
     case selection:
-        return true;
-    case stateColor:
+        if(asData.getState() == SELECTED){
             return true;
+        }else{
+            return false;
+        }
+    case stateColor:
+        switch (asData.getState()) {
+        case PREASSIGN:
+            return "#ff00ff";
+            break;
+        case HOVERED:
+            return "#444499";
+            break;
+        case SELECTED:
+            return "#ab23aa";
+            break;
+        case ASSIGNED:
+            return "#ff0000";
+            break;
+        case SEARCH:
+            return "#000000";
+            break;
+        case LOCK:
+            return "ffff00";
+            break;
+        case FIRE:
+            return "#00ff00";
+            break;
+        case SUCCEED:
+            return "#22ff22";
+            break;
+        case FAILED:
+            return "#ffaa00";
+            break;
+        default:
+            return "#ffffff";
+            break;
+        }
     default:
         break;
     }

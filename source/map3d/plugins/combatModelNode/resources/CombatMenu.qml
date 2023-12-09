@@ -22,12 +22,12 @@ Item {
             Image {
                 id: mainObjectIcon
                 source: combatModel.iconUrl
-MouseArea{
-anchors.fill: parent
-onClicked: {
-    console.log(combatModel.rowCount())
-}
-}
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        console.log(combatModel.rowCount())
+                    }
+                }
             }
             Text {
                 id: mainObjectTitle
@@ -41,22 +41,25 @@ onClicked: {
             height: parent.height *0.8
             anchors.verticalCenter: parent.verticalCenter
 
-            ListView{
+            GridView{
+
                 id:se
                 clip: true
                 model: root.combatModel
                 anchors.fill: parent
-                delegate: Item {
-                    RowLayout{
+                delegate: Rectangle {
+                    ColumnLayout{
                         anchors.fill: parent
-                        anchors.right: parent.right
+                        Layout.alignment: Qt.AlignHCenter
+                        // anchors.right: parent.right
                         Image {
                             source: objectIcon
-                            sourceSize: ("50x50")
+                            sourceSize: ("40x40")
                         }
                         Text {
                             text: objectID
-                            font.pixelSize: 20
+                            font.pixelSize: 12
+                            color: stateColor
                         }
                     }
                 }
