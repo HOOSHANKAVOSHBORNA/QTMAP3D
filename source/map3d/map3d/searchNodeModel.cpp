@@ -249,9 +249,4 @@ SearchNodeManager *SearchNodeManager::createSingletonInstance(QQmlEngine *engine
     return mInstance;
 }
 
-//SearchNodeManager::~SearchNodeManager()
-//{
-//    delete mSearchNodeProxyModel;
-//}
-
 

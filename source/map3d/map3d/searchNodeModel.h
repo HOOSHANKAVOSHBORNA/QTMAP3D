@@ -111,11 +111,9 @@ public:
 private:
     explicit SearchNodeManager();
 
-
 private:
     inline static SearchNodeManager *mInstance;
     SearchNodeProxyModel *mSearchNodeProxyModel;
-
 };
 
 
