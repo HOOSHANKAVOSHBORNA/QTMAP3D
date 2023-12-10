@@ -1,6 +1,9 @@
 #include "networkManager.h"
 #include "qamqpexchange.h"
 #include "qamqpqueue.h"
+#include "qjsonobject.h"
+
+#include <QJsonDocument>
 
 NetworkManager::NetworkManager(QObject *parent): QObject(parent)
 {
@@ -48,6 +51,39 @@ void NetworkManager::actionQueueReceived()
         return;
 
     QAmqpMessage message = queue->dequeue();
+    QString action = message.payload();
+
+    QJsonDocument doc = QJsonDocument::fromJson(action.toUtf8());
+    QJsonObject obj;
+    if (!doc.isNull()) {
+        if (doc.isObject()){
+            obj = doc.object();
+            QString type = obj.value("Type").toString();
+            if (type == "SignIn"){
+                bool status = obj.value("Data").toObject().value("Username").toString() == mUsername &&
+                              obj.value("Data").toObject().value("Password").toString() == mPassword;
+
+                QJsonDocument jsonDoc;
+                QJsonObject jsonObject;
+                jsonObject.insert("Type", "SignIn");
+                jsonObject.insert("COMMAND", status);
+                jsonDoc.setObject(jsonObject);
+                sendData(jsonDoc.toJson(QJsonDocument::Indented));
+                qDebug() << obj.value("Data").toObject().value("Username").toString() << ", \t " << obj.value("Data").toObject().value("Password").toString();
+            }
+            else if (type == "SignUp"){
+                mUsername = obj.value("Data").toObject().value("Username").toString();
+                mPassword = obj.value("Data").toObject().value("Password").toString();
+                QJsonDocument jsonDoc;
+                QJsonObject jsonObject;
+                jsonObject.insert("Type", "SignUp");
+                jsonObject.insert("COMMAND", true);
+                jsonDoc.setObject(jsonObject);
+                sendData(jsonDoc.toJson(QJsonDocument::Indented));
+            }
+        }
+    }
+
     qDebug() << "message: " << message.payload();
 }
 

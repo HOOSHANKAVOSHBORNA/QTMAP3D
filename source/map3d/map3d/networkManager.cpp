@@ -44,16 +44,19 @@ void NetworkManager::clientConnected()
     disconnect(dataQueue, 0, 0, 0); // in case this is a reconnect
     disconnect(actionQueue, 0, 0, 0);
     connect(dataQueue, &QAmqpQueue::declared, this, &NetworkManager::dataQueueDeclared);
-    connect(actionQueue, &QAmqpQueue::declared, this, &NetworkManager::sendData);
+    connect(actionQueue, &QAmqpQueue::declared, this, &NetworkManager::sendDataQueueDeclared);
     dataQueue->declare();
     actionQueue->declared();
 }
 
-void NetworkManager::sendData()
+void NetworkManager::sendDataQueueDeclared()
 {
-    connect(mServiceManager, &ServiceManager::actionSent, [&](const QString &action){
-        QAmqpExchange *exchange = mClient.createExchange();
-        exchange->publish(action, "action");
-        qDebug() << "Sent action: "<<action;
-    });
+    connect(mServiceManager, &ServiceManager::actionSent, this, &NetworkManager::sendData);
+}
+
+void NetworkManager::sendData(const QString &action)
+{
+    QAmqpExchange *exchange = mClient.createExchange();
+    exchange->publish(action, "action");
+    qDebug() << "Sent action: "<<action;
 }

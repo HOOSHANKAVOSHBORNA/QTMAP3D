@@ -5,8 +5,10 @@
 #include <QUrl>
 #include <list>
 
+#include "authenticator.h"
 #include "pluginmanager.h"
 #include "defenseDataManager.h"
+#include "networkManager.h"
 
 
 class MainWindow;
@@ -54,6 +56,9 @@ private:
     PluginManager *mPluginManager = nullptr;
     DefenseDataManager *mDefenseDataManager{nullptr};
     ServiceManager *mServiceManager{nullptr};
+
+    Authenticator *mAuthenticator{nullptr};
+    NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};
 };

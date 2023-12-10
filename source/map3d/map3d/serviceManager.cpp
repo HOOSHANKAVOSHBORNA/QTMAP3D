@@ -4,9 +4,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
-ServiceManager::ServiceManager(MapItem *mapItem, QObject *parent):
-    QObject(parent),
-    mMapItem{mapItem}
+ServiceManager::ServiceManager(QObject *parent):
+    QObject(parent)
 {
 
 }
@@ -104,6 +103,10 @@ void ServiceManager::messageData(QString jsonData)
                 circleData(obj);
             else if(type == "Polygon")
                 polygonData(obj);
+            else if(type == "SignUp")
+                signUpData(obj);
+            else if(type == "SignIn")
+                signInData(obj);
             else
                 qDebug() << "type of data is unknown";
         }
@@ -172,6 +175,18 @@ void ServiceManager::movableNodeData(QJsonObject jsonObject)
     }
     if(movableNodeData->layers.size() > 0)
         emit movableNodeDataReceived(movableNodeData);
+}
+
+void ServiceManager::signInData(QJsonObject jsonObject)
+{
+    bool status = jsonObject.value("COMMAND").toBool();
+    emit signInResponseReceived(status);
+}
+
+void ServiceManager::signUpData(QJsonObject jsonObject)
+{
+    bool status = jsonObject.value("COMMAND").toBool();
+    emit signUpResponseReceived(status);
 }
 
 void ServiceManager::nodeData(QJsonObject jsonObject)

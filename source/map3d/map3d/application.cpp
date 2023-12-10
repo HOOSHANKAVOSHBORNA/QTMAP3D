@@ -36,12 +36,12 @@ void Application::initialize()
 {
     qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
+    qmlRegisterType<Authenticator>("Crystal", 1, 0, "Authenticator");
 
     initializeQmlEngine();
     initializeDefenseDataManager();
 
-    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
-    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
+    mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
 }
 
 void Application::show()
@@ -91,9 +91,24 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
     }
     qDebug()<<"Load: "<< objUrl.toString();
 
+    Authenticator *authenticator = qobject_cast<Authenticator*>(obj);
     MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
     ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
 
+    if (authenticator){
+        mAuthenticator = authenticator;
+        mServiceManager = new ServiceManager();
+        mNetworkManager = new NetworkManager(mServiceManager);
+        mAuthenticator->setServiceManager(mServiceManager);
+        mNetworkManager->start();
+        // connect(mServiceManager, &ServiceManager::signInResponseReceived, [&](bool status){
+            // if (status && !mMainWindow) {
+                mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
+                mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
+                mAuthenticator->hide();
+            // }
+        // });
+    }
     if (mainWnd) {
         mMainWindow = mainWnd;
         mMainWindow->initComponent();
@@ -109,12 +124,9 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 
 void Application::onUICreated()
 {
-    mServiceManager = new ServiceManager(mMainWindow->getMapItem());
     connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
             mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
         });
-    NetworkManager *networkManager = new NetworkManager(mServiceManager);
-    networkManager->start();
 
     mPluginManager->loadPlugins();
     mPluginManager->setup();
