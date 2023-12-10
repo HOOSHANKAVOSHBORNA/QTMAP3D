@@ -312,28 +312,23 @@ QJsonObject LocationModel::toJson()
 
 bool LocationModel::readFromFile()
 {
-    QFile locationsFile("locations.json");
+    QFile locationsFile(savedFilePath);
 
     if (!locationsFile.open(QIODevice::ReadOnly)) {
         return false;
     }
 
     QByteArray savedData = locationsFile.readAll();
-    qDebug() << "saved Data: " << savedData;
-
     QJsonDocument jsonDoc = QJsonDocument::fromJson(savedData);
-    qDebug() << "jsonDoc: " << jsonDoc.toJson();
 
     appendLocationsFromJson(jsonDoc.object());
-
-//    qDebug() << "are you kidding!!";
 
     return true;
 }
 
 bool LocationModel::writeToFile()
 {
-    QFile locationsFile("locations.json");
+    QFile locationsFile(savedFilePath);
 
     if (!locationsFile.open(QIODevice::WriteOnly)) {
         return false;
@@ -358,28 +353,20 @@ LocationItem *LocationItem::fromJson(const QJsonObject &json)
 
         if (const QJsonValue v = viewpointJson["name"]; v.isString()) {
             viewpoint->name() = v.toString().toStdString();
-        } else {
-            qDebug() << "name is not in location json";
         }
 
         double lon = 0, lat = 0, z = 0;
 
         if (const QJsonValue v = viewpointJson["lon"]; v.isDouble()) {
             lon = v.toDouble();
-        } else {
-            qDebug() << "lon is not in location json";
         }
 
         if (const QJsonValue v = viewpointJson["lat"]; v.isDouble()) {
             lat = v.toDouble();
-        } else {
-            qDebug() << "lat is not in location json";
         }
 
         if (const QJsonValue v = viewpointJson["z"]; v.isDouble()) {
             z = v.toDouble();
-        } else {
-            qDebug() << "z is not in location json";
         }
 
         osgEarth::GeoPoint gp{osgEarth::SpatialReference::get("wgs84"), lon, lat, z};

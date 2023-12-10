@@ -116,6 +116,9 @@ public:
     Q_INVOKABLE bool readFromFile();
     Q_INVOKABLE bool writeToFile();
 
+public:
+    const QString savedFilePath = QString("../data/saved/locations.json");
+
 private:
     MapItem *mMapItem;
     QVector<LocationItem *> mLocations;
