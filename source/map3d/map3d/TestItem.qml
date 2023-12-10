@@ -7,7 +7,7 @@ Item {
 //    Layout.fillWidth: true
 //    Layout.fillHeight: true
 
-    anchors.fill: parent
+//    anchors.fill: parent
     Rectangle {
         color: Style.foregroundColor
         border.width: 1

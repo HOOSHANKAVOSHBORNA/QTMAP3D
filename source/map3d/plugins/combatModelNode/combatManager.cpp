@@ -182,3 +182,8 @@ LineNode *assignmentData::getLine()
 {
     return mRelationLine;
 }
+
+AssignState assignmentData::getState()
+{
+    return mState;
+}

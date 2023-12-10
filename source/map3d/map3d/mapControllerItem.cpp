@@ -45,7 +45,7 @@ MapControllerItem::MapControllerItem():
     mStatusBar->addMessage("Wellcome To QARCH 2023");
 
 //    setTopMenuVisible(false);
-//    setTopMenuVisible(true);
+   // setTopMenuVisible(true);
 
 }
 
@@ -157,22 +157,22 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
     mQmlEngine = newQmlEngine;
 
     // TEST
-    QQmlComponent* comp = new QQmlComponent(mQmlEngine);
+    // QQmlComponent* comp = new QQmlComponent(mQmlEngine);
 
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-        if(status == QQmlComponent::Error) {
-            qDebug() << "Can not load this: " << comp->errorString();
-        }
+    // QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+    //     if(status == QQmlComponent::Error) {
+    //         qDebug() << "Can not load this: " << comp->errorString();
+    //     }
 
-        if(status == QQmlComponent::Ready) {
-            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-            item->setProperty("title", "Test Controller");
+    //     if(status == QQmlComponent::Ready) {
+    //         QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+    //         item->setProperty("title", "Test Controller");
 
-            setTopMenuItem(item);
-        }
-    });
+    //         setTopMenuItem(item);
+    //     }
+    // });
 
-    comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+    // comp->loadUrl(QUrl("qrc:/TestItem.qml"));
     // END TEST
 
 
