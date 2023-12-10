@@ -487,6 +487,7 @@ Rectangle {
                                     lvLocationManger.model.editLocation(lvLocationManger.model.index(popup.editIndex, 0), tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
                                 }
 
+                                lvLocationManger.model.sourceModel.writeToFile()
                                 popup.myClose()
                             }
                         }

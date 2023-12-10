@@ -9,8 +9,9 @@
 #include "mapItem.h"
 
 class LocationManager;
-class LocationModel;
 class LocationProxyModel;
+class LocationModel;
+struct LocationItem;
 
 enum {
     NameRole = Qt::UserRole,
@@ -23,15 +24,6 @@ enum {
     DescriptionRole,
     ImageSourceRole,
     ColorRole,
-};
-
-struct LocationItem
-{
-public:
-    osgEarth::Viewpoint *viewpoint;
-    QString description;
-    QString imageSource;
-    QString color;
 };
 
 // ------------------------------------------------------------ model manager
@@ -51,7 +43,11 @@ public:
     void myRemoveRow(int index);
     void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
     void editLocation(int index, QString newName, QString newDescription, QString newImageSource, QString newColor);
+
     Q_INVOKABLE LocationProxyModel *locationProxyModel();
+
+    Q_INVOKABLE void savedModelToFile();
+    Q_INVOKABLE void loadModelFromFile();
 
 private:
     inline static LocationManager* mInstance;
@@ -66,6 +62,10 @@ class LocationProxyModel : public QSortFilterProxyModel
 
 public:
     explicit LocationProxyModel();
+
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+    virtual bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
+
     Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
     Q_INVOKABLE void goToLocation(const QModelIndex &index);
     Q_INVOKABLE void printCurrentLocation();
@@ -82,10 +82,6 @@ signals:
 private:
     static LocationProxyModel* mInstance;
     QString mSearchedWord;
-
-protected:
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
-    virtual bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
 };
 
 // ------------------------------------------------------------ model
@@ -95,24 +91,47 @@ class LocationModel : public QAbstractListModel
 
 public:
     explicit LocationModel(MapItem *mapItem);
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     Q_INVOKABLE void myRemoveRow(QModelIndex index);
     Q_INVOKABLE void goToLocation(QModelIndex index);
     Q_INVOKABLE void myAppendRow(const LocationItem &newLocationItem);
+    Q_INVOKABLE void myAppendRow(QString name, double lon, double lat, double z,
+                                 double heading, double pitch, double range,
+                                 QString description, QString imageSource, QString color);
     Q_INVOKABLE void myEditRow(QModelIndex index, const LocationItem &newLocationItem);
 
     QVector<LocationItem *> locations() const;
     void setLocations(const QVector<LocationItem *> &newLocations);
 
+    MapItem *mapItem() const;
+
     virtual QHash<int, QByteArray> roleNames() const override;
 
-    MapItem *mapItem() const;
+    bool appendLocationsFromJson(const QJsonObject &json);
+    QJsonObject toJson();
+
+    Q_INVOKABLE bool readFromFile();
+    Q_INVOKABLE bool writeToFile();
 
 private:
     MapItem *mMapItem;
     QVector<LocationItem *> mLocations;
+};
+
+// ------------------------------------------------------------ structs
+struct LocationItem
+{
+public:
+    osgEarth::Viewpoint *viewpoint;
+    QString description;
+    QString imageSource;
+    QString color;
+
+    static LocationItem *fromJson(const QJsonObject &json);
+    QJsonObject toJson();
 };
 
 #endif // LOCATIONMANAGER_H
