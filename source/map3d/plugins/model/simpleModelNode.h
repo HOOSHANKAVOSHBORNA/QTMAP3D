@@ -3,6 +3,7 @@
 
 
 
+#include "highlightOutline.h"
 #include "mapItem.h"
 #include <QObject>
 #include <osg/CullFace>
@@ -21,13 +22,19 @@
 #include "cone.h"
 #include "circularMenu.h"
 
-class HighlightLine;
 class MoveableModelNode;
 class FlyableModelNode;
 
 class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
+public:
+    enum Mode{
+        Mode2D,
+        Mode3D,
+        Highlight
+    };
+
 public:
     SimpleModelNode(MapItem* mapItem, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
     ~SimpleModelNode();
@@ -83,24 +90,27 @@ private:
     void createCircularMenu();
     void createNodeInformation();
     void createBookmarkItem();
-    void setOutline(bool state);
+//    void setOutline(bool state);
 
 private:
-    osg::ref_ptr<osg::Image> mImage;
-    osg::ref_ptr<osg::Node> mSimpleNode;
-    osg::ref_ptr<osg::Switch> mSwitchNode;
+
+    osg::ref_ptr<osg::Switch> mSwitchMode;
     osg::ref_ptr<osg::LOD> m3DNode;
-    osg::ref_ptr<HighlightLine> mHighlightLine;
+    osg::ref_ptr<HighlightOutline> mHighlightOutline;
+    osg::ref_ptr<osg::Node> m3DBaseNode;
+    osg::ref_ptr<osg::Image> mImage;
     osg::ref_ptr<osg::Geode> m2DNode;
+
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeHighliteNode;
     osg::ref_ptr<Circle> mCircleHighlightNode;
-    CircularMenuItem *mAttackerMenuItem;
 
+    CircularMenuItem *mAttackerMenuItem;
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
     std::string mUrl2D;
     std::string mUrl3D;
     MapItem *mMapItem;
+    Mode mMode{Mode2D};
     bool mIs3D{false};
     bool mIsHighlight{false};
     bool mIsAttacker{false};
