@@ -1,48 +1,72 @@
 #ifndef COMBATLISTMODEL_H
 #define COMBATLISTMODEL_H
 
+#include "combatManager.h"
+#include "mapControllerItem.h"
 #include "qqmlengine.h"
-#include "qquickwindow.h"
-#include "qstandarditemmodel.h"
 #include <QObject>
 
-class CombatListModel : public QStandardItemModel
+class CombatListModel : public QAbstractListModel
 {
     Q_OBJECT
-
+    Q_PROPERTY(QString title       READ getTitle       WRITE setTitle       NOTIFY actorDataUpdated FINAL)
+    Q_PROPERTY(QUrl iconUrl        READ getIconUrl     WRITE setIconUrl     NOTIFY actorDataUpdated FINAL)
+    Q_PROPERTY(bool isAttacker     READ getIsAttacker  WRITE setIsAttacker  NOTIFY actorDataUpdated FINAL)
+    Q_PROPERTY(int bulletCount     READ getBulletCount WRITE setBulletCount NOTIFY actorDataUpdated FINAL)
+public:
     enum CustomRoles {
         ID = Qt::UserRole,
         icon,
-        selection
+        selection,
+        stateColor
     };
 
-
-public:
     explicit CombatListModel(QObject *parent = nullptr);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
+    void addData(assignmentData data);
+
+    void setTitle(QString title);
+    QString getTitle();
+    void setIconUrl(QUrl iconUrl);
+    QUrl getIconUrl();
+    void setIsAttacker(bool isAttacker);
+    bool getIsAttacker();
+    void setBulletCount(int bulletCount);
+    int getBulletCount();
+
+signals:
+    void actorDataUpdated();
 
 private:
-    QStandardItem *mRootItem;
+
+    QVector<assignmentData> mAssignList;
+    QString mTitle;
+    QUrl mIconUrl;
+    bool mIsAttacker{false};
+    int mBulletCount{0};
 };
 
 
 class CombatList:public QObject
 {
     Q_OBJECT
+
+
 public:
-    explicit CombatList(QQmlEngine* Engine, QQuickWindow *parent = nullptr);
+    explicit CombatList(QQmlEngine* engine, MapControllerItem *map = nullptr);
     ~CombatList();
 
-    CombatListModel *model() const;
-    QQuickWindow *window() const;
-
-signals:
-    void goToPosition();
-    void track();
+    CombatListModel *getCombatModel() const;
+    void setCombatMenuVisible(bool visible);
 
 private:
+    MapControllerItem *mMapItem;
     CombatListModel *mCombatListModel;
-    QQuickWindow *mWindow{nullptr};
+
+
+
 };
 
 

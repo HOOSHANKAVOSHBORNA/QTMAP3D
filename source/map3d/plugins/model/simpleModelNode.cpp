@@ -175,7 +175,6 @@ void SimpleModelNode::setColor(osgEarth::Color color)
         //---------------------------------------------------------------------
     }
     mColor = color;
-
 }
 
 bool SimpleModelNode::isAttacker() const

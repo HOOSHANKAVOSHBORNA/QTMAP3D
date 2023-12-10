@@ -42,7 +42,7 @@ public:
     ~MainWindow();
     void initComponent();
     QQmlEngine *getQmlEngine();
-    MapItem *getMapItem();
+    MapControllerItem *getMapItem();
     ToolboxManager *getToolboxManager() const;
     LayerManager *getLayerManager() const;
     BookmarkManager *getBookmarkManager() const;

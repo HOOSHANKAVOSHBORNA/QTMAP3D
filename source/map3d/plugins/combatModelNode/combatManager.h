@@ -29,6 +29,7 @@ public:
     void setState(AssignState state);
     void setLine(MapItem* map);
     LineNode* getLine();
+    AssignState getState();
 
 private:
     osg::ref_ptr<LineNode> mRelationLine{nullptr};
