@@ -284,7 +284,12 @@ Item{
                             font.pixelSize: 16/Style.monitorRatio
                             color: Style.foregroundColor
                             Layout.fillWidth: true
-
+                            MouseArea{
+                                anchors.fill:parent
+                                onClicked: {
+                                    rootItem.addToHistory(modelData)
+                                }
+                            }
                         }
                     }
                 }
@@ -350,6 +355,7 @@ Item{
                             }
                             onClicked:{
                                 rootItem.model.onNodeClicked(index)
+                                rootItem.addToHistory(lvText.text)
                             }
                             background: Rectangle
                             {
