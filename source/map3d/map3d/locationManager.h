@@ -117,7 +117,8 @@ public:
     Q_INVOKABLE bool writeToFile();
 
 public:
-    const QString savedFilePath = QString("../data/saved/locations.json");
+    const QString savedDir = QString("../data/saved");
+    const QString savedFileName = QString("locations.json");
 
 private:
     MapItem *mMapItem;
