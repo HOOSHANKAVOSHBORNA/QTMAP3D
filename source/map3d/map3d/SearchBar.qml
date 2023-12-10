@@ -288,8 +288,6 @@ Item{
                                 anchors.fill:parent
                                 onClicked: {
                                     rootItem.addToHistory(modelData)
-//                                    searchText.textChanged(modelData)
-//                                    searchText.text(modelData)
                                 }
                             }
                         }

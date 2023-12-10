@@ -106,7 +106,6 @@ class SearchNodeManager : public QObject {
 public:
     static SearchNodeManager* createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
     void setMapItem(MapItem *mapItem);
-//    ~SearchNodeManager() override;
     Q_INVOKABLE SearchNodeProxyModel *searchNodeProxyModel() const;
 
 private:

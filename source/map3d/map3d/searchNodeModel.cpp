@@ -60,22 +60,22 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
 }
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer) {
-//    auto iterator = std::remove_if(
-//        mNodes1.begin(),
-//        mNodes1.end(),
-//        [&](NodeInfo *item) {
-//            return item->node == node;
-//        }
-//        );
 
-//    if (iterator != mNodes1.end()) {
-//        int d = std::distance(mNodes1.begin(), iterator);
-//        beginRemoveRows(QModelIndex(), d, d);
-//        delete *iterator;
-//        mNodes1.erase(iterator);
-//        endRemoveRows();
-//        emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
-//    }
+    auto iterator = std::remove_if(
+        mNodes1.begin(),
+        mNodes1.end(),
+        [&](NodeInfo *item) {
+            return item->node == node;
+        }
+        );
+
+    if (iterator != mNodes1.end()) {
+        int d = std::distance(mNodes1.begin(), iterator);
+        beginRemoveRows(QModelIndex(), d, d);
+        mNodes1.erase(iterator);
+        endRemoveRows();
+        emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
+    }
 }
 
 
@@ -225,44 +225,6 @@ int TypeListModel::rowCount(const QModelIndex &parent) const
 }
 ///////////////////////////////////////////////// --------------
 
-
-//SearchNodeManager::SearchNodeManager(MapItem *mapItem, QObject *parent) : QObject(parent)
-//{
-//    mSearchNodeModel = new SearchNodeModel(mapItem, this);
-//    mSearchNodeProxyModel = new SearchNodeProxyModel(this);
-//    mSearchNodeProxyModel->setSourceModel(mSearchNodeModel);
-//}
-
-//void SearchNodeManager::addNode(osg::Node *node, osgEarth::Layer *layer)
-//{
-//    mSearchNodeModel->addNode(node, layer);
-
-//}
-
-//void SearchNodeManager::removeNode(osg::Node *node, osgEarth::Layer *layer)
-//{
-//    mSearchNodeModel->removeNode(node, layer);
-//}
-
-//void SearchNodeManager::onNodeClicked(int current)
-//{
-//    mSearchNodeProxyModel->onNodeClicked(current);
-//}
-
-//SearchNodeModel *SearchNodeManager::getSearchNodeModel() const
-//{
-//    return mSearchNodeModel;
-//}
-
-//SearchNodeProxyModel *SearchNodeManager::getSearchNodeProxyModel() const
-//{
-//    return mSearchNodeProxyModel;
-//}
-
-//TypeListModel *SearchNodeManager::getTypeListModel() const
-//{
-//    return mSearchNodeModel->getTypeListModel();
-//}
 
 SearchNodeManager::SearchNodeManager()
 {   
