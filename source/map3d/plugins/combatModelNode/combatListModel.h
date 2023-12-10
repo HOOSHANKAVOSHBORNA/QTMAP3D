@@ -18,6 +18,7 @@ public:
         ID = Qt::UserRole,
         icon,
         selection,
+        hover,
         stateColor
     };
 
@@ -26,6 +27,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
     void addData(assignmentData data);
+    Q_INVOKABLE void objectHover(QModelIndex index, bool isHovered);
+    Q_INVOKABLE void objectSelect(QModelIndex index, bool isSelected);
 
     void setTitle(QString title);
     QString getTitle();

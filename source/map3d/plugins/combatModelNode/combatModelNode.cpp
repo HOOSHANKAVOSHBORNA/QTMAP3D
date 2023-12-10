@@ -229,12 +229,10 @@ void CombatModelNode::onTargetMenuChecked()
         mCombatList->getCombatModel()->setIsAttacker(false);
         mCombatList->getCombatModel()->setBulletCount(0);
         //--update model------------------------------------------------------------------------------------------
+        mCombatList->getCombatModel()->removeRows(0,mCombatList->getCombatModel()->rowCount()-1);
         for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
             if(mCombatManager->getAssignmentData()->values().takeAt(var).target == currentObjectModel){
                 mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->values().at(var));
-                // auto index = mCombatList->getCombatModel()->index(var,0);
-                // mCombatList->getCombatModel()->setData(index,QString::number(mCombatManager->getAssignmentData()->values().takeAt(var).attacker->nodeData()->id),CombatListModel::ID);
-                // mCombatList->getCombatModel()->setData(index,QUrl::fromLocalFile(QString::fromStdString(mCombatManager->getAssignmentData()->values().takeAt(var).attacker->nodeData()->url2D)),CombatListModel::icon);
             }
         }
         mCombatList->setCombatMenuVisible(true);
@@ -250,12 +248,10 @@ void CombatModelNode::onAttackMenuChecked()
         mCombatList->getCombatModel()->setIsAttacker(true);
         mCombatList->getCombatModel()->setBulletCount(10);
         //--update model------------------------------------------------------------------------------------------
+        mCombatList->getCombatModel()->removeRows(0,mCombatList->getCombatModel()->rowCount()-1);
         for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
             if(mCombatManager->getAssignmentData()->values().takeAt(var).attacker == currentObjectModel){
                 mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->values().at(var));
-                // auto index = mCombatList->getCombatModel()->index(var,0);
-                // mCombatList->getCombatModel()->setData(index,mCombatManager->getAssignmentData()->values().takeAt(var).target->nodeData()->id,CombatListModel::ID);
-                // mCombatList->getCombatModel()->setData(index,QVariant::fromValue(mCombatManager->getAssignmentData()->values().takeAt(var).target->nodeData()->url2D),CombatListModel::icon);
             }
         }
         mCombatList->setCombatMenuVisible(true);

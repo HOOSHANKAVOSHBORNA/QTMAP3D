@@ -10,8 +10,6 @@
 
  enum AssignState{
     PREASSIGN,
-    HOVERED,
-    SELECTED,
     ASSIGNED,
     BUSY,
     SEARCH,

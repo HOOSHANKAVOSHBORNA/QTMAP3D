@@ -30,21 +30,14 @@ QVariant CombatListModel::data(const QModelIndex &index, int role) const
             return QUrl::fromLocalFile(QString::fromStdString(asData.attacker->nodeData()->url2D));
         }
     case selection:
-        if(asData.getState() == SELECTED){
-            return true;
-        }else{
             return false;
-        }
+    case hover:
+        return false;
     case stateColor:
+    {
         switch (asData.getState()) {
         case PREASSIGN:
             return "#ff00ff";
-            break;
-        case HOVERED:
-            return "#444499";
-            break;
-        case SELECTED:
-            return "#ab23aa";
             break;
         case ASSIGNED:
             return "#ff0000";
@@ -68,6 +61,7 @@ QVariant CombatListModel::data(const QModelIndex &index, int role) const
             return "#ffffff";
             break;
         }
+    }
     default:
         break;
     }
@@ -90,6 +84,16 @@ void CombatListModel::addData(assignmentData data)
     beginResetModel();
     mAssignList.append(data);
     endResetModel();
+}
+
+void CombatListModel::objectHover(QModelIndex index, bool isHovered)
+{
+
+}
+
+void CombatListModel::objectSelect(QModelIndex index, bool isSelected)
+{
+
 }
 
 CombatList::CombatList(QQmlEngine *engine, MapControllerItem *map)
