@@ -2,6 +2,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QFile>
+#include <QDir>
 #include <QJsonDocument>
 
 #include "locationManager.h"
@@ -312,7 +313,14 @@ QJsonObject LocationModel::toJson()
 
 bool LocationModel::readFromFile()
 {
-    QFile locationsFile(savedFilePath);
+    QDir dir;
+    if (!dir.exists(appDir + "/" + savedDir)) {
+        dir.mkpath(appDir + "/" + savedDir);
+    }
+
+    qDebug() << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName);
 
     if (!locationsFile.open(QIODevice::ReadOnly)) {
         return false;
@@ -328,7 +336,12 @@ bool LocationModel::readFromFile()
 
 bool LocationModel::writeToFile()
 {
-    QFile locationsFile(savedFilePath);
+    QDir dir;
+    if (!dir.exists(appDir + "/" + savedDir)) {
+        dir.mkpath(savedDir);
+    }
+
+    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName);
 
     if (!locationsFile.open(QIODevice::WriteOnly)) {
         return false;
