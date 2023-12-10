@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
+#include <QStandardPaths>
 
 #include "osgEarth/Viewpoint"
 #include "mapItem.h"
@@ -117,7 +118,8 @@ public:
     Q_INVOKABLE bool writeToFile();
 
 public:
-    const QString savedDir = QString("../data/saved");
+    QString appDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    const QString savedDir = QString("saved");
     const QString savedFileName = QString("locations.json");
 
 private:

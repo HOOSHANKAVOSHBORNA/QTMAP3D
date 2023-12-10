@@ -314,11 +314,13 @@ QJsonObject LocationModel::toJson()
 bool LocationModel::readFromFile()
 {
     QDir dir;
-    if (!dir.exists(savedDir)) {
-        dir.mkpath(savedDir);
+    if (!dir.exists(appDir + "/" + savedDir)) {
+        dir.mkpath(appDir + "/" + savedDir);
     }
 
-    QFile locationsFile(savedDir + "/" + savedFileName);
+    qDebug() << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
+    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName);
 
     if (!locationsFile.open(QIODevice::ReadOnly)) {
         return false;
@@ -335,11 +337,11 @@ bool LocationModel::readFromFile()
 bool LocationModel::writeToFile()
 {
     QDir dir;
-    if (!dir.exists(savedDir)) {
+    if (!dir.exists(appDir + "/" + savedDir)) {
         dir.mkpath(savedDir);
     }
 
-    QFile locationsFile(savedDir + "/" + savedFileName);
+    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName);
 
     if (!locationsFile.open(QIODevice::WriteOnly)) {
         return false;
