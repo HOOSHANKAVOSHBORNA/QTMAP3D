@@ -10,8 +10,6 @@
 
  enum AssignState{
     PREASSIGN,
-    HOVERED,
-    SELECTED,
     ASSIGNED,
     BUSY,
     SEARCH,
@@ -29,6 +27,7 @@ public:
     void setState(AssignState state);
     void setLine(MapItem* map);
     LineNode* getLine();
+    AssignState getState();
 
 private:
     osg::ref_ptr<LineNode> mRelationLine{nullptr};

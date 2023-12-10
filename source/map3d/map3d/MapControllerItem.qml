@@ -106,8 +106,9 @@ MapController {
         x: parent.width - itemPositionFactor * (width + itemMargin)
         anchors.top: parent.top
         anchors.topMargin: itemMargin
-        model: map.searchNodeProxyModel()
-
+//        model: map.searchNodeProxyModel()
+        model: SearchNodeManagerInstance.searchNodeProxyModel()
+//        model: map.searchNodeManager().searchNodeProxyModel()
 
     }
     MultiEffect {

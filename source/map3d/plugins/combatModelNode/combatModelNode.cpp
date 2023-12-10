@@ -4,6 +4,7 @@
 #include <moveableModelNode.h>
 #include <flyableModelNode.h>
 #include "combatManager.h"
+#include "combatListModel.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 
@@ -21,9 +22,9 @@ CombatModelNode::~CombatModelNode()
 
 bool CombatModelNode::setup()
 {
-
     mEngine = QQmlEngine::contextForObject(mapItem())->engine();
     mCombatManager = new CombatManager(mapItem());
+    mCombatList = new CombatList(mEngine,mapItem());
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(mapItem(), &MapItem::modeChanged, this, &CombatModelNode::onModeChanged);
     mIs3D = mapItem()->getMode();
@@ -221,12 +222,40 @@ void CombatModelNode::onModeChanged(bool is3DView)
 
 void CombatModelNode::onTargetMenuChecked()
 {
-    mCombatList = new CombatList(mEngine);
+    SimpleModelNode *currentObjectModel = dynamic_cast<SimpleModelNode*>(QObject::sender());
+    if(currentObjectModel){
+        mCombatList->getCombatModel()->setTitle(QString::fromStdString(currentObjectModel->getName()));
+        mCombatList->getCombatModel()->setIconUrl(QUrl::fromLocalFile(QString::fromStdString(currentObjectModel->url2D())));
+        mCombatList->getCombatModel()->setIsAttacker(false);
+        mCombatList->getCombatModel()->setBulletCount(0);
+        //--update model------------------------------------------------------------------------------------------
+        mCombatList->getCombatModel()->removeRows(0,mCombatList->getCombatModel()->rowCount()-1);
+        for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
+            if(mCombatManager->getAssignmentData()->values().takeAt(var).target == currentObjectModel){
+                mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->values().at(var));
+            }
+        }
+        mCombatList->setCombatMenuVisible(true);
+    }
 }
 
 void CombatModelNode::onAttackMenuChecked()
 {
-    qDebug() << "aaaaaaaaatttttttttttttttttttttttttttttttttt";
+    SimpleModelNode *currentObjectModel = dynamic_cast<SimpleModelNode*>(QObject::sender());
+    if(currentObjectModel){
+        mCombatList->getCombatModel()->setTitle(QString::fromStdString(currentObjectModel->getName()));
+        mCombatList->getCombatModel()->setIconUrl(QUrl::fromLocalFile(QString::fromStdString(currentObjectModel->url2D())));
+        mCombatList->getCombatModel()->setIsAttacker(true);
+        mCombatList->getCombatModel()->setBulletCount(10);
+        //--update model------------------------------------------------------------------------------------------
+        mCombatList->getCombatModel()->removeRows(0,mCombatList->getCombatModel()->rowCount()-1);
+        for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
+            if(mCombatManager->getAssignmentData()->values().takeAt(var).attacker == currentObjectModel){
+                mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->values().at(var));
+            }
+        }
+        mCombatList->setCombatMenuVisible(true);
+    }
 }
 
 

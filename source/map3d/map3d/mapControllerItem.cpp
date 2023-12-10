@@ -9,13 +9,29 @@
 MapControllerItem::MapControllerItem():
     MapItem()
 {
+
     initializeOsgEarth();
-    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
+    mSearchNodeManager = SearchNodeManager::createSingletonInstance(nullptr, nullptr);
+    mSearchNodeManager->setMapItem(this);
+    qmlRegisterSingletonType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManagerInstance", SearchNodeManager::createSingletonInstance);
+
+
+//    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
+
 //    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
+    //------------
+    // Create an instance of SearchNodeManager
+//    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
+
+    // Set the context property to expose to QML
+//    mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", searchNodeManager);
+//    qmlRegisterType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManager");
+//--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-    mSearchNodeProxyModel = new SearchNodeProxyModel();
-    mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(this));
+
+
+//    mSearchNodeManager = new SearchNodeManager();
 
     StatusBar *status = new StatusBar();
     mStatusBar = new StatusBarSearchModel();
@@ -29,7 +45,7 @@ MapControllerItem::MapControllerItem():
     mStatusBar->addMessage("Wellcome To QARCH 2023");
 
 //    setTopMenuVisible(false);
-//    setTopMenuVisible(true);
+   // setTopMenuVisible(true);
 
 }
 
@@ -121,9 +137,19 @@ void MapControllerItem::calculateFps()
     }
 }
 
+//SearchNodeManager *MapControllerItem::getSearchNodeManager() const
+//{
+//    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
+//}
+
 StatusBarSearchModel *MapControllerItem::statusBar() const
 {
     return mStatusBar;
+}
+
+SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
+{
+    return mSearchNodeProxyModel;
 }
 
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
@@ -131,22 +157,22 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
     mQmlEngine = newQmlEngine;
 
     // TEST
-    QQmlComponent* comp = new QQmlComponent(mQmlEngine);
+    // QQmlComponent* comp = new QQmlComponent(mQmlEngine);
 
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-        if(status == QQmlComponent::Error) {
-            qDebug() << "Can not load this: " << comp->errorString();
-        }
+    // QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+    //     if(status == QQmlComponent::Error) {
+    //         qDebug() << "Can not load this: " << comp->errorString();
+    //     }
 
-        if(status == QQmlComponent::Ready) {
-            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-            item->setProperty("title", "Test Controller");
+    //     if(status == QQmlComponent::Ready) {
+    //         QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+    //         item->setProperty("title", "Test Controller");
 
-            setTopMenuItem(item);
-        }
-    });
+    //         setTopMenuItem(item);
+    //     }
+    // });
 
-    comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+    // comp->loadUrl(QUrl("qrc:/TestItem.qml"));
     // END TEST
 
 
@@ -157,9 +183,10 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 
 }
 
-SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
+
+SearchNodeManager *MapControllerItem::searchNodeManager() const
 {
-    return mSearchNodeProxyModel;
+    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
 }
 
 QVector3D MapControllerItem::mapMouseGeoLocation() const

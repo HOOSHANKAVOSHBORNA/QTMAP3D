@@ -139,12 +139,6 @@ void assignmentData::setState(AssignState state)
     case PREASSIGN:
         mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
         break;
-    case HOVERED:
-        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0.2,0.2,0.5,1)));
-        break;
-    case SELECTED:
-        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0,1,0,1)));
-        break;
     case ASSIGNED:
         mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,0,0,1)));
         break;
@@ -181,4 +175,9 @@ void assignmentData::setLine(MapItem *map)
 LineNode *assignmentData::getLine()
 {
     return mRelationLine;
+}
+
+AssignState assignmentData::getState()
+{
+    return mState;
 }
