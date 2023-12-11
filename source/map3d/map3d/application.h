@@ -34,6 +34,10 @@ public:
     inline DefenseDataManager *defenseDataManager() const{ return mDefenseDataManager; }
 
     ServiceManager *serviceManager() const;
+    enum UserRoles{
+        SimpleUser = 1,
+        AdminUser
+    };
 
 signals:
     void ready();
@@ -61,6 +65,7 @@ private:
     NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};
+    UserRoles mRole{SimpleUser};
 };
 
 #endif // Application_H

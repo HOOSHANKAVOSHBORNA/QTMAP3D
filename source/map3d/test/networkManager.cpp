@@ -67,6 +67,7 @@ void NetworkManager::actionQueueReceived()
                 QJsonObject jsonObject;
                 jsonObject.insert("Type", "SignIn");
                 jsonObject.insert("COMMAND", status);
+                jsonObject.insert("ROLE", 1);
                 jsonDoc.setObject(jsonObject);
                 sendData(jsonDoc.toJson(QJsonDocument::Indented));
                 qDebug() << obj.value("Data").toObject().value("Username").toString() << ", \t " << obj.value("Data").toObject().value("Password").toString();

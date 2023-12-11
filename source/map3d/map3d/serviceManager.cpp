@@ -180,7 +180,8 @@ void ServiceManager::movableNodeData(QJsonObject jsonObject)
 void ServiceManager::signInData(QJsonObject jsonObject)
 {
     bool status = jsonObject.value("COMMAND").toBool();
-    emit signInResponseReceived(status);
+    int role = jsonObject.value("ROLE").toInt(1);
+    emit signInResponseReceived(status, role);
 }
 
 void ServiceManager::signUpData(QJsonObject jsonObject)

@@ -114,7 +114,7 @@ signals:
     void polygonDataReceived(PolygonData *polygonData);
     void actionSent(const QString &action);
     void signUpResponseReceived(bool status);
-    void signInResponseReceived(bool status);
+    void signInResponseReceived(bool status, int role);
 private:
     void nodeData(QJsonObject jsonObject);
     void circleData(QJsonObject jsonObject);

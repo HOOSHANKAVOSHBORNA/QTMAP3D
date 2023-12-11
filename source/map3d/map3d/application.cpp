@@ -101,12 +101,13 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         mNetworkManager = new NetworkManager(mServiceManager);
         mAuthenticator->setServiceManager(mServiceManager);
         mNetworkManager->start();
-        // connect(mServiceManager, &ServiceManager::signInResponseReceived, [&](bool status){
-            // if (status && !mMainWindow) {
+        // connect(mServiceManager, &ServiceManager::signInResponseReceived, [&](bool status, int role){
+        //     if (status && !mMainWindow) {
                 mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
                 mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
                 mAuthenticator->hide();
-            // }
+        //         mRole = static_cast<UserRoles>(role);
+        //     }
         // });
     }
     if (mainWnd) {
