@@ -1,18 +1,19 @@
-#include "model.h"
-#include "mapItem.h"
-#include "serviceManager.h"
-#include <osgEarth/GLUtils>
-#include <osgEarth/ModelLayer>
-#include <osgEarth/ModelSource>
-#include <osgEarth/ModelSource>
 
 #include <QPainter>
 #include <QRandomGenerator>
 #include <bookmark.h>
-#include <osgFX/Outline>
+#include <osg/ShapeDrawable>
+#include <osgEarth/GLUtils>
+#include <osgEarth/ModelLayer>
+#include <osgEarth/ModelSource>
 #include <osgEarthSymbology/Style>
 #include <osgEarthSymbology/StyleSheet>
-#include <osg/ShapeDrawable>
+#include <osgFX/Outline>
+
+#include "mainwindow.h"
+#include "mapItem.h"
+#include "model.h"
+#include "serviceManager.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
@@ -187,10 +188,12 @@ void Model::onTreeItemCheck(bool check)
         mType = Type::SIMPLE;
 
         setState(State::READY);
+
+        createProperty("Property");
+
         mapItem()->addNode(iconNode());
 
-    }
-    else {
+    } else {
         if(state() == State::MOVING)
             cancel();
 
@@ -336,6 +339,23 @@ void Model::cancel(){
         setState(State::READY);
         mCount--;
     }
+}
+
+void Model::createProperty(QString name)
+{
+    QQmlComponent *comp = new QQmlComponent(qmlEngine());
+    connect(comp, &QQmlComponent::statusChanged, [comp, /*property,*/ name, this]() {
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+
+        mItem = qobject_cast<QQuickItem *>(comp->create());
+        //        mItem->setProperty("model", property);
+
+        mainWindow()->getToolboxManager()->addPropertyItem(mItem, name);
+    });
+
+    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
 }
 
 SimpleModelNode *Model::pick(float x, float y)

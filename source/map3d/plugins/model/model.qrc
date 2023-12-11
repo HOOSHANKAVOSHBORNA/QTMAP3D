@@ -8,5 +8,6 @@
         <file>QmlNodeItem.qml</file>
         <file>CircularMenu.qml</file>
         <file>CircularCut.qml</file>
+        <file>PropertyItem.qml</file>
     </qresource>
 </RCC>

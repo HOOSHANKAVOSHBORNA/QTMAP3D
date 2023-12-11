@@ -65,6 +65,7 @@ protected:
     void moving(osgEarth::GeoPoint &geoPos);
     void confirm();
     void cancel();
+    void createProperty(QString name);
 
 private:
     SimpleModelNode* pick(float x, float y);
@@ -88,6 +89,7 @@ private:
 
     NodeData* mNodeData{nullptr};
     DataManager *mDataManager;
+    QQuickItem *mItem;
 };
 
 #endif // MODEL_H
