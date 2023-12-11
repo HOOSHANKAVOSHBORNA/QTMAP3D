@@ -13,6 +13,7 @@
 #include "mainwindow.h"
 #include "mapItem.h"
 #include "model.h"
+#include "property.h"
 #include "serviceManager.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
@@ -68,6 +69,10 @@ bool Model::setup()
     mFlyableNodelLayer = new ParenticAnnotationLayer();
     mFlyableNodelLayer->setName(AIRPLANE);
 
+    // property item setup
+    PropertyItem *propertyItem = new PropertyItem;
+    propertyItem->setName("ali alavi");
+    qmlEngine()->rootContext()->setContextProperty("modelPropertyInterface", propertyItem);
 
     return true;
 }
