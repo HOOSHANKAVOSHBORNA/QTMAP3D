@@ -16,7 +16,18 @@ Item {
     readonly property color fg20: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.20)
+    property var cppInterface: modelPropertyInterface
 
+    // DEBUG
+    //    Text {
+    //        anchors.centerIn: parent
+    //        text: 'Model Property Item'
+    //    }
+    //    Rectangle {
+    //        anchors.fill: parent
+    //        color: 'pink'
+    //    }
+    // ENDDEBUG
     ColumnLayout {
         width: parent.width
 
@@ -37,14 +48,11 @@ Item {
             TextField {
                 id: nametextf
 
-                Layout.preferredWidth: 200 / Style.monitorRatio
                 Layout.minimumWidth: 100 / Style.monitorRatio
                 Layout.fillWidth: true
-                Layout.rightMargin: 15 / Style.monitorRatio
-                Layout.leftMargin: 15 / Style.monitorRatio
 
                 height: valHeight
-                text: modelPropertyInterface.name ?? "notInitial"
+                text: rootItem.cppInterface.name ?? "notInitial"
                 font.pointSize: 10 / Style.monitorRatio
                 color: "black"
 
@@ -54,7 +62,7 @@ Item {
                 }
 
                 onAccepted: {
-                    modelPropertyInterface.name = nametextf.text
+                    rootItem.cppInterface.name = nametextf.text
                 }
             }
         }
@@ -63,16 +71,17 @@ Item {
         RowLayout {
             id: fillcolorSec
             Layout.fillWidth: true
-            //        visible: rootItem.model ? rootItem.model.fillColorStatus : false
+            //        visible: rootItem.model ? rootItem.cppInterface.fillColorStatus : false
             spacing: 0
+
             Text {
                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                 text: "Color"
                 font.pixelSize: 17 / Style.monitorRatio
                 color: Style.foregroundColor
             }
+
             RowLayout {
-                Layout.rightMargin: 15 / Style.monitorRatio
                 Layout.fillWidth: true
                 spacing: 3 / Style.monitorRatio
                 ListModel {
@@ -116,6 +125,7 @@ Item {
                         checkable: true
                         implicitWidth: 26 / Style.monitorRatio
                         implicitHeight: 26 / Style.monitorRatio
+
                         background: Rectangle {
                             radius: width
                             color: propertyColorSelect
@@ -190,47 +200,183 @@ Item {
             visible: false
             onColorChosen: {
                 colorSelectCircle.color = selectedColor
-                rootItem.model.fillColor = selectedColor
+                rootItem.cppInterface.color = selectedColor
                 addIconImage.visible = false
                 propertyCheckIcon.visible = true
                 colorModel.setProperty(previousIndex, "checkIconVisible", false)
             }
         }
 
-        ColorBoxInput {
-            id: colorBoxStroke
-
-            visible: false
-            onColorChosen: {
-                strokeColorCircle.color = selectedColor
-                rootItem.model.strokeColor = selectedColor
-                strokeColorAddIcon.visible = false
-                strokeCheckIcon.visible = true
-                strokeColorModel.setProperty(strokePreviousIndex,
-                                             "checkIconVisible", false)
-            }
-        }
-
-        ColorBoxInput {
-            id: colorBoxPointColor
-
-            visible: false
+        // --------------------------------------------------------- Location
+        RowLayout {
+            spacing: 0
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            onColorChosen: {
-                pointColorCircle.color = selectedColor
-                rootItem.model.pointsColor = selectedColor
-                pointColorAddIcon.visible = false
-                pointColorCheckIcon.visible = true
-                pointColorModel.setProperty(pointColorPreviousIndex,
-                                            "checkIconVisible", false)
-                console.log(rootItem.model.pointsColor)
+
+            Text {
+                text: "Location"
+                color: Style.foregroundColor
+                font.pixelSize: 17 / Style.monitorRatio
+                Layout.alignment: Qt.AlignTop
+                Layout.preferredWidth: lblWidth / Style.monitorRatio
+            }
+
+            GroupBox {
+                id: locationSec
+                Layout.fillWidth: true
+                Layout.preferredWidth: 200 / Style.monitorRatio
+                Layout.rightMargin: 15 / Style.monitorRatio
+                padding: 0
+
+                background: Rectangle {
+                    color: fg20
+                    radius: 10 / Style.monitorRatio
+                    border.color: "transparent"
+                }
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    GridLayout {
+                        columnSpacing: 1
+                        rowSpacing: 1
+                        columns: 2
+
+                        Text {
+                            Layout.preferredWidth: 20 / Style.monitorRatio
+                            text: "X "
+                            padding: 5 / Style.monitorRatio
+                            Layout.topMargin: 5 / Style.monitorRatio
+                            font.pointSize: 10 / Style.monitorRatio
+                            color: Style.foregroundColor
+                        }
+
+                        StepSpinBox {
+                            id: xLocationValue
+                            editable: true
+                            Layout.fillWidth: true
+                            Layout.minimumWidth: 100 / Style.monitorRatio
+                            Layout.rightMargin: 5 / Style.monitorRatio
+                            Layout.topMargin: 5 / Style.monitorRatio
+                            height: valHeight / Style.monitorRatio
+                            decimals: 4
+                            from: -180
+                            to: 180
+                            onValueChanged: {
+                                rootItem.cppInterface.location.x = value
+                            }
+                        }
+
+                        Binding {
+                            target: xLocationValue
+                            property: "value"
+                            value: rootItem.model ? rootItem.cppInterface.location.x : 0
+                            delayed: true
+                        }
+
+                        Text {
+                            Layout.preferredWidth: 20 / Style.monitorRatio
+                            text: "Y "
+                            padding: 5 / Style.monitorRatio
+                            Layout.topMargin: 5 / Style.monitorRatio
+                            font.pointSize: 10 / Style.monitorRatio
+                            color: Style.foregroundColor
+                        }
+                        StepSpinBox {
+                            id: yLocationValue
+                            editable: true
+                            Layout.fillWidth: true
+                            Layout.minimumWidth: 100 / Style.monitorRatio
+                            Layout.topMargin: 5 / Style.monitorRatio
+                            Layout.rightMargin: 5 / Style.monitorRatio
+                            height: valHeight / Style.monitorRatio
+                            decimals: 4
+                            from: -180
+                            to: 180
+                            onValueChanged: {
+                                rootItem.cppInterface.location.y = value
+                            }
+                        }
+
+                        Binding {
+                            target: yLocationValue
+                            property: "value"
+                            value: rootItem.model ? rootItem.cppInterface.location.y : 0
+                            delayed: true
+                        }
+
+                        Text {
+                            Layout.preferredWidth: 20 / Style.monitorRatio
+                            text: "Z "
+                            padding: 5 / Style.monitorRatio
+                            Layout.topMargin: 5 / Style.monitorRatio
+                            font.pointSize: 10
+                            color: Style.foregroundColor
+                        }
+
+                        StepSpinBox {
+                            id: zLocationValue
+
+                            editable: true
+                            Layout.fillWidth: true
+                            Layout.minimumWidth: 100 / Style.monitorRatio
+                            Layout.topMargin: 5 / Style.monitorRatio
+                            Layout.rightMargin: 5 / Style.monitorRatio
+                            height: valHeight / Style.monitorRatio
+                            decimals: 4
+                            from: -180
+                            to: 180
+                            onValueChanged: {
+                                rootItem.cppInterface.location.z = value
+                            }
+                        }
+
+                        Binding {
+                            target: zLocationValue
+                            property: "value"
+                            value: rootItem.model ? rootItem.cppInterface.location.z : 0
+                            delayed: true
+                        }
+                    }
+
+                    CheckBox {
+                        id: relative
+                        text: "Relative"
+                        font.pointSize: 10 / Style.monitorRatio
+                        checked: false
+
+                        onCheckStateChanged: if (checked === true) {
+                                                 rootItem.cppInterface.locationRelative = true
+                                             } else {
+                                                 rootItem.cppInterface.locationRelative = false
+                                             }
+
+                        indicator: Rectangle {
+                            implicitWidth: 11 / Style.monitorRatio
+                            implicitHeight: 11 / Style.monitorRatio
+                            x: relative.leftPadding / Style.monitorRatio
+                            y: (parent.height / 2 - height / 2) / Style.monitorRatio
+                            radius: (height / 2) / Style.monitorRatio
+                            border.color: relative.down ? "black" : "#313131"
+
+                            Rectangle {
+                                width: 11 / Style.monitorRatio
+                                height: 11 / Style.monitorRatio
+                                radius: (height / 2) / Style.monitorRatio
+                                color: relative.down ? "black" : "dark green"
+                                visible: relative.checked
+                            }
+                        }
+
+                        contentItem: Text {
+                            text: relative.text
+                            font: relative.font
+                            opacity: enabled ? 1.0 : 0.3
+                            color: relative.down ? "black" : Style.foregroundColor
+                            verticalAlignment: Text.AlignVCenter
+                            leftPadding: relative.indicator.width + relative.spacing
+                        }
+                    }
+                }
             }
         }
-    }
-
-    Text {
-        anchors.centerIn: parent
-        text: 'Model Property Item'
     }
 }

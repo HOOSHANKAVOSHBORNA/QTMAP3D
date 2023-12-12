@@ -33,13 +33,26 @@ void PropertyItem::setIsMovable(bool newIsMovable)
 
 QColor PropertyItem::color() const
 {
-    return m_color;
+    return mColor;
 }
 
 void PropertyItem::setColor(const QColor &newColor)
 {
-    if (m_color == newColor)
+    if (mColor == newColor)
         return;
-    m_color = newColor;
+    mColor = newColor;
     emit colorChanged();
+}
+
+QVector3D PropertyItem::getLocation() const
+{
+    return mLocation;
+}
+
+void PropertyItem::setLocation(const QVector3D &newLocation)
+{
+    if (mLocation == newLocation)
+        return;
+    mLocation = newLocation;
+    emit propretyChanged();
 }

@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QObject>
+#include <QVector3D>
 
 class PropertyItem : public QObject
 {
@@ -10,6 +11,7 @@ class PropertyItem : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(bool isMovable READ isMovable WRITE setIsMovable NOTIFY isMovableChanged FINAL)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged FINAL)
+    Q_PROPERTY(QVector3D location READ getLocation WRITE setLocation NOTIFY propretyChanged FINAL)
 
 public:
     PropertyItem();
@@ -22,6 +24,9 @@ public:
     QColor color() const;
     void setColor(const QColor &newColor);
 
+    QVector3D getLocation() const;
+    void setLocation(const QVector3D &newLocation);
+
 signals:
     void nameChanged();
 
@@ -29,10 +34,13 @@ signals:
 
     void colorChanged();
 
+    void propretyChanged();
+
 private:
     QString mName;
     bool mIsMovable;
-    QColor m_color;
+    QColor mColor;
+    QVector3D mLocation;
 };
 
 #endif // PROPERTY_H

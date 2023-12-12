@@ -3,14 +3,13 @@ import QtQuick.Controls.Basic 2.5
 import QtQuick.Layouts
 import "style"
 
-
-Item{
+Item {
     id: root
 
-    function increment(){
+    function increment() {
         spinBox.increase()
     }
-    function decrement(){
+    function decrement() {
         spinBox.decrease()
     }
 
@@ -33,10 +32,14 @@ Item{
     property alias background: spinBox.background
     property alias leftInset: spinBox.leftInset
 
+    readonly property color bg30: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.30)
+
     width: 97
     height: 20
 
-    Binding{
+    Binding {
         target: root
         property: "value"
         value: spinBox.value / decimalFactor
@@ -51,19 +54,18 @@ Item{
         to: root.to * decimalFactor
         stepSize: root.stepSize * decimalFactor
 
-
-        contentItem: TextInput{
-                                 id:textInput
-                                 text:  textFromValue()
-                                 color: Style.foregroundColor
-                                 selectionColor: "#21be2b"
-                                 selectedTextColor: "#ffffff"
-                                 horizontalAlignment: Qt.AlignHCenter
-                                 verticalAlignment: Qt.AlignVCenter
-                                 readOnly: !editable
-                                 validator: validator
-                                 inputMethodHints: Qt.ImhFormattedNumbersOnly
-            }
+        contentItem: TextInput {
+            id: textInput
+            text: textFromValue()
+            color: Style.foregroundColor
+            selectionColor: "#21be2b"
+            selectedTextColor: "#ffffff"
+            horizontalAlignment: Qt.AlignHCenter
+            verticalAlignment: Qt.AlignVCenter
+            readOnly: !editable
+            validator: validator
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+        }
 
         down.indicator: Rectangle {
             id: downIndicator
@@ -72,7 +74,7 @@ Item{
             x: spinBox.mirrored ? parent.width - width : 0
             height: parent.height
             width: 15
-            Image{
+            Image {
                 width: 15
                 height: 15
                 anchors.centerIn: parent
@@ -86,31 +88,34 @@ Item{
             x: spinBox.mirrored ? 0 : parent.width - width
             height: parent.height
             width: 15
-            Image{
+            Image {
                 width: 15
                 height: 15
                 anchors.centerIn: parent
                 source: "qrc:/Resources/add.png"
             }
         }
-        background: Rectangle{
-            color: backgroundColor
+
+        background: Rectangle {
+            color: bg30
             radius: 15
         }
 
         validator: DoubleValidator {
             bottom: Math.min(spinBox.from, spinBox.to)
-            top:  Math.max(spinBox.from, spinBox.to)
+            top: Math.max(spinBox.from, spinBox.to)
             decimals: root.decimals
             notation: DoubleValidator.StandardNotation
         }
 
-        textFromValue: function() {
-          return Number(spinBox.value / root.decimalFactor).toLocaleString(spinBox.locale, 'f', root.decimals)
+        textFromValue: function () {
+            return Number(spinBox.value / root.decimalFactor).toLocaleString(
+                        spinBox.locale, 'f', root.decimals)
         }
 
-        valueFromText: function(text, locale) {
-            return Math.round(Number.fromLocaleString(locale, text) * root.decimalFactor)
+        valueFromText: function (text, locale) {
+            return Math.round(Number.fromLocaleString(
+                                  locale, text) * root.decimalFactor)
         }
     }
 }
