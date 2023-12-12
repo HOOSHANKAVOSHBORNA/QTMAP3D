@@ -87,7 +87,7 @@ class ServiceManager: public QObject
 {
     Q_OBJECT
 public:
-    ServiceManager(MapItem *mapItem, QObject *parent = nullptr);
+    ServiceManager(QObject *parent = nullptr);
 
     void layersData(QJsonObject layers);
     void flyableNodeData(QJsonObject jsonObject);
@@ -96,6 +96,8 @@ public:
     void sendAction(const QString &action);
     void polylineData(QJsonObject polyline);
     void movableNodeData(QJsonObject jsonObject);
+    void signInData(QJsonObject jsonObject);
+    void signUpData(QJsonObject jsonObject);
 
 //    void addPolygon(QJsonDocument *polygon);
 //    void addSphere(QJsonDocument *sphere);
@@ -111,6 +113,8 @@ signals:
     void circleDataReceived(CircleData *circleData);
     void polygonDataReceived(PolygonData *polygonData);
     void actionSent(const QString &action);
+    void signUpResponseReceived(bool status);
+    void signInResponseReceived(bool status, int role);
 private:
     void nodeData(QJsonObject jsonObject);
     void circleData(QJsonObject jsonObject);
@@ -119,7 +123,6 @@ private:
     void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
     ParenticAnnotationLayer* findParenticLayer(int id);
 private:
-    MapItem *mMapItem{nullptr};
     QMap<int, ParenticAnnotationLayer*> mParenticLayerMap;
 };
 

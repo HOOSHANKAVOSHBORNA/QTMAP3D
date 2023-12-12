@@ -12,6 +12,8 @@ OsgViewerItem::OsgViewerItem(QQuickItem *parent) :
     setFlags(ItemHasContents/*|ItemAcceptsDrops*/);
     setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
     mOSGRenderNode = new OSGRenderNode(this);
+//    mOSGRenderNode->setThreadingModel( mOSGRenderNode->SingleThreaded );
+//    mOSGRenderNode->setRunFrameScheme( mOSGRenderNode->ON_DEMAND );
 }
 
 OsgViewerItem::~OsgViewerItem()
