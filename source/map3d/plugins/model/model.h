@@ -2,17 +2,19 @@
 #define MODEL_H
 
 #include <QObject>
-#include "plugininterface.h"
+#include <circle.h>
+#include <osg/Fog>
+#include <osg/PolygonMode>
+#include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
-#include <osgEarthAnnotation/AnnotationLayer>
-#include "simpleModelNode.h"
+
+#include "dataManager.h"
 #include "flyableModelNode.h"
 #include "moveableModelNode.h"
-#include <osg/PolygonMode>
-#include <osg/Fog>
-#include "dataManager.h"
-#include <circle.h>
+#include "plugininterface.h"
+#include "property.h"
+#include "simpleModelNode.h"
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -51,6 +53,7 @@ public:
     bool mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+    void updatePropertyItem(/*const osgEarth::GeoPoint &geoPos*/);
 
     static osgEarth::Symbology::Style &getDefaultStyle();
 public slots:
@@ -90,6 +93,7 @@ private:
     NodeData* mNodeData{nullptr};
     DataManager *mDataManager;
     QQuickItem *mItem;
+    PropertyItem *mProperty;
 };
 
 #endif // MODEL_H

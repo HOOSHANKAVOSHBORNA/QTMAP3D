@@ -10,12 +10,14 @@ QString PropertyItem::name() const
     return mName;
 }
 
-void PropertyItem::setName(const QString &newName)
+PropertyItem *PropertyItem::setName(const QString &newName)
 {
     if (mName == newName)
-        return;
+        return this;
     mName = newName;
-    emit nameChanged();
+    emit propretyChanged();
+
+    return this;
 }
 
 bool PropertyItem::isMovable() const
@@ -23,12 +25,14 @@ bool PropertyItem::isMovable() const
     return mIsMovable;
 }
 
-void PropertyItem::setIsMovable(bool newIsMovable)
+PropertyItem *PropertyItem::setIsMovable(bool newIsMovable)
 {
     if (mIsMovable == newIsMovable)
-        return;
+        return this;
     mIsMovable = newIsMovable;
-    emit isMovableChanged();
+    emit propretyChanged();
+
+    return this;
 }
 
 QColor PropertyItem::color() const
@@ -36,12 +40,14 @@ QColor PropertyItem::color() const
     return mColor;
 }
 
-void PropertyItem::setColor(const QColor &newColor)
+PropertyItem *PropertyItem::setColor(const QColor &newColor)
 {
     if (mColor == newColor)
-        return;
+        return this;
     mColor = newColor;
-    emit colorChanged();
+    emit propretyChanged();
+
+    return this;
 }
 
 QVector3D PropertyItem::getLocation() const
@@ -49,12 +55,14 @@ QVector3D PropertyItem::getLocation() const
     return mLocation;
 }
 
-void PropertyItem::setLocation(const QVector3D &newLocation)
+PropertyItem *PropertyItem::setLocation(const QVector3D &newLocation)
 {
     if (mLocation == newLocation)
-        return;
+        return this;
     mLocation = newLocation;
     emit propretyChanged();
+
+    return this;
 }
 
 QVector3D PropertyItem::getMoveTo() const
@@ -62,12 +70,14 @@ QVector3D PropertyItem::getMoveTo() const
     return mMoveTo;
 }
 
-void PropertyItem::setMoveTo(const QVector3D &newMoveTo)
+PropertyItem *PropertyItem::setMoveTo(const QVector3D &newMoveTo)
 {
     if (mMoveTo == newMoveTo)
-        return;
+        return this;
     mMoveTo = newMoveTo;
     emit propretyChanged();
+
+    return this;
 }
 
 double PropertyItem::speed() const
@@ -75,10 +85,12 @@ double PropertyItem::speed() const
     return mSpeed;
 }
 
-void PropertyItem::setSpeed(double newSpeed)
+PropertyItem *PropertyItem::setSpeed(double newSpeed)
 {
     if (qFuzzyCompare(mSpeed, newSpeed))
-        return;
+        return this;
     mSpeed = newSpeed;
-    emit speedChanged();
+    emit propretyChanged();
+
+    return this;
 }

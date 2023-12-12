@@ -30,11 +30,13 @@ Item {
     // ENDDEBUG
     ColumnLayout {
         width: parent.width
+        height: namerowl.height
 
         // --------------------------------------------------------- Name
         RowLayout {
             id: namerowl
 
+            Layout.preferredHeight: valHeight
             Layout.fillWidth: true
             spacing: 0
 
@@ -50,7 +52,7 @@ Item {
 
                 Layout.minimumWidth: 100 / Style.monitorRatio
                 Layout.fillWidth: true
-                Layout.preferredHeight: valHeight
+                Layout.fillHeight: true
                 text: rootItem.cppInterface.name ?? "notInitial"
                 font.pointSize: 10 / Style.monitorRatio
                 color: "black"
@@ -70,11 +72,13 @@ Item {
         RowLayout {
             id: fillcolorSec
             Layout.fillWidth: true
+            Layout.preferredHeight: valHeight
             //        visible: rootItem.cppInterface ? rootItem.cppInterface.fillColorStatus : false
             spacing: 0
 
             Text {
                 Layout.preferredWidth: lblWidth / Style.monitorRatio
+                Layout.fillHeight: true
                 text: "Color"
                 font.pixelSize: 17 / Style.monitorRatio
                 color: Style.foregroundColor
@@ -82,7 +86,9 @@ Item {
 
             RowLayout {
                 Layout.fillWidth: true
+                Layout.fillHeight: true
                 spacing: 3 / Style.monitorRatio
+
                 ListModel {
                     id: colorModel
 
@@ -197,6 +203,7 @@ Item {
             id: colorBox
 
             visible: false
+            selectedColor: rootItem.cppInterface.color
             onColorChosen: {
                 colorSelectCircle.color = selectedColor
                 rootItem.cppInterface.color = selectedColor
@@ -341,9 +348,11 @@ Item {
                         checked: false
 
                         onCheckStateChanged: if (checked) {
-                                                 rootItem.cppInterface.locationRelative = true
+
+                                                 // TODO
                                              } else {
-                                                 rootItem.cppInterface.locationRelative = false
+
+                                                 // TODO
                                              }
 
                         indicator: Rectangle {
@@ -381,6 +390,8 @@ Item {
             id: speedSec
             spacing: 0
             Layout.fillWidth: true
+
+            visible: rootItem.cppInterface.isMovable
 
             Text {
                 Layout.preferredWidth: lblWidth / Style.monitorRatio
@@ -424,6 +435,8 @@ Item {
         RowLayout {
             spacing: 0
             Layout.fillWidth: true
+
+            visible: rootItem.cppInterface.isMovable
 
             Text {
                 text: "Move to"
