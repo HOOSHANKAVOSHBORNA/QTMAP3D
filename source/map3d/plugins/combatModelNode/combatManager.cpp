@@ -1,4 +1,5 @@
 #include "combatManager.h"
+#include "assignLine.h"
 
 CombatManager::CombatManager(MapItem *map)
 {
@@ -30,9 +31,9 @@ void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , 
     assignmentData data ;
     data.attacker = attacker;
     data.target = target;
-    data.setLine(mMapItem);
+    data.setLine(state,attacker->getPosition(),target->getPosition(),mMapItem);
     data.setState(state);
-    mCombatLayer->addChild(data.getLine());
+    data.attacker->addChild(data.getLine());
     mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
 
@@ -134,45 +135,22 @@ void CombatManager::attackResult(bool result, int bulletID)
 
 void assignmentData::setState(AssignState state)
 {
-
-    switch (state) {
-    case PREASSIGN:
-        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
-        break;
-    case ASSIGNED:
-        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,0,0,1)));
-        break;
-    case SEARCH:
-        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(0,0,0,1)));
-        break;
-    case LOCK:
-        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
-        break;
-    case FIRE:
-        mRelationLine->setFillColor(osgEarth::Color(osg::Vec4f(1,1,1,1)));
-        break;
-    case SUCCEED:
-        mRelationLine->setNodeMask(false);
-        break;
-    case FAILED:
-        mRelationLine->setNodeMask(false);
-        break;
-    default:
-        mRelationLine->setFillColor(osgEarth::Color("white"));
-        break;
-    }
+    mRelationLine->setState(state);
 }
 
-void assignmentData::setLine(MapItem *map)
+void assignmentData::setLine(AssignState state, osgEarth::GeoPoint start, osgEarth::GeoPoint end, MapItem *map)
 {
-    mRelationLine = new LineNode(map);
-    mRelationLine->addPoint(attacker->getPosition());
-    mRelationLine->addPoint(target->getPosition());
-    mRelationLine->setTessellation(50);
-    mRelationLine->setWidth(20);
+    mRelationLine = new AssignLine(state);
+    osg::Vec3d startWorld;
+    start.toWorld(startWorld);
+    osg::Vec3d endWorld;
+    end.toWorld(endWorld);
+    qDebug() << startWorld.x() << endWorld.x();
+    mRelationLine->pushVertex(startWorld);
+    mRelationLine->pushVertex(endWorld);
 }
 
-LineNode *assignmentData::getLine()
+AssignLine *assignmentData::getLine()
 {
     return mRelationLine;
 }
