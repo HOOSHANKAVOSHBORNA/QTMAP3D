@@ -1,18 +1,20 @@
-#include "highlightLine.h"
+#include "highlightOutline.h"
+
+#include <qdebug.h>
 
 
-HighlightLine::HighlightLine() : Effect(), _width(2), _color(1,1,1,1), _technique(0)
+HighlightOutline::HighlightOutline() : Effect(), _width(2), _color(1,1,1,1), _technique(0)
 {
 }
 
-HighlightLine::HighlightLine(const HighlightLine &copy, const osg::CopyOp &op): osgFX::Effect(copy, op)
+HighlightOutline::HighlightOutline(const HighlightOutline &copy, const osg::CopyOp &op): osgFX::Effect(copy, op)
 {
     _width = copy._width;
     _color = copy._color;
     _technique = copy._technique;
 }
 
-void HighlightLine::setWidth(float w)
+void HighlightOutline::setWidth(float w)
 {
     _width = w;
     if (_technique) {
@@ -20,12 +22,12 @@ void HighlightLine::setWidth(float w)
     }
 }
 
-float HighlightLine::getWidth() const
+float HighlightOutline::getWidth() const
 {
     return _width;
 }
 
-void HighlightLine::setColor(const osg::Vec4& color)
+void HighlightOutline::setColor(const osg::Vec4& color)
 {
     _color = color;
     if (_technique) {
@@ -33,19 +35,19 @@ void HighlightLine::setColor(const osg::Vec4& color)
     }
 }
 
-const osg::Vec4 &HighlightLine::getColor() const
+const osg::Vec4 &HighlightOutline::getColor() const
 {
     return _color;
 }
 
-bool HighlightLine::define_techniques()
+bool HighlightOutline::define_techniques()
 {
+
     _technique = new CustomOutlineTechnique;
     addTechnique(_technique);
 
     setWidth(_width);
     setColor(_color);
-
     return true;
 }
 
@@ -78,6 +80,7 @@ void CustomOutlineTechnique::setColor(const osg::Vec4 &color)
 
 void CustomOutlineTechnique::define_passes()
 {
+    qDebug()<<"define_passes";
     /*
              * draw
              * - set stencil buffer to ref=1 where draw occurs

@@ -343,7 +343,7 @@ Item {
                         font.pointSize: 10 / Style.monitorRatio
                         checked: false
 
-                        onCheckStateChanged: if (checked === true) {
+                        onCheckStateChanged: if (checked) {
                                                  rootItem.cppInterface.locationRelative = true
                                              } else {
                                                  rootItem.cppInterface.locationRelative = false

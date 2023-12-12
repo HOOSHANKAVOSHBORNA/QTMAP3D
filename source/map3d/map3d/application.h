@@ -5,8 +5,10 @@
 #include <QUrl>
 #include <list>
 
+#include "authenticator.h"
 #include "pluginmanager.h"
 #include "defenseDataManager.h"
+#include "networkManager.h"
 
 
 class MainWindow;
@@ -32,6 +34,10 @@ public:
     inline DefenseDataManager *defenseDataManager() const{ return mDefenseDataManager; }
 
     ServiceManager *serviceManager() const;
+    enum UserRoles{
+        SimpleUser = 1,
+        AdminUser
+    };
 
 signals:
     void ready();
@@ -55,7 +61,11 @@ private:
     DefenseDataManager *mDefenseDataManager{nullptr};
     ServiceManager *mServiceManager{nullptr};
 
+    Authenticator *mAuthenticator{nullptr};
+    NetworkManager *mNetworkManager{nullptr};
+
     bool mIsReady{false};
+    UserRoles mRole{SimpleUser};
 };
 
 #endif // Application_H

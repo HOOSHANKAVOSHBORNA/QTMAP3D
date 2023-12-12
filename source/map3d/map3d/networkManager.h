@@ -13,9 +13,11 @@ public:
     NetworkManager(ServiceManager *serviceManger, QObject *parent = nullptr);
     void start();
 
+public slots:
+    void sendData(const QString &action);
 private slots:
     void clientConnected();
-    void sendData();
+    void sendDataQueueDeclared();
     void dataQueueDeclared();
     void dataMessageReceived();
 signals:

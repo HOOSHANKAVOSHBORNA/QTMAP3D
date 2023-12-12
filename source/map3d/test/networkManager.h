@@ -22,6 +22,8 @@ signals:
     void dataQueueDeclared();
 private:
     QAmqpClient mClient;
+    QString mUsername{"Admin"};
+    QString mPassword{"e3afed0047b08059d0fada10f400c1e5"};
 };
 
 #endif // NETWORKMANAGER_H
