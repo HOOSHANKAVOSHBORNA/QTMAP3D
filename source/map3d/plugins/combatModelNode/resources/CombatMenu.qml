@@ -28,23 +28,22 @@ Item {
 
             RowLayout{
                 anchors.centerIn: parent
+
+
                 IconImage {
-                    source: "qrc:/Resources/search.png"
+                    source:combatModel?  combatModel.iconUrl : ""
                     Layout.preferredHeight: 55/1.3/*Style.monitorRatio*/
                     Layout.preferredWidth: 55/1.3/*Style.monitorRatio*/
                     //                    Layout.leftMargin: 4/1.3/*Style.monitorRatio*/
                     //                    color: typeHolder.checked?Style.foregroundColor : Style.hoverColor
                     Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked: print(combatModel.rowCount())
-                    }
+
                 }
                 ColumnLayout{
 
                     RowLayout{
                         IconImage {
-                            source: "qrc:/Resources/search.png"
+                            source: "qrc:/Resources/bullet.png"
                             Layout.preferredHeight: 22/1.3/*Style.monitorRatio*/
                             Layout.preferredWidth: 22/1.3/*Style.monitorRatio*/
                             //                    Layout.leftMargin: 4/1.3/*Style.monitorRatio*/
@@ -52,12 +51,14 @@ Item {
                         }
                         Text {
                             font.pixelSize: 16/1.3/*Style.monitorRatio*/
-                            text: "30"
+                            font.family: "Roboto"
+                            text: combatModel?  combatModel.bulletCount : ""
                         }
                     }
                     Text {
                         font.pixelSize: 16/1.3/*Style.monitorRatio*/
-                        text: "something"
+                        font.family: "Roboto"
+                        text: combatModel?  combatModel.title : ""
                     }
                 }
                 Rectangle{
@@ -67,7 +68,7 @@ Item {
                     radius: width / 2
                     //                    color: "blue"
                     //                    Layout.alignment: Qt.AlignRight
-                    //                    Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
+                                        Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
 
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: "#537597"  }
@@ -122,7 +123,7 @@ ScrollView{
             Layout.maximumWidth: 400
             spacing: 0
 //Layout.topMargin: -10
-            Layout.leftMargin: 15/1.3
+            Layout.leftMargin: 20/1.3
             clip: true
             Repeater{
                 id:modelDataContainer
@@ -150,11 +151,11 @@ ScrollView{
                         IconImage {
                             id:myIcon
                             anchors.centerIn: parent
-                            source: combatModel.iconUrl
+                            source: objectIcon
                             width: 35 /  1.3/*Style.monitorRatio*/
                             height: 35 /1.3 /*Style.monitorRatio*/
 
-//                            color: combatModel.stateColor
+                            color: stateColor
 
                         }
                     }
@@ -167,14 +168,15 @@ ScrollView{
                         color:"transparent"
 //                        anchors.leftMargin: 20 / 1.3
 
-                        IconImage {
+                        Image {
                             id:repeaterImg
-                            source: "qrc:/Resources/add.png"
-                            width: 20 / 1.3
-                            height: 20 / 1.3
+                            source: "qrc:/Resources/information.png"
+                            width: 24 / 1.3
+                            height: 24 / 1.3
                             anchors.left: parent.left
                             anchors.leftMargin: 30/1.3
                             anchors.verticalCenter:  parent.verticalCenter
+                            antialiasing: true
                         }
                         Text {
                             anchors.left: repeaterImg.right
@@ -183,6 +185,7 @@ ScrollView{
                             font.pixelSize: 17 / 1.3/*Style.monitorRatio*/
                             color: "#003569"
                             anchors.verticalCenter: parent.verticalCenter
+
                         }
                     }
                     MouseArea{
