@@ -28,36 +28,31 @@ Item {
 
             RowLayout{
                 anchors.centerIn: parent
-
-
                 IconImage {
                     source:combatModel?  combatModel.iconUrl : ""
                     Layout.preferredHeight: 55/1.3/*Style.monitorRatio*/
                     Layout.preferredWidth: 55/1.3/*Style.monitorRatio*/
-                    //                    Layout.leftMargin: 4/1.3/*Style.monitorRatio*/
-                    //                    color: typeHolder.checked?Style.foregroundColor : Style.hoverColor
                     Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
-
                 }
-                ColumnLayout{
 
+                ColumnLayout{
                     RowLayout{
                         IconImage {
                             source: "qrc:/Resources/bullet.png"
                             Layout.preferredHeight: 22/1.3/*Style.monitorRatio*/
                             Layout.preferredWidth: 22/1.3/*Style.monitorRatio*/
-                            //                    Layout.leftMargin: 4/1.3/*Style.monitorRatio*/
-                            //                    color: typeHolder.checked?Style.foregroundColor : Style.hoverColor
                         }
                         Text {
                             font.pixelSize: 16/1.3/*Style.monitorRatio*/
                             font.family: "Roboto"
+                            color: backgroundColor
                             text: combatModel?  combatModel.bulletCount : ""
                         }
                     }
                     Text {
                         font.pixelSize: 16/1.3/*Style.monitorRatio*/
                         font.family: "Roboto"
+                        color: backgroundColor
                         text: combatModel?  combatModel.title : ""
                     }
                 }
@@ -112,23 +107,16 @@ ScrollView{
     Layout.topMargin: 5/1.3
     Layout.leftMargin: 15/1.3
 
-//    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
-
     clip: true
         RowLayout{
             id:rowLay
-//            Layout.fillHeight: true
-//            Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
             Layout.maximumWidth: 400
             spacing: 0
-//Layout.topMargin: -10
-            Layout.leftMargin: 20/1.3
             clip: true
             Repeater{
                 id:modelDataContainer
                 model: root.combatModel
-
 
                 delegate: Rectangle{
                     id:node
@@ -137,8 +125,7 @@ ScrollView{
                     color: combatModel.objectSelection ? bg20 : "transparent"
                     z:-2
                     radius: 7
-                    //                    Layout.leftMargin: -10
-                    //                    z:0
+                    Layout.leftMargin: 5 / 1.3
                     Rectangle{
                         anchors.top: parent.top
                         anchors.topMargin: 5
@@ -210,23 +197,6 @@ ScrollView{
             }
         }
     }
-
-//        Rectangle{
-//            width: 45 / 1.3/*Style.monitorRatio*/
-//            height: 45 / 1.3/*Style.monitorRatio*/
-//            color: fg50
-//            radius: width / 2
-//            Layout.leftMargin: 75 / 1.3
-//            IconImage {
-//                anchors.centerIn: parent
-//                source: "qrc:/Resources/close-icon"
-//                height: 35/1.3/*Style.monitorRatio*/
-//                width: 35/1.3/*Style.monitorRatio*/
-//                color: "white"
-//            }
-
-//        }
-
     }
 
     Rectangle{
@@ -236,7 +206,7 @@ ScrollView{
         anchors.leftMargin: nodeInfoHolder.width -  attackholder.width / 2
         radius: 10
         color: fg75
-        width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 654/1.3) ?  654/1.3 : rowLay.childrenRect.width + 30 + 75
+        width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 645/1.3) ?  645/1.3 : rowLay.childrenRect.width + 30 + 75
         height: 65 / 1.3 /*Style.monitorRatio*/
         z:-2
         Rectangle{
