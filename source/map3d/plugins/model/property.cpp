@@ -20,13 +20,26 @@ void PropertyItem::setName(const QString &newName)
 
 bool PropertyItem::isMovable() const
 {
-    return m_isMovable;
+    return mIsMovable;
 }
 
 void PropertyItem::setIsMovable(bool newIsMovable)
 {
-    if (m_isMovable == newIsMovable)
+    if (mIsMovable == newIsMovable)
         return;
-    m_isMovable = newIsMovable;
+    mIsMovable = newIsMovable;
     emit isMovableChanged();
+}
+
+QColor PropertyItem::color() const
+{
+    return m_color;
+}
+
+void PropertyItem::setColor(const QColor &newColor)
+{
+    if (m_color == newColor)
+        return;
+    m_color = newColor;
+    emit colorChanged();
 }

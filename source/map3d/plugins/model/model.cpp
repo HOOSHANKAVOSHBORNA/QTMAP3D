@@ -194,7 +194,7 @@ void Model::onTreeItemCheck(bool check)
 
         setState(State::READY);
 
-        createProperty("Property");
+        createProperty("Tree");
 
         mapItem()->addNode(iconNode());
 
@@ -215,10 +215,12 @@ void Model::onCarItemCheck(bool check)
         mType = Type::MOVEABLE;
 
         setState(State::READY);
+
+        createProperty("Car");
+
         mapItem()->addNode(iconNode());
 
-    }
-    else {
+    } else {
         if(state() == State::MOVING)
             cancel();
 
@@ -233,11 +235,14 @@ void Model::onAirplanItemCheck(bool check)
         makeIconNode("../data/models/airplane/airplane.png");
 
         mType = Type::FLYABLE;
+
         setState(State::READY);
+
+        createProperty("Airplane");
+
         mapItem()->addNode(iconNode());
 
-    }
-    else {
+    } else {
         if(state() == State::MOVING)
             cancel();
 
