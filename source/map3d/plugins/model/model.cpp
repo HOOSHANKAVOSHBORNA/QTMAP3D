@@ -189,19 +189,15 @@ void Model::onTreeItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/models/tree/tree.png");
-
         mType = Type::SIMPLE;
-
         setState(State::READY);
-
         createProperty("Tree");
-
         mapItem()->addNode(iconNode());
-
     } else {
         if(state() == State::MOVING)
             cancel();
 
+        mainWindow()->getToolboxManager()->removePropertyItem();
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
     }
@@ -213,17 +209,14 @@ void Model::onCarItemCheck(bool check)
     if (check) {
         makeIconNode("../data/models/car/car.png");
         mType = Type::MOVEABLE;
-
         setState(State::READY);
-
         createProperty("Car");
-
         mapItem()->addNode(iconNode());
-
     } else {
         if(state() == State::MOVING)
             cancel();
 
+        mainWindow()->getToolboxManager()->removePropertyItem();
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
     }
@@ -233,19 +226,15 @@ void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
         makeIconNode("../data/models/airplane/airplane.png");
-
         mType = Type::FLYABLE;
-
         setState(State::READY);
-
         createProperty("Airplane");
-
         mapItem()->addNode(iconNode());
-
     } else {
         if(state() == State::MOVING)
             cancel();
 
+        mainWindow()->getToolboxManager()->removePropertyItem();
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
     }

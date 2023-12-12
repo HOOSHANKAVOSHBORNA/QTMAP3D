@@ -56,3 +56,29 @@ void PropertyItem::setLocation(const QVector3D &newLocation)
     mLocation = newLocation;
     emit propretyChanged();
 }
+
+QVector3D PropertyItem::getMoveTo() const
+{
+    return mMoveTo;
+}
+
+void PropertyItem::setMoveTo(const QVector3D &newMoveTo)
+{
+    if (mMoveTo == newMoveTo)
+        return;
+    mMoveTo = newMoveTo;
+    emit propretyChanged();
+}
+
+double PropertyItem::speed() const
+{
+    return mSpeed;
+}
+
+void PropertyItem::setSpeed(double newSpeed)
+{
+    if (qFuzzyCompare(mSpeed, newSpeed))
+        return;
+    mSpeed = newSpeed;
+    emit speedChanged();
+}

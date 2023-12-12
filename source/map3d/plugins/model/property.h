@@ -12,6 +12,8 @@ class PropertyItem : public QObject
     Q_PROPERTY(bool isMovable READ isMovable WRITE setIsMovable NOTIFY isMovableChanged FINAL)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged FINAL)
     Q_PROPERTY(QVector3D location READ getLocation WRITE setLocation NOTIFY propretyChanged FINAL)
+    Q_PROPERTY(QVector3D moveTo READ getMoveTo WRITE setMoveTo NOTIFY propretyChanged FINAL)
+    Q_PROPERTY(double speed READ speed WRITE setSpeed NOTIFY speedChanged FINAL)
 
 public:
     PropertyItem();
@@ -27,6 +29,12 @@ public:
     QVector3D getLocation() const;
     void setLocation(const QVector3D &newLocation);
 
+    QVector3D getMoveTo() const;
+    void setMoveTo(const QVector3D &newmoveTo);
+
+    double speed() const;
+    void setSpeed(double newSpeed);
+
 signals:
     void nameChanged();
 
@@ -36,11 +44,15 @@ signals:
 
     void propretyChanged();
 
+    void speedChanged();
+
 private:
     QString mName;
     bool mIsMovable;
     QColor mColor;
     QVector3D mLocation;
+    QVector3D mMoveTo;
+    double mSpeed;
 };
 
 #endif // PROPERTY_H
