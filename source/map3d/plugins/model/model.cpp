@@ -15,6 +15,7 @@
 #include "model.h"
 #include "property.h"
 #include "serviceManager.h"
+#include "utility.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
@@ -71,6 +72,7 @@ bool Model::setup()
 
     // property item setup
     mProperty = new PropertyItem;
+    connect(mProperty, &PropertyItem::propretyChanged, this, &Model::updateNodeFromProperty);
 
     // TEST
     mProperty->setName("ali alavi")->setColor(QColor("red"))->setIsMovable(false);
@@ -118,41 +120,37 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         mPickModelNode = modelNode;
         if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON){
             modelNode->select(true);
-            updatePropertyItem();
             return true;
         }
         else if(ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON){
             modelNode->showMenu(true);
             modelNode->select(true);
-            updatePropertyItem();
             return true;
         }
     }
+
     //--add model----------------------------------------------------------
-    if(mState == State::NONE){
+    if (mState == State::NONE) {
         return false;
     }
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initModel(geoPos);
-            updatePropertyItem();
+            updatePropertyItem(geoPos);
             return true;
         }
 
         if (mState == State::MOVING) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             moving(geoPos);
-            updatePropertyItem();
+            updatePropertyItem(geoPos);
             return true;
         }
-
-    }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::MOVING) {
+    } else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::MOVING) {
         cancel();
         return true;
-    }
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::MOVING)) {
+    } else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && mState == State::MOVING) {
         confirm();
         return true;
     }
@@ -178,23 +176,39 @@ bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter
     return false;
 }
 
-void Model::updatePropertyItem(/*const osgEarth::GeoPoint &geoPos*/)
+void Model::updatePropertyItem(const osgEarth::GeoPoint &geoPos)
 {
+    qDebug() << "I am in update Property";
     if (mCurrentModel->asFlyableModelNode()) {
-        mProperty->setIsMovable(true)->setSpeed(mCurrentModel->asFlyableModelNode()->speed())
-            /*->setMoveTo(QVector3D{(float) geoPos.x(), (float) geoPos.y(), (float) geoPos.z()})*/;
+        mProperty->setIsMovable(true)->setSpeed(mCurrentModel->asFlyableModelNode()->speed());
     } else if (mCurrentModel->asMoveableModelNode()) {
-        qDebug() << "herer";
-        mProperty->setIsMovable(true)->setSpeed(mCurrentModel->asMoveableModelNode()->speed())
-            /*->setMoveTo(QVector3D{(float) geoPos.x(), (float) geoPos.y(), (float) geoPos.z()})*/;
+        mProperty->setIsMovable(true)->setSpeed(mCurrentModel->asMoveableModelNode()->speed());
     }
 
-    mProperty->setName(QString::fromStdString(mCurrentModel->nodeData()->name))
-        ->setColor(QColor(QString::fromStdString(mCurrentModel->nodeData()->color)))
-        ->setLocation(QVector3D{(float) mCurrentModel->nodeData()->latitude,
-                                (float) mCurrentModel->nodeData()->longitude,
-                                (float) mCurrentModel->nodeData()->altitude})
-        ->setSpeed(mCurrentModel->nodeData()->speed);
+    mProperty->setName(QString::fromStdString(mCurrentModel->nodeData()->name));
+    mProperty->setColor(QColor(QString::fromStdString(mCurrentModel->nodeData()->color)));
+    mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+}
+
+void Model::updateNodeFromProperty()
+{
+    if (!mCurrentModel)
+        return;
+    qDebug() << "I am in update node";
+    if (mCurrentModel->asFlyableModelNode()) {
+        mCurrentModel->asFlyableModelNode()->setSpeed(mProperty->speed());
+    } else if (mCurrentModel->asMoveableModelNode()) {
+        mCurrentModel->asMoveableModelNode()->setSpeed(mProperty->speed());
+    }
+
+    mCurrentModel->nodeData()->name = mProperty->name().toStdString();
+    mCurrentModel->nodeData()->color = mProperty->color().name(QColor::HexArgb).toStdString();
+    mCurrentModel->setColor(osgEarth::Color(mProperty->color().red() / 255.0,
+                                            mProperty->color().green() / 255.0,
+                                            mProperty->color().blue() / 255.0,
+                                            mProperty->color().alpha() / 255.0));
+    mCurrentModel->setPosition(
+        Utility::qVector3DToosgEarthGeoPoint(mProperty->getLocation(), mapItem()->getMapSRS()));
 }
 
 osgEarth::Symbology::Style &Model::getDefaultStyle()
@@ -336,12 +350,14 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
             mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
             return;
         }
+
         if (mCurrentModel->asMoveableModelNode()) {
             mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
             return;
         }
 
         mCurrentModel->setPosition(geoPos);
+        qDebug() << "position changed";
     }
 }
 

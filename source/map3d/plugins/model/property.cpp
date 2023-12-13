@@ -5,7 +5,7 @@ PropertyItem::PropertyItem()
     
 }
 
-QString PropertyItem::name() const
+QString PropertyItem::name()
 {
     return mName;
 }

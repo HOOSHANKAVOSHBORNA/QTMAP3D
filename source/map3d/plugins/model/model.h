@@ -53,9 +53,11 @@ public:
     bool mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
-    void updatePropertyItem(/*const osgEarth::GeoPoint &geoPos*/);
+    void updatePropertyItem(const osgEarth::GeoPoint &geoPos);
+    void updateNodeFromProperty();
 
     static osgEarth::Symbology::Style &getDefaultStyle();
+
 public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);

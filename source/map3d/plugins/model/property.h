@@ -17,7 +17,7 @@ class PropertyItem : public QObject
 
 public:
     PropertyItem();
-    QString name() const;
+    QString name();
     PropertyItem *setName(const QString &newName);
 
     bool isMovable() const;

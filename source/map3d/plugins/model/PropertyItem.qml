@@ -85,47 +85,20 @@ Item {
             }
 
             RowLayout {
+                id: colorsrowl
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: 3 / Style.monitorRatio
 
-                ListModel {
-                    id: colorModel
-
-                    ListElement {
-                        checkIconVisible: false
-                        propertyColorSelect: "#EF2929"
-                    }
-                    ListElement {
-                        checkIconVisible: false
-                        propertyColorSelect: "#FCAF3E"
-                    }
-                    ListElement {
-                        checkIconVisible: false
-                        propertyColorSelect: "#FCE94F"
-                    }
-                    ListElement {
-                        checkIconVisible: false
-                        propertyColorSelect: "#8AE234"
-                    }
-                    ListElement {
-                        checkIconVisible: false
-                        propertyColorSelect: "#729FCF"
-                    }
-                    ListElement {
-                        checkIconVisible: false
-                        propertyColorSelect: "#FFFFFF"
-                    }
-                }
+                property var colorModel: ["#EF2929", "#FCAF3E", "#FCAF3E", "#FCE94F", "#8AE234", "#729FCF", "#FFFFFF"]
 
                 Repeater {
                     id: colorModelRepeater
-                    model: colorModel
+                    model: colorsrowl.colorModel
+                    property int currentIndex: -1
 
                     Button {
-                        required property color propertyColorSelect
-                        required property bool checkIconVisible
-                        required property int index
+                        required property var model
 
                         checkable: true
                         implicitWidth: 26 / Style.monitorRatio
@@ -133,69 +106,53 @@ Item {
 
                         background: Rectangle {
                             radius: width
-                            color: propertyColorSelect
+                            color: colorsrowl.colorModel[model.index]
                         }
 
                         Image {
                             anchors.fill: parent
                             source: "qrc:/Resources/add-place-color-select.png"
-                            visible: checkIconVisible
+                            visible: colorModelRepeater.currentIndex === model.index
                         }
 
                         onClicked: {
-                            addIconImage.visible = true
-                            propertyCheckIcon.visible = false
-                            colorSelectCircle.color = Style.backgroundColor
-
-                            colorModel.setProperty(previousIndex,
-                                                   "checkIconVisible", false)
-                            nextIndex = index
-                            if (previousIndex !== nextIndex) {
-                                colorModelRepeater.itemAt(
-                                            previousIndex).checked = false
-                            }
-                            colorModel.setProperty(nextIndex,
-                                                   "checkIconVisible", checked)
-                            if (checked) {
-                                previousIndex = index
-                                // TODO
-                            } else {
-
-                                // TODO
-                            }
+                            colorModelRepeater.currentIndex = model.index
+                            rootItem.cppInterface.color = colorsrowl.colorModel[model.index]
                         }
                     }
                 }
 
-                Rectangle {
-                    id: colorSelectCircle
-                    implicitWidth: 26 / Style.monitorRatio
-                    implicitHeight: 26 / Style.monitorRatio
-                    radius: width
-                    border.width: 1 / Style.monitorRatio
-                    border.color: Style.foregroundColor
-                    IconImage {
-                        id: addIconImage
-                        anchors.centerIn: parent
-                        width: 20 / Style.monitorRatio
-                        height: 20 / Style.monitorRatio
-                        source: "qrc:/Resources/location-add.png"
-                    }
+                //                Rectangle {
+                //                    id: colorBoxOpener
 
-                    IconImage {
-                        id: propertyCheckIcon
-                        anchors.centerIn: parent
-                        width: 20 / Style.monitorRatio
-                        height: 20 / Style.monitorRatio
-                        source: "qrc:/Resources/add-place-color-select.png"
-                        visible: false
-                    }
+                //                    implicitWidth: 26 / Style.monitorRatio
+                //                    implicitHeight: 26 / Style.monitorRatio
+                //                    radius: width
+                //                    border.width: 1 / Style.monitorRatio
+                //                    border.color: Style.foregroundColor
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: colorBox.visible = true
-                    }
-                }
+                //                    IconImage {
+                //                        id: addIconImage
+                //                        anchors.centerIn: parent
+                //                        width: 20 / Style.monitorRatio
+                //                        height: 20 / Style.monitorRatio
+                //                        source: "qrc:/Resources/location-add.png"
+                //                    }
+
+                //                    IconImage {
+                //                        id: propertySelectIcon
+                //                        anchors.centerIn: parent
+                //                        width: 20 / Style.monitorRatio
+                //                        height: 20 / Style.monitorRatio
+                //                        source: "qrc:/Resources/add-place-color-select.png"
+                //                        visible: false
+                //                    }
+
+                //                    MouseArea {
+                //                        anchors.fill: parent
+                //                        onClicked: colorBox.visible = true
+                //                    }
+                //                }
             }
         }
 
@@ -205,10 +162,10 @@ Item {
             visible: false
             selectedColor: rootItem.cppInterface.color
             onColorChosen: {
-                colorSelectCircle.color = selectedColor
+                colorBoxOpener.color = selectedColor
                 rootItem.cppInterface.color = selectedColor
                 addIconImage.visible = false
-                propertyCheckIcon.visible = true
+                propertySelectIcon.visible = true
                 colorModel.setProperty(previousIndex, "checkIconVisible", false)
             }
         }
