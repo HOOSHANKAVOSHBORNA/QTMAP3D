@@ -150,7 +150,7 @@ ScrollView{
                         IconImage {
                             id:myIcon
                             anchors.centerIn: parent
-                            source: combatModel.iconUrl
+                            source: objectIcon
                             width: 35 /  1.3/*Style.monitorRatio*/
                             height: 35 /1.3 /*Style.monitorRatio*/
 

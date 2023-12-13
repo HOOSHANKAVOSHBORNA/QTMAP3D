@@ -33,7 +33,8 @@ void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , 
     data.target = target;
     data.setLine(state,attacker->getPosition(),target->getPosition(),mMapItem);
     data.setState(state);
-    data.attacker->addChild(data.getLine());
+    qDebug() << data.getLine();
+    mCombatLayer->addChild(data.getLine());
     mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
 
@@ -140,14 +141,7 @@ void assignmentData::setState(AssignState state)
 
 void assignmentData::setLine(AssignState state, osgEarth::GeoPoint start, osgEarth::GeoPoint end, MapItem *map)
 {
-    mRelationLine = new AssignLine(state);
-    osg::Vec3d startWorld;
-    start.toWorld(startWorld);
-    osg::Vec3d endWorld;
-    end.toWorld(endWorld);
-    qDebug() << startWorld.x() << endWorld.x();
-    mRelationLine->pushVertex(startWorld);
-    mRelationLine->pushVertex(endWorld);
+    mRelationLine = new AssignLine(start,end,state);
 }
 
 AssignLine *assignmentData::getLine()
