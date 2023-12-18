@@ -9,6 +9,7 @@
 #include <osg/CullFace>
 #include <osg/PolygonMode>
 #include <osgEarthAnnotation/ModelNode>
+#include <osgEarthAnnotation/PlaceNode>
 #include "modelAutoScaler.h"
 #include "nodeInformation.h"
 #include <osgFX/Outline>
@@ -72,6 +73,9 @@ public:
     bool isAttacker() const;
     void setAttacker(bool attacker);
 
+    bool is3D() const;
+    void set2DHeaing(double heading);
+
 signals:
     void onTargetChecked();
     void onAttackChecked();
@@ -90,6 +94,7 @@ private:
     void createCircularMenu();
     void createNodeInformation();
     void createBookmarkItem();
+    void createSelectImage();
 //    void setOutline(bool state);
 
 private:
@@ -99,7 +104,8 @@ private:
     osg::ref_ptr<HighlightOutline> mHighlightOutline;
     osg::ref_ptr<osg::Node> m3DBaseNode;
     osg::ref_ptr<osg::Image> mImage;
-    osg::ref_ptr<osg::Geode> m2DNode;
+//    osg::ref_ptr<osg::Geode> m2DNode;
+    osg::ref_ptr<osgEarth::Annotation::PlaceNode> m2DNode;
 
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeHighliteNode;
@@ -119,6 +125,7 @@ private:
     bool mIsMenuVisible{false};
     NodeData* mNodeData{nullptr};
     osgEarth::Color mColor{osgEarth::Color::White};
+    osgEarth::Color mSelectColor{osg::Vec4(0.12,1,1,0.5)};
     NodeInformation* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
     QQmlEngine *mEnigine{nullptr};
