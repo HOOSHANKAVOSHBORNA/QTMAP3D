@@ -3,7 +3,7 @@
 
 AssignLine::AssignLine(osgEarth::GeoPoint start, osgEarth::GeoPoint end, AssignState state)
 {
-    mLine = new osgEarth::LineDrawable();
+    mLine = new osgEarth::LineDrawable(GL_LINE_STRIP);
     setLinePosition(start,end);
     setState(state);
     addChild(mLine);
@@ -13,7 +13,7 @@ void AssignLine::setState(AssignState state)
 {
     switch (state) {
     case PREASSIGN:
-        mLine->setMode(GL_POINTS);
+        mLine->setMode(GL_LINES);
         mLine->setColor(osg::Vec4(0.00392156862745098,0.6823529411764706,0.8392156862745098,1));
         mLine->setLineWidth(8);
         break;
@@ -65,4 +65,19 @@ void AssignLine::setLinePosition(osgEarth::GeoPoint start,osgEarth::GeoPoint end
     end.toWorld(endWorld);
     mLine->pushVertex(startWorld);
     mLine->pushVertex(endWorld);
+
+    double diff_X = endWorld.x() - startWorld.x();
+    double diff_Y = endWorld.y() - startWorld.y();
+    double diff_Z = endWorld.z() - startWorld.z();
+    int pointNum = 8;
+
+    double interval_X = diff_X / (pointNum + 1);
+    double interval_Y = diff_Y / (pointNum + 1);
+    double interval_Z = diff_Z / (pointNum + 1);
+
+    for (int i = 1; i <= pointNum; i++)
+    {
+        mLine->pushVertex(osg::Vec3d(startWorld.x() + interval_X * i ,startWorld.y() + interval_Y * i,startWorld.z() + interval_Z * i ));
+    }
+    mLine->finish();
 }

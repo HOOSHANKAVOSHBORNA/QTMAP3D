@@ -35,7 +35,7 @@ Item{
 
     id: rootItem
     width: searchRect.width
-    height: 360/Style.monitorRatio
+    height: felo.childrenRect.width === 0 ? 40/Style.monitorRatio : 360/Style.monitorRatio
     Rectangle {
         id:searchRect
         width: flag? 340 /Style.monitorRatio: searchBtn.width + searchText.implicitWidth + (closeButton.visible? closeButton.width : 0)
@@ -63,7 +63,7 @@ Item{
                 onClicked: {
                     icon.color = Style.disableColor
                     flag = true
-                    dropDown.visible = rootItem.model.rowCount()?dropDown.visible = true: dropDown.visible =false
+                    dropDown.visible = true/*rootItem.model.rowCount()?dropDown.visible = true: dropDown.visible =false*/
                     closeButton.visible = true
                     textonFocus.running =true
                     searchText.focus = true
@@ -94,13 +94,13 @@ Item{
                 onAccepted: {
                     rootItem.addToHistory(text)
                     searchText.clear()
-                    if (!typesRepeater.model.rowCount()){
-                        flag=false
-                        dropDown.visible = false
-                        closeButton.visible = false
-                        textlostFocus.running =true
-                        searchBtn.icon.color = Style.foregroundColor
-                    }
+//                    if (!typesRepeater.model.rowCount()){
+//                        flag=false
+//                        dropDown.visible = false
+//                        closeButton.visible = false
+//                        textlostFocus.running =true
+//                        searchBtn.icon.color = Style.foregroundColor
+//                    }
                 }
 
                 PropertyAnimation {
@@ -173,11 +173,12 @@ Item{
                         text: "Shortcut To Find "
                         font.family: Style.fontFamily
                     }
-                    visible: flag
+                    visible: felo.childrenRect.width === 0 ? false : true
                 }
                 //----------
 
                 Flow{
+                    id:felo
                     Layout.fillWidth: true
                     flow: GridLayout.LeftToRight
                     spacing: 5/Style.monitorRatio

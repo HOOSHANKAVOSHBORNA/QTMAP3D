@@ -81,7 +81,16 @@ void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer) {
 
 
 void SearchNodeModel::onNodeClicked(const QModelIndex &current) {
-    if (current.isValid() && current.row() >= 0 && current.row() < static_cast<int>(mNodes1.size())) {
+    // DEBUG
+    qDebug() << mNodes1[current.row()]->data->name;
+    qDebug() << mNodes1[current.row()]->data->latitude;
+    qDebug() << mNodes1[current.row()]->data->longitude;
+    qDebug() << mNodes1[current.row()]->data->altitude;
+    qDebug() << mNodes1[current.row()]->data->color;
+    qDebug() << mNodes1[current.row()]->data->altitude;
+    // ENDDEBUG
+    if (current.isValid() && current.row() >= 0
+        && current.row() < static_cast<int>(mNodes1.size())) {
         osgEarth::Annotation::GeoPositionNode *node = mNodes1[current.row()]->node;
         if (node) {
             mMapItem->getCameraController()->goToPosition(

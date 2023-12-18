@@ -2,17 +2,19 @@
 #define MODEL_H
 
 #include <QObject>
-#include "plugininterface.h"
+#include <circle.h>
+#include <osg/Fog>
+#include <osg/PolygonMode>
+#include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
-#include <osgEarthAnnotation/AnnotationLayer>
-#include "simpleModelNode.h"
+
+#include "dataManager.h"
 #include "flyableModelNode.h"
 #include "moveableModelNode.h"
-#include <osg/PolygonMode>
-#include <osg/Fog>
-#include "dataManager.h"
-#include <circle.h>
+#include "plugininterface.h"
+#include "property.h"
+#include "simpleModelNode.h"
 
 #define MODEL "Model"
 #define TREE "Tree"
@@ -51,8 +53,11 @@ public:
     bool mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+    void updatePropertyItem(const osgEarth::GeoPoint &geoPos);
+    void updateNodeFromProperty();
 
     static osgEarth::Symbology::Style &getDefaultStyle();
+
 public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
@@ -65,6 +70,7 @@ protected:
     void moving(osgEarth::GeoPoint &geoPos);
     void confirm();
     void cancel();
+    void createProperty(QString name);
 
 private:
     SimpleModelNode* pick(float x, float y);
@@ -88,6 +94,8 @@ private:
 
     NodeData* mNodeData{nullptr};
     DataManager *mDataManager;
+    QQuickItem *mItem;
+    PropertyItem *mProperty;
 };
 
 #endif // MODEL_H

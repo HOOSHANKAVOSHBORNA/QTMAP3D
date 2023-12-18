@@ -352,14 +352,14 @@ Item {
                             Layout.preferredWidth: 22/1.3/*Style.monitorRatio*/
                         }
                         Text {
-                            font.pixelSize: 16/1.3/*Style.monitorRatio*/
+                            font.pixelSize: 17/1.3/*Style.monitorRatio*/
                             font.family: "Roboto"
                             color: backgroundColor
                             text: combatModel?  combatModel.bulletCount : ""
                         }
                     }
                     Text {
-                        font.pixelSize: 16/1.3/*Style.monitorRatio*/
+                        font.pixelSize: 17/1.3/*Style.monitorRatio*/
                         font.family: "Roboto"
                         color: backgroundColor
                         text: combatModel?  combatModel.title : ""
@@ -414,11 +414,12 @@ Item {
                         text: qsTr("ATTACK")
                         font.family: "Roboto"
                         font.pixelSize: 13 / 1.3
+                        font.weight: Font.Bold
                         color:"white"
                     }
                     MouseArea{
                         anchors.fill: parent
-                        onClicked: print("control attack here")
+                        onClicked: combatModel.attackClicked()
                     }
                 }
 
@@ -448,7 +449,7 @@ ScrollView{
                     id:node
                     width: 131 /  1.3/*Style.monitorRatio*/
                     height: 65 /1.3 /*Style.monitorRatio*/
-                    color: combatModel.objectSelection ? bg20 : "transparent"
+                    color: objectSelection ? bg20 : "transparent"
                     z:-2
                     radius: 7
                     Layout.leftMargin: 5 / 1.3
@@ -504,17 +505,18 @@ ScrollView{
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            print(combatModel.isAttacker)
-
+                            combatModel.objectSelect(combatModel.index(0,0) ,true)
                         }
 
                         onEntered: {
+                            combatModel.objectHover( combatModel.index(0,0) ,true);
                             node.color = bg20
                         }
                         onExited: {
-                            if (!combatModel.objectSelection === true){
+                            if (!objectSelection === true){
                             node.color = "transparent"
                             }
+                            combatModel.objectHover( combatModel.index(0,0) ,false);
                         }
                     }
                 }
@@ -591,16 +593,13 @@ ScrollView{
 //                id: mainObjectTitle
 //                text: combatModel.title
 //            }
-
 //        }
 //        Rectangle{
 //            anchors.right: mainObject.left
 //            width: parent.width - mainObject.width
 //            height: parent.height *0.8
 //            anchors.verticalCenter: parent.verticalCenter
-
 //            GridView{
-
 //                id:se
 //                clip: true
 //                model: root.combatModel
@@ -624,6 +623,4 @@ ScrollView{
 //            }
 //        }
 //    }
-
-
 //}

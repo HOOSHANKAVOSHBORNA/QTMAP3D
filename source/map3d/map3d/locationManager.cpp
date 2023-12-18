@@ -291,7 +291,7 @@ bool LocationModel::appendLocationsFromJson(const QJsonObject &json)
         QJsonArray locationsArray = v.toArray();
         for (const QJsonValue &location : locationsArray) {
             QJsonDocument doc(location.toObject());
-            qDebug() << doc.toJson();
+            //            qDebug() << doc.toJson();
             mLocations.append(LocationItem::fromJson(location.toObject()));
         }
     }
@@ -318,7 +318,7 @@ bool LocationModel::readFromFile()
         dir.mkpath(appDir + "/" + savedDir);
     }
 
-    qDebug() << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    //    qDebug() << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 
     QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName);
 

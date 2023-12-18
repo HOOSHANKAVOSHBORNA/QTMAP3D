@@ -29,6 +29,7 @@ public:
     void addData(assignmentData data);
     Q_INVOKABLE void objectHover(QModelIndex index, bool isHovered);
     Q_INVOKABLE void objectSelect(QModelIndex index, bool isSelected);
+    Q_INVOKABLE void attackClicked();
 
     void setTitle(QString title);
     QString getTitle();
@@ -43,7 +44,6 @@ signals:
     void actorDataUpdated();
 
 private:
-
     QVector<assignmentData> mAssignList;
     QString mTitle;
     QUrl mIconUrl;

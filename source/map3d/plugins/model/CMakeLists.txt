@@ -29,6 +29,7 @@ add_library(model SHARED
     nodeInformation.cpp
     dataManager.h dataManager.cpp
     circularMenu.h circularMenu.cpp
+    property.h property.cpp
     highlightOutline.cpp highlightOutline.cpp
 )
 

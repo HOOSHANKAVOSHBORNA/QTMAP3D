@@ -88,10 +88,15 @@ void CombatListModel::addData(assignmentData data)
 
 void CombatListModel::objectHover(QModelIndex index, bool isHovered)
 {
-
+    index.data(hover) = isHovered;
 }
 
 void CombatListModel::objectSelect(QModelIndex index, bool isSelected)
+{
+    index.data(selection) = isSelected;
+}
+
+void CombatListModel::attackClicked()
 {
 
 }

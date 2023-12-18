@@ -142,7 +142,7 @@ bool CombatModelNode::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA:
 
         if(targetModelNode)
         {
-            mCombatManager->assign(mAttackerNode,targetModelNode,AssignState::ASSIGNED);
+            mCombatManager->assign(mAttackerNode,targetModelNode,AssignState::PREASSIGN);
         }
         mapItem()->removeNode(mDragModelNode);
         mDragModelNode = nullptr;
