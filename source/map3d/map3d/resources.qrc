@@ -514,5 +514,9 @@
         <file>Resources/menu-info.png</file>
         <file>Resources/menu-target.png</file>
         <file>Resources/menu-bookmark-checked.png</file>
+        <file>Resources/login.png</file>
+        <file>Resources/information.png</file>
+        <file>Resources/inform.png</file>
+        <file>Resources/bullet.png</file>
     </qresource>
 </RCC>

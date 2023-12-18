@@ -46,7 +46,7 @@ Window {
                     Layout.preferredHeight: 22/Style.monitorRatio
                     Layout.preferredWidth: 22/Style.monitorRatio
                     source: iconUrl
-                    color: Style.foregroundColor
+                    // color: Style.foregroundColor
                 }
                 Text{
                     text: title
