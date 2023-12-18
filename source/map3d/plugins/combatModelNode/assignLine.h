@@ -1,19 +1,18 @@
 #ifndef ASSIGNLINE_H
 #define ASSIGNLINE_H
 
-#include "lineNode.h"
-#include "drawCircle.h"
+#include <osgEarth/LineDrawable>
+#include "combatManager.h"
 
-class AssignLine : public LineNode
+class AssignLine : public osgEarth::Annotation::AnnotationNode
 {
 public:
-    AssignLine(MapItem *map);
-
-    osg::Image* createSpotLight(const osg::Vec4& centerColor, unsigned int size, float power);
+    AssignLine(osgEarth::GeoPoint start,osgEarth::GeoPoint end, AssignState state);
+    void setState(AssignState state);
+    void setLinePosition(osgEarth::GeoPoint start,osgEarth::GeoPoint end);
 
 private:
-    bool mLightVisible;
-    MapItem *mMapItem;
+    osgEarth::LineDrawable *mLine{nullptr};
 };
 
 #endif // ASSIGNLINE_H
