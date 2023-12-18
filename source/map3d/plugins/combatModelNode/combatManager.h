@@ -22,10 +22,10 @@ struct assignmentData
 public:
     osg::ref_ptr<SimpleModelNode> attacker{nullptr};
     osg::ref_ptr<SimpleModelNode> target{nullptr};
-    void setState(AssignState state);
+    void setState(AssignState state) const;
     void setLine(AssignState state,osgEarth::GeoPoint start , osgEarth::GeoPoint end, MapItem *map = nullptr);
     AssignLine *getLine();
-    AssignState getState();
+    AssignState getState() const;
 
 private:
     AssignLine *mRelationLine{nullptr};
