@@ -25,8 +25,7 @@ public: // osg::NodeCallback
     void setMinScale(double minScale);
     void setMaxScale(double maxScale);
     void setEnabled(bool enabled);
-
-
+    void setScaled(bool newScaled);
 
 protected:
     osg::Vec3d _baseScale = osg::Vec3d(1,1,1);
@@ -35,6 +34,7 @@ protected:
     double _maxScale;
 
     bool _enabled = true;
+    bool _scaled = true;
 };
 
 #endif // MODELAUTOSCALER_H

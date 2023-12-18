@@ -4,6 +4,7 @@
 #include "mapItem.h"
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osg/Depth>
+#include <osgEarthAnnotation/PlaceNode>
 #include <osgEarthSymbology/ModelSymbol>
 #include <osgEarth/GLUtils>
 #include <osgEarth/Registry>
@@ -91,7 +92,7 @@ bool SimpleModelNode::isSelect() const
 void SimpleModelNode::select(bool value)
 {
     mIsSelected = value;
-//    setOutline(mIsSelected);
+    //    setOutline(mIsSelected);
     mHighlightOutline->setEnabled(mIsSelected);
 }
 
@@ -120,13 +121,15 @@ bool SimpleModelNode::isAutoScale() const
 void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 {
     mIsAutoScale = newIsAutoScale;
-    if (mIsAutoScale){
-        setCullCallback(mAutoScaler);
-    }
-    else{
-        setCullCallback(nullptr);
-        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
-    }
+    mAutoScaler->setScaled(newIsAutoScale);
+    getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+//    if (mIsAutoScale){
+//        setCullCallback(mAutoScaler);
+//    }
+//    else{
+//        setCullCallback(nullptr);
+//        getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+//    }
 }
 
 NodeData *SimpleModelNode::nodeData() const
@@ -158,22 +161,22 @@ osgEarth::Color SimpleModelNode::color() const
 
 void SimpleModelNode::setColor(osgEarth::Color color)
 {
-    if(mColor != color){
-        //--recolor 3D Node----------------------------------------------------
-        osg::ref_ptr<osg::Material> mat = new osg::Material;
-        mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
-        m3DBaseNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-        //--recolor 2D Node----------------------------------------------------
-        osg::Vec4 imageColor = color;
-        for(int i=0; i<mImage->s(); ++i) {
-            for(int j=0; j<mImage->t(); ++j) {
-                imageColor.a() = mImage->getColor(i, j).a();
-                mImage->setColor(imageColor, i, j);
-            }
+    //    if(mColor != color){
+    //--recolor 3D Node----------------------------------------------------
+    osg::ref_ptr<osg::Material> mat = new osg::Material;
+    mat->setDiffuse (osg::Material::FRONT_AND_BACK, color);
+    m3DBaseNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+    //--recolor 2D Node----------------------------------------------------
+    osg::Vec4 imageColor = color;
+    for(int i=0; i<mImage->s(); ++i) {
+        for(int j=0; j<mImage->t(); ++j) {
+            imageColor.a() = mImage->getColor(i, j).a();
+            mImage->setColor(imageColor, i, j);
         }
-        mImage->dirty();
-        //---------------------------------------------------------------------
     }
+    mImage->dirty();
+    //---------------------------------------------------------------------
+    //    }
     mColor = color;
 }
 
@@ -194,6 +197,18 @@ void SimpleModelNode::setAttacker(bool attacker)
     }
 }
 
+bool SimpleModelNode::is3D() const
+{
+    return mIs3D;
+}
+
+void SimpleModelNode::set2DHeaing(double heading)
+{
+    auto style = m2DNode->getStyle();
+    style.getOrCreate<osgEarth::Symbology::IconSymbol>()->heading() = heading;
+    m2DNode->setStyle(style);
+}
+
 void SimpleModelNode::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -202,10 +217,12 @@ void SimpleModelNode::onModeChanged(bool is3DView)
     if(mIs3D){
         mSwitchMode->setValue(Mode3D,true);
         mSwitchMode->setValue(Mode2D, false);
+        setAutoScale(true);
     }
     else{
         mSwitchMode->setValue(Mode3D, false);
         mSwitchMode->setValue(Mode2D,true);
+        setAutoScale(false);
     }
 
     //    mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
@@ -298,7 +315,7 @@ void SimpleModelNode::compile()
     //        scaleRatio = 1;
     //        mImage->scaleImage(392, 392, mImage->r());
     //    }
-    if(mImage) mImage->scaleImage(iconSize, iconSize, mImage->r());
+//    if(mImage) mImage->setOrigin(osg::Image::TOP_LEFT);
     setCullingActive(false);
     mAutoScaler = new ModelAutoScaler(scaleRatio, 1, 1000);
     if (mIsAutoScale){
@@ -312,24 +329,31 @@ void SimpleModelNode::compile()
 
     mHighlightOutline = new HighlightOutline;
     mHighlightOutline->setWidth(6);
-    mHighlightOutline->setColor(osg::Vec4(0.12,1,1,0.5));
+    mHighlightOutline->setColor(mSelectColor);
     mHighlightOutline->setEnabled(false);
     mHighlightOutline->addChild(m3DNode);
 
     //--2D node---------------------------------------------------------
-    m2DNode = new osg::Geode();
-    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
-    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);
-    m2DNode->setStateSet(geodeStateSet);
-    m2DNode->addDrawable(imgGeom);
+//    m2DNode = new osg::Geode();
+//    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+//    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+//    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);
+//    m2DNode->setStateSet(geodeStateSet);
+//    m2DNode->addDrawable(imgGeom);
+    osgEarth::Symbology::Style st;
+    st.getOrCreate<osgEarth::Symbology::IconSymbol>()->alignment() = osgEarth::Symbology::IconSymbol::ALIGN_CENTER_CENTER;
+    if(mImage) mImage->scaleImage(40, 42, mImage->r());
+    m2DNode = new osgEarth::Annotation::PlaceNode("", st, mImage);
+    m2DNode->setDynamic(true);
+    m2DNode->setPriority(-1);
     //--set Highlite Node---------------------------------------------------
     //    osg::ref_ptr<osg::Group> selectGroup = new osg::Group;
     osg::ComputeBoundsVisitor cbv;
     if(mIs3D)
         m3DNode->accept(cbv);
-    else
+    else{
         m2DNode->accept(cbv);
+    }
     mConeHighliteNode = new Cone();
     mConeHighliteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
     mConeHighliteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
@@ -348,11 +372,12 @@ void SimpleModelNode::compile()
     //--setting--------------------------------------------------------
     if(mIs3D){
         mSwitchMode->insertChild(Mode3D, mHighlightOutline, true);
-        mSwitchMode->insertChild(Mode2D, m2DNode, false);
+        mSwitchMode->insertChild(Mode2D, m2DNode->getPositionAttitudeTransform(), false);
     }
     else{
         mSwitchMode->insertChild(Mode3D, mHighlightOutline, false);
-        mSwitchMode->insertChild(Mode2D, m2DNode, true);
+        mSwitchMode->insertChild(Mode2D, m2DNode->getPositionAttitudeTransform(), true);
+        setAutoScale(false);
     }
     mSwitchMode->insertChild(Highlight, mConeHighliteNode, false);
     //--------------------------------------------------------------------------
@@ -406,6 +431,33 @@ void SimpleModelNode::createBookmarkItem()
         mBookmarkMenuItem->checked = false;
     });
 }
+
+void SimpleModelNode::createSelectImage()
+{
+    int w = 5;
+    for(int j=0; j<mImage->t(); ++j) {
+        for(int i=0; i<mImage->s(); ++i) {
+            //            std::cout<<"("<<QString::number(mImage->getColor(i, j).a(),'f',  2).toStdString()<<")";
+            if(i > 0 && qAbs(mImage->getColor(i-1, j).a() - mSelectColor.a()) > 0.07
+                &&qAbs(mImage->getColor(i, j).a() - mSelectColor.a()) > 0.07){
+                if(mImage->getColor(i, j).a() < 0.1 && mImage->getColor(i - 1, j).a() > 0.1){
+                    for(int a = 0; a < w-1; ++a)
+                        if(i+a <= mImage->s())
+                            mImage->setColor(mSelectColor, i+a, j);
+                }
+                if(mImage->getColor(i, j).a() > 0.1 && mImage->getColor(i-1, j).a() < 0.1){
+                    for(int a = 1; a < w; ++a)
+                        if(i-a >= 0)
+                            mImage->setColor(mSelectColor, i-a, j);
+                }
+
+            }
+        }
+        //        std::cout<<std::endl;
+    }
+    mImage->dirty();
+}
+
 
 //void SimpleModelNode::setOutline(bool state)
 //{
