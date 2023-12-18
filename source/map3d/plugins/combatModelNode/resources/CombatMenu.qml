@@ -18,7 +18,6 @@ Item {
     RowLayout{
         id:mainRow
         anchors.centerIn: parent
-
         Rectangle {
             id:nodeInfoHolder
             width: 209 / 1.3/*Style.monitorRatio*/
@@ -37,20 +36,22 @@ Item {
 
                 ColumnLayout{
                     RowLayout{
+                        id : bulletInfo
+                        visible: combatModel ? combatModel.isAttacker : false
                         IconImage {
                             source: "qrc:/Resources/bullet.png"
                             Layout.preferredHeight: 22/1.3/*Style.monitorRatio*/
                             Layout.preferredWidth: 22/1.3/*Style.monitorRatio*/
                         }
                         Text {
-                            font.pixelSize: 16/1.3/*Style.monitorRatio*/
+                            font.pixelSize: 17/1.3/*Style.monitorRatio*/
                             font.family: "Roboto"
                             color: backgroundColor
                             text: combatModel?  combatModel.bulletCount : ""
                         }
                     }
                     Text {
-                        font.pixelSize: 16/1.3/*Style.monitorRatio*/
+                        font.pixelSize: 17/1.3/*Style.monitorRatio*/
                         font.family: "Roboto"
                         color: backgroundColor
                         text: combatModel?  combatModel.title : ""
@@ -61,9 +62,7 @@ Item {
                     width: 75 / 1.3/*Style.monitorRatio*/
                     height: 75 / 1.3/*Style.monitorRatio*/
                     radius: width / 2
-                    //                    color: "blue"
-                    //                    Layout.alignment: Qt.AlignRight
-                                        Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
+                    Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
 
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: "#537597"  }
@@ -71,7 +70,9 @@ Item {
                     }
 
                     Rectangle{
-                        anchors.centerIn: parent
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+
                         width: 65 / 1.3/*Style.monitorRatio*/
                         height: 65 / 1.3/*Style.monitorRatio*/
                         radius: width / 2
@@ -83,8 +84,21 @@ Item {
                             GradientStop { position: 0.0; color: "#DEE3E6" }
                             GradientStop { position: 1.0; color: "#DEE3E6" }
                         }
+                        Rectangle{
+                            property var model: combatModel
+                            readonly property color myRed: "#FF0000"
+                            readonly property color myRed75: Qt.rgba(myRed.r,myRed.g,myRed.b, 0.75)
+                            anchors.fill: parent
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "#FF7C7C"  }
+                                GradientStop { position: 1.0; color: "#FF0000" }
+                            }
+                            radius:parent.radius
+                            border.width: 3
+                            border.color: myRed75
 
-
+                        }
                     }
                     Text {
                         id: name
@@ -92,7 +106,12 @@ Item {
                         text: qsTr("ATTACK")
                         font.family: "Roboto"
                         font.pixelSize: 13 / 1.3
+                        font.weight: Font.Bold
                         color:"white"
+                    }
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: print("control attack here")
                     }
                 }
 
@@ -153,7 +172,6 @@ ScrollView{
                         height: parent.height/2
                         width: parent.width
                         color:"transparent"
-//                        anchors.leftMargin: 20 / 1.3
 
                         Image {
                             id:repeaterImg
@@ -179,9 +197,7 @@ ScrollView{
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            if (combatModel.objectSelection === true){
-                            node.color = bg20
-                            }
+
                         }
 
                         onEntered: {
