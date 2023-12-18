@@ -28,8 +28,8 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
     void addData(assignmentData data);
     Q_INVOKABLE void objectHover(QModelIndex index, bool isHovered);
-    Q_INVOKABLE void objectSelect(QModelIndex index, bool isSelected);
-    Q_INVOKABLE void attackClicked();
+    Q_INVOKABLE void objectSelect(QModelIndex index);
+    Q_INVOKABLE void attackClicked() const;
 
     void setTitle(QString title);
     QString getTitle();
@@ -49,6 +49,7 @@ private:
     QUrl mIconUrl;
     bool mIsAttacker{false};
     int mBulletCount{0};
+    QModelIndex selectedItemIndex;
 };
 
 

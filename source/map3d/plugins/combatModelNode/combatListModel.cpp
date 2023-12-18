@@ -30,7 +30,11 @@ QVariant CombatListModel::data(const QModelIndex &index, int role) const
             return QUrl::fromLocalFile(QString::fromStdString(asData.attacker->nodeData()->url2D));
         }
     case selection:
+        if(selectedItemIndex == index){
+            return true;
+        }else{
             return false;
+        }
     case hover:
         return false;
     case stateColor:
@@ -88,17 +92,23 @@ void CombatListModel::addData(assignmentData data)
 
 void CombatListModel::objectHover(QModelIndex index, bool isHovered)
 {
-    index.data(hover) = isHovered;
+    data(index,hover) = isHovered;
 }
 
-void CombatListModel::objectSelect(QModelIndex index, bool isSelected)
+void CombatListModel::objectSelect(QModelIndex index)
 {
-    index.data(selection) = isSelected;
+    for (int var = 0; var < rowCount(); ++var) {
+        data(index.siblingAtRow(var),selection) = false;
+    }
+    data(index,selection) = true;
+    selectedItemIndex = index;
 }
 
-void CombatListModel::attackClicked()
+void CombatListModel::attackClicked() const
 {
-
+    if( mAssignList.at(selectedItemIndex.row()).getState() == PREASSIGN){
+        mAssignList.at(selectedItemIndex.row()).setState(ASSIGNED);
+    }
 }
 
 CombatList::CombatList(QQmlEngine *engine, MapControllerItem *map)

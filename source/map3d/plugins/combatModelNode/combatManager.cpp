@@ -33,7 +33,7 @@ void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , 
     data.target = target;
     data.setLine(state,attacker->getPosition(),target->getPosition(),mMapItem);
     data.setState(state);
-    qDebug() << data.getLine();
+    // qDebug() << data.getLine();
     mCombatLayer->addChild(data.getLine());
     mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
@@ -134,7 +134,7 @@ void CombatManager::attackResult(bool result, int bulletID)
     }
 }
 
-void assignmentData::setState(AssignState state)
+void assignmentData::setState(AssignState state) const
 {
     mRelationLine->setState(state);
 }
@@ -149,7 +149,7 @@ AssignLine *assignmentData::getLine()
     return mRelationLine;
 }
 
-AssignState assignmentData::getState()
+AssignState assignmentData::getState() const
 {
     return mState;
 }
