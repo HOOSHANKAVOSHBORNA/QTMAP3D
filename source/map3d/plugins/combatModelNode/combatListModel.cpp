@@ -111,6 +111,16 @@ void CombatListModel::attackClicked() const
     }
 }
 
+void CombatListModel::addManually()
+{
+
+}
+
+void CombatListModel::closeMenu()
+{
+
+}
+
 CombatList::CombatList(QQmlEngine *engine, MapControllerItem *map)
 {
     mMapItem = map;

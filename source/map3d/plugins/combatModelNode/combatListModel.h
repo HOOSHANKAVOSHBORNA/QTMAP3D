@@ -30,6 +30,8 @@ public:
     Q_INVOKABLE void objectHover(QModelIndex index, bool isHovered);
     Q_INVOKABLE void objectSelect(QModelIndex index);
     Q_INVOKABLE void attackClicked() const;
+    Q_INVOKABLE void addManually();
+    Q_INVOKABLE void closeMenu();
 
     void setTitle(QString title);
     QString getTitle();
