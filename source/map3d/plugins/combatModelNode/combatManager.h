@@ -1,17 +1,13 @@
 #ifndef COMBATMANAGER_H
 #define COMBATMANAGER_H
 
-
 #include "bulletNode.h"
-#include "lineNode.h"
-// #include "assignLine.h"
 #include <simpleModelNode.h>
 
+class AssignLine;
 
  enum AssignState{
     PREASSIGN,
-    HOVERED,
-    SELECTED,
     ASSIGNED,
     BUSY,
     SEARCH,
@@ -26,12 +22,13 @@ struct assignmentData
 public:
     osg::ref_ptr<SimpleModelNode> attacker{nullptr};
     osg::ref_ptr<SimpleModelNode> target{nullptr};
-    void setState(AssignState state);
-    void setLine(MapItem* map);
-    LineNode* getLine();
+    void setState(AssignState state) const;
+    void setLine(AssignState state,osgEarth::GeoPoint start , osgEarth::GeoPoint end, MapItem *map = nullptr);
+    AssignLine *getLine();
+    AssignState getState() const;
 
 private:
-    osg::ref_ptr<LineNode> mRelationLine{nullptr};
+    AssignLine *mRelationLine{nullptr};
     AssignState mState{PREASSIGN};
 };
 

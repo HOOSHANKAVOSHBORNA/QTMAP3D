@@ -41,16 +41,16 @@ private:
     osg::Vec4 _color;
 };
 
-class HighlightLine : public osgFX::Effect
+class HighlightOutline : public osgFX::Effect
 {
 public:
     /// Constructor.
-    HighlightLine();
+    HighlightOutline();
 
     /// Copy constructor.
-    HighlightLine(const HighlightLine& copy, const osg::CopyOp& op = osg::CopyOp::SHALLOW_COPY);
+    HighlightOutline(const HighlightOutline& copy, const osg::CopyOp& op = osg::CopyOp::SHALLOW_COPY);
     // Effect class info
-    META_Effect(osgFX, HighlightLine, "Outline",
+    META_Effect(osgFX, HighlightOutline, "Outline",
                 "Stencil buffer based object outline effect.\n"
                 "This effect needs a properly setup stencil buffer.",
                 "Ulrich Hertlein");
@@ -67,11 +67,11 @@ public:
     /// Get outline color.
     const osg::Vec4& getColor() const;
     /// Define available techniques.
-    bool define_techniques();
+    bool define_techniques() override;
 
 protected:
     /// Destructor.
-    virtual ~HighlightLine() {
+    virtual ~HighlightOutline() {
     }
 
 

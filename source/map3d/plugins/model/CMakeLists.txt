@@ -29,7 +29,8 @@ add_library(model SHARED
     nodeInformation.cpp
     dataManager.h dataManager.cpp
     circularMenu.h circularMenu.cpp
-    highlightLine.h highlightLine.cpp
+    property.h property.cpp
+    highlightOutline.cpp highlightOutline.cpp
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

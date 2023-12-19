@@ -33,5 +33,6 @@
         <file>SideBar.qml</file>
         <file>BookmarkItem.qml</file>
         <file>TestItem.qml</file>
+        <file>LoginPage.qml</file>
     </qresource>
 </RCC>

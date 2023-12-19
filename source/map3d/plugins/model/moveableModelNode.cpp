@@ -94,6 +94,13 @@ void ModelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *n
                     //-----------------------------------------------------------------
                     osg::Quat rotate = rotate2 * rotate1;
                     mMoveableModel->getPositionAttitudeTransform()->setAttitude(rotate);
+                    //--set heading----------------------------------------------------
+                    double angleRad;
+                    osg::Vec3 vec;
+                    mMoveableModel->getPositionAttitudeTransform()->getAttitude().getRotate(angleRad, vec);
+                    double angleDeg = osg::RadiansToDegrees(angleRad);
+                    angleDeg = vec.z() > 0 ? -angleDeg: angleDeg;
+                    mMoveableModel->set2DHeaing(angleDeg);
                 }
                 mPreGeoPoint = currentGeoPoint;
             }

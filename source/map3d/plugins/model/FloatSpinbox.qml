@@ -95,6 +95,7 @@ Item {
                 source: "qrc:/Resources/add.png"
             }
         }
+
         background: Rectangle {
             color: bg30
             radius: 15

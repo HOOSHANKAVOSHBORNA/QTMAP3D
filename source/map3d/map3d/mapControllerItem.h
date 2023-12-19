@@ -64,6 +64,7 @@ public slots:
 
 
     SearchNodeProxyModel *searchNodeProxyModel() const;
+    SearchNodeManager *searchNodeManager() const;
 
 signals:
     void fpsChanged();
@@ -98,6 +99,8 @@ private:
     bool mInClickProcess = false;
     double mFps = 0.0f;
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
+    SearchNodeManager* mSearchNodeManager{nullptr};
+//    SearchNodeManager *getSearchNodeManager() const;
     TypeListModel* mTypeListModel{nullptr};
     StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D mCompassDirection;

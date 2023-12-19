@@ -5,6 +5,7 @@
 
 #include "serviceManager.h"
 #include "toolboxManager.h"
+#include "mapControllerItem.h"
 
 #include <QObject>
 #include <QString>
@@ -36,7 +37,7 @@ public:
 
     static void setMainWindow(MainWindow* mainWindow);
     MainWindow *mainWindow() const;
-    MapItem *mapItem() const;
+    MapControllerItem *mapItem() const;
     QQmlEngine *qmlEngine() const;
     Toolbox *toolbox() const;
     BookmarkManager *bookmarkManager() const;
@@ -67,7 +68,7 @@ public:
 
 
 private:
-    static MapItem *mMapItem;
+    static MapControllerItem *mMapItem;
     static QQmlEngine *mQmlEngine;
     static DefenseDataManager *mDefenseDataManager;
     static MainWindow *mMainWindow;

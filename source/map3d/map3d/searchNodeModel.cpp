@@ -60,6 +60,7 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
 }
 
 void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer) {
+
     auto iterator = std::remove_if(
         mNodes1.begin(),
         mNodes1.end(),
@@ -71,7 +72,6 @@ void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer) {
     if (iterator != mNodes1.end()) {
         int d = std::distance(mNodes1.begin(), iterator);
         beginRemoveRows(QModelIndex(), d, d);
-        delete *iterator;
         mNodes1.erase(iterator);
         endRemoveRows();
         emit dataChanged(createIndex(0, 0), createIndex(rowCount() - 1, 0));
@@ -81,7 +81,16 @@ void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer) {
 
 
 void SearchNodeModel::onNodeClicked(const QModelIndex &current) {
-    if (current.isValid() && current.row() >= 0 && current.row() < static_cast<int>(mNodes1.size())) {
+    // DEBUG
+    qDebug() << mNodes1[current.row()]->data->name;
+    qDebug() << mNodes1[current.row()]->data->latitude;
+    qDebug() << mNodes1[current.row()]->data->longitude;
+    qDebug() << mNodes1[current.row()]->data->altitude;
+    qDebug() << mNodes1[current.row()]->data->color;
+    qDebug() << mNodes1[current.row()]->data->altitude;
+    // ENDDEBUG
+    if (current.isValid() && current.row() >= 0
+        && current.row() < static_cast<int>(mNodes1.size())) {
         osgEarth::Annotation::GeoPositionNode *node = mNodes1[current.row()]->node;
         if (node) {
             mMapItem->getCameraController()->goToPosition(
@@ -140,7 +149,7 @@ bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
 
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
     QString dataString = index.data(SearchNodeModel::type_).toString();
-    if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive)) {
+    if (index.data().toString().startsWith(mFilterString, Qt::CaseInsensitive)) {
         if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
             return true;
         }
@@ -148,6 +157,16 @@ bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
             if(myVector.size()==0){
                 return true;
             }
+                return false;
+        }
+    }else if ((index.data(SearchNodeModel::iD_).toString().contains(mFilterString, Qt::CaseInsensitive))){
+        if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
+                return true;
+        }
+        else{
+                if(myVector.size()==0){
+                return true;
+                }
                 return false;
         }
     }
@@ -216,40 +235,27 @@ int TypeListModel::rowCount(const QModelIndex &parent) const
 ///////////////////////////////////////////////// --------------
 
 
-//SearchNodeManager::SearchNodeManager(MapItem *mapItem, QObject *parent) : QObject(parent)
-//{
-//    mSearchNodeModel = new SearchNodeModel(mapItem, this);
-//    mSearchNodeProxyModel = new SearchNodeProxyModel(this);
-//    mSearchNodeProxyModel->setSourceModel(mSearchNodeModel);
-//}
+SearchNodeManager::SearchNodeManager()
+{   
+    mSearchNodeProxyModel = new SearchNodeProxyModel();
+}
 
-//void SearchNodeManager::addNode(osg::Node *node, osgEarth::Layer *layer)
-//{
-//    mSearchNodeModel->addNode(node, layer);
+void SearchNodeManager::setMapItem(MapItem *mapItem)
+{
+    mSearchNodeProxyModel->setSourceModel(new SearchNodeModel(mapItem, this));
+}
 
-//}
+SearchNodeProxyModel *SearchNodeManager::searchNodeProxyModel() const
+{
+    return mSearchNodeProxyModel;
+}
 
-//void SearchNodeManager::removeNode(osg::Node *node, osgEarth::Layer *layer)
-//{
-//    mSearchNodeModel->removeNode(node, layer);
-//}
+SearchNodeManager *SearchNodeManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance == nullptr){ mInstance = new SearchNodeManager(); }
+    return mInstance;
+}
 
-//void SearchNodeManager::onNodeClicked(int current)
-//{
-//    mSearchNodeProxyModel->onNodeClicked(current);
-//}
 
-//SearchNodeModel *SearchNodeManager::getSearchNodeModel() const
-//{
-//    return mSearchNodeModel;
-//}
-
-//SearchNodeProxyModel *SearchNodeManager::getSearchNodeProxyModel() const
-//{
-//    return mSearchNodeProxyModel;
-//}
-
-//TypeListModel *SearchNodeManager::getTypeListModel() const
-//{
-//    return mSearchNodeModel->getTypeListModel();
-//}

@@ -3,59 +3,61 @@
 void ModelAutoScaler::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
     if (_enabled) {
-        osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
-        osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
-
-        osg::Camera* cam = cs->getCurrentCamera();
-
-        // If this is an RTT camera, we need to use it's "parent"
-        // to calculate the proper scale factor.
-        if (cam->isRenderToTextureCamera() &&
-            cam->getView() &&
-            cam->getView()->getCamera() &&
-            cam->getView()->getCamera() != cam)
-        {
-            cam = cam->getView()->getCamera();
-        }
-
-        if (cam->getViewport())
-        {
-            // Reset the scale so we get a proper bound
+        if(_scaled){
+            osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
             geo->getPositionAttitudeTransform()->setScale(_baseScale);
-            const osg::BoundingSphere& bs = node->getBound();
+            osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
 
-            // transform centroid to VIEW space:
-            osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
+            osg::Camera* cam = cs->getCurrentCamera();
 
-            // Set X coordinate to the radius so we can use the resulting CLIP
-            // distance to calculate meters per pixel:
-            centerView.x() = bs.radius();
+            // If this is an RTT camera, we need to use it's "parent"
+            // to calculate the proper scale factor.
+            if (cam->isRenderToTextureCamera() &&
+                cam->getView() &&
+                cam->getView()->getCamera() &&
+                cam->getView()->getCamera() != cam)
+            {
+                cam = cam->getView()->getCamera();
+            }
 
-            // transform the CLIP space:
-            osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
+            if (cam->getViewport())
+            {
+                // Reset the scale so we get a proper bound
+                geo->getPositionAttitudeTransform()->setScale(_baseScale);
+                const osg::BoundingSphere& bs = node->getBound();
 
-            // caluclate meters per pixel:
-            double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
+                // transform centroid to VIEW space:
+                osg::Vec3d centerView = bs.center() * cam->getViewMatrix();
 
-            // and the resulting scale we need to auto-scale.
-            double scale = bs.radius() / mpp;
+                // Set X coordinate to the radius so we can use the resulting CLIP
+                // distance to calculate meters per pixel:
+                centerView.x() = bs.radius();
 
-            scale *= _defaultScale;
+                // transform the CLIP space:
+                osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
 
-            if (scale < _minScale)
-                scale = _minScale;
-            else if (scale>(_maxScale*_defaultScale))
-                scale = (_maxScale*_defaultScale);
+                // caluclate meters per pixel:
+                double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
 
-            geo->getPositionAttitudeTransform()->setScale(
-                osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
+                // and the resulting scale we need to auto-scale.
+                double scale = bs.radius() / mpp;
+
+                scale *= _defaultScale;
+
+                if (scale < _minScale)
+                    scale = _minScale;
+                else if (scale>(_maxScale*_defaultScale))
+                    scale = (_maxScale*_defaultScale);
+
+                geo->getPositionAttitudeTransform()->setScale(
+                    osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
+            }
+
+            if (node->getCullingActive() == false)
+            {
+                node->setCullingActive(true);
+            }
         }
-
-        if (node->getCullingActive() == false)
-        {
-            node->setCullingActive(true);
-        }
-
         traverse(node, nv);
     }
 }
@@ -78,4 +80,9 @@ void ModelAutoScaler::setMaxScale(double maxScale)
 void ModelAutoScaler::setEnabled(bool enabled)
 {
     _enabled = enabled;
+}
+
+void ModelAutoScaler::setScaled(bool newScaled)
+{
+    _scaled = newScaled;
 }
