@@ -1461,7 +1461,6 @@ Item {
                                          to : 100
                                          onValueChanged: {
                                              rootItem.model.pointsColor.a = value/100
-                                             console.log(rootItem.model.pointsColor.a)
                                          }
                                      }
                                      Binding{
