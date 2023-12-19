@@ -190,8 +190,8 @@ void SimpleModelNode::setAttacker(bool attacker)
     mIsAttacker = attacker;
 
     if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
-        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", true};
-        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onAttackChecked);
+        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
+        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
 
         mCircularMenu->appendMenuItem(mAttackerMenuItem);
     }

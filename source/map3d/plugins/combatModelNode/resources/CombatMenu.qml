@@ -236,6 +236,10 @@ ScrollView{
                 source: "qrc:/Resources/add"
                 height: 50/1.3/*Style.monitorRatio*/
                 width: 50/1.3/*Style.monitorRatio*/
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: combatModel.addManuallyChecked()
+                }
 
             }
         }
