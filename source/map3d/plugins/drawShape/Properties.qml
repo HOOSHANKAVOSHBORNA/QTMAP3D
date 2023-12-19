@@ -1482,6 +1482,7 @@ Item {
                                             }
                                         }
 
+
                                         Rectangle {
                                             id: pointColorCircle
                                             implicitWidth: 26 / Style.monitorRatio
