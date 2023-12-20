@@ -24,10 +24,12 @@ public:
     QQuickItem *qmlItem() const;
 
     QVector3D getLocation() const;
-    PropertyItem *setLocation(const QVector3D &newLocation);
+    void setLocation(const QVector3D &newLocation);
+    void setLocation(const osgEarth::GeoPoint &newLocation);
 
     QVector3D getMoveTo() const;
-    PropertyItem *setMoveTo(const QVector3D &newmoveTo);
+    void setMoveTo(const QVector3D &newMoveTo);
+    void setMoveTo(const osgEarth::GeoPoint &newMoveTo);
 
     bool isMovable() const;
     void setIsMovable(bool newIsMovable);
@@ -56,19 +58,19 @@ public:
     PropertyItem(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem);
 
     QString name();
-    PropertyItem *setName(const QString &newName);
+    void setName(const QString &newName);
 
     QColor color() const;
-    PropertyItem *setColor(const QColor &newColor);
+    void setColor(const QColor &newColor);
 
     QVector3D getLocation() const;
-    PropertyItem *setLocation(const QVector3D &newLocation);
+    void setLocation(const QVector3D &newLocation);
 
     QVector3D getMoveTo() const;
-    PropertyItem *setMoveTo(const QVector3D &newmoveTo);
+    void setMoveTo(const QVector3D &newmoveTo);
 
     double speed() const;
-    PropertyItem *setSpeed(double newSpeed);
+    void setSpeed(double newSpeed);
 
     osg::ref_ptr<SimpleModelNode> currentModel() const;
     void setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel);

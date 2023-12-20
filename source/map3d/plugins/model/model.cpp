@@ -15,7 +15,6 @@
 #include "model.h"
 #include "property.h"
 #include "serviceManager.h"
-#include "utility.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
@@ -293,7 +292,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         break;
     }
     mProperty->setCurrentModel(mCurrentModel);
-    mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+    mProperty->setLocation(geoPos);
     setState(State::MOVING);
     mCount++;
 }
@@ -305,18 +304,18 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
             mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
-            mProperty->setMoveTo(Utility::osgEarthGeoPointToQvector3D(geoPos));
+            mProperty->setMoveTo(geoPos);
             return;
         }
 
         if (mCurrentModel->asMoveableModelNode()) {
             mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
-            mProperty->setMoveTo(Utility::osgEarthGeoPointToQvector3D(geoPos));
+            mProperty->setMoveTo(geoPos);
             return;
         }
 
         mCurrentModel->setPosition(geoPos);
-        mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
+        mProperty->setLocation(geoPos);
         qDebug() << "position changed";
     }
 }
