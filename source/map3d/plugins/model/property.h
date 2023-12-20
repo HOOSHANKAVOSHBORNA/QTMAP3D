@@ -86,7 +86,7 @@ signals:
 private:
     MapControllerItem *mMapItem{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel{nullptr};
-    QString mName;
+    QString mName{"defaultName"};
     bool mIsMovable;
     QColor mColor;
     QVector3D mLocation;

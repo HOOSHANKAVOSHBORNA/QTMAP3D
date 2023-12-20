@@ -55,7 +55,6 @@ Item {
                     color: Style.foregroundColor
                 }
 
-                // TODO: bug for this TextField its width up to its inputed text
                 TextField {
                     id: nametextf
 
@@ -81,7 +80,6 @@ Item {
                 id: fillcolorSec
                 Layout.fillWidth: true
                 Layout.preferredHeight: valHeight
-                //        visible: rootItem.cppInterface ? rootItem.cppInterface.fillColorStatus : false
                 spacing: 0
 
                 Text {
@@ -126,41 +124,44 @@ Item {
                             onClicked: {
                                 colorModelRepeater.currentIndex = model.index
                                 rootItem.cppInterface.color = colorsrowl.colorModel[model.index]
+                                colorBox.visible = false
+                                propertySelectIcon.visible = false
+                                addIconImage.visible = true
                             }
                         }
                     }
 
-                    //                Rectangle {
-                    //                    id: colorBoxOpener
+                    Rectangle {
+                        id: colorBoxOpener
 
-                    //                    implicitWidth: 26 / Style.monitorRatio
-                    //                    implicitHeight: 26 / Style.monitorRatio
-                    //                    radius: width
-                    //                    border.width: 1 / Style.monitorRatio
-                    //                    border.color: Style.foregroundColor
+                        implicitWidth: 26 / Style.monitorRatio
+                        implicitHeight: 26 / Style.monitorRatio
+                        radius: width
+                        border.width: 1 / Style.monitorRatio
+                        border.color: Style.foregroundColor
 
-                    //                    IconImage {
-                    //                        id: addIconImage
-                    //                        anchors.centerIn: parent
-                    //                        width: 20 / Style.monitorRatio
-                    //                        height: 20 / Style.monitorRatio
-                    //                        source: "qrc:/Resources/location-add.png"
-                    //                    }
+                        IconImage {
+                            id: addIconImage
+                            anchors.centerIn: parent
+                            width: 20 / Style.monitorRatio
+                            height: 20 / Style.monitorRatio
+                            source: "qrc:/Resources/location-add.png"
+                        }
 
-                    //                    IconImage {
-                    //                        id: propertySelectIcon
-                    //                        anchors.centerIn: parent
-                    //                        width: 20 / Style.monitorRatio
-                    //                        height: 20 / Style.monitorRatio
-                    //                        source: "qrc:/Resources/add-place-color-select.png"
-                    //                        visible: false
-                    //                    }
+                        IconImage {
+                            id: propertySelectIcon
+                            anchors.centerIn: parent
+                            width: 20 / Style.monitorRatio
+                            height: 20 / Style.monitorRatio
+                            source: "qrc:/Resources/add-place-color-select.png"
+                            visible: false
+                        }
 
-                    //                    MouseArea {
-                    //                        anchors.fill: parent
-                    //                        onClicked: colorBox.visible = true
-                    //                    }
-                    //                }
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: colorBox.visible = true
+                        }
+                    }
                 }
             }
 
@@ -168,14 +169,12 @@ Item {
                 id: colorBox
 
                 visible: false
-                //                selectedColor: rootItem.cppInterface ?  rootItem.cppInterface.color
                 onColorChosen: {
                     colorBoxOpener.color = selectedColor
                     rootItem.cppInterface.color = selectedColor
                     addIconImage.visible = false
                     propertySelectIcon.visible = true
-                    colorModel.setProperty(previousIndex,
-                                           "checkIconVisible", false)
+                    colorModelRepeater.currentIndex = -1
                 }
             }
 
@@ -205,6 +204,7 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
+
                         GridLayout {
                             columnSpacing: 1
                             rowSpacing: 1
@@ -212,7 +212,7 @@ Item {
 
                             Text {
                                 Layout.preferredWidth: 20 / Style.monitorRatio
-                                text: "X "
+                                text: "X"
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 font.pointSize: 10 / Style.monitorRatio
@@ -275,7 +275,7 @@ Item {
 
                             Text {
                                 Layout.preferredWidth: 20 / Style.monitorRatio
-                                text: "Z "
+                                text: "Z"
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 font.pointSize: 10

@@ -9,7 +9,6 @@
         <file>CircularMenu.qml</file>
         <file>CircularCut.qml</file>
         <file>PropertyItem.qml</file>
-        <file>ColorBox.qml</file>
         <file>ColorBoxInput.qml</file>
         <file>FloatSpinbox.qml</file>
         <file>StepSpinBox.qml</file>
