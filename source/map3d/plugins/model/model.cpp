@@ -71,13 +71,7 @@ bool Model::setup()
     mFlyableNodelLayer->setName(AIRPLANE);
 
     // property item setup
-    mProperty = new PropertyItem;
-    connect(mProperty, &PropertyItem::propretyChanged, this, &Model::updateNodeFromProperty);
-
-    // TEST
-    mProperty->setName("ali alavi")->setColor(QColor("red"))->setIsMovable(false);
-    // ENDTEST
-
+    mProperty = new PropertyItem(mCurrentModel, mapItem());
     qmlEngine()->rootContext()->setContextProperty("modelPropertyInterface", mProperty);
 
     return true;
@@ -115,7 +109,8 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         mPickModelNode->select(false);
         mPickModelNode->showMenu(false);
     }
-    SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
+
+    SimpleModelNode *modelNode = pick(ea.getX(), ea.getY());
     if(modelNode){
         mPickModelNode = modelNode;
         if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON){
@@ -133,18 +128,17 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
     if (mState == State::NONE) {
         return false;
     }
+
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             initModel(geoPos);
-            updatePropertyItem(geoPos, State::READY);
             return true;
         }
 
         if (mState == State::MOVING) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             moving(geoPos);
-            updatePropertyItem(geoPos, State::MOVING);
             return true;
         }
     } else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && mState == State::MOVING) {
@@ -176,55 +170,6 @@ bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter
     return false;
 }
 
-void Model::updatePropertyItem(const osgEarth::GeoPoint &geoPos, State nodeState)
-{
-    //    qDebug() << "I am in update Property";
-    if (mCurrentModel->asFlyableModelNode()) {
-        mProperty->setIsMovable(true)->setSpeed(mCurrentModel->asFlyableModelNode()->speed());
-        if (nodeState == State::READY) {
-            mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
-        } else {
-            mProperty->setMoveTo(Utility::osgEarthGeoPointToQvector3D(geoPos));
-        }
-    } else if (mCurrentModel->asMoveableModelNode()) {
-        qDebug() << "in movable";
-        mProperty->setIsMovable(true)->setSpeed(mCurrentModel->asMoveableModelNode()->speed());
-        if (nodeState == State::READY) {
-            mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
-            qDebug() << "in movable ready";
-        } else {
-            mProperty->setMoveTo(Utility::osgEarthGeoPointToQvector3D(geoPos));
-            qDebug() << "in movable moving";
-        }
-    } else {
-        mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
-    }
-
-    mProperty->setName(QString::fromStdString(mCurrentModel->nodeData()->name));
-    mProperty->setColor(QColor(QString::fromStdString(mCurrentModel->nodeData()->color)));
-}
-
-void Model::updateNodeFromProperty()
-{
-    if (!mCurrentModel)
-        return;
-    //    qDebug() << "I am in update node";
-    if (mCurrentModel->asFlyableModelNode()) {
-        mCurrentModel->asFlyableModelNode()->setSpeed(mProperty->speed());
-    } else if (mCurrentModel->asMoveableModelNode()) {
-        mCurrentModel->asMoveableModelNode()->setSpeed(mProperty->speed());
-    }
-
-    mCurrentModel->nodeData()->name = mProperty->name().toStdString();
-    mCurrentModel->nodeData()->color = mProperty->color().name(QColor::HexArgb).toStdString();
-    mCurrentModel->setColor(osgEarth::Color(mProperty->color().redF(),
-                                            mProperty->color().greenF(),
-                                            mProperty->color().blueF(),
-                                            mProperty->color().alphaF()));
-    mCurrentModel->setPosition(
-        Utility::qVector3DToosgEarthGeoPoint(mProperty->getLocation(), mapItem()->getMapSRS()));
-}
-
 osgEarth::Symbology::Style &Model::getDefaultStyle()
 {
     static osgEarth::Symbology::Style style;
@@ -244,7 +189,6 @@ void Model::onTreeItemCheck(bool check)
         makeIconNode("../data/models/tree/tree.png");
         mType = Type::SIMPLE;
         setState(State::READY);
-        mProperty->setIsMovable(false);
         createProperty("Tree");
         mapItem()->addNode(iconNode());
     } else {
@@ -263,7 +207,6 @@ void Model::onCarItemCheck(bool check)
         makeIconNode("../data/models/car/car.png");
         mType = Type::MOVEABLE;
         setState(State::READY);
-        mProperty->setIsMovable(true);
         createProperty("Car");
         mapItem()->addNode(iconNode());
     } else {
@@ -282,7 +225,6 @@ void Model::onAirplanItemCheck(bool check)
         makeIconNode("../data/models/airplane/airplane.png");
         mType = Type::FLYABLE;
         setState(State::READY);
-        mProperty->setIsMovable(true);
         createProperty("Airplane");
         mapItem()->addNode(iconNode());
     } else {
@@ -317,6 +259,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         }
         mNodeData->layers.push_back(mSimpleNodeLayer);
         mCurrentModel = mDataManager->addUpdateNode(mNodeData);
+        mProperty->setIsMovable(false);
         break;
     case Type::MOVEABLE:
         mNodeData = sampleNodeData("Car",
@@ -332,6 +275,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         }
         mNodeData->layers.push_back(mMoveableNodeLayer);
         mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
+        mProperty->setIsMovable(true);
         break;
     case Type::FLYABLE:
         mNodeData = sampleNodeData("Airplane",
@@ -347,10 +291,13 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         }
         mNodeData->layers.push_back(mFlyableNodelLayer);
         mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
+        mProperty->setIsMovable(true);
         break;
     default:
         break;
     }
+    mProperty->setCurrentModel(mCurrentModel);
+    mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
     setState(State::MOVING);
     mCount++;
 }
@@ -362,15 +309,18 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
             mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
+            mProperty->setMoveTo(Utility::osgEarthGeoPointToQvector3D(geoPos));
             return;
         }
 
         if (mCurrentModel->asMoveableModelNode()) {
             mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
+            mProperty->setMoveTo(Utility::osgEarthGeoPointToQvector3D(geoPos));
             return;
         }
 
         mCurrentModel->setPosition(geoPos);
+        mProperty->setLocation(Utility::osgEarthGeoPointToQvector3D(geoPos));
         qDebug() << "position changed";
     }
 }
@@ -410,13 +360,12 @@ void Model::cancel()
 void Model::createProperty(QString name)
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine());
-    connect(comp, &QQmlComponent::statusChanged, [comp, /*property,*/ name, this]() {
+    connect(comp, &QQmlComponent::statusChanged, [comp, name, this]() {
         if (comp->status() == QQmlComponent::Status::Error) {
             qDebug() << comp->errorString();
         }
 
         mItem = qobject_cast<QQuickItem *>(comp->create());
-        //        mItem->setProperty("model", property);
 
         mainWindow()->getToolboxManager()->addPropertyItem(mItem, name);
     });
