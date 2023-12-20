@@ -31,6 +31,7 @@ target_compile_definitions(drawPolygon PRIVATE CPTEST_LIBRARY)
 target_include_directories(drawPolygon PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawShape")
 target_link_libraries(drawPolygon PRIVATE drawShape)
 
+
 add_custom_command(TARGET drawPolygon POST_BUILD
     COMMAND mkdir ARGS "-p" "${PLUGINS_OUTPUT_DIR}"
     COMMAND cp ARGS "${CMAKE_CURRENT_BINARY_DIR}/libdrawPolygon.so" "${PLUGINS_OUTPUT_DIR}")
