@@ -1,10 +1,10 @@
 #include "combatListModel.h"
 #include "qqmlcomponent.h"
 
-CombatListModel::CombatListModel(QObject *parent):
+CombatListModel::CombatListModel(MapItem *map, QObject *parent):
     QAbstractListModel(parent)
 {
-
+    mapItem = map;
     // mRootItem = invisibleRootItem();
 }
 
@@ -30,7 +30,11 @@ QVariant CombatListModel::data(const QModelIndex &index, int role) const
             return QUrl::fromLocalFile(QString::fromStdString(asData.attacker->nodeData()->url2D));
         }
     case selection:
+        if(selectedItemIndex == index){
+            return true;
+        }else{
             return false;
+        }
     case hover:
         return false;
     case stateColor:
@@ -88,10 +92,27 @@ void CombatListModel::addData(assignmentData data)
 
 void CombatListModel::objectHover(QModelIndex index, bool isHovered)
 {
-
+    data(index,hover) = isHovered;
 }
 
-void CombatListModel::objectSelect(QModelIndex index, bool isSelected)
+void CombatListModel::objectSelect(QModelIndex index)
+{
+    for (int var = 0; var < rowCount(); ++var) {
+        data(index.siblingAtRow(var),selection) = false;
+    }
+    data(index,selection) = true;
+    selectedItemIndex = index;
+}
+
+void CombatListModel::attackClicked() const
+{
+    if( mAssignList.at(selectedItemIndex.row()).getState() == PREASSIGN){
+        mAssignList.at(selectedItemIndex.row()).setState(ASSIGNED);
+    }
+}
+
+
+void CombatListModel::closeMenu()
 {
 
 }
@@ -99,7 +120,7 @@ void CombatListModel::objectSelect(QModelIndex index, bool isSelected)
 CombatList::CombatList(QQmlEngine *engine, MapControllerItem *map)
 {
     mMapItem = map;
-    mCombatListModel = new CombatListModel;
+    mCombatListModel = new CombatListModel(map);
     QQmlComponent* comp = new QQmlComponent(engine);
 
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
@@ -173,4 +194,15 @@ int CombatListModel::getBulletCount()
 {
     return mBulletCount;
 }
+
+void CombatListModel::setActorModel(SimpleModelNode *model)
+{
+    mActorModel = model;
+}
+
+SimpleModelNode *CombatListModel::getActorModel()
+{
+    return mActorModel;
+}
+
 

@@ -5,6 +5,8 @@ import QtQuick.Effects
 import "style"
 
 Item{
+    id: rootItem
+
     property var model
     property bool flag: false
     property int iconSize: 26/Style.monitorRatio
@@ -33,7 +35,7 @@ Item{
         }
     }
 
-    id: rootItem
+
     width: searchRect.width
     height: felo.childrenRect.width === 0 ? 40/Style.monitorRatio : 360/Style.monitorRatio
     Rectangle {
@@ -288,6 +290,7 @@ Item{
                             MouseArea{
                                 anchors.fill:parent
                                 onClicked: {
+                                    rootItem.model.setFilterString(historyText.text)
                                     rootItem.addToHistory(modelData)
                                 }
                             }
@@ -315,6 +318,7 @@ Item{
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.leftMargin: 5
+                    Layout.bottomMargin:  -3
                     ListView{
                         id:listView
                         Layout.fillWidth: true
