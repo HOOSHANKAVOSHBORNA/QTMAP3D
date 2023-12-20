@@ -95,7 +95,7 @@ private:
     NodeData* mNodeData{nullptr};
     DataManager *mDataManager;
     QQuickItem *mItem;
-    PropertyItem *mProperty;
+    Property *mProperty;
 };
 
 #endif // MODEL_H
