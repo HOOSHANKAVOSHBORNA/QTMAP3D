@@ -71,8 +71,9 @@ bool Model::setup()
     mFlyableNodelLayer->setName(AIRPLANE);
 
     // property item setup
-    mProperty = new PropertyItem(mCurrentModel, mapItem());
-    qmlEngine()->rootContext()->setContextProperty("modelPropertyInterface", mProperty);
+    mProperty = new Property(mCurrentModel, mapItem());
+    qmlEngine()->rootContext()->setContextProperty("modelPropertyInterface",
+                                                   mProperty->propertyItem());
 
     return true;
 }
@@ -189,7 +190,7 @@ void Model::onTreeItemCheck(bool check)
         makeIconNode("../data/models/tree/tree.png");
         mType = Type::SIMPLE;
         setState(State::READY);
-        createProperty("Tree");
+        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Tree");
         mapItem()->addNode(iconNode());
     } else {
         if (state() == State::MOVING)
@@ -207,7 +208,7 @@ void Model::onCarItemCheck(bool check)
         makeIconNode("../data/models/car/car.png");
         mType = Type::MOVEABLE;
         setState(State::READY);
-        createProperty("Car");
+        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Car");
         mapItem()->addNode(iconNode());
     } else {
         if (state() == State::MOVING)
@@ -225,7 +226,7 @@ void Model::onAirplanItemCheck(bool check)
         makeIconNode("../data/models/airplane/airplane.png");
         mType = Type::FLYABLE;
         setState(State::READY);
-        createProperty("Airplane");
+        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Airplane");
         mapItem()->addNode(iconNode());
     } else {
         if (state() == State::MOVING)
@@ -355,22 +356,6 @@ void Model::cancel()
         setState(State::READY);
         mCount--;
     }
-}
-
-void Model::createProperty(QString name)
-{
-    QQmlComponent *comp = new QQmlComponent(qmlEngine());
-    connect(comp, &QQmlComponent::statusChanged, [comp, name, this]() {
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-
-        mItem = qobject_cast<QQuickItem *>(comp->create());
-
-        mainWindow()->getToolboxManager()->addPropertyItem(mItem, name);
-    });
-
-    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
 }
 
 SimpleModelNode *Model::pick(float x, float y)

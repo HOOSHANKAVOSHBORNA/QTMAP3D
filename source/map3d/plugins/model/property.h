@@ -8,6 +8,40 @@
 
 #include "simpleModelNode.h"
 
+class PropertyItem;
+
+// ---------------------------------------------------------------------- manager
+class Property : public QObject
+{
+public:
+    Property(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem);
+    void setPropertyItem(PropertyItem *newPropertyItem);
+
+    void createQML();
+
+    PropertyItem *propertyItem() const;
+
+    QQuickItem *qmlItem() const;
+
+    QVector3D getLocation() const;
+    PropertyItem *setLocation(const QVector3D &newLocation);
+
+    QVector3D getMoveTo() const;
+    PropertyItem *setMoveTo(const QVector3D &newmoveTo);
+
+    bool isMovable() const;
+    void setIsMovable(bool newIsMovable);
+
+    osg::ref_ptr<SimpleModelNode> currentModel() const;
+    void setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel);
+
+private:
+    MapControllerItem *mMapItem;
+    PropertyItem *mPropertyItem;
+    QQuickItem *mQmlItem;
+};
+
+// ---------------------------------------------------------------------- interface for qml
 class PropertyItem : public QObject
 {
     Q_OBJECT

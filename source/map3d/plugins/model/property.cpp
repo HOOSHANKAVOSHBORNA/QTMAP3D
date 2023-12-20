@@ -3,6 +3,84 @@
 #include "moveableModelNode.h"
 #include "utility.h"
 
+// ---------------------------------------------------------------------- manager
+Property::Property(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem)
+{
+    mMapItem = mapItem;
+    mPropertyItem = new PropertyItem(mCurrentModel, mapItem);
+    createQML();
+}
+
+void Property::setPropertyItem(PropertyItem *newPropertyItem)
+{
+    mPropertyItem = newPropertyItem;
+}
+
+void Property::createQML()
+{
+    QQmlComponent *comp = new QQmlComponent(qmlEngine(mMapItem));
+    connect(comp, &QQmlComponent::statusChanged, [comp, this]() {
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+
+        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
+    });
+
+    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
+}
+
+PropertyItem *Property::propertyItem() const
+{
+    return mPropertyItem;
+}
+
+QQuickItem *Property::qmlItem() const
+{
+    return mQmlItem;
+}
+
+QVector3D Property::getLocation() const
+{
+    return mPropertyItem->getLocation();
+}
+
+PropertyItem *Property::setLocation(const QVector3D &newLocation)
+{
+    return mPropertyItem->setLocation(newLocation);
+}
+
+QVector3D Property::getMoveTo() const
+{
+    return mPropertyItem->getMoveTo();
+}
+
+PropertyItem *Property::setMoveTo(const QVector3D &newmoveTo)
+{
+    return mPropertyItem->setMoveTo(newmoveTo);
+}
+
+bool Property::isMovable() const
+{
+    return mPropertyItem->isMovable();
+}
+
+void Property::setIsMovable(bool newIsMovable)
+{
+    mPropertyItem->setIsMovable(newIsMovable);
+}
+
+osg::ref_ptr<SimpleModelNode> Property::currentModel() const
+{
+    return mPropertyItem->currentModel();
+}
+
+void Property::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
+{
+    return mPropertyItem->setCurrentModel(newCurrentModel);
+}
+
+// ---------------------------------------------------------------------- interface for qml
 PropertyItem::PropertyItem(osg::ref_ptr<SimpleModelNode> newNode, MapControllerItem *mapItem)
 {
     mMapItem = mapItem;
