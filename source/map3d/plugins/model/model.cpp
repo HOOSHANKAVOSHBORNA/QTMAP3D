@@ -72,8 +72,6 @@ bool Model::setup()
 
     // property item setup
     mProperty = new Property(mCurrentModel, mapItem());
-    qmlEngine()->rootContext()->setContextProperty("modelPropertyInterface",
-                                                   mProperty->propertyItem());
 
     return true;
 }
@@ -260,7 +258,6 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         }
         mNodeData->layers.push_back(mSimpleNodeLayer);
         mCurrentModel = mDataManager->addUpdateNode(mNodeData);
-        mProperty->setIsMovable(false);
         break;
     case Type::MOVEABLE:
         mNodeData = sampleNodeData("Car",
@@ -276,7 +273,6 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         }
         mNodeData->layers.push_back(mMoveableNodeLayer);
         mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
-        mProperty->setIsMovable(true);
         break;
     case Type::FLYABLE:
         mNodeData = sampleNodeData("Airplane",
@@ -292,7 +288,6 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         }
         mNodeData->layers.push_back(mFlyableNodelLayer);
         mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
-        mProperty->setIsMovable(true);
         break;
     default:
         break;

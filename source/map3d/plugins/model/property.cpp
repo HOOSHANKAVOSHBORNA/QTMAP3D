@@ -8,6 +8,7 @@ Property::Property(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerIte
 {
     mMapItem = mapItem;
     mPropertyItem = new PropertyItem(mCurrentModel, mapItem);
+    qmlEngine(mMapItem)->rootContext()->setContextProperty("modelPropertyInterface", mPropertyItem);
     createQML();
 }
 
@@ -77,7 +78,7 @@ osg::ref_ptr<SimpleModelNode> Property::currentModel() const
 
 void Property::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
 {
-    return mPropertyItem->setCurrentModel(newCurrentModel);
+    mPropertyItem->setCurrentModel(newCurrentModel);
 }
 
 // ---------------------------------------------------------------------- interface for qml
@@ -189,6 +190,11 @@ osg::ref_ptr<SimpleModelNode> PropertyItem::currentModel() const
 void PropertyItem::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
 {
     mCurrentModel = newCurrentModel;
+    if (mCurrentModel->asMoveableModelNode() || mCurrentModel->asFlyableModelNode()) {
+        mIsMovable = true;
+    } else {
+        mIsMovable = false;
+    }
 }
 
 void PropertyItem::nodeToProperty(const osgEarth::GeoPoint &geoPos, QString nodeState)

@@ -16,7 +16,7 @@ Item {
     readonly property color fg20: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.20)
-    property var cppInterface: modelPropertyInterface
+    property var cppInterface: modelPropertyInterface ?? "null"
 
     // DEBUG
     //    Text {
@@ -25,19 +25,19 @@ Item {
     //        text: 'Model Property Item'
     //    }
     //    Rectangle {
-    //        id: s
     //        anchors.fill: parent
     //        color: 'pink'
     //    }
     // ENDDEBUG
     ScrollView {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 800
-        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        anchors.fill: parent
+        clip: true
+        contentHeight: clclcl.height
+        contentWidth: parent.width
 
         ColumnLayout {
-            anchors.fill: parent
+            id: clclcl
+            width: parent.width
 
             // --------------------------------------------------------- Name
             RowLayout {
@@ -59,11 +59,10 @@ Item {
                 TextField {
                     id: nametextf
 
-                    //                    Layout.minimumWidth: 100 / Style.monitorRatio
-                    //                    Layout.fillWidth: true
+                    Layout.minimumWidth: 100 / Style.monitorRatio
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    text: rootItem.cppInterface.name ?? "notInitial"
+                    text: rootItem.cppInterface ? rootItem.cppInterface.name : "notInitial"
                     font.pointSize: 10 / Style.monitorRatio
                     color: "black"
 
@@ -71,7 +70,6 @@ Item {
                         color: fg20
                         radius: height / 2
                     }
-
                     onAccepted: {
                         rootItem.cppInterface.name = nametextf.text
                     }
@@ -170,7 +168,7 @@ Item {
                 id: colorBox
 
                 visible: false
-                selectedColor: rootItem.cppInterface.color
+                //                selectedColor: rootItem.cppInterface ?  rootItem.cppInterface.color
                 onColorChosen: {
                     colorBoxOpener.color = selectedColor
                     rootItem.cppInterface.color = selectedColor
@@ -359,7 +357,7 @@ Item {
                 spacing: 0
                 Layout.fillWidth: true
 
-                visible: rootItem.cppInterface.isMovable
+                visible: rootItem.cppInterface ? rootItem.cppInterface.isMovable : false
 
                 Text {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
@@ -404,7 +402,7 @@ Item {
                 spacing: 0
                 Layout.fillWidth: true
 
-                visible: rootItem.cppInterface.isMovable
+                visible: rootItem.cppInterface ? rootItem.cppInterface.isMovable : false
 
                 Text {
                     text: "Move to"
