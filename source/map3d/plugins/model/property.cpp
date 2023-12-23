@@ -113,7 +113,7 @@ void PropertyItem::setName(const QString &newName)
 
     mName = newName;
     mCurrentModel->nodeData()->name = mName.toStdString();
-    emit propretyChanged();
+    emit propertyChanged();
 }
 
 bool PropertyItem::isMovable() const
@@ -144,7 +144,7 @@ void PropertyItem::setColor(const QColor &newColor)
     mCurrentModel->nodeData()->color = newColor.name(QColor::HexArgb).toStdString();
     mCurrentModel->setColor(
         osgEarth::Color(newColor.redF(), newColor.greenF(), newColor.blueF(), newColor.alphaF()));
-    emit propretyChanged();
+    emit propertyChanged();
 }
 
 QVector3D PropertyItem::getLocation() const
@@ -166,7 +166,7 @@ void PropertyItem::setLocation(const QVector3D &newLocation)
     mLocation = newLocation;
     mCurrentModel->setPosition(
         Utility::qVector3DToosgEarthGeoPoint(mLocation, mMapItem->getMapSRS()));
-    emit propretyChanged();
+    emit propertyChanged();
 }
 
 QVector3D PropertyItem::getMoveTo() const
@@ -183,7 +183,7 @@ void PropertyItem::setMoveTo(const QVector3D &newMoveTo)
         return;
 
     mMoveTo = newMoveTo;
-    emit propretyChanged();
+    emit propertyChanged();
 }
 
 double PropertyItem::speed() const
@@ -209,7 +209,7 @@ void PropertyItem::setSpeed(double newSpeed)
         mCurrentModel->asMoveableModelNode()->setSpeed(mSpeed);
     }
 
-    emit propretyChanged();
+    emit propertyChanged();
 }
 
 osg::ref_ptr<SimpleModelNode> PropertyItem::currentModel() const
@@ -222,9 +222,18 @@ void PropertyItem::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurre
     mCurrentModel = newCurrentModel;
     if (mCurrentModel->asMoveableModelNode() || mCurrentModel->asFlyableModelNode()) {
         mIsMovable = true;
+        this->setSpeed(mCurrentModel->asMoveableModelNode()->speed());
     } else {
         mIsMovable = false;
     }
+
+    this->setLocation(QVector3D{(float) mCurrentModel->nodeData()->latitude,
+                                (float) mCurrentModel->nodeData()->longitude,
+                                (float) mCurrentModel->nodeData()->altitude});
+    this->setName(QString::fromStdString(mCurrentModel->nodeData()->name));
+    this->setColor(QColor(QString::fromStdString(mCurrentModel->nodeData()->color)));
+
+    emit propertyChanged();
 }
 
 void PropertyItem::setIsMovable(bool newIsMovable)
@@ -232,5 +241,5 @@ void PropertyItem::setIsMovable(bool newIsMovable)
     if (mIsMovable == newIsMovable)
         return;
     mIsMovable = newIsMovable;
-    emit propretyChanged();
+    emit propertyChanged();
 }

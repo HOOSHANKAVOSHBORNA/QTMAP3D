@@ -47,12 +47,12 @@ private:
 class PropertyItem : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY propretyChanged FINAL)
-    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY propretyChanged FINAL)
-    Q_PROPERTY(QVector3D location READ getLocation WRITE setLocation NOTIFY propretyChanged FINAL)
-    Q_PROPERTY(bool isMovable READ isMovable WRITE setIsMovable NOTIFY propretyChanged FINAL)
-    Q_PROPERTY(QVector3D moveTo READ getMoveTo WRITE setMoveTo NOTIFY propretyChanged FINAL)
-    Q_PROPERTY(double speed READ speed WRITE setSpeed NOTIFY propretyChanged FINAL)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY propertyChanged FINAL)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY propertyChanged FINAL)
+    Q_PROPERTY(QVector3D location READ getLocation WRITE setLocation NOTIFY propertyChanged FINAL)
+    Q_PROPERTY(bool isMovable READ isMovable WRITE setIsMovable NOTIFY propertyChanged FINAL)
+    Q_PROPERTY(QVector3D moveTo READ getMoveTo WRITE setMoveTo NOTIFY propertyChanged FINAL)
+    Q_PROPERTY(double speed READ speed WRITE setSpeed NOTIFY propertyChanged FINAL)
 
 public:
     PropertyItem(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem);
@@ -81,7 +81,7 @@ public:
     void setIsMovable(bool newIsMovable);
 
 signals:
-    void propretyChanged();
+    void propertyChanged();
 
 private:
     MapControllerItem *mMapItem{nullptr};
