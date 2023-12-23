@@ -94,7 +94,8 @@ private:
     void createCircularMenu();
     void createNodeInformation();
     void createBookmarkItem();
-    void createSelectImage();
+    void setImageOutlinEnabled(bool value);
+    void createOutlineImage();
 //    void setOutline(bool state);
 
 private:
@@ -104,8 +105,8 @@ private:
     osg::ref_ptr<HighlightOutline> mHighlightOutline;
     osg::ref_ptr<osg::Node> m3DBaseNode;
     osg::ref_ptr<osg::Image> mImage;
-//    osg::ref_ptr<osg::Geode> m2DNode;
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> m2DNode;
+    osg::ref_ptr<osg::Image> mOutlineImage;
+    osg::ref_ptr<osg::Geode> m2DNode;
 
     osg::ref_ptr<Circle> mCircleSelectNode;
     osg::ref_ptr<Cone> mConeHighliteNode;
