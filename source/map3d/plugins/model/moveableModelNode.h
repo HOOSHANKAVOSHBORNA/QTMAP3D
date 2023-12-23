@@ -17,7 +17,7 @@ public:
     virtual void stop(){}
 
 private:
-    double mSpeed;
+    double mSpeed{20.0};
     osg::ref_ptr<osg::AnimationPathCallback> mMoveAnimationPathCallback;
 };
 

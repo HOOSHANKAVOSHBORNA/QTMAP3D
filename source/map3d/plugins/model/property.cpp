@@ -1,8 +1,101 @@
 #include "property.h"
+#include "flyableModelNode.h"
+#include "moveableModelNode.h"
+#include "utility.h"
 
-PropertyItem::PropertyItem()
+// ---------------------------------------------------------------------- manager
+Property::Property(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem)
 {
-    
+    mMapItem = mapItem;
+    mPropertyItem = new PropertyItem(mCurrentModel, mapItem);
+    qmlEngine(mMapItem)->rootContext()->setContextProperty("modelPropertyInterface", mPropertyItem);
+    createQML();
+}
+
+void Property::setPropertyItem(PropertyItem *newPropertyItem)
+{
+    mPropertyItem = newPropertyItem;
+}
+
+void Property::createQML()
+{
+    QQmlComponent *comp = new QQmlComponent(qmlEngine(mMapItem));
+    connect(comp, &QQmlComponent::statusChanged, [&] {
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+
+        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
+    });
+
+    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
+}
+
+PropertyItem *Property::propertyItem() const
+{
+    return mPropertyItem;
+}
+
+QQuickItem *Property::qmlItem() const
+{
+    return mQmlItem;
+}
+
+QVector3D Property::getLocation() const
+{
+    return mPropertyItem->getLocation();
+}
+
+void Property::setLocation(const QVector3D &newLocation)
+{
+    mPropertyItem->setLocation(newLocation);
+}
+
+void Property::setLocation(const osgEarth::GeoPoint &newLocation)
+{
+    mPropertyItem->setLocation(Utility::osgEarthGeoPointToQvector3D(newLocation));
+}
+
+QVector3D Property::getMoveTo() const
+{
+    return mPropertyItem->getMoveTo();
+}
+
+void Property::setMoveTo(const QVector3D &newmoveTo)
+{
+    return mPropertyItem->setMoveTo(newmoveTo);
+}
+
+void Property::setMoveTo(const osgEarth::GeoPoint &newMoveTo)
+{
+    mPropertyItem->setMoveTo(Utility::osgEarthGeoPointToQvector3D(newMoveTo));
+}
+
+bool Property::isMovable() const
+{
+    return mPropertyItem->isMovable();
+}
+
+void Property::setIsMovable(bool newIsMovable)
+{
+    mPropertyItem->setIsMovable(newIsMovable);
+}
+
+osg::ref_ptr<SimpleModelNode> Property::currentModel() const
+{
+    return mPropertyItem->currentModel();
+}
+
+void Property::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
+{
+    mPropertyItem->setCurrentModel(newCurrentModel);
+}
+
+// ---------------------------------------------------------------------- interface for qml
+PropertyItem::PropertyItem(osg::ref_ptr<SimpleModelNode> newNode, MapControllerItem *mapItem)
+{
+    mMapItem = mapItem;
+    mCurrentModel = newNode;
 }
 
 QString PropertyItem::name()
@@ -10,87 +103,141 @@ QString PropertyItem::name()
     return mName;
 }
 
-PropertyItem *PropertyItem::setName(const QString &newName)
+void PropertyItem::setName(const QString &newName)
 {
     if (mName == newName)
-        return this;
-    mName = newName;
-    emit propretyChanged();
+        return;
 
-    return this;
+    if (!mCurrentModel)
+        return;
+
+    mName = newName;
+    mCurrentModel->nodeData()->name = mName.toStdString();
+    emit propertyChanged();
 }
 
 bool PropertyItem::isMovable() const
 {
-    return mIsMovable;
-}
+    if (!mCurrentModel)
+        return true;
 
-PropertyItem *PropertyItem::setIsMovable(bool newIsMovable)
-{
-    if (mIsMovable == newIsMovable)
-        return this;
-    mIsMovable = newIsMovable;
-    emit propretyChanged();
-
-    return this;
+    return mCurrentModel->asMoveableModelNode();
 }
 
 QColor PropertyItem::color() const
 {
+    if (!mCurrentModel)
+        return QColor("#FFFFFF");
+
     return mColor;
 }
 
-PropertyItem *PropertyItem::setColor(const QColor &newColor)
+void PropertyItem::setColor(const QColor &newColor)
 {
     if (mColor == newColor)
-        return this;
-    mColor = newColor;
-    emit propretyChanged();
+        return;
 
-    return this;
+    if (!mCurrentModel)
+        return;
+
+    mColor = newColor;
+    mCurrentModel->nodeData()->color = newColor.name(QColor::HexArgb).toStdString();
+    mCurrentModel->setColor(
+        osgEarth::Color(newColor.redF(), newColor.greenF(), newColor.blueF(), newColor.alphaF()));
+    emit propertyChanged();
 }
 
 QVector3D PropertyItem::getLocation() const
 {
+    if (!mCurrentModel)
+        return QVector3D{0, 0, 0};
+
     return mLocation;
 }
 
-PropertyItem *PropertyItem::setLocation(const QVector3D &newLocation)
+void PropertyItem::setLocation(const QVector3D &newLocation)
 {
     if (mLocation == newLocation)
-        return this;
-    mLocation = newLocation;
-    emit propretyChanged();
+        return;
 
-    return this;
+    if (!mCurrentModel)
+        return;
+
+    mLocation = newLocation;
+    mCurrentModel->setPosition(
+        Utility::qVector3DToosgEarthGeoPoint(mLocation, mMapItem->getMapSRS()));
+    emit propertyChanged();
 }
 
 QVector3D PropertyItem::getMoveTo() const
 {
+    if (!mCurrentModel)
+        return QVector3D{0, 0, 0};
+
     return mMoveTo;
 }
 
-PropertyItem *PropertyItem::setMoveTo(const QVector3D &newMoveTo)
+void PropertyItem::setMoveTo(const QVector3D &newMoveTo)
 {
     if (mMoveTo == newMoveTo)
-        return this;
-    mMoveTo = newMoveTo;
-    emit propretyChanged();
+        return;
 
-    return this;
+    mMoveTo = newMoveTo;
+    emit propertyChanged();
 }
 
 double PropertyItem::speed() const
 {
+    if (!mCurrentModel)
+        return 0;
+
     return mSpeed;
 }
 
-PropertyItem *PropertyItem::setSpeed(double newSpeed)
+void PropertyItem::setSpeed(double newSpeed)
 {
     if (qFuzzyCompare(mSpeed, newSpeed))
-        return this;
-    mSpeed = newSpeed;
-    emit propretyChanged();
+        return;
 
-    return this;
+    if (!mCurrentModel)
+        return;
+
+    mSpeed = newSpeed;
+    if (mCurrentModel->asMoveableModelNode()) {
+        mCurrentModel->asMoveableModelNode()->setSpeed(mSpeed);
+    }
+
+    emit propertyChanged();
+}
+
+osg::ref_ptr<SimpleModelNode> PropertyItem::currentModel() const
+{
+    return mCurrentModel;
+}
+
+void PropertyItem::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
+{
+    mCurrentModel = newCurrentModel;
+    if (mCurrentModel->asMoveableModelNode()) {
+        mIsMovable = true;
+        this->setSpeed(mCurrentModel->asMoveableModelNode()->speed());
+    } else {
+        mIsMovable = false;
+    }
+
+    this->setLocation(QVector3D{(float) mCurrentModel->nodeData()->latitude,
+                                (float) mCurrentModel->nodeData()->longitude,
+                                (float) mCurrentModel->nodeData()->altitude});
+    this->setName(QString::fromStdString(mCurrentModel->nodeData()->name));
+    this->setColor(QColor(QString::fromStdString(mCurrentModel->nodeData()->color)));
+
+    emit propertyChanged();
+}
+
+void PropertyItem::setIsMovable(bool newIsMovable)
+{
+    if (mIsMovable == newIsMovable)
+        return;
+    mIsMovable = newIsMovable;
+    emit propertyChanged();
 }
