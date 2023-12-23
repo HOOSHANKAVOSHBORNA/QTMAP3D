@@ -121,13 +121,13 @@ bool PropertyItem::isMovable() const
     if (!mCurrentModel)
         return true;
 
-    return mCurrentModel->asMoveableModelNode() || mCurrentModel->asFlyableModelNode();
+    return mCurrentModel->asMoveableModelNode();
 }
 
 QColor PropertyItem::color() const
 {
     if (!mCurrentModel)
-        return "#FFFFFF";
+        return QColor("#FFFFFF");
 
     return mColor;
 }
@@ -203,9 +203,7 @@ void PropertyItem::setSpeed(double newSpeed)
         return;
 
     mSpeed = newSpeed;
-    if (mCurrentModel->asFlyableModelNode()) {
-        mCurrentModel->asFlyableModelNode()->setSpeed(mSpeed);
-    } else {
+    if (mCurrentModel->asMoveableModelNode()) {
         mCurrentModel->asMoveableModelNode()->setSpeed(mSpeed);
     }
 
@@ -220,7 +218,7 @@ osg::ref_ptr<SimpleModelNode> PropertyItem::currentModel() const
 void PropertyItem::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
 {
     mCurrentModel = newCurrentModel;
-    if (mCurrentModel->asMoveableModelNode() || mCurrentModel->asFlyableModelNode()) {
+    if (mCurrentModel->asMoveableModelNode()) {
         mIsMovable = true;
         this->setSpeed(mCurrentModel->asMoveableModelNode()->speed());
     } else {
