@@ -5,7 +5,6 @@ CombatListModel::CombatListModel(MapItem *map, QObject *parent):
     QAbstractListModel(parent)
 {
     mapItem = map;
-    // mRootItem = invisibleRootItem();
 }
 
 int CombatListModel::rowCount(const QModelIndex &parent) const
@@ -90,6 +89,11 @@ void CombatListModel::addData(assignmentData data)
     endResetModel();
 }
 
+QVector<assignmentData> CombatListModel::getDataList()
+{
+    return mAssignList;
+}
+
 void CombatListModel::objectHover(QModelIndex index, bool isHovered)
 {
     data(index,hover) = isHovered;
@@ -108,14 +112,17 @@ void CombatListModel::attackClicked() const
 {
     if( mAssignList.at(selectedItemIndex.row()).getState() == PREASSIGN){
         mAssignList.at(selectedItemIndex.row()).setState(ASSIGNED);
+
+        for (int var = 0; var < mAssignList.length(); ++var) {
+            if(mAssignList.at(var).attacker == mAssignList.at(selectedItemIndex.row()).attacker){
+                if(selectedItemIndex.row() != var){
+                    mAssignList.at(var).setState(BUSY);
+                }
+            }
+        }
     }
 }
 
-
-void CombatListModel::closeMenu()
-{
-
-}
 
 CombatList::CombatList(QQmlEngine *engine, MapControllerItem *map)
 {
@@ -204,5 +211,11 @@ SimpleModelNode *CombatListModel::getActorModel()
 {
     return mActorModel;
 }
+
+void CombatListModel::clear()
+{
+    mAssignList.clear();
+}
+
 
 

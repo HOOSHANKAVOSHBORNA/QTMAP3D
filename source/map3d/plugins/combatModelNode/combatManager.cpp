@@ -33,7 +33,6 @@ void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , 
     data.target = target;
     data.setLine(state,attacker->getPosition(),target->getPosition(),mMapItem);
     data.setState(state);
-    // qDebug() << data.getLine();
     mCombatLayer->addChild(data.getLine());
     mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
@@ -42,6 +41,9 @@ void CombatManager::removeAssignment(SimpleModelNode *attacker, SimpleModelNode 
 {
     QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
     try {
+        mAssignmentDataMap->find(assignmentID).value().getLine()->setNodeMask(false);
+        mAssignmentDataMap->find(assignmentID).value().attacker->highlight(false);
+        mAssignmentDataMap->find(assignmentID).value().target->highlight(false);
         mAssignmentDataMap->remove(assignmentID);
     } catch (...) {
     }
@@ -137,6 +139,7 @@ void CombatManager::attackResult(bool result, int bulletID)
 void assignmentData::setState(AssignState state) const
 {
     mRelationLine->setState(state);
+    mState = state;
 }
 
 void assignmentData::setLine(AssignState state, osgEarth::GeoPoint start, osgEarth::GeoPoint end, MapItem *map)
