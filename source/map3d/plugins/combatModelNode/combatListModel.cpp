@@ -1,10 +1,10 @@
 #include "combatListModel.h"
 #include "qqmlcomponent.h"
 
-CombatListModel::CombatListModel(QObject *parent):
+CombatListModel::CombatListModel(MapItem *map, QObject *parent):
     QAbstractListModel(parent)
 {
-
+    mapItem = map;
     // mRootItem = invisibleRootItem();
 }
 
@@ -111,10 +111,6 @@ void CombatListModel::attackClicked() const
     }
 }
 
-void CombatListModel::addManually()
-{
-
-}
 
 void CombatListModel::closeMenu()
 {
@@ -124,7 +120,7 @@ void CombatListModel::closeMenu()
 CombatList::CombatList(QQmlEngine *engine, MapControllerItem *map)
 {
     mMapItem = map;
-    mCombatListModel = new CombatListModel;
+    mCombatListModel = new CombatListModel(map);
     QQmlComponent* comp = new QQmlComponent(engine);
 
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
@@ -198,4 +194,15 @@ int CombatListModel::getBulletCount()
 {
     return mBulletCount;
 }
+
+void CombatListModel::setActorModel(SimpleModelNode *model)
+{
+    mActorModel = model;
+}
+
+SimpleModelNode *CombatListModel::getActorModel()
+{
+    return mActorModel;
+}
+
 

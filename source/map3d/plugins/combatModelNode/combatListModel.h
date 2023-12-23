@@ -22,7 +22,7 @@ public:
         stateColor
     };
 
-    explicit CombatListModel(QObject *parent = nullptr);
+    explicit CombatListModel(MapItem *map ,QObject *parent = nullptr);
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
@@ -30,7 +30,6 @@ public:
     Q_INVOKABLE void objectHover(QModelIndex index, bool isHovered);
     Q_INVOKABLE void objectSelect(QModelIndex index);
     Q_INVOKABLE void attackClicked() const;
-    Q_INVOKABLE void addManually();
     Q_INVOKABLE void closeMenu();
 
     void setTitle(QString title);
@@ -41,9 +40,13 @@ public:
     bool getIsAttacker();
     void setBulletCount(int bulletCount);
     int getBulletCount();
+    void setActorModel(SimpleModelNode* model);
+    SimpleModelNode* getActorModel();
+
 
 signals:
     void actorDataUpdated();
+    Q_INVOKABLE void addManuallyChecked();
 
 private:
     QVector<assignmentData> mAssignList;
@@ -51,7 +54,9 @@ private:
     QUrl mIconUrl;
     bool mIsAttacker{false};
     int mBulletCount{0};
+    osg::ref_ptr<SimpleModelNode> mActorModel;
     QModelIndex selectedItemIndex;
+    MapItem *mapItem;
 };
 
 
