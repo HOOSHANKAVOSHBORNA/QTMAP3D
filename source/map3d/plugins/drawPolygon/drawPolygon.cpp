@@ -110,10 +110,7 @@ void DrawPolygon::initDraw(const osgEarth::GeoPoint &geoPos)
     mPolygonLayer->addChild(mPolygon);
 
     setState(State::DRAWING);
-
     mCount++;
-
-
 }
 
 void DrawPolygon::tempDrawing(const osgEarth::GeoPoint &geoPos)

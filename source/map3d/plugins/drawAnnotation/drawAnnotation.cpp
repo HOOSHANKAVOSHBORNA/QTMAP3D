@@ -29,6 +29,7 @@
 #include "osgEarth/Layer"
 #include <QQuickItem>
 #include <osgEarthAnnotation/AnnotationLayer>
+#include <utility.h>
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 
@@ -84,7 +85,12 @@ bool DrawAnnotation::setup()
     /***************************draw Line*******************************/
 
     connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawAnnotation::LineNodeDataReceived);
+    connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawAnnotation::polygonDataReceived);
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+
+    auto toolboxItemPolygon =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
+    QObject::connect(toolboxItemPolygon, &ToolboxItem::itemChecked, this, &DrawAnnotation::onPolygonItemCheck);
+    toolbox()->addItem(toolboxItemPolygon);
 
     auto toolboxItemLine =  new ToolboxItem{POLYLINE, CATEGORY, "qrc:/resources/line.png", true};
     QObject::connect(toolboxItemLine, &ToolboxItem::itemChecked, this, &DrawAnnotation::onLineItemCheck);
@@ -114,19 +120,11 @@ bool DrawAnnotation::setup()
     mSlopeLayer = new ParenticAnnotationLayer();
     mSlopeLayer->setName(SLOPE);
 
-    /***********************Draw Polygon*********************/
+    mLineLayer = new ParenticAnnotationLayer();
+    mLineLayer->setName(POLYLINE);
 
-//    connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawAnnotation::polygonDataReceived);
-
-//    auto toolboxItem =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
-//    QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawAnnotation::onPolygonItemCheck);
-//    toolbox()->addItem(toolboxItem);
-
-//    makeIconNode("../data/images/draw/polygon.png");
-//    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
-//    mPolygonLayer = new ParenticAnnotationLayer();
-//    mPolygonLayer->setName(POLYGON);
+    mPolygonLayer = new ParenticAnnotationLayer();
+    mPolygonLayer->setName(POLYGON);
 
     return true;
 }
@@ -172,30 +170,30 @@ CompositeAnnotationLayer *DrawAnnotation::measureLayer()
 
 void DrawAnnotation::addUpdatePolygon(PolygonData *polygonData)
 {
-//    Polygon *polygon;
-//    if (!mPolygonMap.contains(polygonData->id)) {
-//        polygon = new Polygon(mapItem());
-//        polygonData->layer->addChild(polygon);
-//        mPolygonMap[polygonData->id] = polygon;
-//    }
-//    else {
-//        polygon = mPolygonMap[polygonData->id];
-//        polygon->clearPoints();
-//    }
-//    polygon->setName(polygonData->name);
-//    polygon->create(&polygonData->points);
-//    polygon->setPolygonData(polygonData);
-//    //    for (auto point: polygonData->points){
-//    //        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
-//    //        polygon->addPoint(geopos);
-//    //    }
-//    //    polygon->setHeight(0);
-//    polygon->setStrokeWidth(polygonData->width);
-//    QColor color(QString::fromStdString(polygonData->color));
-//    polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
-//    QColor fillColor(QString::fromStdString(polygonData->fillColor));
-//    polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
-//    //    polygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
+    Polygon *polygon;
+    if (!mPolygonMap.contains(polygonData->id)) {
+        polygon = new Polygon(mapItem());
+        polygonData->layer->addChild(polygon);
+        mPolygonMap[polygonData->id] = polygon;
+    }
+    else {
+        polygon = mPolygonMap[polygonData->id];
+        polygon->clearPoints();
+    }
+    polygon->setName(polygonData->name);
+    polygon->create(&polygonData->points);
+    polygon->setPolygonData(polygonData);
+    //    for (auto point: polygonData->points){
+    //        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
+    //        polygon->addPoint(geopos);
+    //    }
+    //    polygon->setHeight(0);
+    polygon->setStrokeWidth(polygonData->width);
+    QColor color(QString::fromStdString(polygonData->color));
+    polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
+    QColor fillColor(QString::fromStdString(polygonData->fillColor));
+    polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
+    //    polygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 
 bool DrawAnnotation::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -312,6 +310,11 @@ void DrawAnnotation::polygonDataReceived(PolygonData *polygonData)
 
 void DrawAnnotation::onPolygonItemCheck(bool check)
 {
+    if (check)
+        makeIconNode("../data/images/draw/polygon.png");
+    onItemChecked(Type::POLYGONN, check);
+
+
 //    if (check) {
 //        setState(State::READY);
 //        mPolygonProperty = new PolygonProperty();
@@ -387,8 +390,21 @@ void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
         mSlopeLayer->addChild(mLine);
 
         break;
+
+    case Type::POLYGONN:
+        mPolygon = new Polygon(mapItem());
+        name = POLYGON + QString::number(mCount);
+        mPolygon->setName(name.toStdString());
+        mPolygonProperty->setPolygon(mPolygon, mapItem()->getMapSRS());
+
+        if(!shapeLayer->containsLayer(mPolygonLayer)){
+            mPolygonLayer->clear();
+            shapeLayer->addLayer(mPolygonLayer);
+        }
+        mPolygonLayer->addChild(mPolygon);
+        break;
     default:
-        name = POLYLINE + QString::number(mCount);
+        //name = POLYLINE + QString::number(mCount);
         break;
     }
     setState(State::DRAWING);
@@ -398,11 +414,19 @@ void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
 void DrawAnnotation::onItemChecked(Type type, bool check)
 {
     if (check) {
-        mType = type;
         setState(State::READY);
-        mLineProperty = new LineProperty();
-        createProperty("Line", QVariant::fromValue<LineProperty*>(mLineProperty));
-        mapItem()->addNode(iconNode());
+        if (type == Type::POLYGONN){
+            mType = type;
+            mPolygonProperty = new PolygonProperty();
+            createProperty("Polygon", QVariant::fromValue<PolygonProperty*>(mPolygonProperty));
+            mapItem()->addNode(iconNode());
+        }
+        else{
+            mType = type;
+            mLineProperty = new LineProperty();
+            createProperty("Line", QVariant::fromValue<LineProperty*>(mLineProperty));
+            mapItem()->addNode(iconNode());
+        }
     }
     else {
         if(state() == State::DRAWING)
@@ -418,12 +442,16 @@ void DrawAnnotation::onItemChecked(Type type, bool check)
 
 void DrawAnnotation::drawing(const osgEarth::GeoPoint &geoPos)
 {
-    if(mType != Type::LINE || mType == Type::SLOPEE  && mLine->getSize()>=2){
-        //        mLine->removePoint();
-        //        confirmDraw();
+    if((mType != Type::LINE && mType != Type::POLYGONN) || mType == Type::SLOPEE  && mLine->getSize()>=2)
         return;
-    }
-    mLine->addPoint(geoPos);
+
+    if(mType == Type::POLYGONN)
+        mPolygon->addPoint(geoPos);
+
+    else
+        mLine->addPoint(geoPos);
+
+
 }
 
 void DrawAnnotation::tempDrawing(const osgEarth::GeoPoint &geoPos)
@@ -447,6 +475,14 @@ void DrawAnnotation::tempDrawing(const osgEarth::GeoPoint &geoPos)
         mLine->addPoint(midPoint);
     }
     mLine->addPoint(geoPos);
+
+    if (mType == Type::POLYGONN){
+        if (mPolygon->getSize() > 1)
+        {
+            mPolygon->removePoint();
+        }
+        mPolygon->addPoint(geoPos);
+    }
 }
 
 void DrawAnnotation::confirmDraw()
@@ -472,9 +508,22 @@ void DrawAnnotation::cancelDraw()
         case Type::SLOPEE:
             mSlopeLayer->removeChild(mLine);
             break;
+        case Type::POLYGONN:
+            if(state() == State::DRAWING){
+                mPolygonLayer->removeChild(mPolygon);
+                mPolygon = nullptr;
+                mPolygonProperty->setPolygon(mPolygon, mapItem()->getMapSRS());
+                setState(State::READY);
+                mCount--;
+
+                if(!mPolygonLayer->hasNode())
+                    DrawAnnotation::shapeLayer()->removeLayer(mPolygonLayer);
+                break;
+            }
         case Type::NONE:
             break;
         }
+        if (mType != Type::POLYGONN){
         mLine = nullptr;
         mMeasureHeight = nullptr;
         mLineProperty->setLine(mLine);
@@ -484,6 +533,7 @@ void DrawAnnotation::cancelDraw()
 
         if(!mLineLayer->hasNode())
             DrawAnnotation::shapeLayer()->removeLayer(mLineLayer);
+        }
     }
 }
 

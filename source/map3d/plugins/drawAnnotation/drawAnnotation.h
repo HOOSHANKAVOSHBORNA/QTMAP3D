@@ -6,7 +6,7 @@
 //#include <osgEarthAnnotation/ModelNode>
 //#include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
-
+#include "polygonProperty.h"
 //#include <osgEarthAnnotation/AnnotationLayer>
 //#include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
@@ -44,7 +44,7 @@ public:
         CONFIRM
     };
 
-    enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE};
+    enum class Type{NONE, LINE, RULERR, HEIGHT, SLOPEE, POLYGONN};
 public:
     explicit DrawAnnotation(QObject *parent = nullptr);
     ~DrawAnnotation()override;
@@ -56,7 +56,7 @@ public:
     void setState(DrawAnnotation::State newState);
     CompositeAnnotationLayer *shapeLayer();
     CompositeAnnotationLayer *measureLayer();
-    void addUpdatePolygon(PolygonData *polygonData);
+
 
     virtual bool mousePressEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
@@ -69,6 +69,7 @@ private slots:
     void onSlopeItemCheck(bool check);
     void LineNodeDataReceived(PolyLineData *lineNodeData);
     /*********polygon*********/
+    void addUpdatePolygon(PolygonData *polygonData);
     void polygonDataReceived(PolygonData *polygonData);
     void onPolygonItemCheck (bool check);
 
@@ -90,15 +91,17 @@ private:
     QQuickItem *mItem{nullptr};
     Type mType;
     osg::ref_ptr<LineNode> mLine{nullptr};
+    osg::ref_ptr<Polygon> mPolygon{nullptr};
     MeasureHeight *mMeasureHeight{nullptr};
     LineProperty *mLineProperty = nullptr;
+    PolygonProperty *mPolygonProperty{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mLineLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mRulerLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mHeightLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mSlopeLayer;
+    osg::ref_ptr<ParenticAnnotationLayer> mPolygonLayer;
     QMap<int, osg::ref_ptr<LineNode>> mLineNodeMap;
     QMap<int, osg::ref_ptr<Polygon>> mPolygonMap;
-    osg::ref_ptr<ParenticAnnotationLayer> mPolygonLayer;
     static int mCount;
 };
 

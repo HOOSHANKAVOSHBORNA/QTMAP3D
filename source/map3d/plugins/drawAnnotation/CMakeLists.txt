@@ -20,6 +20,8 @@ add_library(drawAnnotation SHARED
   lineNode.cpp
   lineProperty.h
   lineProperty.cpp
+  polygonProperty.cpp
+  polygonProperty.h
   measureHeight.h
   measureHeight.cpp
   polygon.h
