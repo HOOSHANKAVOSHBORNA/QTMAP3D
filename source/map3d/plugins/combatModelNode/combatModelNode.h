@@ -27,7 +27,9 @@ public:
         READY,
         MOVING,
         CANCEL,
-        CONFIRM
+        CONFIRM,
+        MANUALADD,
+        MANUALREMOVE
     };
 
 public:
@@ -53,6 +55,9 @@ public slots:
     void onModeChanged(bool is3DView);
     void onTargetMenuChecked();
     void onAttackMenuChecked();
+    void onAddManuallyChecked();
+    void onCombatListClosed();
+    void onRemoveManuallyChecked();
 
 protected:
     void initModel(osgEarth::GeoPoint &geoPos);;

@@ -9,20 +9,22 @@ Item {
     id: rootItem
 
     property var listModel
-    readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.20)
+    readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r,
+                                                     Style.foregroundColor.g,
+                                                     Style.foregroundColor.b,
+                                                     0.20)
 
     ColumnLayout {
         anchors.fill: parent
 
-//        Button {
-//            text: 'remove property'
-//            Layout.fillWidth: true
-//            Layout.preferredHeight: 50
-//            onClicked: {
-//                ToolboxManagerInstance.removePropertyItem()
-//            }
-//        }
-
+        //        Button {
+        //            text: 'remove property'
+        //            Layout.fillWidth: true
+        //            Layout.preferredHeight: 50
+        //            onClicked: {
+        //                ToolboxManagerInstance.removePropertyItem()
+        //            }
+        //        }
         Rectangle {
             Layout.fillWidth: true
             height: 30 / Style.monitorRatio
@@ -32,11 +34,11 @@ Item {
             IconImage {
                 id: searchIcon
                 source: "qrc:/Resources/search.png"
-                width: 24/Style.monitorRatio
-                height: 24/Style.monitorRatio
+                width: 24 / Style.monitorRatio
+                height: 24 / Style.monitorRatio
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                anchors.leftMargin: 10/Style.monitorRatio
+                anchors.leftMargin: 10 / Style.monitorRatio
                 color: Style.foregroundColor
             }
 
@@ -53,17 +55,17 @@ Item {
                 anchors.right: parent.right
                 verticalAlignment: Text.AlignVCenter
                 font.family: Style.fontFamily
-                font.pixelSize: 17/Style.monitorRatio
+                font.pixelSize: 17 / Style.monitorRatio
                 color: Style.foregroundColor
-                background: Rectangle{
+                background: Rectangle {
                     color: "transparent"
-                    radius: height/2
+                    radius: height / 2
                 }
 
                 onAccepted: {
                     sendToSearch()
                 }
-                onTextChanged: function() {
+                onTextChanged: function () {
                     sendToSearch()
                 }
                 placeholderText: "Search ..."
@@ -74,22 +76,22 @@ Item {
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.topMargin: 10/Style.monitorRatio
+            Layout.topMargin: 10 / Style.monitorRatio
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
             TreeView {
                 id: treeView
                 anchors.fill: parent
                 clip: true
                 model: rootItem.listModel
-                rowSpacing: 5/Style.monitorRatio
+                rowSpacing: 5 / Style.monitorRatio
 
                 selectionModel: ItemSelectionModel {
                     id: selectionM
-                    onCurrentChanged: function(cur, pre){
+                    onCurrentChanged: function (cur, pre) {
                         select(cur, ItemSelectionModel.Select)
                         treeView.model.onItemClicked(cur)
                     }
-                    onSelectionChanged: function(sel, des){
+                    onSelectionChanged: function (sel, des) {
                         reset()
                     }
                 }
@@ -106,44 +108,46 @@ Item {
                     required property bool current
 
                     implicitWidth: treeView ? treeView.width ?? 0 : 0
-                    implicitHeight:  30/Style.monitorRatio
+                    implicitHeight: 30 / Style.monitorRatio
 
                     //vertical line for item children
-                    Rectangle{
+                    Rectangle {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.left
                         anchors.leftMargin: indent * depth
-                        width: 2/Style.monitorRatio
-                        height: parent.height + (treeView ? treeView.rowSpacing ?? 0 : 0)
+                        width: 2 / Style.monitorRatio
+                        height: parent.height + (treeView ? treeView.rowSpacing
+                                                            ?? 0 : 0)
                         visible: depth
                         color: Style.foregroundColor
                         opacity: 0.2
                     }
 
-                    Rectangle{
-                        id:itemRect
+                    Rectangle {
+                        id: itemRect
                         anchors.fill: parent
-                        anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
-                        color: (expanded || checkedd)? backgroundColor: "transparent"
-                        radius: height/2
+                        anchors.leftMargin: depth ? (indent) * depth + 10 / Style.monitorRatio : 0
+                        color: (expanded
+                                || checkedd) ? backgroundColor : "transparent"
+                        radius: height / 2
 
                         IconImage {
                             id: itemIcon
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
-                            anchors.leftMargin: 15/Style.monitorRatio
+                            anchors.leftMargin: 15 / Style.monitorRatio
                             source: imageSource ?? ""
-                            width: 24/Style.monitorRatio
-                            height: 24/Style.monitorRatio
-                            color:Style.foregroundColor
+                            width: 24 / Style.monitorRatio
+                            height: 24 / Style.monitorRatio
+                            color: Style.foregroundColor
                         }
 
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: itemIcon.right
-                            anchors.leftMargin: 10/Style.monitorRatio
+                            anchors.leftMargin: 10 / Style.monitorRatio
                             clip: true
-                            font.pixelSize: 17/Style.monitorRatio
+                            font.pixelSize: 17 / Style.monitorRatio
                             font.weight: Font.Medium
                             color: Style.foregroundColor
                             text: display
@@ -152,21 +156,21 @@ Item {
                         IconImage {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: parent.right
-                            anchors.rightMargin: 10/Style.monitorRatio
+                            anchors.rightMargin: 10 / Style.monitorRatio
                             source: "qrc:/Resources/down.png"
-                            width: 16/Style.monitorRatio
-                            height: 16/Style.monitorRatio
+                            width: 16 / Style.monitorRatio
+                            height: 16 / Style.monitorRatio
                             visible: hasChildren
-                            rotation: expanded ? 180: 0
+                            rotation: expanded ? 180 : 0
                             color: Style.foregroundColor
                         }
                     }
 
-                    Rectangle{
+                    Rectangle {
                         id: selectRect
                         anchors.fill: parent
-                        anchors.leftMargin: depth?(indent) * depth + 10/Style.monitorRatio: 0
-                        radius: height/2
+                        anchors.leftMargin: depth ? (indent) * depth + 10 / Style.monitorRatio : 0
+                        radius: height / 2
                         visible: false
                         z: -1
                     }
@@ -178,18 +182,16 @@ Item {
                             selectRect.color = backgroundColor
                             selectRect.visible = true
                         }
-                        onExited:  {
+                        onExited: {
                             selectRect.visible = false
                         }
-                        onPressed: function(mouse) {
+                        onPressed: function (mouse) {
                             mouse.accepted = false
-
                         }
-
                     }
 
                     TapHandler {
-                        onTapped: function() {
+                        onTapped: function () {
                             treeView.toggleExpanded(row)
                         }
                     }
@@ -202,7 +204,7 @@ Item {
 
             visible: propertyContainer.children.length
 
-//            Layout.preferredHeight: 300 / Style.monitorRatio
+            //            Layout.preferredHeight: 300 / Style.monitorRatio
             Layout.preferredHeight: 450 / Style.monitorRatio
             Layout.fillWidth: true
             color: 'transparent'
@@ -220,7 +222,7 @@ Item {
                     font.pixelSize: 20 / Style.monitorRatio
 
                     Layout.bottomMargin: 1
-//                    Layout.topMargin: 25 / Style.monitorRatio
+                    //                    Layout.topMargin: 25 / Style.monitorRatio
                     Layout.leftMargin: 3 / Style.monitorRatio
                 }
 

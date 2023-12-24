@@ -49,6 +49,7 @@ public:
 
     QModelIndex getDragIndex();
     QString filterString() const;
+
 public slots:
     void setDragIndex(QModelIndex value);
     void setFilterString(const QString &newFilterString);

@@ -57,6 +57,13 @@ void FmodelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *
 
                     osg::Quat rotate = rotate2 * rotate1;
                     mFlyableModel->getPositionAttitudeTransform()->setAttitude(rotate);
+                    //--set heading----------------------------------------------------
+                    double angleRad;
+                    osg::Vec3 vec;
+                    mFlyableModel->getPositionAttitudeTransform()->getAttitude().getRotate(angleRad, vec);
+                    double angleDeg = osg::RadiansToDegrees(angleRad);
+                    angleDeg = vec.z() > 0 ? -angleDeg: angleDeg;
+                    mFlyableModel->set2DHeaing(angleDeg);
                 }
                 mPreGeoPoint = currentGeoPoint;
             }

@@ -18,7 +18,6 @@ Item {
     RowLayout{
         id:mainRow
         anchors.centerIn: parent
-
         Rectangle {
             id:nodeInfoHolder
             width: 209 / 1.3/*Style.monitorRatio*/
@@ -29,35 +28,33 @@ Item {
             RowLayout{
                 anchors.centerIn: parent
                 IconImage {
-                    source: "qrc:/Resources/search.png"
+                    source:combatModel?  combatModel.iconUrl : ""
                     Layout.preferredHeight: 55/1.3/*Style.monitorRatio*/
                     Layout.preferredWidth: 55/1.3/*Style.monitorRatio*/
-                    //                    Layout.leftMargin: 4/1.3/*Style.monitorRatio*/
-                    //                    color: typeHolder.checked?Style.foregroundColor : Style.hoverColor
                     Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked: print(combatModel.rowCount())
-                    }
                 }
-                ColumnLayout{
 
+                ColumnLayout{
                     RowLayout{
+                        id : bulletInfo
+                        visible: combatModel ? combatModel.isAttacker : false
                         IconImage {
-                            source: "qrc:/Resources/search.png"
+                            source: "qrc:/Resources/bullet.png"
                             Layout.preferredHeight: 22/1.3/*Style.monitorRatio*/
                             Layout.preferredWidth: 22/1.3/*Style.monitorRatio*/
-                            //                    Layout.leftMargin: 4/1.3/*Style.monitorRatio*/
-                            //                    color: typeHolder.checked?Style.foregroundColor : Style.hoverColor
                         }
                         Text {
-                            font.pixelSize: 16/1.3/*Style.monitorRatio*/
-                            text: "30"
+                            font.pixelSize: 17/1.3/*Style.monitorRatio*/
+                            font.family: "Roboto"
+                            color: backgroundColor
+                            text: combatModel?  combatModel.bulletCount : ""
                         }
                     }
                     Text {
-                        font.pixelSize: 16/1.3/*Style.monitorRatio*/
-                        text: "something"
+                        font.pixelSize: 17/1.3/*Style.monitorRatio*/
+                        font.family: "Roboto"
+                        color: backgroundColor
+                        text: combatModel?  combatModel.title : ""
                     }
                 }
                 Rectangle{
@@ -65,9 +62,7 @@ Item {
                     width: 75 / 1.3/*Style.monitorRatio*/
                     height: 75 / 1.3/*Style.monitorRatio*/
                     radius: width / 2
-                    //                    color: "blue"
-                    //                    Layout.alignment: Qt.AlignRight
-                    //                    Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
+                    Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
 
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: "#537597"  }
@@ -75,7 +70,9 @@ Item {
                     }
 
                     Rectangle{
-                        anchors.centerIn: parent
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+
                         width: 65 / 1.3/*Style.monitorRatio*/
                         height: 65 / 1.3/*Style.monitorRatio*/
                         radius: width / 2
@@ -87,8 +84,21 @@ Item {
                             GradientStop { position: 0.0; color: "#DEE3E6" }
                             GradientStop { position: 1.0; color: "#DEE3E6" }
                         }
+                        Rectangle{
+                            property var model: combatModel
+                            readonly property color myRed: "#FF0000"
+                            readonly property color myRed75: Qt.rgba(myRed.r,myRed.g,myRed.b, 0.75)
+                            anchors.fill: parent
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "#FF7C7C"  }
+                                GradientStop { position: 1.0; color: "#FF0000" }
+                            }
+                            radius:parent.radius
+                            border.width: 3
+                            border.color: myRed75
 
-
+                        }
                     }
                     Text {
                         id: name
@@ -96,7 +106,12 @@ Item {
                         text: qsTr("ATTACK")
                         font.family: "Roboto"
                         font.pixelSize: 13 / 1.3
+                        font.weight: Font.Bold
                         color:"white"
+                    }
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: combatModel.attackClicked()
                     }
                 }
 
@@ -111,33 +126,25 @@ ScrollView{
     Layout.topMargin: 5/1.3
     Layout.leftMargin: 15/1.3
 
-//    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
-
     clip: true
         RowLayout{
             id:rowLay
-//            Layout.fillHeight: true
-//            Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
             Layout.maximumWidth: 400
             spacing: 0
-//Layout.topMargin: -10
-            Layout.leftMargin: 15/1.3
             clip: true
             Repeater{
                 id:modelDataContainer
                 model: root.combatModel
 
-
                 delegate: Rectangle{
                     id:node
                     width: 131 /  1.3/*Style.monitorRatio*/
                     height: 65 /1.3 /*Style.monitorRatio*/
-                    color: combatModel.objectSelection ? bg20 : "transparent"
+                    color: objectSelection ? bg20 : "transparent"
                     z:-2
                     radius: 7
-                    //                    Layout.leftMargin: -10
-                    //                    z:0
+                    Layout.leftMargin: 5 / 1.3
                     Rectangle{
                         anchors.top: parent.top
                         anchors.topMargin: 5
@@ -150,11 +157,11 @@ ScrollView{
                         IconImage {
                             id:myIcon
                             anchors.centerIn: parent
-                            source: combatModel.iconUrl
+                            source: objectIcon
                             width: 35 /  1.3/*Style.monitorRatio*/
                             height: 35 /1.3 /*Style.monitorRatio*/
 
-//                            color: combatModel.stateColor
+                            color: stateColor
 
                         }
                     }
@@ -165,16 +172,16 @@ ScrollView{
                         height: parent.height/2
                         width: parent.width
                         color:"transparent"
-//                        anchors.leftMargin: 20 / 1.3
 
-                        IconImage {
+                        Image {
                             id:repeaterImg
-                            source: "qrc:/Resources/add.png"
-                            width: 20 / 1.3
-                            height: 20 / 1.3
+                            source: "qrc:/Resources/information.png"
+                            width: 24 / 1.3
+                            height: 24 / 1.3
                             anchors.left: parent.left
                             anchors.leftMargin: 30/1.3
                             anchors.verticalCenter:  parent.verticalCenter
+                            antialiasing: true
                         }
                         Text {
                             anchors.left: repeaterImg.right
@@ -183,47 +190,30 @@ ScrollView{
                             font.pixelSize: 17 / 1.3/*Style.monitorRatio*/
                             color: "#003569"
                             anchors.verticalCenter: parent.verticalCenter
+
                         }
                     }
                     MouseArea{
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            if (combatModel.objectSelection === true){
-                            node.color = bg20
-                            }
+                            combatModel.objectSelect(combatModel.index(index,0))
                         }
-
                         onEntered: {
+                            combatModel.objectHover( combatModel.index(index,0) ,true);
                             node.color = bg20
                         }
                         onExited: {
-                            if (!combatModel.objectSelection === true){
+                            if (!objectSelection === true){
                             node.color = "transparent"
                             }
+                            combatModel.objectHover( combatModel.index(index,0) ,false);
                         }
                     }
                 }
             }
         }
     }
-
-//        Rectangle{
-//            width: 45 / 1.3/*Style.monitorRatio*/
-//            height: 45 / 1.3/*Style.monitorRatio*/
-//            color: fg50
-//            radius: width / 2
-//            Layout.leftMargin: 75 / 1.3
-//            IconImage {
-//                anchors.centerIn: parent
-//                source: "qrc:/Resources/close-icon"
-//                height: 35/1.3/*Style.monitorRatio*/
-//                width: 35/1.3/*Style.monitorRatio*/
-//                color: "white"
-//            }
-
-//        }
-
     }
 
     Rectangle{
@@ -233,7 +223,7 @@ ScrollView{
         anchors.leftMargin: nodeInfoHolder.width -  attackholder.width / 2
         radius: 10
         color: fg75
-        width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 654/1.3) ?  654/1.3 : rowLay.childrenRect.width + 30 + 75
+        width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 645/1.3) ?  645/1.3 : rowLay.childrenRect.width + 30 + 75
         height: 65 / 1.3 /*Style.monitorRatio*/
         z:-2
         Rectangle{
@@ -242,11 +232,30 @@ ScrollView{
             height: 65 / 1.3  /*Style.monitorRatio*/
             color:"transparent"
             IconImage {
-                anchors.centerIn: parent
+                anchors.top: parent.top
                 source: "qrc:/Resources/add"
-                height: 50/1.3/*Style.monitorRatio*/
-                width: 50/1.3/*Style.monitorRatio*/
-
+                height: 50/2/*Style.monitorRatio*/
+                width: 50/2/*Style.monitorRatio*/
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: combatModel.addManuallyChecked()
+                }
+            }
+        }
+        Rectangle{
+            anchors.right: parent.right
+            width: 65 / 1.3 /*Style.monitorRatio*/
+            height: 65 / 1.3  /*Style.monitorRatio*/
+            color:"transparent"
+            IconImage {
+                anchors.bottom:  parent.bottom
+                source: "qrc:/Resources/location-delete"
+                height: 50/2/*Style.monitorRatio*/
+                width: 50/2/*Style.monitorRatio*/
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: combatModel.removeManuallyChecked()
+                }
             }
         }
     }
@@ -266,70 +275,10 @@ ScrollView{
             width: 35/1.3/*Style.monitorRatio*/
             color: "white"
         }
-
+        MouseArea{
+            anchors.fill: parent
+            onClicked: combatModel.closeMenu()
+        }
     }
-
 }
-
-//    Rectangle{
-//        anchors.fill: parent
-//        radius: 10
-//        opacity: 0.7
-//        color: "red"
-
-//        RowLayout{
-//            id:mainObject
-//            anchors.right: parent.right
-//            Image {
-//                id: mainObjectIcon
-//                source: combatModel.iconUrl
-//                MouseArea{
-//                    anchors.fill: parent
-//                    onClicked: {
-//                        console.log(combatModel.rowCount())
-//                    }
-//                }
-//            }
-//            Text {
-//                id: mainObjectTitle
-//                text: combatModel.title
-//            }
-
-//        }
-//        Rectangle{
-//            anchors.right: mainObject.left
-//            width: parent.width - mainObject.width
-//            height: parent.height *0.8
-//            anchors.verticalCenter: parent.verticalCenter
-
-//            GridView{
-
-//                id:se
-//                clip: true
-//                model: root.combatModel
-//                anchors.fill: parent
-//                delegate: Rectangle {
-//                    ColumnLayout{
-//                        anchors.fill: parent
-//                        Layout.alignment: Qt.AlignHCenter
-//                        // anchors.right: parent.right
-//                        Image {
-//                            source: objectIcon
-//                            sourceSize: ("40x40")
-//                        }
-//                        Text {
-//                            text: objectID
-//                            font.pixelSize: 12
-//                            color: stateColor
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-
-//}
-
-
 

@@ -2,7 +2,6 @@
 #define COMPOSITELAYER_H
 
 #include <osgEarthAnnotation/AnnotationLayer>
-
 #include <osgEarthAnnotation/AnnotationNode>
 #include <QObject>
 #include <osgEarth/MapCallback>

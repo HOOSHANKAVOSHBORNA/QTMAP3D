@@ -8,5 +8,9 @@
         <file>QmlNodeItem.qml</file>
         <file>CircularMenu.qml</file>
         <file>CircularCut.qml</file>
+        <file>PropertyItem.qml</file>
+        <file>ColorBoxInput.qml</file>
+        <file>FloatSpinbox.qml</file>
+        <file>ModelStepSpinBox.qml</file>
     </qresource>
 </RCC>

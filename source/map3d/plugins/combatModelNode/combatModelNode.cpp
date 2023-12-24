@@ -10,7 +10,7 @@ using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 
 int CombatModelNode::mCount{0};
 CombatModelNode::CombatModelNode(QObject *parent)
-    : PluginInterface(parent)
+    :PluginInterface(parent)
 {
     Q_INIT_RESOURCE(combatModelNode);
 }
@@ -43,7 +43,9 @@ bool CombatModelNode::setup()
     mAttackNodeLayer->setName("Attacker");
     mCombatManager->setCombatLayer(mAttackNodeLayer);
 
-
+    QObject::connect(mCombatList->getCombatModel(),&CombatListModel::addManuallyChecked,this,&CombatModelNode::onAddManuallyChecked);
+    QObject::connect(mCombatList->getCombatModel(),&CombatListModel::removeManuallyChecked,this,&CombatModelNode::onRemoveManuallyChecked);
+    QObject::connect(mCombatList->getCombatModel(),&CombatListModel::closeMenu,this,&CombatModelNode::onCombatListClosed);
 
     return true;
 
@@ -80,6 +82,38 @@ bool CombatModelNode::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
         if(mState == State::NONE){
             return false;
+        }
+        if(modelNode){
+            if(mState == State::MANUALADD){
+                if(mCurrentModel->isAttacker()){
+                    mCombatManager->assign(mCurrentModel,modelNode);
+                    mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->last());
+                    return true;
+                }else{
+                    if(modelNode->isAttacker()){
+                        mCombatManager->assign(modelNode,mCurrentModel);
+                        mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->last());
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            if(mState == State::MANUALREMOVE){
+                if(mCurrentModel->isAttacker()){
+                    assignmentData data = mCombatManager->getAssignmentData()->find(QString::number(mCurrentModel->nodeData()->id)+QString::number(modelNode->nodeData()->id)).value();
+                    mCombatManager->removeAssignment(mCurrentModel,modelNode);
+                    mCombatList->getCombatModel()->clear();
+                }else{
+                    assignmentData data = mCombatManager->getAssignmentData()->find(QString::number(modelNode->nodeData()->id)+QString::number(mCurrentModel->nodeData()->id)).value();
+                    mCombatManager->removeAssignment(modelNode,mCurrentModel);
+                    mCombatList->getCombatModel()->clear();
+                }
+                for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
+                    if(mCombatManager->getAssignmentData()->values().takeAt(var).attacker == mCurrentModel){
+                        mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->values().at(var));
+                    }
+                }
+            }
         }
         if (mState == State::READY) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
@@ -142,7 +176,7 @@ bool CombatModelNode::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA:
 
         if(targetModelNode)
         {
-            mCombatManager->assign(mAttackerNode,targetModelNode,AssignState::ASSIGNED);
+            mCombatManager->assign(mAttackerNode,targetModelNode,AssignState::PREASSIGN);
         }
         mapItem()->removeNode(mDragModelNode);
         mDragModelNode = nullptr;
@@ -228,8 +262,9 @@ void CombatModelNode::onTargetMenuChecked()
         mCombatList->getCombatModel()->setIconUrl(QUrl::fromLocalFile(QString::fromStdString(currentObjectModel->url2D())));
         mCombatList->getCombatModel()->setIsAttacker(false);
         mCombatList->getCombatModel()->setBulletCount(0);
+        mCombatList->getCombatModel()->setActorModel(currentObjectModel);
         //--update model------------------------------------------------------------------------------------------
-        mCombatList->getCombatModel()->removeRows(0,mCombatList->getCombatModel()->rowCount()-1);
+        mCombatList->getCombatModel()->clear();
         for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
             if(mCombatManager->getAssignmentData()->values().takeAt(var).target == currentObjectModel){
                 mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->values().at(var));
@@ -247,8 +282,9 @@ void CombatModelNode::onAttackMenuChecked()
         mCombatList->getCombatModel()->setIconUrl(QUrl::fromLocalFile(QString::fromStdString(currentObjectModel->url2D())));
         mCombatList->getCombatModel()->setIsAttacker(true);
         mCombatList->getCombatModel()->setBulletCount(10);
+        mCombatList->getCombatModel()->setActorModel(currentObjectModel);
         //--update model------------------------------------------------------------------------------------------
-        mCombatList->getCombatModel()->removeRows(0,mCombatList->getCombatModel()->rowCount()-1);
+        mCombatList->getCombatModel()->clear();
         for (int var = 0; var < mCombatManager->getAssignmentData()->count(); ++var) {
             if(mCombatManager->getAssignmentData()->values().takeAt(var).attacker == currentObjectModel){
                 mCombatList->getCombatModel()->addData(mCombatManager->getAssignmentData()->values().at(var));
@@ -258,7 +294,26 @@ void CombatModelNode::onAttackMenuChecked()
     }
 }
 
+void CombatModelNode::onAddManuallyChecked()
+{
+    CombatListModel *senderObject = dynamic_cast<CombatListModel*>(QObject::sender());
+    SimpleModelNode *senderModel = senderObject->getActorModel();
+    mCurrentModel = senderModel;
+    setState(State::MANUALADD);
+}
 
+void CombatModelNode::onCombatListClosed()
+{
+    mCombatList->setCombatMenuVisible(false);
+}
+
+void CombatModelNode::onRemoveManuallyChecked()
+{
+    CombatListModel *senderObject = dynamic_cast<CombatListModel*>(QObject::sender());
+    SimpleModelNode *senderModel = senderObject->getActorModel();
+    mCurrentModel = senderModel;
+    setState(State::MANUALREMOVE);
+}
 
 void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
     mNodeData = sampleNodeData("tank", "../data/models/tank/tank.png", "../data/models/tank/tank.osg",
@@ -309,7 +364,6 @@ void CombatModelNode::confirm()
 }
 
 void CombatModelNode::cancel(){
-
     if(state() == State::MOVING){
         mAttackNodeLayer->removeChild(mCurrentModel);
         mCurrentModel.release();
@@ -346,7 +400,7 @@ SimpleModelNode *CombatModelNode::pick(float x, float y)
                     osg::StateSet* ss = _selectionBox->getOrCreateStateSet();
                     ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
                     osg::BoundingBox bb = hit.drawable->getBoundingBox();
-//                    qDebug()<<"radius: "<<bb.radius();
+                    //                    qDebug()<<"radius: "<<bb.radius();
                     osg::Vec3 worldCenter = bb.center() *
                                             osg::computeLocalToWorld(hit.nodePath);
                     _selectionBox->setMatrix(

@@ -1,12 +1,10 @@
 #ifndef COMBATMANAGER_H
 #define COMBATMANAGER_H
 
-
 #include "bulletNode.h"
-#include "lineNode.h"
-// #include "assignLine.h"
 #include <simpleModelNode.h>
 
+class AssignLine;
 
  enum AssignState{
     PREASSIGN,
@@ -24,14 +22,14 @@ struct assignmentData
 public:
     osg::ref_ptr<SimpleModelNode> attacker{nullptr};
     osg::ref_ptr<SimpleModelNode> target{nullptr};
-    void setState(AssignState state);
-    void setLine(MapItem* map);
-    LineNode* getLine();
-    AssignState getState();
+    void setState(AssignState state) const;
+    AssignState getState() const;
+    void setLine(AssignState state,osgEarth::GeoPoint start , osgEarth::GeoPoint end, MapItem *map = nullptr);
+    AssignLine *getLine();
 
 private:
-    osg::ref_ptr<LineNode> mRelationLine{nullptr};
-    AssignState mState{PREASSIGN};
+    AssignLine* mRelationLine{nullptr};
+    mutable AssignState mState{PREASSIGN};
 };
 
 
@@ -63,7 +61,6 @@ private:
     MapItem *mMapItem{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mCombatLayer;
     QList<osg::ref_ptr<BulletNode>> *mBulletList;
-    // QList<assignmentData> *mEdgeDataList;
     QMap<QString,assignmentData> *mAssignmentDataMap;
 };
 

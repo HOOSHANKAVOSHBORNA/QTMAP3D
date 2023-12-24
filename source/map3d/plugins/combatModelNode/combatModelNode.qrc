@@ -3,5 +3,7 @@
         <file>resources/tank.png</file>
         <file>resources/drone.png</file>
         <file>resources/CombatMenu.qml</file>
+        <file>../../map3d/Resources/information.png</file>
+        <file>../../map3d/Resources/inform.png</file>
     </qresource>
 </RCC>

@@ -53,8 +53,8 @@ void LayerModel::setMapItem(MapItem *mapItem)
     resetModel();
 
     connect(mapItem, &MapItem::mapCleared, this, &LayerModel::resetModel);
-    connect(mapItem->getMapObject(), &MapObject::layerAdded,this ,&LayerModel::onLayerAdded);
-    connect(mapItem->getMapObject(), &MapObject::layerRemoved,this ,&LayerModel::onLayerRemoved);
+    connect(mapItem->getMapObject(), &MapObject::layerAdded, this, &LayerModel::onLayerAdded);
+    connect(mapItem->getMapObject(), &MapObject::layerRemoved, this, &LayerModel::onLayerRemoved);
     //    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
     //    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
     //    connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
@@ -84,11 +84,13 @@ void LayerModel::setDragIndex(QModelIndex value)
         if(!parentItem){
             parentItem = mSourceModel->invisibleRootItem();
         }
+
         for(int i = 0; i < parentItem->rowCount(); i++)
         {
             parentItem->child(i, 0)->setData(false, DropRole);
         }
     }
+
     //--set new to true---------------------------
     mDragIndex = value;
     if(mDragIndex.isValid())

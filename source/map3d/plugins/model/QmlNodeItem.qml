@@ -5,7 +5,8 @@ import QtQuick.Controls
 QmlNode {
     property double outerScale: 1.5
     property double maximumRadius: 60
-    property double nodeInnerRadius: nodeRadius < maximumRadius ? nodeRadius : maximumRadius
+    property double minimumRadius: 30
+    property double nodeInnerRadius: nodeRadius < maximumRadius ? (nodeRadius < minimumRadius ? minimumRadius: nodeRadius) : maximumRadius
 //    property double nodeInnerRadius: 40
 
     width: 0
