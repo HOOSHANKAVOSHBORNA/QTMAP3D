@@ -232,15 +232,30 @@ ScrollView{
             height: 65 / 1.3  /*Style.monitorRatio*/
             color:"transparent"
             IconImage {
-                anchors.centerIn: parent
+                anchors.top: parent.top
                 source: "qrc:/Resources/add"
-                height: 50/1.3/*Style.monitorRatio*/
-                width: 50/1.3/*Style.monitorRatio*/
+                height: 50/2/*Style.monitorRatio*/
+                width: 50/2/*Style.monitorRatio*/
                 MouseArea{
                     anchors.fill: parent
                     onClicked: combatModel.addManuallyChecked()
                 }
-
+            }
+        }
+        Rectangle{
+            anchors.right: parent.right
+            width: 65 / 1.3 /*Style.monitorRatio*/
+            height: 65 / 1.3  /*Style.monitorRatio*/
+            color:"transparent"
+            IconImage {
+                anchors.bottom:  parent.bottom
+                source: "qrc:/Resources/location-delete"
+                height: 50/2/*Style.monitorRatio*/
+                width: 50/2/*Style.monitorRatio*/
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: combatModel.removeManuallyChecked()
+                }
             }
         }
     }
@@ -259,6 +274,10 @@ ScrollView{
             height: 35/1.3/*Style.monitorRatio*/
             width: 35/1.3/*Style.monitorRatio*/
             color: "white"
+        }
+        MouseArea{
+            anchors.fill: parent
+            onClicked: combatModel.closeMenu()
         }
     }
 }

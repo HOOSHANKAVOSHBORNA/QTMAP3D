@@ -27,10 +27,10 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
     void addData(assignmentData data);
+    QVector<assignmentData> getDataList();
     Q_INVOKABLE void objectHover(QModelIndex index, bool isHovered);
     Q_INVOKABLE void objectSelect(QModelIndex index);
     Q_INVOKABLE void attackClicked() const;
-    Q_INVOKABLE void closeMenu();
 
     void setTitle(QString title);
     QString getTitle();
@@ -42,11 +42,13 @@ public:
     int getBulletCount();
     void setActorModel(SimpleModelNode* model);
     SimpleModelNode* getActorModel();
-
+    void clear();
 
 signals:
     void actorDataUpdated();
     Q_INVOKABLE void addManuallyChecked();
+    Q_INVOKABLE void removeManuallyChecked();
+    Q_INVOKABLE void closeMenu();
 
 private:
     QVector<assignmentData> mAssignList;
@@ -59,24 +61,17 @@ private:
     MapItem *mapItem;
 };
 
-
 class CombatList:public QObject
 {
     Q_OBJECT
-
-
 public:
     explicit CombatList(QQmlEngine* engine, MapControllerItem *map = nullptr);
     ~CombatList();
-
     CombatListModel *getCombatModel() const;
     void setCombatMenuVisible(bool visible);
-
 private:
     MapControllerItem *mMapItem;
     CombatListModel *mCombatListModel;
-
-
 
 };
 

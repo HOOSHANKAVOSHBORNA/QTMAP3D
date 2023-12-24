@@ -1,11 +1,20 @@
 #include "modelAutoScaler.h"
+#include <osg/Switch>
+#include <osgEarthAnnotation/PlaceNode>
+#include <QDebug>
 
 void ModelAutoScaler::operator()(osg::Node *node, osg::NodeVisitor *nv)
 {
     if (_enabled) {
         if(_scaled){
-            osgEarth::Annotation::GeoPositionNode* geo = static_cast<osgEarth::Annotation::GeoPositionNode*>(node);
-            geo->getPositionAttitudeTransform()->setScale(_baseScale);
+            osg::PositionAttitudeTransform* pATransform;
+            osgEarth::Annotation::GeoPositionNode* geo = dynamic_cast<osgEarth::Annotation::GeoPositionNode*>(node);
+            if(geo)
+                pATransform = geo->getPositionAttitudeTransform();
+            else
+                pATransform = dynamic_cast<osg::PositionAttitudeTransform*>(node);
+
+            pATransform->setScale(_baseScale);
             osgUtil::CullVisitor* cs = static_cast<osgUtil::CullVisitor*>(nv);
 
             osg::Camera* cam = cs->getCurrentCamera();
@@ -23,7 +32,7 @@ void ModelAutoScaler::operator()(osg::Node *node, osg::NodeVisitor *nv)
             if (cam->getViewport())
             {
                 // Reset the scale so we get a proper bound
-                geo->getPositionAttitudeTransform()->setScale(_baseScale);
+                pATransform->setScale(_baseScale);
                 const osg::BoundingSphere& bs = node->getBound();
 
                 // transform centroid to VIEW space:
@@ -49,8 +58,9 @@ void ModelAutoScaler::operator()(osg::Node *node, osg::NodeVisitor *nv)
                 else if (scale>(_maxScale*_defaultScale))
                     scale = (_maxScale*_defaultScale);
 
-                geo->getPositionAttitudeTransform()->setScale(
+                pATransform->setScale(
                     osg::componentMultiply(_baseScale, osg::Vec3d(scale, scale, scale)));
+//                qDebug()<<"scale: "<<scale;
             }
 
             if (node->getCullingActive() == false)

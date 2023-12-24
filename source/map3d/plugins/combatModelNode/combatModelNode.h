@@ -28,7 +28,8 @@ public:
         MOVING,
         CANCEL,
         CONFIRM,
-        MANUAL
+        MANUALADD,
+        MANUALREMOVE
     };
 
 public:
@@ -55,6 +56,8 @@ public slots:
     void onTargetMenuChecked();
     void onAttackMenuChecked();
     void onAddManuallyChecked();
+    void onCombatListClosed();
+    void onRemoveManuallyChecked();
 
 protected:
     void initModel(osgEarth::GeoPoint &geoPos);;
