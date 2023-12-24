@@ -1,4 +1,5 @@
 #include "compositeAnnotationLayer.h"
+#include "qdebug.h"
 
 ParenticAnnotationLayer::ParenticAnnotationLayer(int id, QObject *parent):
     osgEarth::Annotation::AnnotationLayer(),
@@ -6,6 +7,11 @@ ParenticAnnotationLayer::ParenticAnnotationLayer(int id, QObject *parent):
     mUserId(id)
 {
     init();
+}
+
+ParenticAnnotationLayer::~ParenticAnnotationLayer()
+{
+    clear();
 }
 
 void ParenticAnnotationLayer::addParent(CompositeAnnotationLayer *parent)
@@ -164,6 +170,17 @@ void CompositeAnnotationLayer::addLayer(ParenticAnnotationLayer *layer)
         layer->addCallback(it->get());
     }
 
+    // if (layer->asCompositeAnnotationLayer()) {
+    //     for (auto it : layer->asCompositeAnnotationLayer()->mChildildren)
+    //         fireCallback(&CompositeLayerCallback::onLayerAdded, it, it->asCompositeAnnotationLayer()->mChildildren.size() -1);
+    // }
+    // else {
+    //     for (auto it : layer->children()) {
+    //         osg::ref_ptr<osgEarth::Annotation::AnnotationNode> node = dynamic_cast<osgEarth::Annotation::AnnotationNode*>(it);
+    //         layer->fireCallback(&ParenticLayerCallback::onNodeAdded, node);
+    //     }
+    // }
+
     fireCallback(&CompositeLayerCallback::onLayerAdded, layer, mChildildren.size() - 1);
 }
 
@@ -279,12 +296,17 @@ ParenticAnnotationLayer *CompositeAnnotationLayer::getLayerByName(const QString 
 
 ParenticAnnotationLayer *CompositeAnnotationLayer::getHierarchicalLayerByUserId(int userId)
 {
+    if (mUserId == userId)
+        return this;
     for (auto &layer: mChildildren){
         if(layer->userId() == userId)
             return layer;
         auto l = layer->asCompositeAnnotationLayer();
-        if (l)
-            return l->getHierarchicalLayerByUserId(userId);
+        if (l) {
+            auto it = l->getHierarchicalLayerByUserId(userId);
+            if (it)
+                return it;
+        }
     }
     return nullptr;
 }
@@ -312,6 +334,11 @@ void CompositeAnnotationLayer::removeCallback(osgEarth::LayerCallback *cb)
     for (auto& layer: mChildildren) {
         layer->removeCallback(cb);
     }
+}
+
+std::vector<osg::ref_ptr<ParenticAnnotationLayer> > CompositeAnnotationLayer::childildren() const
+{
+    return mChildildren;
 }
 
 //int CompositeAnnotationLayer::getNumChildren() const

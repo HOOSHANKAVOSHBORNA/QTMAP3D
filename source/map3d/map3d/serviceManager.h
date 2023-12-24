@@ -115,6 +115,7 @@ signals:
     void actionSent(const QString &action);
     void signUpResponseReceived(bool status);
     void signInResponseReceived(bool status, int role);
+    void clearMap();
 private:
     void nodeData(QJsonObject jsonObject);
     void circleData(QJsonObject jsonObject);
@@ -123,7 +124,10 @@ private:
     void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
     ParenticAnnotationLayer* findParenticLayer(int id);
 private:
-    QMap<int, ParenticAnnotationLayer*> mParenticLayerMap;
+
+    QMap<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
+    int mRefreshTime{0};
+
 };
 
 #endif // DATAMANAGER_H

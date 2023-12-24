@@ -41,7 +41,9 @@ void Application::initialize()
     initializeQmlEngine();
     initializeDefenseDataManager();
 
-    mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
+    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
+    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
+    // mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
 }
 
 void Application::show()
@@ -95,21 +97,21 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
     MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
     ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
 
-    if (authenticator){
-        mAuthenticator = authenticator;
+    // if (authenticator){
+        // mAuthenticator = authenticator;
         mServiceManager = new ServiceManager();
         mNetworkManager = new NetworkManager(mServiceManager);
-        mAuthenticator->setServiceManager(mServiceManager);
+        // mAuthenticator->setServiceManager(mServiceManager);
         mNetworkManager->start();
         // connect(mServiceManager, &ServiceManager::signInResponseReceived, [&](bool status, int role){
         //     if (status && !mMainWindow) {
-                mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
-                mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
-                mAuthenticator->hide();
+                // mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
+                // mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
+                // mAuthenticator->hide();
         //         mRole = static_cast<UserRoles>(role);
         //     }
         // });
-    }
+    // }
     if (mainWnd) {
         mMainWindow = mainWnd;
         mMainWindow->initComponent();
@@ -128,7 +130,7 @@ void Application::onUICreated()
     connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
             mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
         });
-
+    connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
     mPluginManager->loadPlugins();
     mPluginManager->setup();
     emit defenseDataManagerInitialized(mDefenseDataManager);

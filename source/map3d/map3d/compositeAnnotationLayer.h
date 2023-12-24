@@ -23,6 +23,7 @@ class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::Anno
 {
 public:
     ParenticAnnotationLayer(int id = -1, QObject *parent = nullptr);
+    ~ParenticAnnotationLayer();
 
     CompositeAnnotationLayer *getParentAtIndex(unsigned index);
     unsigned getIndexOfparent(const ParenticAnnotationLayer* layer) const;
@@ -56,7 +57,9 @@ class CompositeLayerCallback : public ParenticLayerCallback
 {
     Q_OBJECT
 public:
-    virtual void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned index){}
+    virtual void onLayerAdded(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned index){
+
+    }
     virtual void onLayerRemoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned index){}
     virtual void onLayerMoved(ParenticAnnotationLayer* layer, CompositeAnnotationLayer* parentLayer, unsigned oldIndex, unsigned newIndex){}
     typedef void (CompositeLayerCallback::*MethodPtr)(class ParenticAnnotationLayer* layer, class CompositeAnnotationLayer* parentLayer, unsigned index);
@@ -94,6 +97,8 @@ public:
     //! Removes a property notification callback from this layer
     void removeCallback(osgEarth::LayerCallback* cb);
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() override { return this; }
+
+    std::vector<osg::ref_ptr<ParenticAnnotationLayer> > childildren() const;
 
 private:
     osg::ref_ptr<osg::Group> mRoot;

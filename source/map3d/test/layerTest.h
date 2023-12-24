@@ -12,6 +12,8 @@ public:
 
 private:
     QJsonDocument createLayers();
+    QJsonDocument updateLayers();
+
 private:
     NetworkManager *mNetworkManager;
 };

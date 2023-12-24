@@ -12,8 +12,16 @@ ServiceManager::ServiceManager(QObject *parent):
 
 void ServiceManager::layersData(QJsonObject layers)
 {
+    emit clearMap();
+    mRefreshTime++;
     for (auto it : layers.value("Data").toArray())
         parseLayersFromJson(it.toObject());
+    for (auto i : mParenticLayerMap.keys()) {
+        if (mParenticLayerMap[i].first != mRefreshTime) {
+            delete mParenticLayerMap[i].second;
+            mParenticLayerMap.remove(i);
+        }
+    }
 }
 
 void ServiceManager::flyableNodeData(QJsonObject jsonObject)
@@ -48,8 +56,8 @@ void ServiceManager::flyableNodeData(QJsonObject jsonObject)
             flyableNodeData->fieldData.push_back(NodeFieldData{key, obj.value("value").toVariant(), obj.value("category").toString()});
         }
     }
-//    if(flyableNodeData->layers.size() > 0)
-        emit flyableNodeDataReceived(flyableNodeData);
+    //    if(flyableNodeData->layers.size() > 0)
+    emit flyableNodeDataReceived(flyableNodeData);
 }
 
 void ServiceManager::statusNodeData(QJsonObject jsonObject)
@@ -132,7 +140,7 @@ void ServiceManager::polylineData(QJsonObject polyline)
     }
     int layerId = jsonObjectData.value("LayerId").toInt();
     auto layer = findParenticLayer(layerId);
-//    if (layer){
+    if (layer){
         lineNodeData->layer = layer;
         lineNodeData->name = jsonObjectData.value("name").toString().toStdString();
         lineNodeData->id = jsonObjectData.value("Id").toInt();
@@ -140,7 +148,7 @@ void ServiceManager::polylineData(QJsonObject polyline)
         lineNodeData->width = jsonObjectData.value("Width").toInt();
         lineNodeData->command = polyline.value("COMMAND").toString().toStdString();
         emit lineNodeDataReceived(lineNodeData);
-//    }
+    }
 }
 
 void ServiceManager::movableNodeData(QJsonObject jsonObject)
@@ -264,9 +272,9 @@ void ServiceManager::polygonData(QJsonObject jsonObject)
     int layerId = jsonObjectData.value("LayerId").toInt();
     auto layer = findParenticLayer(layerId);
     polygonData->layer = layer;
-//    if (layer){
+    if (layer){
         emit polygonDataReceived(polygonData);
-//    }
+    }
 }
 
 void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent)
@@ -275,12 +283,16 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
         CompositeAnnotationLayer* comp = new CompositeAnnotationLayer(jsonObject.value("Id").toInt());
         comp->setName(jsonObject.value("Text").toString().toStdString());
         comp->setOrder(jsonObject.value("Order").toInt());
-//        qDebug()<<"composite:"<<comp->getName();
+        //        qDebug()<<"composite:"<<comp->getName();
+
         if (parent){
             parent->addLayer(comp);
         }
-        else
+        else{
             emit layerDataReceived(comp);
+
+            // mParenticLayerMap[jsonObject.value("Id").toInt()] = comp;
+        }
 
         for (auto it: jsonObject.value("Children").toArray()) {
             parseLayersFromJson(it.toObject(), comp);
@@ -288,16 +300,18 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
     }
     else {
         int layerId = jsonObject.value("Id").toInt();
-        if(!mParenticLayerMap.contains(layerId)){
-            ParenticAnnotationLayer* parentic = new ParenticAnnotationLayer(layerId);
-            parentic->setName(jsonObject.value("Text").toString().toStdString());
-            mParenticLayerMap[layerId] = parentic;
-//            qDebug()<<"composite parent: "<<parent->getName();
-//            qDebug()<<"parentic: "<<parentic->getName();
+        ParenticAnnotationLayer *p;
+        if (!mParenticLayerMap.contains(layerId)) {
+            p = new ParenticAnnotationLayer(layerId);
+            p->setName(jsonObject.value("Text").toString().toStdString());
+            mParenticLayerMap[layerId].second = p;
+        } else {
+            p = mParenticLayerMap[layerId].second;
         }
-        parent->addLayer(mParenticLayerMap[layerId]);
+        mParenticLayerMap[layerId].first = mRefreshTime;
+        parent->addLayer(p);
 
-//        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
+        //        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
         return;
     }
 }
@@ -305,8 +319,7 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
 ParenticAnnotationLayer *ServiceManager::findParenticLayer(int id)
 {
     if (mParenticLayerMap.contains(id))
-        return mParenticLayerMap[id];
+        return mParenticLayerMap[id].second;
     qDebug()<<"Can not found layer: "<<id;
     return nullptr;
 }
-

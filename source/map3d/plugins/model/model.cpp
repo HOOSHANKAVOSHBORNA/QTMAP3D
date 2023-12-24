@@ -243,8 +243,15 @@ void Model::onModeChanged(bool is3DView)
     mIs3D = is3DView;
 }
 
-void Model::initModel(const osgEarth::GeoPoint &geoPos){
-
+void Model::initModel(const osgEarth::GeoPoint &geoPos)
+{
+    // CompositeAnnotationLayer *l1 = new CompositeAnnotationLayer();
+    // l1->setName("level1");
+    // CompositeAnnotationLayer *l2 = new CompositeAnnotationLayer();
+    // l2->setName("level2");
+    // CompositeAnnotationLayer *l3 = new CompositeAnnotationLayer();
+    // l3->setName("level3");
+    // ParenticAnnotationLayer *p = new ParenticAnnotationLayer();
     switch (mType) {
     case Type::SIMPLE:
         mNodeData = sampleNodeData("Tree", "../data/models/tree/tree.png", "../data/models/tree/tree.osgb",
@@ -278,6 +285,11 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos){
         }
         mNodeData->layers.push_back(mFlyableNodelLayer);
         mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
+        // p->addChild(mCurrentModel);
+        // l3->addLayer(p);
+        // l2->addLayer(l3);
+        // l1->addLayer(l2);
+        // mapItem()->getMapObject()->addLayer(l1);
         break;
     default:
         break;
