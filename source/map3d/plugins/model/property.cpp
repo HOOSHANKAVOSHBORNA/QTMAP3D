@@ -71,6 +71,21 @@ void Property::setMoveTo(const osgEarth::GeoPoint &newMoveTo)
     mPropertyItem->setMoveTo(Utility::osgEarthGeoPointToQvector3D(newMoveTo));
 }
 
+QVector3D Property::getFlyTo() const
+{
+    return mPropertyItem->getFlyTo();
+}
+
+void Property::setFlyTo(const QVector3D &newFlyTo)
+{
+    mPropertyItem->setFlyTo(newFlyTo);
+}
+
+void Property::setFlyTo(const osgEarth::GeoPoint &newFlyTo)
+{
+    mPropertyItem->setFlyTo(Utility::osgEarthGeoPointToQvector3D(newFlyTo));
+}
+
 bool Property::isMovable() const
 {
     return mPropertyItem->isMovable();
@@ -79,6 +94,16 @@ bool Property::isMovable() const
 void Property::setIsMovable(bool newIsMovable)
 {
     mPropertyItem->setIsMovable(newIsMovable);
+}
+
+bool Property::isFlyable() const
+{
+    return mPropertyItem->isFlyable();
+}
+
+void Property::setIsFlyable(bool newIsFlyable)
+{
+    mPropertyItem->setIsFlyable(newIsFlyable);
 }
 
 osg::ref_ptr<SimpleModelNode> Property::currentModel() const
@@ -183,6 +208,8 @@ void PropertyItem::setMoveTo(const QVector3D &newMoveTo)
         return;
 
     mMoveTo = newMoveTo;
+    mCurrentModel->asMoveableModelNode()
+        ->moveTo(Utility::qVector3DToosgEarthGeoPoint(newMoveTo, mMapItem->getMapSRS()), mSpeed);
     emit propertyChanged();
 }
 
@@ -221,6 +248,12 @@ void PropertyItem::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurre
     if (mCurrentModel->asMoveableModelNode()) {
         mIsMovable = true;
         this->setSpeed(mCurrentModel->asMoveableModelNode()->speed());
+
+        if (mCurrentModel->asFlyableModelNode()) {
+            mIsFlyable = true;
+        } else {
+            mIsFlyable = false;
+        }
     } else {
         mIsMovable = false;
     }
@@ -239,5 +272,33 @@ void PropertyItem::setIsMovable(bool newIsMovable)
     if (mIsMovable == newIsMovable)
         return;
     mIsMovable = newIsMovable;
+    emit propertyChanged();
+}
+
+QVector3D PropertyItem::getFlyTo() const
+{
+    return mFlyTo;
+}
+
+void PropertyItem::setFlyTo(const QVector3D &newFlyTo)
+{
+    if (mFlyTo == newFlyTo)
+        return;
+    mFlyTo = newFlyTo;
+    mCurrentModel->asFlyableModelNode()
+        ->flyTo(Utility::qVector3DToosgEarthGeoPoint(newFlyTo, mMapItem->getMapSRS()), mSpeed);
+    emit propertyChanged();
+}
+
+bool PropertyItem::isFlyable() const
+{
+    return mIsFlyable;
+}
+
+void PropertyItem::setIsFlyable(bool newIsFlyable)
+{
+    if (mIsFlyable == newIsFlyable)
+        return;
+    mIsFlyable = newIsFlyable;
     emit propertyChanged();
 }

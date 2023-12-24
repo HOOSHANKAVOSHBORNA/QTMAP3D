@@ -304,7 +304,7 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
             mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
-            mProperty->setMoveTo(geoPos);
+            mProperty->setFlyTo(geoPos);
             return;
         }
 

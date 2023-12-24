@@ -13,6 +13,8 @@ Item {
     property int previousIndex: 0
     property int nextIndex: 0
 
+    property int zMax: 200000
+
     readonly property color fg20: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.20)
@@ -219,7 +221,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            StepSpinBox {
+                            ModelStepSpinBox {
                                 id: xLocationValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -230,6 +232,7 @@ Item {
                                 decimals: 4
                                 from: -180
                                 to: 180
+                                stepIndex: 4
                                 onValueChanged: {
                                     rootItem.cppInterface.location.x = value
                                 }
@@ -250,7 +253,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            StepSpinBox {
+                            ModelStepSpinBox {
                                 id: yLocationValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -261,6 +264,7 @@ Item {
                                 decimals: 4
                                 from: -180
                                 to: 180
+                                stepIndex: 4
                                 onValueChanged: {
                                     rootItem.cppInterface.location.y = value
                                 }
@@ -282,7 +286,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            StepSpinBox {
+                            ModelStepSpinBox {
                                 id: zLocationValue
 
                                 editable: true
@@ -292,8 +296,9 @@ Item {
                                 Layout.rightMargin: 5 / Style.monitorRatio
                                 height: valHeight / Style.monitorRatio
                                 decimals: 4
-                                from: -180
-                                to: 180
+                                from: -200
+                                to: rootItem.zMax
+                                stepIndex: 0
                                 onValueChanged: {
                                     rootItem.cppInterface.location.z = value
                                 }
@@ -373,7 +378,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: valHeight / Style.monitorRatio
 
-                    StepSpinBox {
+                    ModelStepSpinBox {
                         id: lengthValue
                         editable: true
                         anchors.leftMargin: 5 / Style.monitorRatio
@@ -440,7 +445,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            StepSpinBox {
+                            ModelStepSpinBox {
                                 id: xMoveToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -451,6 +456,7 @@ Item {
                                 decimals: 4
                                 from: -180
                                 to: 180
+                                x: 6 // 0.01
                                 onValueChanged: {
                                     rootItem.cppInterface.moveTo.x = value
                                 }
@@ -471,7 +477,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            StepSpinBox {
+                            ModelStepSpinBox {
                                 id: yMoveToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -482,6 +488,7 @@ Item {
                                 decimals: 4
                                 from: -180
                                 to: 180
+                                stepIndex: 4 // 0.01
                                 onValueChanged: {
                                     rootItem.cppInterface.moveTo.y = value
                                 }
@@ -503,7 +510,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            StepSpinBox {
+                            ModelStepSpinBox {
                                 id: zMoveToValue
 
                                 editable: true
@@ -513,8 +520,9 @@ Item {
                                 Layout.rightMargin: 5 / Style.monitorRatio
                                 height: valHeight / Style.monitorRatio
                                 decimals: 4
-                                from: -180
-                                to: 180
+                                from: -200
+                                to: rootItem.zMax
+                                stepIndex: 0
                                 onValueChanged: {
                                     rootItem.cppInterface.moveTo.z = value
                                 }
@@ -527,45 +535,142 @@ Item {
                                 delayed: true
                             }
                         }
+                    }
+                }
+            }
 
-                        CheckBox {
-                            id: moveToRelative
-                            text: "Relative"
-                            font.pointSize: 10 / Style.monitorRatio
-                            checked: false
+            // --------------------------------------------------------- FlyTo
+            RowLayout {
+                spacing: 0
+                Layout.fillWidth: true
 
-                            onCheckStateChanged: if (checked) {
+                visible: rootItem.cppInterface ? rootItem.cppInterface.isFlyable : false
 
-                                                     // TODO
-                                                 } else {
+                Text {
+                    text: "Fly to"
+                    color: Style.foregroundColor
+                    font.pixelSize: 17 / Style.monitorRatio
+                    Layout.alignment: Qt.AlignTop
+                    Layout.preferredWidth: lblWidth / Style.monitorRatio
+                }
 
-                                                     // TODO
-                                                 }
+                GroupBox {
+                    id: flyToSec
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: 200 / Style.monitorRatio
+                    padding: 0
 
-                            indicator: Rectangle {
-                                implicitWidth: 11 / Style.monitorRatio
-                                implicitHeight: 11 / Style.monitorRatio
-                                x: relative.leftPadding / Style.monitorRatio
-                                y: (parent.height / 2 - height / 2) / Style.monitorRatio
-                                radius: (height / 2) / Style.monitorRatio
-                                border.color: relative.down ? "black" : "#313131"
+                    background: Rectangle {
+                        color: fg20
+                        radius: 10 / Style.monitorRatio
+                        border.color: "transparent"
+                    }
 
-                                Rectangle {
-                                    width: 11 / Style.monitorRatio
-                                    height: 11 / Style.monitorRatio
-                                    radius: (height / 2) / Style.monitorRatio
-                                    color: relative.down ? "black" : "dark green"
-                                    visible: relative.checked
+                    ColumnLayout {
+                        anchors.fill: parent
+
+                        GridLayout {
+                            columnSpacing: 1
+                            rowSpacing: 1
+                            columns: 2
+
+                            Text {
+                                Layout.preferredWidth: 20 / Style.monitorRatio
+                                text: "X "
+                                padding: 5 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                font.pointSize: 10 / Style.monitorRatio
+                                color: Style.foregroundColor
+                            }
+
+                            ModelStepSpinBox {
+                                id: xFlyToValue
+                                editable: true
+                                Layout.fillWidth: true
+                                Layout.minimumWidth: 100 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                height: valHeight / Style.monitorRatio
+                                decimals: 4
+                                from: -180
+                                to: 180
+                                stepIndex: 4 // 0.01
+                                onValueChanged: {
+                                    rootItem.cppInterface.flyTo.x = value
                                 }
                             }
 
-                            contentItem: Text {
-                                text: relative.text
-                                font: relative.font
-                                opacity: enabled ? 1.0 : 0.3
-                                color: relative.down ? "black" : Style.foregroundColor
-                                verticalAlignment: Text.AlignVCenter
-                                leftPadding: relative.indicator.width + relative.spacing
+                            Binding {
+                                target: xFlyToValue
+                                property: "value"
+                                value: rootItem.cppInterface ? rootItem.cppInterface.flyTo.x : 0
+                                delayed: true
+                            }
+
+                            Text {
+                                Layout.preferredWidth: 20 / Style.monitorRatio
+                                text: "Y "
+                                padding: 5 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                font.pointSize: 10 / Style.monitorRatio
+                                color: Style.foregroundColor
+                            }
+                            ModelStepSpinBox {
+                                id: yFlyToValue
+                                editable: true
+                                Layout.fillWidth: true
+                                Layout.minimumWidth: 100 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
+                                height: valHeight / Style.monitorRatio
+                                decimals: 4
+                                from: -180
+                                to: 180
+                                stepIndex: 4 // 0.01
+                                onValueChanged: {
+                                    rootItem.cppInterface.flyTo.y = value
+                                }
+                            }
+
+                            Binding {
+                                target: yFlyToValue
+                                property: "value"
+                                value: rootItem.cppInterface ? rootItem.cppInterface.flyTo.y : 0
+                                delayed: true
+                            }
+
+                            Text {
+                                Layout.preferredWidth: 20 / Style.monitorRatio
+                                text: "Z "
+                                padding: 5 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                font.pointSize: 10
+                                color: Style.foregroundColor
+                            }
+
+                            ModelStepSpinBox {
+                                id: zFlyToValue
+
+                                editable: true
+                                Layout.fillWidth: true
+                                Layout.minimumWidth: 100 / Style.monitorRatio
+                                Layout.topMargin: 5 / Style.monitorRatio
+                                Layout.rightMargin: 5 / Style.monitorRatio
+                                height: valHeight / Style.monitorRatio
+                                decimals: 4
+                                from: -180
+                                to: rootItem.zMax
+                                stepIndex: 0 // 100
+                                onValueChanged: {
+                                    rootItem.cppInterface.flyTo.z = value
+                                }
+                            }
+
+                            Binding {
+                                target: zFlyToValue
+                                property: "value"
+                                value: rootItem.cppInterface ? rootItem.cppInterface.flyTo.z : 0
+                                delayed: true
                             }
                         }
                     }

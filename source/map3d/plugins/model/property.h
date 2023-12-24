@@ -31,8 +31,15 @@ public:
     void setMoveTo(const QVector3D &newMoveTo);
     void setMoveTo(const osgEarth::GeoPoint &newMoveTo);
 
+    QVector3D getFlyTo() const;
+    void setFlyTo(const QVector3D &newFlyTo);
+    void setFlyTo(const osgEarth::GeoPoint &newFlyTo);
+
     bool isMovable() const;
     void setIsMovable(bool newIsMovable);
+
+    bool isFlyable() const;
+    void setIsFlyable(bool newIsFlyable);
 
     osg::ref_ptr<SimpleModelNode> currentModel() const;
     void setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel);
@@ -51,7 +58,9 @@ class PropertyItem : public QObject
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY propertyChanged FINAL)
     Q_PROPERTY(QVector3D location READ getLocation WRITE setLocation NOTIFY propertyChanged FINAL)
     Q_PROPERTY(bool isMovable READ isMovable WRITE setIsMovable NOTIFY propertyChanged FINAL)
+    Q_PROPERTY(bool isFlyable READ isFlyable WRITE setIsFlyable NOTIFY propertyChanged FINAL)
     Q_PROPERTY(QVector3D moveTo READ getMoveTo WRITE setMoveTo NOTIFY propertyChanged FINAL)
+    Q_PROPERTY(QVector3D flyTo READ getFlyTo WRITE setFlyTo NOTIFY propertyChanged FINAL)
     Q_PROPERTY(double speed READ speed WRITE setSpeed NOTIFY propertyChanged FINAL)
 
 public:
@@ -80,6 +89,12 @@ public:
     bool isMovable() const;
     void setIsMovable(bool newIsMovable);
 
+    QVector3D getFlyTo() const;
+    void setFlyTo(const QVector3D &newFlyTo);
+
+    bool isFlyable() const;
+    void setIsFlyable(bool newIsFlyable);
+
 signals:
     void propertyChanged();
 
@@ -92,6 +107,8 @@ private:
     QVector3D mLocation;
     QVector3D mMoveTo;
     double mSpeed;
+    QVector3D mFlyTo;
+    bool mIsFlyable;
 };
 
 #endif // PROPERTY_H
