@@ -72,14 +72,8 @@ bool DrawAnnotation::setup()
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     mShapeLayer = new CompositeAnnotationLayer();
-//    mShapeLayer->setName(CATEGORY);
-    mShapeLayer->setName("Annotation");
+    mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
-
-    mMeasureLayer = new CompositeAnnotationLayer();
-//    mMeasureLayer->setName(M_CATEGORY);
-    mMeasureLayer->setName("Annotation Measurement");
-    mapItem()->getMapObject()->addLayer(mMeasureLayer);
 
 
     /***************************draw Line*******************************/
@@ -95,30 +89,6 @@ bool DrawAnnotation::setup()
     auto toolboxItemLine =  new ToolboxItem{POLYLINE, CATEGORY, "qrc:/resources/line.png", true};
     QObject::connect(toolboxItemLine, &ToolboxItem::itemChecked, this, &DrawAnnotation::onLineItemCheck);
     toolbox()->addItem(toolboxItemLine);
-
-    auto toolboxItemRuler =  new ToolboxItem{RULER, M_CATEGORY, "qrc:/resources/ruler.png", true};
-    QObject::connect(toolboxItemRuler, &ToolboxItem::itemChecked, this, &DrawAnnotation::onRulerItemCheck);
-    toolbox()->addItem(toolboxItemRuler);
-
-    auto toolboxItemHeight =  new ToolboxItem{MEASUREHEIGHT, M_CATEGORY, "qrc:/resources/height.png", true};
-    QObject::connect(toolboxItemHeight, &ToolboxItem::itemChecked, this, &DrawAnnotation::onHeightItemCheck);
-    toolbox()->addItem(toolboxItemHeight);
-
-    auto toolboxItemSlope =  new ToolboxItem{SLOPE, M_CATEGORY, "qrc:/resources/slope.png", true};
-    QObject::connect(toolboxItemSlope, &ToolboxItem::itemChecked, this, &DrawAnnotation::onSlopeItemCheck);
-    toolbox()->addItem(toolboxItemSlope);
-
-    mLineLayer = new ParenticAnnotationLayer();
-    mLineLayer->setName(POLYLINE);
-
-    mRulerLayer = new ParenticAnnotationLayer();
-    mRulerLayer->setName(RULER);
-
-    mHeightLayer = new ParenticAnnotationLayer();
-    mHeightLayer->setName(MEASUREHEIGHT);
-
-    mSlopeLayer = new ParenticAnnotationLayer();
-    mSlopeLayer->setName(SLOPE);
 
     mLineLayer = new ParenticAnnotationLayer();
     mLineLayer->setName(POLYLINE);
@@ -161,12 +131,7 @@ CompositeAnnotationLayer *DrawAnnotation::shapeLayer()
     return mShapeLayer;
 }
 
-CompositeAnnotationLayer *DrawAnnotation::measureLayer()
-{
-    if(!mMeasureLayer)
-        mMeasureLayer = dynamic_cast<CompositeAnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(M_CATEGORY));
-    return mMeasureLayer;
-}
+
 
 void DrawAnnotation::addUpdatePolygon(PolygonData *polygonData)
 {
@@ -339,7 +304,6 @@ void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
     mLine = new LineNode(mapItem());
     QString name;
     auto shapeLayer = DrawAnnotation::shapeLayer();
-    auto measureLayer = DrawAnnotation::measureLayer();
     switch (mType) {
     case Type::LINE:
         name = POLYLINE + QString::number(mCount);
@@ -352,43 +316,6 @@ void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
             shapeLayer->addLayer(mLineLayer);
         }
         mLineLayer->addChild(mLine);
-        break;
-    case Type::RULERR:
-        name = RULER + QString::number(mCount);
-        mLine->setName(name.toStdString());
-        mLineProperty->setRuler(mLine);
-        mLine->addPoint(geoPos);
-
-        if(!measureLayer->containsLayer(mRulerLayer)){
-            mRulerLayer->clear();
-            measureLayer->addLayer(mRulerLayer);
-        }
-        mRulerLayer->addChild(mLine);
-        break;
-    case Type::HEIGHT:
-        name = MEASUREHEIGHT + QString::number(mCount);
-        mLine->setName(name.toStdString());
-        mLineProperty->setMeasureHeight(mLine);
-        mLine->addPoint(geoPos);
-
-        if(!measureLayer->containsLayer(mHeightLayer)){
-            mHeightLayer->clear();
-            measureLayer->addLayer(mHeightLayer);
-        }
-        mHeightLayer->addChild(mLine);
-        break;
-    case Type::SLOPEE:
-        name = SLOPE + QString::number(mCount);
-        mLine->setName(name.toStdString());
-        mLineProperty->setMesureSlope(mLine);
-        mLine->addPoint(geoPos);
-
-        if(!measureLayer->containsLayer(mSlopeLayer)){
-            mSlopeLayer->clear();
-            measureLayer->addLayer(mSlopeLayer);
-        }
-        mSlopeLayer->addChild(mLine);
-
         break;
 
     case Type::POLYGONN:
@@ -552,7 +479,7 @@ void DrawAnnotation::createProperty(QString name, QVariant property)
     });
 
 
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+    comp->loadUrl(QUrl("qrc:/AnnotationProperties.qml"));
 }
 
 void DrawAnnotation::hideProperty()

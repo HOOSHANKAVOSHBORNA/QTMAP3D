@@ -19,13 +19,9 @@
 #include "lineProperty.h"
 #include "measureHeight.h"
 #include "polygon.h"
-#define CATEGORY "Draw"
-#define M_CATEGORY "Measurement"
+#define CATEGORY "Draw Annotation"
 
 #define POLYLINE "Polyline"
-#define RULER "Ruler"
-#define MEASUREHEIGHT "Height"
-#define SLOPE "Slope"
 #define POLYGON "Polygon"
 
 
@@ -55,7 +51,6 @@ public:
     DrawAnnotation::State state() const;
     void setState(DrawAnnotation::State newState);
     CompositeAnnotationLayer *shapeLayer();
-    CompositeAnnotationLayer *measureLayer();
 
 
     virtual bool mousePressEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
