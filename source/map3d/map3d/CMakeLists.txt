@@ -47,7 +47,8 @@ add_executable(Map3d
         statusBar.h
         locationManager.h locationManager.cpp
         qmlNode.h qmlNode.cpp
-        authenticator.h authenticator.cpp)
+        authenticator.h authenticator.cpp
+        filterManager.h filterManager.cpp)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/")

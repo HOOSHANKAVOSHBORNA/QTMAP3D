@@ -1,5 +1,6 @@
 #include "compositeAnnotationLayer.h"
 #include "qdebug.h"
+#include "serviceManager.h"
 
 ParenticAnnotationLayer::ParenticAnnotationLayer(int id, QObject *parent):
     osgEarth::Annotation::AnnotationLayer(),
@@ -104,6 +105,26 @@ int ParenticAnnotationLayer::userId() const
 void ParenticAnnotationLayer::setOrder(int newOrder)
 {
     mOrder = newOrder;
+}
+
+void ParenticAnnotationLayer::setFilter()
+{
+    for (int i{0}; i < getGroup()->getNumChildren(); ++i){
+        auto node = getGroup()->getChild(i);
+        auto nodeData = dynamic_cast<NodeData*>(node->getUserData());
+        if (nodeData) {
+            // ToDo!:
+            // bool t = filterObject.checkNode(nodeData);
+            // node->setNodeMask(t);
+        }
+    }
+}
+
+void ParenticAnnotationLayer::clearFilter()
+{
+    for (int i{0}; i < getGroup()->getNumChildren(); ++i){
+        getGroup()->getChild(i)->setNodeMask(true);
+    }
 }
 
 CompositeAnnotationLayer *ParenticAnnotationLayer::getParentAtIndex(unsigned int index)

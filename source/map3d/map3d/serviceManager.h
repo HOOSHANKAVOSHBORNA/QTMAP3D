@@ -12,6 +12,9 @@ struct NodeFieldData
     QVariant value;
     QString category;
     QString categoryIconSrc;
+    bool operator==(const QString& n) const{
+        return n == name;
+    }
 };
 
 struct StatusNodeData: public osg::Referenced

@@ -200,6 +200,13 @@ ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
     return nullptr;
 }
 
+// void MapObject::setFilter()
+// {
+//     for (auto &l: mParenticLayers) {
+//         l.second.se
+//     }
+// }
+
 void MapObject::clearParenticLayers()
 {
     for (auto &i : mParenticLayers){

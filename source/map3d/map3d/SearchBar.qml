@@ -8,6 +8,7 @@ Item{
     id: rootItem
 
     property var model
+    property var filterManager
     property bool flag: false
     property int iconSize: 26/Style.monitorRatio
     readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
@@ -69,7 +70,6 @@ Item{
                     closeButton.visible = true
                     textonFocus.running =true
                     searchText.focus = true
-
                 }
             }
 
