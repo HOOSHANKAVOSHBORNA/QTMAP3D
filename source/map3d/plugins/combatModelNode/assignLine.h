@@ -2,17 +2,23 @@
 #define ASSIGNLINE_H
 
 #include <osgEarth/LineDrawable>
-#include "combatManager.h"
+#include "lineNode.h"
+#include "simpleModelNode.h"
 
-class AssignLine : public osgEarth::Annotation::AnnotationNode
+class AssignLineCallback : public osg::NodeCallback
 {
 public:
-    AssignLine(osgEarth::GeoPoint start,osgEarth::GeoPoint end, AssignState state);
-    void setState(AssignState state);
-    void setLinePosition(osgEarth::GeoPoint start,osgEarth::GeoPoint end);
+    void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
+};
 
+class AssignLine : public LineNode
+{
+public:
+    AssignLine(MapItem *mapItem, SimpleModelNode *attacker, SimpleModelNode *target);
+    void update();
 private:
-    osgEarth::LineDrawable *mLine{nullptr};
+    osg::ref_ptr<SimpleModelNode> mAttacker;
+    osg::ref_ptr<SimpleModelNode> mTarget;
 };
 
 #endif // ASSIGNLINE_H

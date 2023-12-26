@@ -3,7 +3,6 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
-import Crystal 1.0
 import "style"
 
 Item {
@@ -19,7 +18,7 @@ Item {
                                                      Style.backgroundColor.b,
                                                      0.30)
     property string _headerTitleSTR: "Properties"
-    property CProperty model
+    property var cppInterface
     property int swtchWidth: 100
     property int lblWidth: 85
     property int valHeight: 30
@@ -49,7 +48,7 @@ Item {
             visible: false
             onColorChosen: {
                 colorSelectCircle.color = selectedColor
-                rootItem.model.fillColor = selectedColor
+                rootItem.cppInterface.fillColor = selectedColor
                 addIconImage.visible = false
                 propertyCheckIcon.visible = true
                 colorModel.setProperty(previousIndex, "checkIconVisible", false)
@@ -65,7 +64,7 @@ Item {
             visible: false
             onColorChosen: {
                 strokeColorCircle.color = selectedColor
-                rootItem.model.strokeColor = selectedColor
+                rootItem.cppInterface.strokeColor = selectedColor
                 strokeColorAddIcon.visible = false
                 strokeCheckIcon.visible = true
                 strokeColorModel.setProperty(strokePreviousIndex,
@@ -84,12 +83,11 @@ Item {
             Layout.fillHeight: true
             onColorChosen: {
                 pointColorCircle.color = selectedColor
-                rootItem.model.pointsColor = selectedColor
+                rootItem.cppInterface.pointsColor = selectedColor
                 pointColorAddIcon.visible = false
                 pointColorCheckIcon.visible = true
                 pointColorModel.setProperty(pointColorPreviousIndex,
                                             "checkIconVisible", false)
-                console.log(rootItem.model.pointsColor)
             }
         }
 
@@ -122,7 +120,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.rightMargin: 15 / Style.monitorRatio
                         height: valHeight
-                        text: rootItem.model ? rootItem.model.name : ""
+                        text: rootItem.cppInterface ? rootItem.cppInterface.name : ""
                         font.pointSize: 10 / Style.monitorRatio
                         color: "black"
                         background: Rectangle {
@@ -130,7 +128,7 @@ Item {
                             radius: height / 2
                         }
                         onAccepted: {
-                            rootItem.model.name = namevalue.displayText
+                            rootItem.cppInterface.name = namevalue.displayText
                         }
                     }
                 }
@@ -138,7 +136,7 @@ Item {
                 RowLayout {
                     id: fillcolorSec
                     Layout.fillWidth: true
-                    visible: rootItem.model ? rootItem.model.fillColorStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.fillColorStatus : false
                     spacing: 0
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
@@ -216,9 +214,9 @@ Item {
                                                            checked)
                                     if (checked) {
                                         previousIndex = index
-                                        rootItem.model.fillColor = propertyColorSelect
+                                        rootItem.cppInterface.fillColor = propertyColorSelect
                                     } else {
-                                        rootItem.model.fillColor = "#FFFFFF"
+                                        rootItem.cppInterface.fillColor = "#FFFFFF"
                                     }
                                 }
                             }
@@ -262,11 +260,12 @@ Item {
                         font.pixelSize: 17 / Style.monitorRatio
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        visible: rootItem.model ? rootItem.model.strokeStatus : false
+                        visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
+
                     }
                     GroupBox {
                         id: strokeSec
-                        visible: rootItem.model ? rootItem.model.strokeStatus : false
+                        visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
                         Layout.rightMargin: 15 / Style.monitorRatio
                         padding: 0
                         Layout.fillWidth: true
@@ -351,10 +350,10 @@ Item {
                                                         "checkIconVisible",
                                                         checked)
                                             if (checked) {
-                                                rootItem.model.strokeColor = propertyColorSelect
+                                                rootItem.cppInterface.strokeColor = propertyColorSelect
                                                 strokePreviousIndex = index
                                             } else {
-                                                rootItem.model.strokeColor = "#FFFFFF"
+                                                rootItem.cppInterface.strokeColor = "#FFFFFF"
                                             }
                                         }
                                     }
@@ -401,537 +400,16 @@ Item {
                                 to: 20000000
                                 stepSize: 1
                                 onValueChanged: {
-                                    if (rootItem.model)
-                                        rootItem.model.strokeWidth = value
+                                    if (rootItem.cppInterface)
+                                        rootItem.cppInterface.strokeWidth = value
                                 }
                             }
                             Binding {
                                 target: strokeWidthValue
                                 property: "value"
-                                value: rootItem.model ? rootItem.model.strokeWidth : 0
+                                value: rootItem.cppInterface ? rootItem.cppInterface.strokeWidth : 0
                                 delayed: true
                             }
-                        }
-                    }
-                }
-
-                ////////////---------------------Location--------------------/////////////
-                RowLayout {
-                    spacing: 0
-                    Text {
-                        text: "Location"
-                        color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
-                        Layout.alignment: Qt.AlignTop
-                        Layout.preferredWidth: (lblWidth / Style.monitorRatio)
-                        visible: rootItem.model ? rootItem.model.locationStatus : false
-                    }
-
-                    GroupBox {
-                        id: locationSec
-                        visible: rootItem.model ? rootItem.model.locationStatus : false
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 200 / Style.monitorRatio
-                        Layout.rightMargin: 15 / Style.monitorRatio
-                        padding: 0
-
-                        background: Rectangle {
-                            color: foregroundColor
-                            radius: 10 / Style.monitorRatio
-                            border.color: "transparent"
-                        }
-
-                        ColumnLayout {
-                            anchors.fill: parent
-                            GridLayout {
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                columns: 2
-
-                                Text {
-                                    Layout.preferredWidth: 20 / Style.monitorRatio
-                                    text: "X "
-                                    padding: 5 / Style.monitorRatio
-                                    Layout.topMargin: 5 / Style.monitorRatio
-                                    font.pointSize: 10 / Style.monitorRatio
-                                    color: Style.foregroundColor
-                                }
-
-                                StepSpinBox {
-                                    id: xLocationValue
-                                    editable: true
-                                    Layout.fillWidth: true
-                                    Layout.minimumWidth: 100 / Style.monitorRatio
-                                    Layout.rightMargin: 5 / Style.monitorRatio
-                                    Layout.topMargin: 5 / Style.monitorRatio
-                                    height: valHeight / Style.monitorRatio
-                                    decimals: 4
-                                    from: -180
-                                    to: 180
-                                    onValueChanged: {
-                                        rootItem.model.location.x = value
-                                    }
-                                }
-
-                                Binding {
-                                    target: xLocationValue
-                                    property: "value"
-                                    value: rootItem.model ? rootItem.model.location.x : 0
-                                    delayed: true
-                                }
-
-                                Text {
-                                    Layout.preferredWidth: 20 / Style.monitorRatio
-                                    text: "Y "
-                                    padding: 5 / Style.monitorRatio
-                                    Layout.topMargin: 5 / Style.monitorRatio
-                                    font.pointSize: 10 / Style.monitorRatio
-                                    color: Style.foregroundColor
-                                }
-                                StepSpinBox {
-                                    id: yLocationValue
-                                    editable: true
-                                    Layout.fillWidth: true
-                                    Layout.minimumWidth: 100 / Style.monitorRatio
-                                    Layout.topMargin: 5 / Style.monitorRatio
-                                    Layout.rightMargin: 5 / Style.monitorRatio
-                                    height: valHeight / Style.monitorRatio
-                                    decimals: 4
-                                    from: -180
-                                    to: 180
-                                    onValueChanged: {
-                                        rootItem.model.location.y = value
-                                    }
-                                }
-
-                                Binding {
-                                    target: yLocationValue
-                                    property: "value"
-                                    value: rootItem.model ? rootItem.model.location.y : 0
-                                    delayed: true
-                                }
-
-                                Text {
-                                    Layout.preferredWidth: 20 / Style.monitorRatio
-                                    text: "Z "
-                                    padding: 5 / Style.monitorRatio
-                                    Layout.topMargin: 5 / Style.monitorRatio
-                                    font.pointSize: 10
-                                    color: Style.foregroundColor
-                                }
-                                StepSpinBox {
-
-                                    id: zLocationValue
-                                    editable: true
-                                    Layout.fillWidth: true
-                                    Layout.minimumWidth: 100 / Style.monitorRatio
-                                    Layout.topMargin: 5 / Style.monitorRatio
-                                    Layout.rightMargin: 5 / Style.monitorRatio
-                                    height: valHeight / Style.monitorRatio
-                                    decimals: 4
-                                    from: -180
-                                    to: 180
-                                    onValueChanged: {
-                                        rootItem.model.location.z = value
-                                    }
-                                }
-
-                                Binding {
-                                    target: zLocationValue
-                                    property: "value"
-                                    value: rootItem.model ? rootItem.model.location.z : 0
-                                    delayed: true
-                                }
-                            }
-
-                            CheckBox {
-                                id: relative
-                                text: "Relative"
-                                font.pointSize: 10 / Style.monitorRatio
-                                checked: false
-
-                                onCheckStateChanged: if (checked === true) {
-                                                         rootItem.model.locationRelative = true
-                                                     } else {
-                                                         rootItem.model.locationRelative = false
-                                                     }
-
-                                indicator: Rectangle {
-                                    implicitWidth: 11 / Style.monitorRatio
-                                    implicitHeight: 11 / Style.monitorRatio
-                                    x: relative.leftPadding / Style.monitorRatio
-                                    y: (parent.height / 2 - height / 2) / Style.monitorRatio
-                                    radius: (height / 2) / Style.monitorRatio
-                                    border.color: relative.down ? "black" : "#313131"
-
-                                    Rectangle {
-                                        width: 11 / Style.monitorRatio
-                                        height: 11 / Style.monitorRatio
-                                        radius: (height / 2) / Style.monitorRatio
-                                        color: relative.down ? "black" : "dark green"
-                                        visible: relative.checked
-                                    }
-                                }
-                                contentItem: Text {
-                                    text: relative.text
-                                    font: relative.font
-                                    opacity: enabled ? 1.0 : 0.3
-                                    color: relative.down ? "black" : Style.foregroundColor
-                                    verticalAlignment: Text.AlignVCenter
-                                    leftPadding: relative.indicator.width + relative.spacing
-                                }
-                            }
-                        }
-                    }
-                }
-
-                ///////////-----------------------center-------------------//////////////
-                RowLayout {
-                    spacing: 0
-                    Text {
-                        text: "Center"
-                        color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
-                        Layout.alignment: Qt.AlignTop
-                        Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        visible: rootItem.model ? rootItem.model.centerStatus : false
-                    }
-                    GroupBox {
-                        id: centerSec
-                        visible: rootItem.model ? rootItem.model.centerStatus : false
-                        padding: 0
-                        Layout.fillWidth: true
-                        Layout.rightMargin: 15 / Style.monitorRatio
-                        background: Rectangle {
-                            color: foregroundColor
-                            radius: 10 / Style.monitorRatio
-                            border.color: "transparent"
-                        }
-                        GridLayout {
-                            anchors.fill: parent
-                            columnSpacing: 1
-                            rowSpacing: 1
-                            columns: 2
-
-                            Text {
-                                Layout.preferredWidth: 20 / Style.monitorRatio
-                                text: "X "
-                                padding: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-
-                            StepSpinBox {
-                                id: xCenterValue
-                                editable: true
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 5 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                height: valHeight / Style.monitorRatio
-                                decimals: 2
-                                from: -180
-                                to: 180
-                                onValueChanged: {
-                                    rootItem.model.center.x = value
-                                }
-                            }
-                            Binding {
-                                target: xCenterValue
-                                property: "value"
-                                value: rootItem.model ? rootItem.model.center.x : 0
-                                delayed: true
-                            }
-
-                            Text {
-                                Layout.preferredWidth: 20 / Style.monitorRatio
-                                text: "Y "
-                                padding: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-
-                            StepSpinBox {
-                                id: yCenterValue
-                                editable: true
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                Layout.rightMargin: 5 / Style.monitorRatio
-                                height: valHeight / Style.monitorRatio
-                                decimals: 2
-                                from: -180
-                                to: 180
-                                onValueChanged: {
-                                    rootItem.model.center.y = value
-                                }
-                            }
-                            Binding {
-                                target: yCenterValue
-                                property: "value"
-                                value: rootItem.model ? rootItem.model.center.y : 0
-                                delayed: true
-                            }
-
-                            Text {
-                                Layout.preferredWidth: 20 / Style.monitorRatio
-                                text: "Z "
-                                padding: 5
-                                font.pointSize: 10 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-
-                            StepSpinBox {
-                                id: zCenterValue
-                                editable: true
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 5 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                Layout.bottomMargin: 5 / Style.monitorRatio
-                                height: valHeight / Style.monitorRatio
-                                decimals: 2
-                                from: -180
-                                to: 180
-                                onValueChanged: {
-                                    rootItem.model.center.z = value
-                                }
-                            }
-                            Binding {
-                                target: zCenterValue
-                                property: "value"
-                                value: rootItem.model ? rootItem.model.center.z : 0
-                                delayed: true
-                            }
-                        }
-                    }
-                }
-
-                ////////// -------------------- Arc ----------------------//////////////
-                RowLayout {
-                    spacing: 0
-                    Text {
-                        text: "Arc"
-                        color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
-                        Layout.alignment: Qt.AlignTop
-                        Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        visible: rootItem.model ? rootItem.model.arcStatus : false
-                    }
-                    GroupBox {
-                        id: arcSec
-                        visible: rootItem.model ? rootItem.model.arcStatus : false
-                        padding: 0
-                        Layout.fillWidth: true
-                        Layout.rightMargin: 15 / Style.monitorRatio
-                        background: Rectangle {
-                            color: foregroundColor
-                            border.color: "transparent"
-                            radius: 10 / Style.monitorRatio
-                        }
-
-                        GridLayout {
-                            anchors.fill: parent
-                            columnSpacing: 1 / Style.monitorRatio
-                            rowSpacing: 1 / Style.monitorRatio
-                            columns: 2
-
-                            Text {
-                                Layout.preferredWidth: lblWidth / Style.monitorRatio
-                                text: "Start "
-                                padding: 5 / Style.monitorRatio
-                                font.pixelSize: 17 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-                            FloatSpinbox {
-                                id: startArcValue
-                                editable: true
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 5 / Style.monitorRatio
-                                Layout.topMargin: 2 / Style.monitorRatio
-                                value: 0
-                                stepSize: 1
-                                from: 0
-                                to: 360
-                                onValueChanged: {
-                                    if (rootItem.model)
-                                        rootItem.model.arc.x = value
-                                }
-                            }
-                            Binding {
-                                target: startArcValue
-                                property: "value"
-                                value: rootItem.model ? rootItem.model.arc.x : 0
-                                delayed: true
-                            }
-                            Text {
-                                Layout.preferredWidth: lblWidth / Style.monitorRatio
-                                text: "End "
-                                padding: 5 / Style.monitorRatio
-                                font.pixelSize: 17 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-                            FloatSpinbox {
-                                id: endArcValue
-                                editable: true
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: 100 / Style.monitorRatio
-                                Layout.rightMargin: 5 / Style.monitorRatio
-                                Layout.bottomMargin: 2 / Style.monitorRatio
-                                value: 360
-                                stepSize: 1
-                                from: 0
-                                to: 360
-                                onValueChanged: {
-                                    if (rootItem.model) {
-                                        rootItem.model.arc.y = value
-                                    }
-                                }
-                            }
-                            Binding {
-                                target: endArcValue
-                                property: "value"
-                                value: rootItem.model ? rootItem.model.arc.y : 0
-                                delayed: true
-                            }
-                        }
-                    }
-                }
-
-                ////////------------------------- radius------------------//////////////
-                RowLayout {
-                    id: radiusSec
-                    visible: rootItem.model ? rootItem.model.radiusStatus : false
-                    spacing: 0
-                    Text {
-                        Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        text: "Radius"
-                        font.pixelSize: 17 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                    Rectangle {
-                        color: foregroundColor
-                        radius: 10 / Style.monitorRatio
-                        border.color: "transparent"
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: valHeight / Style.monitorRatio
-                        Layout.rightMargin: 15 / Style.monitorRatio
-
-                        StepSpinBox {
-                            id: radiusValue
-                            editable: true
-                            anchors.leftMargin: 5 / Style.monitorRatio
-                            anchors.rightMargin: 5 / Style.monitorRatio
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            height: 30 / Style.monitorRatio
-                            decimals: 2
-                            from: 0
-                            to: 20000000
-                            onValueChanged: {
-                                rootItem.model.radius = value
-                            }
-                        }
-
-                        Binding {
-                            target: radiusValue
-                            property: "value"
-                            value: rootItem.model ? rootItem.model.radius : 0
-                            delayed: true
-                        }
-                    }
-                }
-
-                ////////------------------------- radiusMinor------------------//////////////
-                RowLayout {
-                    id: radiusMinorSec
-                    visible: rootItem.model ? rootItem.model.radiusMinorStatus : false
-                    spacing: 0
-                    Text {
-                        Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        text: "Radius Minor "
-                        font.pixelSize: 14 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-
-                    Rectangle {
-                        color: foregroundColor
-                        radius: 10 / Style.monitorRatio
-                        border.color: "transparent"
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: valHeight / Style.monitorRatio
-                        Layout.rightMargin: 15 / Style.monitorRatio
-
-                        StepSpinBox {
-                            id: radiusMinorValue
-                            editable: true
-                            anchors.leftMargin: 5 / Style.monitorRatio
-                            anchors.rightMargin: 5 / Style.monitorRatio
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            height: 20 / Style.monitorRatio
-                            decimals: 2
-                            from: 0
-                            to: 20000000
-                            onValueChanged: {
-                                rootItem.model.radiusMinor = value
-                            }
-                        }
-                        Binding {
-                            target: radiusMinorValue
-                            property: "value"
-                            value: rootItem.model ? rootItem.model.radiusMinor : 0
-                            delayed: true
-                        }
-                    }
-                }
-
-                ////////------------------------- radiusMajor------------------//////////////
-                RowLayout {
-                    id: radiusMajorSec
-                    visible: rootItem.model ? rootItem.model.radiusMajorStatus : false
-                    spacing: 0
-                    Text {
-                        Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        text: "Radius Major "
-                        font.pixelSize: 14 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                    Rectangle {
-                        color: foregroundColor
-                        radius: 10 / Style.monitorRatio
-                        border.color: "transparent"
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: valHeight / Style.monitorRatio
-                        Layout.rightMargin: 15 / Style.monitorRatio
-
-                        StepSpinBox {
-                            id: radiusMajorValue
-                            editable: true
-                            height: 20 / Style.monitorRatio
-                            anchors.leftMargin: 5 / Style.monitorRatio
-                            anchors.rightMargin: 5 / Style.monitorRatio
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            decimals: 2
-                            from: 0
-                            to: 20000000
-                            onValueChanged: {
-                                rootItem.model.radiusMajor = value
-                            }
-                        }
-                        Binding {
-                            target: radiusMajorValue
-                            property: "value"
-                            value: rootItem.model ? rootItem.model.radiusMajor : 0
-                            delayed: true
                         }
                     }
                 }
@@ -939,7 +417,7 @@ Item {
                 ////////------------------------- height------------------//////////////
                 RowLayout {
                     id: heightSec
-                    visible: rootItem.model ? rootItem.model.heightStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.heightStatus : false
                     spacing: 0
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
@@ -969,110 +447,24 @@ Item {
                             from: 0
                             to: 20000000
                             onValueChanged: {
-                                rootItem.model.heighT = value
+                                rootItem.cppInterface.heighT = value
                             }
                         }
                         Binding {
                             target: heightValue
                             property: "value"
-                            value: rootItem.model ? rootItem.model.heighT : 0
+                            value: rootItem.cppInterface ? rootItem.cppInterface.heighT : 0
                             delayed: true
                         }
                     }
                 }
 
-                ////////------------------------- lenght ------------------//////////////
-                RowLayout {
-                    id: lenghtSec
-                    spacing: 0
-                    visible: rootItem.model ? rootItem.model.lenghtStatus : false
-                    Text {
-                        Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        text: "Length "
-                        font.pixelSize: 17 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-
-                    Rectangle {
-                        color: foregroundColor
-                        radius: 10
-                        border.color: "transparent"
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: valHeight / Style.monitorRatio
-                        Layout.rightMargin: 15 / Style.monitorRatio
-
-                        StepSpinBox {
-                            id: lengthValue
-                            editable: true
-                            anchors.leftMargin: 5 / Style.monitorRatio
-                            anchors.rightMargin: 5 / Style.monitorRatio
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            height: 30 / Style.monitorRatio
-                            decimals: 2
-                            from: 0
-                            to: 20000000
-                            onValueChanged: {
-                                rootItem.model.lenghT = value
-                            }
-                        }
-                        Binding {
-                            target: lengthValue
-                            property: "value"
-                            value: rootItem.model ? rootItem.model.lenghT : 0
-                            delayed: true
-                        }
-                    }
-                }
-
-                ////////------------------------- width ------------------//////////////
-                RowLayout {
-                    id: widthSec
-                    visible: rootItem.model ? rootItem.model.widthStatus : false
-                    spacing: 0
-                    Text {
-                        Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        text: "Width "
-                        font.pixelSize: 17 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                    Rectangle {
-                        color: foregroundColor
-                        radius: 10 / Style.monitorRatio
-                        border.color: "transparent"
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: valHeight / Style.monitorRatio
-                        Layout.rightMargin: 15 / Style.monitorRatio
-                        StepSpinBox {
-                            id: widthValue
-                            editable: true
-                            anchors.leftMargin: 5 / Style.monitorRatio
-                            anchors.rightMargin: 5 / Style.monitorRatio
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            height: 30 / Style.monitorRatio
-                            decimals: 2
-                            from: 0
-                            to: 20000000
-                            onValueChanged: {
-                                rootItem.model.widtH = value
-                            }
-                        }
-                        Binding {
-                            target: widthValue
-                            property: "value"
-                            value: rootItem.model ? rootItem.model.widtH : 0
-                            delayed: true
-                        }
-                    }
-                }
 
                 // --------------------------------- clamp -----------------------////////////
                 RowLayout {
                     id: clampSec
                     spacing: 0
-                    visible: rootItem.model ? rootItem.model.clampStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.clampStatus : false
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Clamp "
@@ -1096,8 +488,8 @@ Item {
                             height: 25 / Style.monitorRatio
 
                             onCurrentIndexChanged: {
-                                if (rootItem.model)
-                                    rootItem.model.clamp = currentIndex
+                                if (rootItem.cppInterface)
+                                    rootItem.cppInterface.clamp = currentIndex
                             }
 
                             delegate: ItemDelegate {
@@ -1177,7 +569,7 @@ Item {
                 ////////-------------------------/tesselation/------------------//////////////
                 RowLayout {
                     id: tesselationSec
-                    visible: rootItem.model ? rootItem.model.tesselationStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.tesselationStatus : false
                     spacing: 0
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
@@ -1207,13 +599,13 @@ Item {
                             to: 20000000
                             height: 20 / Style.monitorRatio
                             onValueChanged: {
-                                rootItem.model.tesselation = value
+                                rootItem.cppInterface.tesselation = value
                             }
                         }
                         Binding {
                             target: tesselationValue
                             property: "value"
-                            value: rootItem.model ? rootItem.model.tesselation : 0
+                            value: rootItem.cppInterface ? rootItem.cppInterface.tesselation : 0
                             delayed: true
                         }
                     }
@@ -1222,7 +614,7 @@ Item {
                 ////------------------------ Show lenght -------------------- ///////////////
                 RowLayout {
                     id: showLenghtSec
-                    visible: rootItem.model ? rootItem.model.showLenStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.showLenStatus : false
                     spacing: 0
 
                     Text {
@@ -1238,13 +630,13 @@ Item {
                         height: valHeight / Style.monitorRatio
                         checked: false
                         onToggled: function () {
-                            rootItem.model.showLen = showLenghtValue.checked
+                            rootItem.cppInterface.showLen = showLenghtValue.checked
                         }
                     }
                     Binding {
                         target: showLenghtValue
                         property: "checked"
-                        value: rootItem.model ? rootItem.model.showLen : 0
+                        value: rootItem.cppInterface ? rootItem.cppInterface.showLen : 0
                         delayed: true
                     }
                 }
@@ -1252,7 +644,7 @@ Item {
                 ////------------------------Show Bearing -------------------- ///////////////
                 RowLayout {
                     id: bearingSec
-                    visible: rootItem.model ? rootItem.model.bearingStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.bearingStatus : false
                     spacing: 0
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
@@ -1267,13 +659,13 @@ Item {
                         height: valHeight / Style.monitorRatio
                         checked: false
                         onToggled: function () {
-                            rootItem.model.showBearing = bearingValue.checked
+                            rootItem.cppInterface.showBearing = bearingValue.checked
                         }
                     }
                     Binding {
                         target: bearingValue
                         property: "checked"
-                        value: rootItem.model ? rootItem.model.showBearing : 0
+                        value: rootItem.cppInterface ? rootItem.cppInterface.showBearing : 0
                         delayed: true
                     }
                 }
@@ -1281,7 +673,7 @@ Item {
                 ////------------------------  showAltitude -------------------- ///////////////
                 RowLayout {
                     id: showAltitudeSec
-                    visible: rootItem.model ? rootItem.model.altitudeStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.altitudeStatus : false
                     spacing: 0
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
@@ -1296,13 +688,13 @@ Item {
                         height: valHeight / Style.monitorRatio
                         checked: false
                         onToggled: function () {
-                            rootItem.model.showAltitude = showAltitudeValue.checked
+                            rootItem.cppInterface.showAltitude = showAltitudeValue.checked
                         }
                     }
                     Binding {
                         target: showAltitudeValue
                         property: "checked"
-                        value: rootItem.model ? rootItem.model.showAltitude : 0
+                        value: rootItem.cppInterface ? rootItem.cppInterface.showAltitude : 0
                         delayed: true
                     }
                 }
@@ -1310,7 +702,7 @@ Item {
                 ////------------------------ Show Slope -------------------- ///////////////
                 RowLayout {
                     id: slopeSec
-                    visible: rootItem.model ? rootItem.model.showSlopStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.showSlopStatus : false
                     spacing: 0
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
@@ -1325,13 +717,13 @@ Item {
                         height: valHeight / Style.monitorRatio
                         checked: false
                         onToggled: function () {
-                            rootItem.model.showSlop = slopeValue.checked
+                            rootItem.cppInterface.showSlop = slopeValue.checked
                         }
                     }
                     Binding {
                         target: slopeValue
                         property: "checked"
-                        value: rootItem.model ? rootItem.model.showSlop : 0
+                        value: rootItem.cppInterface ? rootItem.cppInterface.showSlop : 0
                         delayed: true
                     }
                 }
@@ -1339,7 +731,7 @@ Item {
                 ////------------------------ Points  -------------------- ///////////////
                 GroupBox {
                     id: pointSec
-                    visible: rootItem.model ? rootItem.model.pointsStatus : false
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.pointsStatus : false
                     padding: 0
                     Layout.fillWidth: true
 
@@ -1365,13 +757,13 @@ Item {
                                 height: valHeight
                                 checked: false
                                 onToggled: function () {
-                                    rootItem.model.pointsVisible = pointVisible.checked
+                                    rootItem.cppInterface.pointsVisible = pointVisible.checked
                                 }
                             }
                             Binding {
                                 target: pointVisible
                                 property: "checked"
-                                value: rootItem.model ? rootItem.model.pointsVisible : 0
+                                value: rootItem.cppInterface ? rootItem.cppInterface.pointsVisible : 0
                                 delayed: true
                             }
                         }
@@ -1383,7 +775,7 @@ Item {
                                 font.pixelSize: 17 / Style.monitorRatio
                                 Layout.alignment: Qt.AlignTop
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
-                                visible: rootItem.model ? rootItem.model.strokeStatus : false
+                                visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
                             }
                             GroupBox {
                                 padding: 0
@@ -1473,10 +865,10 @@ Item {
                                                                 checked)
                                                     if (checked) {
                                                         pointColorPreviousIndex = index
-                                                        rootItem.model.pointsColor
+                                                        rootItem.cppInterface.pointsColor
                                                                 = propertyColorSelect
                                                     } else {
-                                                        rootItem.model.pointsColor = "#FFFFFF"
+                                                        rootItem.cppInterface.pointsColor = "#FFFFFF"
                                                     }
                                                 }
                                             }
@@ -1523,14 +915,13 @@ Item {
                                         from: 0
                                         to: 100
                                         onValueChanged: {
-                                            rootItem.model.pointsColor.a = value / 100
-                                            console.log(rootItem.model.pointsColor.a)
+                                            rootItem.cppInterface.pointsColor.a = value / 100
                                         }
                                     }
                                     Binding {
                                         target: pointOpacityValue
                                         property: "value"
-                                        value: rootItem.model ? rootItem.model.pointsColor.a
+                                        value: rootItem.cppInterface ? rootItem.cppInterface.pointsColor.a
                                                                 * 100 : 0
                                         delayed: true
                                     }
@@ -1570,13 +961,13 @@ Item {
                                     from: 0
                                     to: 20000000
                                     onValueChanged: {
-                                        rootItem.model.pointsWidth = value
+                                        rootItem.cppInterface.pointsWidth = value
                                     }
                                 }
                                 Binding {
                                     target: pointWidthValue
                                     property: "value"
-                                    value: rootItem.model ? rootItem.model.pointsWidth : 0
+                                    value: rootItem.cppInterface ? rootItem.cppInterface.pointsWidth : 0
                                     delayed: true
                                 }
                             }
@@ -1597,13 +988,13 @@ Item {
                                 height: valHeight
                                 checked: false
                                 onToggled: function () {
-                                    rootItem.model.pointsSmooth = pointSmoothValue.checked
+                                    rootItem.cppInterface.pointsSmooth = pointSmoothValue.checked
                                 }
                             }
                             Binding {
                                 target: pointSmoothValue
                                 property: "checked"
-                                value: rootItem.model ? rootItem.model.pointsSmooth : 0
+                                value: rootItem.cppInterface ? rootItem.cppInterface.pointsSmooth : 0
                                 delayed: true
                             }
                         }
@@ -1612,4 +1003,5 @@ Item {
             }
         }
     }
+
 }
