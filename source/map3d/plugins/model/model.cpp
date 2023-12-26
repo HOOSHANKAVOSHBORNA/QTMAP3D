@@ -60,14 +60,18 @@ bool Model::setup()
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
+    auto tankToolboxItem =  new ToolboxItem{"Tank", MODEL, "qrc:/resources/tank.png", true};
+    QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTankItemCheck);
+    toolbox()->addItem(tankToolboxItem);
+
     mSimpleNodeLayer = new ParenticAnnotationLayer();
-    mSimpleNodeLayer->setName(TREE);
+    mSimpleNodeLayer->setName("Fixed");
 
     mMoveableNodeLayer = new ParenticAnnotationLayer();
-    mMoveableNodeLayer->setName(CAR);
+    mMoveableNodeLayer->setName("Moving");
 
     mFlyableNodelLayer = new ParenticAnnotationLayer();
-    mFlyableNodelLayer->setName(AIRPLANE);
+    mFlyableNodelLayer->setName("Flying");
 
     // property item setup
     mProperty = new Property(mCurrentModel, mapItem());
@@ -113,12 +117,12 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
         mPickModelNode = modelNode;
         if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON){
             modelNode->select(true);
-            return true;
+            return false;
         }
         else if(ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON){
             modelNode->showMenu(true);
             modelNode->select(true);
-            return true;
+            return false;
         }
     }
 
@@ -184,6 +188,12 @@ osgEarth::Symbology::Style &Model::getDefaultStyle()
 void Model::onTreeItemCheck(bool check)
 {
     if (check) {
+        mBaseNodeData = sampleNodeData("Tree",
+                                   "../data/models/tree/tree.png",
+                                   "../data/models/tree/tree.osgb",
+                                   "../data/models/airplane/airplane.png",
+                                   "qrc:/resources/tree.png");
+
         makeIconNode("../data/models/tree/tree.png");
         mType = Type::SIMPLE;
         setState(State::READY);
@@ -202,6 +212,11 @@ void Model::onTreeItemCheck(bool check)
 void Model::onCarItemCheck(bool check)
 {
     if (check) {
+        mBaseNodeData = sampleNodeData("Car",
+                                   "../data/models/car/car.png",
+                                   "../data/models/car/car.osgb",
+                                   "../data/models/airplane/airplane.png",
+                                   "qrc:/resources/car.png");
         makeIconNode("../data/models/car/car.png");
         mType = Type::MOVEABLE;
         setState(State::READY);
@@ -220,6 +235,11 @@ void Model::onCarItemCheck(bool check)
 void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
+        mBaseNodeData = sampleNodeData("Airplane",
+                                   "../data/models/airplane/airplane.png",
+                                   "../data/models/airplane/airplane.osgb",
+                                   "../data/models/airplane/airplane.png",
+                                   "qrc:/resources/airplane.png");
         makeIconNode("../data/models/airplane/airplane.png");
         mType = Type::FLYABLE;
         setState(State::READY);
@@ -235,6 +255,29 @@ void Model::onAirplanItemCheck(bool check)
     }
 }
 
+void Model::onTankItemCheck(bool check)
+{
+    if (check) {
+        mBaseNodeData = sampleNodeData("Tank",
+                                   "../data/models/tank/tank.png",
+                                   "../data/models/tank/tank.osg",
+                                   "../data/models/tank/tank.png",
+                                   "qrc:/resources/tank.png");
+        mBaseNodeData->isAttacker = true;
+
+        makeIconNode("../data/models/tank/tank.png");
+        mType = Type::MOVEABLE;
+        setState(State::READY);
+        mapItem()->addNode(iconNode());
+    }
+    else {
+        if(state() == State::MOVING)
+            cancel();
+        setState(State::NONE);
+        mapItem()->removeNode(iconNode());
+    }
+}
+
 void Model::onModeChanged(bool is3DView)
 {
     mIs3D = is3DView;
@@ -242,15 +285,25 @@ void Model::onModeChanged(bool is3DView)
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos)
 {
+    mNodeData = new NodeData();
+    mNodeData->name = mBaseNodeData->name;
+    mNodeData->url2D = mBaseNodeData->url2D;
+    mNodeData->url3D = mBaseNodeData->url3D;
+    mNodeData->imgSrc = mBaseNodeData->imgSrc;
+    mNodeData->iconSrc = mBaseNodeData->iconSrc;
+    mNodeData->color = mBaseNodeData->color;
+    mNodeData->isAttacker = mBaseNodeData->isAttacker;
+
+    mNodeData->longitude = geoPos.x();
+    mNodeData->latitude = geoPos.y();
+    mNodeData->altitude = geoPos.z();
+    mNodeData->name = mNodeData->name + std::to_string(mCount);
+
     switch (mType) {
     case Type::SIMPLE:
-        mNodeData = sampleNodeData("Tree",
-                                   "../data/models/tree/tree.png",
-                                   "../data/models/tree/tree.osgb",
-                                   "../data/models/airplane/airplane.png",
-                                   "qrc:/resources/tree.png",
-                                   geoPos);
-        mNodeData->id = 500 + mCount;
+
+        mNodeData->id = 100 + mCount;
+
         if (!mModelNodeLayer->containsLayer(mSimpleNodeLayer)) {
             mSimpleNodeLayer->clear();
             mModelNodeLayer->addLayer(mSimpleNodeLayer);
@@ -259,13 +312,8 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         mCurrentModel = mDataManager->addUpdateNode(mNodeData);
         break;
     case Type::MOVEABLE:
-        mNodeData = sampleNodeData("Car",
-                                   "../data/models/car/car.png",
-                                   "../data/models/car/car.osgb",
-                                   "../data/models/airplane/airplane.png",
-                                   "qrc:/resources/car.png",
-                                   geoPos);
-        mNodeData->id = 500 + mCount;
+
+        mNodeData->id = 200 + mCount;
         if (!mModelNodeLayer->containsLayer(mMoveableNodeLayer)) {
             mMoveableNodeLayer->clear();
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
@@ -274,13 +322,8 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
         mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
         break;
     case Type::FLYABLE:
-        mNodeData = sampleNodeData("Airplane",
-                                   "../data/models/airplane/airplane.png",
-                                   "../data/models/airplane/airplane.osgb",
-                                   "../data/models/airplane/airplane.png",
-                                   "qrc:/resources/airplane.png",
-                                   geoPos);
-        mNodeData->id = 500 + mCount;
+
+        mNodeData->id = 300 + mCount;
         if (!mModelNodeLayer->containsLayer(mFlyableNodelLayer)) {
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
@@ -395,16 +438,16 @@ NodeData *Model::sampleNodeData(std::string name,
                                 std::string url2d,
                                 std::string url3d,
                                 std::string imgSrc,
-                                std::string iconSrc,
-                                osgEarth::GeoPoint geoPos)
+                                std::string iconSrc/*,
+                                osgEarth::GeoPoint geoPos*/)
 {
     NodeData *nodeData = new NodeData();
     //    flyableNodeData->id = 100;
-    nodeData->name = name + std::to_string(mCount);
+    nodeData->name = name;
     nodeData->type = name;
-    nodeData->longitude = geoPos.x();
-    nodeData->latitude = geoPos.y();
-    nodeData->altitude = geoPos.z();
+//    nodeData->longitude = geoPos.x();
+//    nodeData->latitude = geoPos.y();
+//    nodeData->altitude = geoPos.z();
     nodeData->url2D = url2d;
     nodeData->url3D = url3d;
     nodeData->imgSrc = imgSrc;
