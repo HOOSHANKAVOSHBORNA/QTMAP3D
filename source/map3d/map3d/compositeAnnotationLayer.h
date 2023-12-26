@@ -36,6 +36,8 @@ public:
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() { return nullptr; }
 
     void setOrder(int newOrder);
+    void setFilter();
+    void clearFilter();
 
     int userId() const;
 

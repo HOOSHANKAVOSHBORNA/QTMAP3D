@@ -29,22 +29,22 @@ MovableNodeTest::MovableNodeTest(NetworkManager *networkManager):
         QTimer *timerRemoveAircraft = new QTimer();
         QObject::connect(timerRemoveAircraft, &QTimer::timeout, [this](){
             if (mMovableDataList.size() > 0){
-                QJsonObject jsonObject = mMovableDataList[0].movableDoc.object();
-                QJsonObject jsonStatusObject = mMovableDataList[0].statusDoc.object();
-                QJsonObject jsonLineObject = mMovableDataList[0].lineDoc.object();
+                // QJsonObject jsonObject = mMovableDataList[0].movableDoc.object();
+                // QJsonObject jsonStatusObject = mMovableDataList[0].statusDoc.object();
+                // QJsonObject jsonLineObject = mMovableDataList[0].lineDoc.object();
 
-                jsonObject.remove("COMMAND");
-                jsonObject.insert("COMMAND", "REMOVE");
-                jsonStatusObject.remove("COMMAND");
-                jsonStatusObject.insert("COMMAND", "REMOVE");
-                jsonLineObject.remove("COMMAND");
-                jsonLineObject.insert("COMMAND", "REMOVE");
+                // jsonObject.remove("COMMAND");
+                // jsonObject.insert("COMMAND", "REMOVE");
+                // jsonStatusObject.remove("COMMAND");
+                // jsonStatusObject.insert("COMMAND", "REMOVE");
+                // jsonLineObject.remove("COMMAND");
+                // jsonLineObject.insert("COMMAND", "REMOVE");
 
-                mMovableDataList.pop_front();
+                // mMovableDataList.pop_front();
 
-                QJsonDocument jsonDoc(jsonObject);
-                QJsonDocument jsonStatusDoc(jsonStatusObject);
-                QJsonDocument jsonLineDoc(jsonLineObject);
+                // QJsonDocument jsonDoc(jsonObject);
+                // QJsonDocument jsonStatusDoc(jsonStatusObject);
+                // QJsonDocument jsonLineDoc(jsonLineObject);
 
                 // mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
                 // mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));

@@ -27,26 +27,26 @@ NodeTest::NodeTest(NetworkManager *networkManager):
         QTimer *timerRemoveAircraft = new QTimer();
         QObject::connect(timerRemoveAircraft, &QTimer::timeout, [this](){
             if (mNodeDataList.size() > 0){
-                QJsonObject jsonObject = mNodeDataList[0].nodeDoc.object();
-                QJsonObject jsonStatusObject = mNodeDataList[0].statusDoc.object();
-                QJsonObject jsonCircleObject = mNodeDataList[0].circleDoc.object();
-                QJsonObject jsonPolygonObject = mNodeDataList[0].polygonDoc.object();
+                // QJsonObject jsonObject = mNodeDataList[0].nodeDoc.object();
+                // QJsonObject jsonStatusObject = mNodeDataList[0].statusDoc.object();
+                // QJsonObject jsonCircleObject = mNodeDataList[0].circleDoc.object();
+                // QJsonObject jsonPolygonObject = mNodeDataList[0].polygonDoc.object();
 
-                jsonObject.remove("COMMAND");
-                jsonObject.insert("COMMAND", "REMOVE");
-                jsonStatusObject.remove("COMMAND");
-                jsonStatusObject.insert("COMMAND", "REMOVE");
-                jsonCircleObject.remove("COMMAND");
-                jsonCircleObject.insert("COMMAND", "REMOVE");
-                jsonPolygonObject.remove("COMMAND");
-                jsonPolygonObject.insert("COMMAND", "REMOVE");
+                // jsonObject.remove("COMMAND");
+                // jsonObject.insert("COMMAND", "REMOVE");
+                // jsonStatusObject.remove("COMMAND");
+                // jsonStatusObject.insert("COMMAND", "REMOVE");
+                // jsonCircleObject.remove("COMMAND");
+                // jsonCircleObject.insert("COMMAND", "REMOVE");
+                // jsonPolygonObject.remove("COMMAND");
+                // jsonPolygonObject.insert("COMMAND", "REMOVE");
 
-                mNodeDataList.pop_front();
+                // mNodeDataList.pop_front();
 
-                QJsonDocument jsonDoc(jsonObject);
-                QJsonDocument jsonStatusDoc(jsonStatusObject);
-                QJsonDocument jsonCircleDoc(jsonCircleObject);
-                QJsonDocument jsonPolygonDoc(jsonPolygonObject);
+                // QJsonDocument jsonDoc(jsonObject);
+                // QJsonDocument jsonStatusDoc(jsonStatusObject);
+                // QJsonDocument jsonCircleDoc(jsonCircleObject);
+                // QJsonDocument jsonPolygonDoc(jsonPolygonObject);
 
                 // mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
                 // mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));

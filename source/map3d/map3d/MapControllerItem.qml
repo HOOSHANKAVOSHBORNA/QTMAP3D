@@ -103,6 +103,7 @@ MapController {
         //        model: map.searchNodeProxyModel()
         model: SearchNodeManagerInstance.searchNodeProxyModel()
         //        model: map.searchNodeManager().searchNodeProxyModel()
+        filterManager: map.filterManager()
     }
     MultiEffect {
         source: searcbar
