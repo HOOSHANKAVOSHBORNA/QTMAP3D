@@ -46,6 +46,8 @@ bool CombatModelNode::setup()
 
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::addAssignmentChecked, this, &CombatModelNode::onAddAssignmentChecked);
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::removeAssignmentChecked, this, &CombatModelNode::onRemoveAssignmentChecked);
+    QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::onCloseMenuClicked, this, &CombatModelNode::onCloseMenuClicked);
+
 
     return true;
 
@@ -227,6 +229,7 @@ void CombatModelNode::onTargetMenuChecked()
     SimpleModelNode *currentObjectModel = dynamic_cast<SimpleModelNode*>(QObject::sender());
     if(currentObjectModel){
         mCombatMenu->selectTarget(currentObjectModel);
+        mapItem()->setTopMenuVisible(true);
     }
 }
 
@@ -235,6 +238,7 @@ void CombatModelNode::onAttackMenuChecked()
     SimpleModelNode *currentObjectModel = dynamic_cast<SimpleModelNode*>(QObject::sender());
     if(currentObjectModel){
         mCombatMenu->selectAttacker(currentObjectModel);
+        mapItem()->setTopMenuVisible(true);
     }
 }
 
@@ -256,6 +260,12 @@ void CombatModelNode::onRemoveAssignmentChecked(bool check, SimpleModelNode *nod
         mState = State::NONE;
     mOperatorNode = node;
     mOperatorIsAttacker = isAttacker;
+}
+
+void CombatModelNode::onCloseMenuClicked()
+{
+    mapItem()->setTopMenuItem(nullptr);
+    mapItem()->setTopMenuVisible(false);
 }
 
 //void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){

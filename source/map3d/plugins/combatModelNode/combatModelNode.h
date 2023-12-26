@@ -57,6 +57,7 @@ public slots:
     void onAttackMenuChecked();
     void onAddAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);
     void onRemoveAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);
+    void onCloseMenuClicked();
 
 protected:
 //    void initModel(osgEarth::GeoPoint &geoPos);;

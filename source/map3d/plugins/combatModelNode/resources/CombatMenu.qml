@@ -19,6 +19,7 @@ Item {
 
     readonly property color backgroundColor: "#003569"
     readonly property color bg20: Qt.rgba(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0.20)
+
     RowLayout{
         id:mainRow
         anchors.centerIn: parent
@@ -162,8 +163,7 @@ Item {
                                 source: objectIcon
                                 width: 35 /  1.3/*Style.monitorRatio*/
                                 height: 35 /1.3 /*Style.monitorRatio*/
-
-                                color: stateColor
+                                color: objectColor
 
                             }
                         }
@@ -190,7 +190,7 @@ Item {
                                 anchors.leftMargin: 5
                                 text: objectID
                                 font.pixelSize: 17 / 1.3/*Style.monitorRatio*/
-                                color: "#003569"
+                                color: objectStateColor
                                 anchors.verticalCenter: parent.verticalCenter
 
                             }
@@ -236,11 +236,12 @@ Item {
                 source: "qrc:/Resources/add"
                 height: 50/2/*Style.monitorRatio*/
                 width: 50/2/*Style.monitorRatio*/
-                color: addCheck ? "red" : "blue"
+                color: addCheck ? "orange" : "#003569"
                 MouseArea{
                     anchors.fill: parent
                     onClicked: {
                         addCheck = !addCheck
+                        removeCheck = false
                         assignmentListModel.onAddButtonChecked(addCheck)
 
                     }
@@ -257,11 +258,12 @@ Item {
                 source: "qrc:/Resources/location-delete"
                 height: 50/2/*Style.monitorRatio*/
                 width: 50/2/*Style.monitorRatio*/
-                color: removeCheck ? "red" : "blue"
+                color: removeCheck ? "orange" : "#003569"
                 MouseArea{
                     anchors.fill: parent
                     onClicked:{
                         removeCheck = !removeCheck
+                        addCheck = false
                         assignmentListModel.onRemoveButtonChecked(removeCheck)
 
                     }
@@ -292,7 +294,8 @@ Item {
     }
 
     Rectangle{
-        color: "red"
+        color: "#DEE3E6"
+        radius: 10
         width: 600
         height: 60
         anchors.left: mainRow.left
@@ -348,7 +351,7 @@ Item {
                             anchors.leftMargin: 5
                             text: operatorName
                             font.pixelSize: 17 / 1.3/*Style.monitorRatio*/
-                            color: operatorSelect ? "yellow" : operatorColor
+                            color: operatorSelect ? "red" : operatorColor
                             anchors.verticalCenter: parent.verticalCenter
 
                         }
