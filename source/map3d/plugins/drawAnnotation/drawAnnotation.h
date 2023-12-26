@@ -20,7 +20,11 @@
 #include "measureHeight.h"
 #include "polygon.h"
 #define CATEGORY "Draw Annotation"
+#define M_CATEGORY "Measurement"
 
+#define RULER "Ruler"
+#define MEASUREHEIGHT "Height"
+#define SLOPE "Slope"
 #define POLYLINE "Polyline"
 #define POLYGON "Polygon"
 
@@ -59,6 +63,9 @@ public:
 
 private slots:
     /***********line*********/
+    void onRulerItemCheck(bool check);
+    void onHeightItemCheck(bool check);
+    void onSlopeItemCheck(bool check);
     void onLineItemCheck(bool check);
     void LineNodeDataReceived(PolyLineData *lineNodeData);
     /*********polygon*********/
@@ -88,6 +95,7 @@ private:
     MeasureHeight *mMeasureHeight{nullptr};
     LineProperty *mLineProperty = nullptr;
     PolygonProperty *mPolygonProperty{nullptr};
+    CompositeAnnotationLayer *measureLayer();
     osg::ref_ptr<ParenticAnnotationLayer> mLineLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mRulerLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mHeightLayer;
