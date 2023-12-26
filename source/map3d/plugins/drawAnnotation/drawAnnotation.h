@@ -24,6 +24,7 @@
 #define POLYLINE "Polyline"
 #define POLYGON "Polygon"
 
+//Q_DECLARE_METATYPE(Property)
 
 class DrawAnnotation : public PluginInterface
 {
@@ -59,9 +60,6 @@ public:
 private slots:
     /***********line*********/
     void onLineItemCheck(bool check);
-    void onRulerItemCheck(bool check);
-    void onHeightItemCheck(bool check);
-    void onSlopeItemCheck(bool check);
     void LineNodeDataReceived(PolyLineData *lineNodeData);
     /*********polygon*********/
     void addUpdatePolygon(PolygonData *polygonData);

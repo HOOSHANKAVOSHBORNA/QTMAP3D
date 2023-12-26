@@ -40,7 +40,6 @@ DrawAnnotation::DrawAnnotation(QObject *parent)
 {
     Q_INIT_RESOURCE(drawAnnotation);
     Q_INIT_RESOURCE(drawAnnotationQml);
-    qmlRegisterType<Property>("Crystal", 1, 0, "CProperty");
 }
 
 DrawAnnotation::~DrawAnnotation()
@@ -222,25 +221,7 @@ void DrawAnnotation::onLineItemCheck(bool check)
     onItemChecked(Type::LINE, check);
 }
 
-void DrawAnnotation::onRulerItemCheck(bool check)
-{
-    if (check)
-        makeIconNode("../data/images/draw/ruler.png");
-    onItemChecked(Type::RULERR, check);
-}
 
-void DrawAnnotation::onHeightItemCheck(bool check)
-{
-    if (check)
-        makeIconNode("../data/images/draw/height.png");
-    onItemChecked(Type::HEIGHT, check);
-}
-
-void DrawAnnotation::onSlopeItemCheck(bool check)
-{
-    makeIconNode("../data/images/draw/slope.png");
-    onItemChecked(Type::SLOPEE, check);
-}
 
 void DrawAnnotation::LineNodeDataReceived(PolyLineData *lineNodeData)
 {
@@ -388,8 +369,6 @@ void DrawAnnotation::tempDrawing(const osgEarth::GeoPoint &geoPos)
         mLine->removePoint();
     }
     if (mType == Type::HEIGHT){
-        //        mMeasureHeight->clear();
-        //        mMeasureHeight->setSecondPoint(geoPos);
         if (mLine->getSize() > 1)
         {
             mLine->removePoint();
@@ -454,7 +433,6 @@ void DrawAnnotation::cancelDraw()
         mLine = nullptr;
         mMeasureHeight = nullptr;
         mLineProperty->setLine(mLine);
-        //        mLineProperties->setMeasureHeight(mMeasureHeight);
         setState(State::READY);
         mCount--;
 
@@ -471,9 +449,8 @@ void DrawAnnotation::createProperty(QString name, QVariant property)
         if (comp->status() == QQmlComponent::Status::Error) {
             qDebug() << comp->errorString();
         }
-        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
         mItem = qobject_cast<QQuickItem*>(comp->create());
-        mItem->setProperty("model", property);
+        mItem->setProperty("cppInterface", property);
 
         mainWindow()->getToolboxManager()->addPropertyItem(mItem, name);
     });
