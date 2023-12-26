@@ -40,7 +40,6 @@ DrawAnnotation::DrawAnnotation(QObject *parent)
 {
     Q_INIT_RESOURCE(drawAnnotation);
     Q_INIT_RESOURCE(drawAnnotationQml);
-    qmlRegisterType<Property>("Crystal", 1, 0, "CProperty");
 }
 
 DrawAnnotation::~DrawAnnotation()
@@ -72,14 +71,8 @@ bool DrawAnnotation::setup()
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     mShapeLayer = new CompositeAnnotationLayer();
-//    mShapeLayer->setName(CATEGORY);
-    mShapeLayer->setName("Annotation");
+    mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
-
-    mMeasureLayer = new CompositeAnnotationLayer();
-//    mMeasureLayer->setName(M_CATEGORY);
-    mMeasureLayer->setName("Annotation Measurement");
-    mapItem()->getMapObject()->addLayer(mMeasureLayer);
 
 
     /***************************draw Line*******************************/
@@ -87,14 +80,6 @@ bool DrawAnnotation::setup()
     connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawAnnotation::LineNodeDataReceived);
     connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawAnnotation::polygonDataReceived);
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
-    auto toolboxItemPolygon =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
-    QObject::connect(toolboxItemPolygon, &ToolboxItem::itemChecked, this, &DrawAnnotation::onPolygonItemCheck);
-    toolbox()->addItem(toolboxItemPolygon);
-
-    auto toolboxItemLine =  new ToolboxItem{POLYLINE, CATEGORY, "qrc:/resources/line.png", true};
-    QObject::connect(toolboxItemLine, &ToolboxItem::itemChecked, this, &DrawAnnotation::onLineItemCheck);
-    toolbox()->addItem(toolboxItemLine);
 
     auto toolboxItemRuler =  new ToolboxItem{RULER, M_CATEGORY, "qrc:/resources/ruler.png", true};
     QObject::connect(toolboxItemRuler, &ToolboxItem::itemChecked, this, &DrawAnnotation::onRulerItemCheck);
@@ -108,8 +93,19 @@ bool DrawAnnotation::setup()
     QObject::connect(toolboxItemSlope, &ToolboxItem::itemChecked, this, &DrawAnnotation::onSlopeItemCheck);
     toolbox()->addItem(toolboxItemSlope);
 
+    auto toolboxItemPolygon =  new ToolboxItem{POLYGON, CATEGORY, "qrc:/resources/polygon.png", true};
+    QObject::connect(toolboxItemPolygon, &ToolboxItem::itemChecked, this, &DrawAnnotation::onPolygonItemCheck);
+    toolbox()->addItem(toolboxItemPolygon);
+
+    auto toolboxItemLine =  new ToolboxItem{POLYLINE, CATEGORY, "qrc:/resources/line.png", true};
+    QObject::connect(toolboxItemLine, &ToolboxItem::itemChecked, this, &DrawAnnotation::onLineItemCheck);
+    toolbox()->addItem(toolboxItemLine);
+
     mLineLayer = new ParenticAnnotationLayer();
     mLineLayer->setName(POLYLINE);
+
+    mPolygonLayer = new ParenticAnnotationLayer();
+    mPolygonLayer->setName(POLYGON);
 
     mRulerLayer = new ParenticAnnotationLayer();
     mRulerLayer->setName(RULER);
@@ -119,12 +115,6 @@ bool DrawAnnotation::setup()
 
     mSlopeLayer = new ParenticAnnotationLayer();
     mSlopeLayer->setName(SLOPE);
-
-    mLineLayer = new ParenticAnnotationLayer();
-    mLineLayer->setName(POLYLINE);
-
-    mPolygonLayer = new ParenticAnnotationLayer();
-    mPolygonLayer->setName(POLYGON);
 
     return true;
 }
@@ -161,12 +151,7 @@ CompositeAnnotationLayer *DrawAnnotation::shapeLayer()
     return mShapeLayer;
 }
 
-CompositeAnnotationLayer *DrawAnnotation::measureLayer()
-{
-    if(!mMeasureLayer)
-        mMeasureLayer = dynamic_cast<CompositeAnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(M_CATEGORY));
-    return mMeasureLayer;
-}
+
 
 void DrawAnnotation::addUpdatePolygon(PolygonData *polygonData)
 {
@@ -250,13 +235,6 @@ bool DrawAnnotation::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUI
 
 }
 
-void DrawAnnotation::onLineItemCheck(bool check)
-{
-    if (check)
-        makeIconNode("../data/images/draw/line.png");
-    onItemChecked(Type::LINE, check);
-}
-
 void DrawAnnotation::onRulerItemCheck(bool check)
 {
     if (check)
@@ -273,9 +251,19 @@ void DrawAnnotation::onHeightItemCheck(bool check)
 
 void DrawAnnotation::onSlopeItemCheck(bool check)
 {
-    makeIconNode("../data/images/draw/slope.png");
+    if (check)
+        makeIconNode("../data/images/draw/slope.png");
     onItemChecked(Type::SLOPEE, check);
 }
+
+void DrawAnnotation::onLineItemCheck(bool check)
+{
+    if (check)
+        makeIconNode("../data/images/draw/line.png");
+    onItemChecked(Type::LINE, check);
+}
+
+
 
 void DrawAnnotation::LineNodeDataReceived(PolyLineData *lineNodeData)
 {
@@ -353,6 +341,19 @@ void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
         }
         mLineLayer->addChild(mLine);
         break;
+
+    case Type::POLYGONN:
+        mPolygon = new Polygon(mapItem());
+        name = POLYGON + QString::number(mCount);
+        mPolygon->setName(name.toStdString());
+        mPolygonProperty->setPolygon(mPolygon, mapItem()->getMapSRS());
+
+        if(!shapeLayer->containsLayer(mPolygonLayer)){
+            mPolygonLayer->clear();
+            shapeLayer->addLayer(mPolygonLayer);
+        }
+        mPolygonLayer->addChild(mPolygon);
+        break;
     case Type::RULERR:
         name = RULER + QString::number(mCount);
         mLine->setName(name.toStdString());
@@ -389,19 +390,6 @@ void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
         }
         mSlopeLayer->addChild(mLine);
 
-        break;
-
-    case Type::POLYGONN:
-        mPolygon = new Polygon(mapItem());
-        name = POLYGON + QString::number(mCount);
-        mPolygon->setName(name.toStdString());
-        mPolygonProperty->setPolygon(mPolygon, mapItem()->getMapSRS());
-
-        if(!shapeLayer->containsLayer(mPolygonLayer)){
-            mPolygonLayer->clear();
-            shapeLayer->addLayer(mPolygonLayer);
-        }
-        mPolygonLayer->addChild(mPolygon);
         break;
     default:
         //name = POLYLINE + QString::number(mCount);
@@ -461,8 +449,6 @@ void DrawAnnotation::tempDrawing(const osgEarth::GeoPoint &geoPos)
         mLine->removePoint();
     }
     if (mType == Type::HEIGHT){
-        //        mMeasureHeight->clear();
-        //        mMeasureHeight->setSecondPoint(geoPos);
         if (mLine->getSize() > 1)
         {
             mLine->removePoint();
@@ -527,7 +513,6 @@ void DrawAnnotation::cancelDraw()
         mLine = nullptr;
         mMeasureHeight = nullptr;
         mLineProperty->setLine(mLine);
-        //        mLineProperties->setMeasureHeight(mMeasureHeight);
         setState(State::READY);
         mCount--;
 
@@ -544,19 +529,25 @@ void DrawAnnotation::createProperty(QString name, QVariant property)
         if (comp->status() == QQmlComponent::Status::Error) {
             qDebug() << comp->errorString();
         }
-        //            QQmlContext *context = new QQmlContext(qmlEngine(), this);
         mItem = qobject_cast<QQuickItem*>(comp->create());
-        mItem->setProperty("model", property);
+        mItem->setProperty("cppInterface", property);
 
         mainWindow()->getToolboxManager()->addPropertyItem(mItem, name);
     });
 
 
-    comp->loadUrl(QUrl("qrc:/Properties.qml"));
+    comp->loadUrl(QUrl("qrc:/AnnotationProperties.qml"));
 }
 
 void DrawAnnotation::hideProperty()
 {
     mainWindow()->getToolboxManager()->removePropertyItem();
+}
+
+CompositeAnnotationLayer *DrawAnnotation::measureLayer()
+{
+    if(!mMeasureLayer)
+        mMeasureLayer = dynamic_cast<CompositeAnnotationLayer*>(mapItem()->getMapObject()->getLayerByName(M_CATEGORY));
+    return mMeasureLayer;
 }
 
