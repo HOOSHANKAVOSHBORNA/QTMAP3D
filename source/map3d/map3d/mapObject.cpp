@@ -1,4 +1,4 @@
-#include "mapObject.h"
+﻿#include "mapObject.h"
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <QDebug>
@@ -14,11 +14,31 @@ CompositeCallback::CompositeCallback(MapObject *mapObject):
 void CompositeCallback::onLayerAdded(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer, unsigned int index){
     if(mMapObject){
         emit mMapObject->layerAdded(layer, parentLayer, index);
+        if (layer->asCompositeAnnotationLayer())
+            for (auto &it : layer->asCompositeAnnotationLayer()->childildren())
+                layer->asCompositeAnnotationLayer()->fireCallback(&CompositeLayerCallback::onLayerAdded, it, 0);
+        else {
+            for (auto &it : layer->children()) {
+                osg::ref_ptr<osgEarth::Annotation::AnnotationNode> node = dynamic_cast<osgEarth::Annotation::AnnotationNode*>(it);
+                if (node)
+                    layer->fireCallback(&ParenticLayerCallback::onNodeAdded, node);
+            }
+        }
     }
 }
 
 void CompositeCallback::onLayerRemoved(ParenticAnnotationLayer *layer, CompositeAnnotationLayer *parentLayer, unsigned int index){
     if(mMapObject){
+        if (layer->asCompositeAnnotationLayer())
+            for (auto &it : layer->asCompositeAnnotationLayer()->childildren())
+                layer->asCompositeAnnotationLayer()->fireCallback(&CompositeLayerCallback::onLayerRemoved, it, 0);
+        else {
+            for (auto &it : layer->children()) {
+                osg::ref_ptr<osgEarth::Annotation::AnnotationNode> node = dynamic_cast<osgEarth::Annotation::AnnotationNode*>(it);
+                if (node)
+                    layer->fireCallback(&ParenticLayerCallback::onNodeRemoved, node);
+            }
+        }
         emit mMapObject->layerRemoved(layer, parentLayer, index);
     }
 }
@@ -48,16 +68,45 @@ MainMapCallback::MainMapCallback(MapObject *mapObject) :
 
 }
 
-void MainMapCallback::onLayerAdded  (osgEarth::Layer* layer, unsigned index)
+void MainMapCallback::onLayerAdded(osgEarth::Layer* layer, unsigned index)
 {
     if(mMapObject)
         emit mMapObject->layerAdded(layer, nullptr, index);
+
+    ParenticAnnotationLayer* parenticLayer = dynamic_cast<ParenticAnnotationLayer*>(layer);
+    if (parenticLayer) {
+        if (parenticLayer->asCompositeAnnotationLayer())
+            for (auto &it : parenticLayer->asCompositeAnnotationLayer()->childildren())
+                parenticLayer->asCompositeAnnotationLayer()->fireCallback(&CompositeLayerCallback::onLayerAdded, it, 0);
+        else {
+            for (auto &it : parenticLayer->children()) {
+                osg::ref_ptr<osgEarth::Annotation::AnnotationNode> node = dynamic_cast<osgEarth::Annotation::AnnotationNode*>(it);
+                if (node)
+                    parenticLayer->fireCallback(&ParenticLayerCallback::onNodeAdded, node);
+            }
+        }
+    }
 }
 
 void MainMapCallback::onLayerRemoved(osgEarth::Layer* layer, unsigned index)
 {
-    if(mMapObject)
+    if(mMapObject) {
+        ParenticAnnotationLayer* parenticLayer = dynamic_cast<ParenticAnnotationLayer*>(layer);
+        if (parenticLayer) {
+            if (parenticLayer->asCompositeAnnotationLayer())
+                for (auto &it : parenticLayer->asCompositeAnnotationLayer()->childildren())
+                    parenticLayer->asCompositeAnnotationLayer()->fireCallback(&CompositeLayerCallback::onLayerRemoved, it, 0);
+            else {
+                for (auto &it : parenticLayer->children()) {
+                    osg::ref_ptr<osgEarth::Annotation::AnnotationNode> node = dynamic_cast<osgEarth::Annotation::AnnotationNode*>(it);
+                    if (node)
+                        parenticLayer->fireCallback(&ParenticLayerCallback::onNodeRemoved, node);
+                }
+            }
+
+        }
         emit mMapObject->layerRemoved(layer, nullptr, index);
+    }
 }
 
 void MainMapCallback::onLayerMoved(osgEarth::Layer* layer, unsigned oldIndex, unsigned newIndex)
@@ -105,6 +154,7 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
         auto compositCallback = new CompositeCallback(this);
         mCompositeCallbacks[layer] = compositCallback;
         compositeLayer->addCallback(compositCallback);
+
     }
     osgEarth::Map::addLayer(layer);
     return true;
@@ -148,4 +198,11 @@ ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
         }
     }
     return nullptr;
+}
+
+void MapObject::clearParenticLayers()
+{
+    for (auto &i : mParenticLayers){
+        removeLayer(i.second);
+    }
 }

@@ -46,9 +46,9 @@ MovableNodeTest::MovableNodeTest(NetworkManager *networkManager):
                 QJsonDocument jsonStatusDoc(jsonStatusObject);
                 QJsonDocument jsonLineDoc(jsonLineObject);
 
-                mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(jsonLineDoc.toJson(QJsonDocument::Compact));
+                // mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
+                // mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
+                // mNetworkManager->sendData(jsonLineDoc.toJson(QJsonDocument::Compact));
             }
         });
         timerRemoveAircraft->start(7000);

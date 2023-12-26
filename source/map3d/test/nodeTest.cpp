@@ -48,10 +48,10 @@ NodeTest::NodeTest(NetworkManager *networkManager):
                 QJsonDocument jsonCircleDoc(jsonCircleObject);
                 QJsonDocument jsonPolygonDoc(jsonPolygonObject);
 
-                mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(jsonCircleDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(jsonPolygonDoc.toJson(QJsonDocument::Compact));
+                // mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
+                // mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
+                // mNetworkManager->sendData(jsonCircleDoc.toJson(QJsonDocument::Compact));
+                // mNetworkManager->sendData(jsonPolygonDoc.toJson(QJsonDocument::Compact));
             }
         });
         timerRemoveAircraft->start(7000);
