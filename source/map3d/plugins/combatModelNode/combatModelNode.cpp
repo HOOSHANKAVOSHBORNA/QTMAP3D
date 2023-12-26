@@ -264,7 +264,7 @@ void CombatModelNode::onRemoveAssignmentChecked(bool check, SimpleModelNode *nod
 
 void CombatModelNode::onCloseMenuClicked()
 {
-    mapItem()->setTopMenuItem(nullptr);
+    // mapItem()->setTopMenuItem(nullptr);
     mapItem()->setTopMenuVisible(false);
 }
 
