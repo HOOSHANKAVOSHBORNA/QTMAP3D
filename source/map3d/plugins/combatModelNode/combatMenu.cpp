@@ -95,15 +95,6 @@ void AssignmentListModel::onRemoveButtonChecked(bool check)
     emit removeAssignmentChecked(check, mOperatorNode, mIsAttacker);
 }
 
-void AssignmentListModel::onAttackButtonClicked()
-{
-    for(auto assignment: mSelectedAssignmentList){
-        if(mAssignmentList.contains(assignment)){
-            assignment->setState(ASSIGNED);
-        }
-
-    }
-}
 
 
 void AssignmentListModel::onMenuItemSelect(int row)
@@ -135,6 +126,13 @@ void AssignmentListModel::onItemHovered(int row , bool hover)
         assinment->assignLine->setWidth(3);
     }
 }
+
+QList<Assignment *> AssignmentListModel::getSelectedAssignmentList()
+{
+    return mSelectedAssignmentList;
+}
+
+
 //-------------------------------------------------------------------------------
 OperatorListModel::OperatorListModel(AssignmentListModel *assignmentListModel, QObject *parent)
     :QAbstractListModel(parent),
