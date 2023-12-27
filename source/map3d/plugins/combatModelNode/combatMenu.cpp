@@ -1,12 +1,13 @@
 #include "combatMenu.h"
 #include "qqmlcomponent.h"
+#include <QQmlContext>
+#include <utility.h>
 
 AssignmentListModel::AssignmentListModel(CombatManager *combatManager, QObject *parent)
     :QAbstractListModel(parent),
     mCombatManager(combatManager)
 {
     QObject::connect(combatManager, &CombatManager::dataChanged,[&]{
-
         beginResetModel();
         if(mIsAttacker)
             mAssignmentList = mCombatManager->getAttackerAssignments(mOperatorNode);
@@ -67,6 +68,7 @@ QHash<int, QByteArray> AssignmentListModel::roleNames() const
 void AssignmentListModel::setOperator(SimpleModelNode *node, bool isAttacker)
 {
     mOperatorNode = node;
+    mOperatorNode->highlight(true,osg::Vec4f(0,0.2,1,0.7));
     beginResetModel();
 
     mIsAttacker = isAttacker;
@@ -103,10 +105,31 @@ void AssignmentListModel::onAttackButtonClicked()
 void AssignmentListModel::onMenuItemSelect(int row)
 {
     auto assinment = mAssignmentList.at(row);
-    if(!mSelectedAssignmentList.contains(assinment))
+    if(!mSelectedAssignmentList.contains(assinment)){
         mSelectedAssignmentList.append(mAssignmentList.at(row));
-    else
+        if(mOperatorNode == assinment->target)
+            assinment->attacker->highlight(true,osg::Vec4f(1,0,0,0.7));
+        else
+            assinment->target->highlight(true, osg::Vec4f(1,0,0,0.7));
+    }else{
         mSelectedAssignmentList.removeAll(mAssignmentList.at(row));
+        assinment->attacker->highlight(false);
+        assinment->target->highlight(false);
+    }
+}
+
+void AssignmentListModel::onItemHovered(int row , bool hover)
+{
+    auto assinment = mAssignmentList.at(row);
+    QColor color = assinment->getColor();
+    if(hover){
+        color.setAlpha(255);
+        assinment->assignLine->setFillColor(Utility::qColor2osgEarthColor(color));
+        assinment->assignLine->setWidth(7);
+    }else{
+        assinment->assignLine->setFillColor(Utility::qColor2osgEarthColor(color));
+        assinment->assignLine->setWidth(3);
+    }
 }
 //-------------------------------------------------------------------------------
 OperatorListModel::OperatorListModel(AssignmentListModel *assignmentListModel, QObject *parent)
@@ -182,7 +205,7 @@ void OperatorListModel::addTarget(SimpleModelNode *node)
     beginResetModel();
     if(!mTargetList.contains(node))
         mTargetList.append(node);
-     mIsAttacker = false;
+    mIsAttacker = false;
     endResetModel();
 
     int row = mTargetList.indexOf(node);
@@ -201,9 +224,57 @@ void OperatorListModel::select(int row)
         mSelectedNode = mTargetList.at(row);
         mAssignmentListModel->setOperator(mSelectedNode, false);
     }
-//    emit dataChanged(index(row), index(row));
     endResetModel();
+    setOperatorColor(QString::fromStdString(mSelectedNode->nodeData()->color));
+    setOperatorIcon(QUrl(QString::fromStdString(mSelectedNode->nodeData()->iconSrc)));
+    setOperatorName(QString::fromStdString(mSelectedNode->nodeData()->name));
+    setOperatorIsAttacker(mSelectedNode->nodeData()->isAttacker);
 }
+
+QString OperatorListModel::getOperatorName()
+{
+    return mOperatorName;
+}
+
+QUrl OperatorListModel::getOperatorIcon()
+{
+    return mOperatorIcon;
+}
+
+QString OperatorListModel::getOperatorColor()
+{
+    return mOperatorColor;
+}
+
+bool OperatorListModel::getOperatorIsAttacker()
+{
+    return mOperatorIsAttacker;
+}
+
+void OperatorListModel::setOperatorName(QString name)
+{
+    mOperatorName = name;
+    emit operatorChanged();
+}
+
+void OperatorListModel::setOperatorIcon(QUrl url)
+{
+    mOperatorIcon = url;
+    emit operatorChanged();
+}
+
+void OperatorListModel::setOperatorColor(QString color)
+{
+    mOperatorColor= color;
+    emit operatorChanged();
+}
+
+void OperatorListModel::setOperatorIsAttacker(bool attacker)
+{
+    mOperatorIsAttacker= attacker;
+    emit operatorChanged();
+}
+
 
 //-----------------------------------------------------------------------------
 CombatMenu::CombatMenu(CombatManager *combatManager, MapControllerItem *map)
@@ -218,13 +289,11 @@ CombatMenu::CombatMenu(CombatManager *combatManager, MapControllerItem *map)
         if(status == QQmlComponent::Error) {
             qDebug() << "Can not load this: " << comp->errorString();
         }
-
         if(status == QQmlComponent::Ready) {
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
             item->setProperty("assignmentListModel", QVariant::fromValue<AssignmentListModel*>(mAssignmentListModel));
             item->setProperty("operatorListModel", QVariant::fromValue<OperatorListModel*>(mOperatorListModel));
             map->setTopMenuItem(item);
-
         }
     });
     comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));

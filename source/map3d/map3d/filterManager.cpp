@@ -3,6 +3,13 @@
 FilterManager::FilterManager(QObject *parent) : QObject(parent){
 }
 
+void FilterManager::addFilterField(NodeData *nodeData)
+{
+    for (auto &field : nodeData->fieldData){
+        addFilterField(field.name, field.value.typeName());
+    }
+}
+
 void FilterManager::addFilterField(QString field, QString type)
 {
     mFilterFields.insert(field);
@@ -81,18 +88,42 @@ void FilterManager::addFilterTag(QString key, QString value)
 void FilterManager::addFilterTag(QString key, double value, QString comp)
 {
     if (mFilterTags.contains(key)) {
-        mFilterTags[key].push_back(Tag{true, value, comp});
+        mFilterTags[key].push_back(Tag{false, value, comp});
     } else {
-        mFilterTags[key] = QVector<Tag>{Tag{true, value, comp}};
+        mFilterTags[key] = QVector<Tag>{Tag{false, value, comp}};
     }
 }
 
 void FilterManager::addFilterTag(QString key, double value1, double value2, QString comp)
 {
     if (mFilterTags.contains(key)) {
-        mFilterTags[key].push_back(Tag{true, 0, comp, QPair<double, double>{value1, value2}});
+        mFilterTags[key].push_back(Tag{false, 0, comp, QPair<double, double>{value1, value2}});
     } else {
-        mFilterTags[key] = QVector<Tag>{Tag{true, 0, comp, QPair<double, double>{value1, value2}}};
+        mFilterTags[key] = QVector<Tag>{Tag{false, 0, comp, QPair<double, double>{value1, value2}}};
+    }
+}
+
+void FilterManager::removeFilterTag(QString key, QString value)
+{
+    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{true, value});
+    if (it != mFilterTags[key].end()) {
+        mFilterTags[key].erase(it);
+    }
+}
+
+void FilterManager::removeFilterTag(QString key, double value, QString comp)
+{
+    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{false, value, comp});
+    if (it != mFilterTags[key].end()) {
+        mFilterTags[key].erase(it);
+    }
+}
+
+void FilterManager::removeFilterTag(QString key, double value1, double value2, QString comp)
+{
+    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{false, -999999999, comp, QPair<double, double>{value1, value2}});
+    if (it != mFilterTags[key].end()) {
+        mFilterTags[key].erase(it);
     }
 }
 

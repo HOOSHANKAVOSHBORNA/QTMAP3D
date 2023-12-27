@@ -1,6 +1,7 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
+#include "mainwindow.h"
 #include "simpleModelNode.h"
 
 class DataManager : public QObject
