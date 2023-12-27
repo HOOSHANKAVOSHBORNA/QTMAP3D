@@ -49,10 +49,10 @@ void Application::initialize()
 void Application::show()
 {
     if (mIsReady) {
-        mMainWindow->show();
+        // mMainWindow->show();
     } else {
         QObject::connect(this, &Application::ready, [this]() {
-            mMainWindow->show();
+            // mMainWindow->show();
         });
     }
 }
