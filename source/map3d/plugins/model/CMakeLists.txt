@@ -34,7 +34,9 @@ add_library(model SHARED
 )
 
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_include_directories(model PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../drawLine")
+#target_include_directories(model PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../drawLine")
+target_include_directories(model PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/../drawAnnotation")
+
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawSphere")
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCircle")
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCone")
@@ -42,7 +44,8 @@ target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../particl
 target_include_directories(model PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../information")
 
 target_link_libraries(model PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
-target_link_libraries(model PUBLIC drawLine)
+#target_link_libraries(model PUBLIC drawLine)
+target_link_libraries(model PUBLIC drawAnnotation)
 target_link_libraries(model PRIVATE drawSphere)
 target_link_libraries(model PRIVATE drawCircle)
 target_link_libraries(model PRIVATE drawCone)
