@@ -61,6 +61,12 @@ Item {
                         font.family: "Roboto"
                         color: backgroundColor
                        text: operatorListModel?  operatorListModel.operatorName : ""
+                       onTextChanged: {
+                           root.addCheck = false
+                           root.removeCheck = false
+                           assignmentListModel.onRemoveButtonChecked(false)
+                           assignmentListModel.onAddButtonChecked(false)
+                       }
                     }
                 }
                 Rectangle{
@@ -350,7 +356,6 @@ Item {
                         color:"transparent"
 
                         Text {
-                            anchors.left: opIcon.right
                             anchors.leftMargin: 5
                             text: operatorName
                             font.pixelSize: 17 / 1.3/*Style.monitorRatio*/
@@ -361,9 +366,9 @@ Item {
                     }
                     MouseArea{
                         anchors.fill: parent
-                        onClicked: {operatorListModel.select(operatorListModel.index(index,0).row)
-                            addCheck = false
-                            removeCheck = false
+                        onClicked: {
+                            operatorListModel.select(operatorListModel.index(index,0).row)
+
                         }
                     }
                 }
