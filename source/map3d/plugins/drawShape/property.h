@@ -282,7 +282,7 @@ private:
     // ----------  stroke //
     bool mStrokeStatus{false};
     QColor mStroke = QColor(0, 250, 0, 255);
-    double  mStrokeWidth{7};
+    double  mStrokeWidth{0};
 
     // ---------- Location- //
     bool mLocationStatus{false};

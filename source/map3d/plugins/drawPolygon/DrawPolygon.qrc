@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>resources/polygon.png</file>
-        <file>PolygonProperties.qml</file>
-        <file>resources/measure_area.png</file>
-    </qresource>
-</RCC>
