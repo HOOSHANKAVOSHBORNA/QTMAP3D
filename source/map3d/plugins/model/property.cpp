@@ -5,17 +5,48 @@
 #include <QQmlContext>
 
 // ---------------------------------------------------------------------- manager
-Property::Property(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem)
+Property::Property(MapControllerItem *mapItem)
 {
     mMapItem = mapItem;
-    mPropertyItem = new PropertyItem(mCurrentModel, mapItem);
-    qmlEngine(mMapItem)->rootContext()->setContextProperty("modelPropertyInterface", mPropertyItem);
+    mPropertyItem = new PropertyItem(mapItem);
+//    qmlEngine(mMapItem)->rootContext()->setContextProperty("modelPropertyInterface", mPropertyItem);
     createQML();
 }
 
-void Property::setPropertyItem(PropertyItem *newPropertyItem)
+osg::ref_ptr<SimpleModelNode> Property::modelNode() const
 {
-    mPropertyItem = newPropertyItem;
+    return mPropertyItem->modelNode();
+}
+
+void Property::setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNode)
+{
+    mPropertyItem->setModelNode(newModelNode);
+    if(newModelNode){
+        setName(newModelNode->getName());
+        setPosition(newModelNode->getPosition());
+//        moveTo(newModelNode->getPosition());
+//        flyTo(newModelNode->getPosition());
+    }
+}
+
+void Property::setName(const std::string &name)
+{
+    mPropertyItem->setName(QString::fromStdString(name));
+}
+
+void Property::setPosition(const osgEarth::GeoPoint &positon)
+{
+    mPropertyItem->setLocation(Utility::osgEarthGeoPointToQvector3D(positon));
+}
+
+void Property::moveTo(const osgEarth::GeoPoint &positon)
+{
+    mPropertyItem->setMoveTo(Utility::osgEarthGeoPointToQvector3D(positon));
+}
+
+void Property::flyTo(const osgEarth::GeoPoint &positon)
+{
+    mPropertyItem->setFlyTo(Utility::osgEarthGeoPointToQvector3D(positon));
 }
 
 void Property::createQML()
@@ -27,14 +58,10 @@ void Property::createQML()
         }
 
         mQmlItem = qobject_cast<QQuickItem *>(comp->create());
+        mQmlItem->setProperty("cppInterface", QVariant::fromValue(mPropertyItem));
     });
 
     comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
-}
-
-PropertyItem *Property::propertyItem() const
-{
-    return mPropertyItem;
 }
 
 QQuickItem *Property::qmlItem() const
@@ -42,86 +69,34 @@ QQuickItem *Property::qmlItem() const
     return mQmlItem;
 }
 
-QVector3D Property::getLocation() const
-{
-    return mPropertyItem->getLocation();
-}
-
-void Property::setLocation(const QVector3D &newLocation)
-{
-    mPropertyItem->setLocation(newLocation);
-}
-
-void Property::setLocation(const osgEarth::GeoPoint &newLocation)
-{
-    mPropertyItem->setLocation(Utility::osgEarthGeoPointToQvector3D(newLocation));
-}
-
-QVector3D Property::getMoveTo() const
-{
-    return mPropertyItem->getMoveTo();
-}
-
-void Property::setMoveTo(const QVector3D &newmoveTo)
-{
-    return mPropertyItem->setMoveTo(newmoveTo);
-}
-
-void Property::setMoveTo(const osgEarth::GeoPoint &newMoveTo)
-{
-    mPropertyItem->setMoveTo(Utility::osgEarthGeoPointToQvector3D(newMoveTo));
-}
-
-QVector3D Property::getFlyTo() const
-{
-    return mPropertyItem->getFlyTo();
-}
-
-void Property::setFlyTo(const QVector3D &newFlyTo)
-{
-    mPropertyItem->setFlyTo(newFlyTo);
-}
-
-void Property::setFlyTo(const osgEarth::GeoPoint &newFlyTo)
-{
-    mPropertyItem->setFlyTo(Utility::osgEarthGeoPointToQvector3D(newFlyTo));
-}
-
-bool Property::isMovable() const
-{
-    return mPropertyItem->isMovable();
-}
-
-void Property::setIsMovable(bool newIsMovable)
-{
-    mPropertyItem->setIsMovable(newIsMovable);
-}
-
-bool Property::isFlyable() const
-{
-    return mPropertyItem->isFlyable();
-}
-
-void Property::setIsFlyable(bool newIsFlyable)
-{
-    mPropertyItem->setIsFlyable(newIsFlyable);
-}
-
-osg::ref_ptr<SimpleModelNode> Property::currentModel() const
-{
-    return mPropertyItem->currentModel();
-}
-
-void Property::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
-{
-    mPropertyItem->setCurrentModel(newCurrentModel);
-}
-
 // ---------------------------------------------------------------------- interface for qml
-PropertyItem::PropertyItem(osg::ref_ptr<SimpleModelNode> newNode, MapControllerItem *mapItem)
+PropertyItem::PropertyItem(MapControllerItem *mapItem)
+    :mMapItem(mapItem)
 {
-    mMapItem = mapItem;
-    mCurrentModel = newNode;
+}
+
+osg::ref_ptr<SimpleModelNode> PropertyItem::modelNode() const
+{
+    return mModelNode;
+}
+
+void PropertyItem::setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNode)
+{
+    mModelNode = newModelNode;
+    setIsMovable(false);
+    setIsFlyable(false);
+
+    if(mModelNode){
+        if(mModelNode->asMoveableModelNode()){
+            setIsMovable(true);
+            mModelNode->asMoveableModelNode()->setSpeed(mSpeed);
+            mModelNode->nodeData()->speed = mSpeed;
+        }
+        if(mModelNode->asFlyableModelNode())
+            setIsFlyable(true);
+
+        mModelNode->setColor(Utility::qColor2osgEarthColor(mColor));
+    }
 }
 
 QString PropertyItem::name()
@@ -134,27 +109,17 @@ void PropertyItem::setName(const QString &newName)
     if (mName == newName)
         return;
 
-    if (!mCurrentModel)
-        return;
+    if (mModelNode){
+        mModelNode->setName(mName.toStdString());
+        mModelNode->nodeData()->name = mName.toStdString();
+    }
 
     mName = newName;
-    mCurrentModel->nodeData()->name = mName.toStdString();
     emit propertyChanged();
-}
-
-bool PropertyItem::isMovable() const
-{
-    if (!mCurrentModel)
-        return true;
-
-    return mCurrentModel->asMoveableModelNode();
 }
 
 QColor PropertyItem::color() const
 {
-    if (!mCurrentModel)
-        return QColor("#FFFFFF");
-
     return mColor;
 }
 
@@ -163,21 +128,17 @@ void PropertyItem::setColor(const QColor &newColor)
     if (mColor == newColor)
         return;
 
-    if (!mCurrentModel)
-        return;
+    if (mModelNode){
+        mModelNode->nodeData()->color = newColor.name(QColor::HexArgb).toStdString();
+        mModelNode->setColor(Utility::qColor2osgEarthColor(newColor));
+    }
 
     mColor = newColor;
-    mCurrentModel->nodeData()->color = newColor.name(QColor::HexArgb).toStdString();
-    mCurrentModel->setColor(
-        osgEarth::Color(newColor.redF(), newColor.greenF(), newColor.blueF(), newColor.alphaF()));
     emit propertyChanged();
 }
 
 QVector3D PropertyItem::getLocation() const
 {
-    if (!mCurrentModel)
-        return QVector3D{0, 0, 0};
-
     return mLocation;
 }
 
@@ -186,20 +147,19 @@ void PropertyItem::setLocation(const QVector3D &newLocation)
     if (mLocation == newLocation)
         return;
 
-    if (!mCurrentModel)
-        return;
+    if (mModelNode){
+        mModelNode->nodeData()->latitude = mLocation.x();
+        mModelNode->nodeData()->longitude = mLocation.y();
+        mModelNode->nodeData()->altitude = mLocation.z();
+        mModelNode->setPosition(Utility::qVector3DToosgEarthGeoPoint(mLocation, mMapItem->getMapSRS()));
+    }
 
     mLocation = newLocation;
-    mCurrentModel->setPosition(
-        Utility::qVector3DToosgEarthGeoPoint(mLocation, mMapItem->getMapSRS()));
     emit propertyChanged();
 }
 
 QVector3D PropertyItem::getMoveTo() const
 {
-    if (!mCurrentModel)
-        return QVector3D{0, 0, 0};
-
     return mMoveTo;
 }
 
@@ -208,17 +168,15 @@ void PropertyItem::setMoveTo(const QVector3D &newMoveTo)
     if (mMoveTo == newMoveTo)
         return;
 
+    if(mModelNode && mModelNode->asMoveableModelNode()){
+        mModelNode->asMoveableModelNode()->moveTo(Utility::qVector3DToosgEarthGeoPoint(newMoveTo, mMapItem->getMapSRS()), mSpeed);
+    }
     mMoveTo = newMoveTo;
-//    mCurrentModel->asMoveableModelNode()
-//        ->moveTo(Utility::qVector3DToosgEarthGeoPoint(newMoveTo, mMapItem->getMapSRS()), mSpeed);
     emit propertyChanged();
 }
 
 double PropertyItem::speed() const
 {
-    if (!mCurrentModel)
-        return 0;
-
     return mSpeed;
 }
 
@@ -227,52 +185,11 @@ void PropertyItem::setSpeed(double newSpeed)
     if (qFuzzyCompare(mSpeed, newSpeed))
         return;
 
-    if (!mCurrentModel)
-        return;
+    if (mModelNode && mModelNode->asMoveableModelNode()){
+        mModelNode->asMoveableModelNode()->setSpeed(mSpeed);
+    }
 
     mSpeed = newSpeed;
-    if (mCurrentModel->asMoveableModelNode()) {
-        mCurrentModel->asMoveableModelNode()->setSpeed(mSpeed);
-    }
-
-    emit propertyChanged();
-}
-
-osg::ref_ptr<SimpleModelNode> PropertyItem::currentModel() const
-{
-    return mCurrentModel;
-}
-
-void PropertyItem::setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel)
-{
-    mCurrentModel = newCurrentModel;
-    if (mCurrentModel->asMoveableModelNode()) {
-        mIsMovable = true;
-        this->setSpeed(mCurrentModel->asMoveableModelNode()->speed());
-
-        if (mCurrentModel->asFlyableModelNode()) {
-            mIsFlyable = true;
-        } else {
-            mIsFlyable = false;
-        }
-    } else {
-        mIsMovable = false;
-    }
-
-    this->setLocation(QVector3D{(float) mCurrentModel->nodeData()->latitude,
-                                (float) mCurrentModel->nodeData()->longitude,
-                                (float) mCurrentModel->nodeData()->altitude});
-    this->setName(QString::fromStdString(mCurrentModel->nodeData()->name));
-    this->setColor(QColor(QString::fromStdString(mCurrentModel->nodeData()->color)));
-
-    emit propertyChanged();
-}
-
-void PropertyItem::setIsMovable(bool newIsMovable)
-{
-    if (mIsMovable == newIsMovable)
-        return;
-    mIsMovable = newIsMovable;
     emit propertyChanged();
 }
 
@@ -285,9 +202,25 @@ void PropertyItem::setFlyTo(const QVector3D &newFlyTo)
 {
     if (mFlyTo == newFlyTo)
         return;
+    if(mModelNode && mModelNode->asFlyableModelNode()){
+        mModelNode->asFlyableModelNode()
+            ->flyTo(Utility::qVector3DToosgEarthGeoPoint(newFlyTo, mMapItem->getMapSRS()), mSpeed);
+    }
     mFlyTo = newFlyTo;
-//    mCurrentModel->asFlyableModelNode()
-//        ->flyTo(Utility::qVector3DToosgEarthGeoPoint(newFlyTo, mMapItem->getMapSRS()), mSpeed);
+
+    emit propertyChanged();
+}
+
+bool PropertyItem::isMovable() const
+{
+    return mIsMovable;
+}
+
+void PropertyItem::setIsMovable(bool newIsMovable)
+{
+    if (mIsMovable == newIsMovable)
+        return;
+    mIsMovable = newIsMovable;
     emit propertyChanged();
 }
 
