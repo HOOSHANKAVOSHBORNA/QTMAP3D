@@ -1,21 +1,21 @@
-#include "layerManager.h"
-#include <osgEarth/Map>
-#include <osgEarth/ModelLayer>
+
 #include <QHeaderView>
 #include <QQmlComponent>
 #include <QQuickItem>
-#include <osgEarthAnnotation/AnnotationNode>
+#include <osgEarth/Map>
+#include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/AnnotationNode>
 #include <osgEarthAnnotation/FeatureNode>
 #include <osgEarthAnnotation/GeoPositionNode>
 
+#include "layerManager.h"
+
 //LayerModel *LayerModel::mInstance = nullptr;
 
-// -----------------------------------------------------------------
+// ----------------------------------------------------------------- model manager
 LayerManager::LayerManager()
 {
     mLayerModel = new LayerModel();
-    //    createProperty();
 }
 
 LayerModel *LayerManager::layerModel() const
@@ -39,8 +39,67 @@ LayerManager::~LayerManager()
 void LayerManager::setMapItem(MapItem *mapItem)
 {
     mLayerModel->setMapItem(mapItem);
+
+    // TEST
+    createProperty("test");
+    qDebug() << mPropertyItem;
+    // ENDTEST
 }
-//----------------------------------------------------------------------------------------------------------------
+
+// TODO: move this function to proper layers plugin AND also consider model
+void LayerManager::createProperty(/*model,*/ QString title)
+{
+    QQmlComponent *comp = new QQmlComponent(qmlEngine(mLayerModel->getMapItem()));
+    connect(comp, &QQmlComponent::statusChanged, [&] {
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+
+        // TEST
+        setPropertyItem(qobject_cast<QQuickItem *>(comp->create()));
+        setPropertyItemTitle(title);
+        // ENDTEST
+    });
+
+    comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+}
+
+QQuickItem *LayerManager::propertyItem() const
+{
+    return mPropertyItem;
+}
+
+void LayerManager::setPropertyItem(QQuickItem *newPropertyItem)
+{
+    if (mPropertyItem == newPropertyItem)
+        return;
+    mPropertyItem = newPropertyItem;
+    emit propertyItemChanged();
+}
+
+// TODO: move this function to proper plugin
+void LayerManager::addPropertyItem(QQuickItem *newPropertyItem, QString newTitle)
+{
+    setPropertyItem(newPropertyItem);
+    setPropertyItemTitle(newTitle);
+}
+
+void LayerManager::removePropertyItem() {}
+
+QString LayerManager::propertyItemTitle() const
+{
+    return mPropertyItemTitle;
+}
+
+void LayerManager::setPropertyItemTitle(const QString &newPropertyItemTitle)
+{
+    if (mPropertyItemTitle == newPropertyItemTitle)
+        return;
+    mPropertyItemTitle = newPropertyItemTitle;
+    emit propertyItemTitleChanged();
+}
+
+// ----------------------------------------------------------------- model
 LayerModel::LayerModel()
 {
 
@@ -128,7 +187,8 @@ void LayerModel::onVisibleItemClicked(const QModelIndex &current)
 
 void LayerModel::onItemLeftClicked(const QModelIndex &current)
 {
-    qDebug() << "left clicked";
+    qDebug() << "layer left clicked!";
+    // TODO
 }
 
 void LayerModel::onRemoveItemClicked(const QModelIndex &current)
@@ -280,54 +340,4 @@ void LayerModel::setFilterString(const QString &newFilterString)
 {
     mFilterString = newFilterString;
     invalidateFilter();
-}
-
-// TODO: move this function to proper layers plugin AND also consider model
-void LayerManager::createProperty()
-{
-    QQmlComponent *comp = new QQmlComponent(qmlEngine(mLayerModel->getMapItem()));
-    connect(comp, &QQmlComponent::statusChanged, [&] {
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-
-        mPropertyItem = qobject_cast<QQuickItem *>(comp->create());
-    });
-
-    comp->loadUrl(QUrl("qrc:/TestItem.qml"));
-}
-
-QQuickItem *LayerManager::propertyItem() const
-{
-    return mPropertyItem;
-}
-
-void LayerManager::setPropertyItem(QQuickItem *newPropertyItem)
-{
-    if (mPropertyItem == newPropertyItem)
-        return;
-    mPropertyItem = newPropertyItem;
-    emit propertyItemChanged();
-}
-
-// TODO: move this function to proper plugin
-void LayerManager::addPropertyItem(QQuickItem *newPropertyItem, QString newTitle)
-{
-    setPropertyItem(newPropertyItem);
-    setPropertyItemTitle(newTitle);
-}
-
-void LayerManager::removePropertyItem() {}
-
-QString LayerManager::propertyItemTitle() const
-{
-    return mPropertyItemTitle;
-}
-
-void LayerManager::setPropertyItemTitle(const QString &newPropertyItemTitle)
-{
-    if (mPropertyItemTitle == newPropertyItemTitle)
-        return;
-    mPropertyItemTitle = newPropertyItemTitle;
-    emit propertyItemTitleChanged();
 }

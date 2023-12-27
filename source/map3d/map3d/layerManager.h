@@ -32,7 +32,7 @@ public:
     void addPropertyItem(QQuickItem *newPropertyItem, QString title);
     Q_INVOKABLE void removePropertyItem();
 
-    void createProperty();
+    void createProperty(/*model, */ QString title);
 
     QString propertyItemTitle() const;
     void setPropertyItemTitle(const QString &newPropertyItemTitle);
