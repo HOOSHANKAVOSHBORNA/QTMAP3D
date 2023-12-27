@@ -102,7 +102,12 @@ void AssignmentListModel::onAttackButtonClicked()
             assignment->setState(ASSIGNED);
         }
     }
-    mOperatorNode->highlight(false);
+    for (int var = 0; var < mSelectedAssignmentList.count(); ++var) {
+        mSelectedAssignmentList.at(var)->attacker->highlight(false);
+        mSelectedAssignmentList.at(var)->target->highlight(false);
+    }
+    mSelectedAssignmentList.clear();
+    mOperatorNode->highlight(true,osg::Vec4f(1,0,0,0.7));
 }
 
 

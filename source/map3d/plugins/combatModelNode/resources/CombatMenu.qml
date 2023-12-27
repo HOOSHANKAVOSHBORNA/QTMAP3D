@@ -298,7 +298,12 @@ Item {
         }
         MouseArea{
             anchors.fill: parent
-            onClicked: assignmentListModel.onCloseMenuClicked();
+            onClicked: {assignmentListModel.onCloseMenuClicked();
+                root.addCheck = false
+                root.removeCheck = false
+                assignmentListModel.onRemoveButtonChecked(false)
+                assignmentListModel.onAddButtonChecked(false)
+            }
         }
     }
 
