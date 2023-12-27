@@ -62,7 +62,7 @@ public slots:
     void onTreeItemCheck (bool check);
     void onCarItemCheck (bool check);
     void onAirplanItemCheck (bool check);
-    void onStatusItemCheck (bool check);
+    void onTankItemCheck(bool check);
     void onModeChanged(bool is3DView);
 
 protected:
@@ -74,7 +74,7 @@ protected:
 
 private:
     SimpleModelNode* pick(float x, float y);
-    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc, osgEarth::GeoPoint geopos);
+    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc);
 
 private:
     Type mType;
@@ -93,6 +93,7 @@ private:
     osg::ref_ptr<SimpleModelNode> mPickModelNode {nullptr};
 
     NodeData* mNodeData{nullptr};
+    NodeData* mBaseNodeData{nullptr};
     DataManager *mDataManager;
     QQuickItem *mItem;
     Property *mProperty;

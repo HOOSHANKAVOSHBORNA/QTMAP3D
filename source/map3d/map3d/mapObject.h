@@ -58,6 +58,7 @@ public:
     void removeCompositeCallback(osgEarth::Layer* layer);
     CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
     ParenticAnnotationLayer *getLayerByUserId(int userid);
+    // void setFilter();
 public slots:
     void clearParenticLayers();
 signals:

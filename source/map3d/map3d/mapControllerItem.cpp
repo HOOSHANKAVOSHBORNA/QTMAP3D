@@ -4,7 +4,7 @@
 
 #include <QQmlComponent>
 #include <QTimer>
-
+#include "filterManager.h"
 
 MapControllerItem::MapControllerItem():
     MapItem()
@@ -29,7 +29,7 @@ MapControllerItem::MapControllerItem():
 //--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-
+    mFilterManager = new FilterManager(this);
 
 //    mSearchNodeManager = new SearchNodeManager();
 
@@ -135,6 +135,11 @@ void MapControllerItem::calculateFps()
             setFps(fps);
         }
     }
+}
+
+FilterManager *MapControllerItem::filterManager() const
+{
+    return mFilterManager;
 }
 
 //SearchNodeManager *MapControllerItem::getSearchNodeManager() const

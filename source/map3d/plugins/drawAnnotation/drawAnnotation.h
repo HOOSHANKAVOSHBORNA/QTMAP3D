@@ -19,15 +19,16 @@
 #include "lineProperty.h"
 #include "measureHeight.h"
 #include "polygon.h"
-#define CATEGORY "Draw"
+#define CATEGORY "Draw Annotation"
 #define M_CATEGORY "Measurement"
 
-#define POLYLINE "Polyline"
 #define RULER "Ruler"
 #define MEASUREHEIGHT "Height"
 #define SLOPE "Slope"
+#define POLYLINE "Polyline"
 #define POLYGON "Polygon"
 
+//Q_DECLARE_METATYPE(Property)
 
 class DrawAnnotation : public PluginInterface
 {
@@ -55,7 +56,6 @@ public:
     DrawAnnotation::State state() const;
     void setState(DrawAnnotation::State newState);
     CompositeAnnotationLayer *shapeLayer();
-    CompositeAnnotationLayer *measureLayer();
 
 
     virtual bool mousePressEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
@@ -63,10 +63,10 @@ public:
 
 private slots:
     /***********line*********/
-    void onLineItemCheck(bool check);
     void onRulerItemCheck(bool check);
     void onHeightItemCheck(bool check);
     void onSlopeItemCheck(bool check);
+    void onLineItemCheck(bool check);
     void LineNodeDataReceived(PolyLineData *lineNodeData);
     /*********polygon*********/
     void addUpdatePolygon(PolygonData *polygonData);
@@ -95,6 +95,7 @@ private:
     MeasureHeight *mMeasureHeight{nullptr};
     LineProperty *mLineProperty = nullptr;
     PolygonProperty *mPolygonProperty{nullptr};
+    CompositeAnnotationLayer *measureLayer();
     osg::ref_ptr<ParenticAnnotationLayer> mLineLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mRulerLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mHeightLayer;
