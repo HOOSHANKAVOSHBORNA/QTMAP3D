@@ -111,8 +111,9 @@ bool SimpleModelNode::isHighlight() const
     return mIsHighlight;
 }
 
-void SimpleModelNode::highlight(bool isHighlight)
+void SimpleModelNode::highlight(bool isHighlight, osgEarth::Color highliteColor)
 {
+    mHighliteColor = highliteColor;
     mIsHighlight = isHighlight;
     if(mIsHighlight){
         mOutlineNode->setColor(mHighliteColor);

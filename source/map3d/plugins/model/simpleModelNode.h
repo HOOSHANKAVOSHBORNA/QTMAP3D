@@ -58,7 +58,7 @@ public:
 
 
     bool isHighlight() const;
-    void highlight(bool isHighlight);
+    void highlight(bool isHighlight, osgEarth::Color highliteColor = osg::Vec4(0.8, 0.3, 0.87, 0.5));
 
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
