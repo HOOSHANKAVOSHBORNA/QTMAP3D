@@ -15,6 +15,7 @@
 LayerManager::LayerManager()
 {
     mLayerModel = new LayerModel();
+    //    createProperty();
 }
 
 LayerModel *LayerManager::layerModel() const
@@ -58,6 +59,11 @@ void LayerModel::setMapItem(MapItem *mapItem)
     //    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
     //    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
     //    connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
+}
+
+MapItem *LayerModel::getMapItem()
+{
+    return mMapItem;
 }
 
 QHash<int, QByteArray> LayerModel::roleNames() const
@@ -118,6 +124,11 @@ void LayerModel::onVisibleItemClicked(const QModelIndex &current)
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     if(visibleLayer)
         setLayerVisible(visibleLayer);
+}
+
+void LayerModel::onItemLeftClicked(const QModelIndex &current)
+{
+    qDebug() << "left clicked";
 }
 
 void LayerModel::onRemoveItemClicked(const QModelIndex &current)
@@ -271,4 +282,52 @@ void LayerModel::setFilterString(const QString &newFilterString)
     invalidateFilter();
 }
 
+// TODO: move this function to proper layers plugin AND also consider model
+void LayerManager::createProperty()
+{
+    QQmlComponent *comp = new QQmlComponent(qmlEngine(mLayerModel->getMapItem()));
+    connect(comp, &QQmlComponent::statusChanged, [&] {
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
 
+        mPropertyItem = qobject_cast<QQuickItem *>(comp->create());
+    });
+
+    comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+}
+
+QQuickItem *LayerManager::propertyItem() const
+{
+    return mPropertyItem;
+}
+
+void LayerManager::setPropertyItem(QQuickItem *newPropertyItem)
+{
+    if (mPropertyItem == newPropertyItem)
+        return;
+    mPropertyItem = newPropertyItem;
+    emit propertyItemChanged();
+}
+
+// TODO: move this function to proper plugin
+void LayerManager::addPropertyItem(QQuickItem *newPropertyItem, QString newTitle)
+{
+    setPropertyItem(newPropertyItem);
+    setPropertyItemTitle(newTitle);
+}
+
+void LayerManager::removePropertyItem() {}
+
+QString LayerManager::propertyItemTitle() const
+{
+    return mPropertyItemTitle;
+}
+
+void LayerManager::setPropertyItemTitle(const QString &newPropertyItemTitle)
+{
+    if (mPropertyItemTitle == newPropertyItemTitle)
+        return;
+    mPropertyItemTitle = newPropertyItemTitle;
+    emit propertyItemTitleChanged();
+}

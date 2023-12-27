@@ -198,9 +198,14 @@ Item {
                             propagateComposedEvents: true
 
                             anchors.fill: parent
-                            acceptedButtons: Qt.RightButton
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
                             onClicked: function (mouse) {
-                                contextMenu.popup()
+                                if (mouse.button === Qt.RightButton) {
+                                    contextMenu.popup()
+                                } else {
+                                    rootItem.layerModel.onItemLeftClicked(
+                                                treeView.index(row, column))
+                                }
                             }
                         }
 
@@ -406,6 +411,22 @@ Item {
                         }
                     }
                 }
+            }
+        }
+
+        Rectangle {
+            color: 'transparent'
+
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            Item {
+                id: propertyContainer
+
+                clip: true
+
+                anchors.fill: parent
+                data: LayerManagerInstance.propertyItem
             }
         }
     }
