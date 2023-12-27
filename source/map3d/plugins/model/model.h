@@ -91,6 +91,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     osg::ref_ptr<SimpleModelNode> mPickModelNode {nullptr};
+    osg::ref_ptr<SimpleModelNode> mHighliteModelNode {nullptr};
 
     NodeData* mNodeData{nullptr};
     NodeData* mBaseNodeData{nullptr};

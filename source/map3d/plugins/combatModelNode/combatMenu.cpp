@@ -1,5 +1,6 @@
 #include "combatMenu.h"
 #include "qqmlcomponent.h"
+#include <QQmlContext>
 
 AssignmentListModel::AssignmentListModel(CombatManager *combatManager, QObject *parent)
     :QAbstractListModel(parent),
@@ -67,6 +68,7 @@ QHash<int, QByteArray> AssignmentListModel::roleNames() const
 void AssignmentListModel::setOperator(SimpleModelNode *node, bool isAttacker)
 {
     mOperatorNode = node;
+    mOperatorNode->select(true);
     beginResetModel();
 
     mIsAttacker = isAttacker;
@@ -103,10 +105,17 @@ void AssignmentListModel::onAttackButtonClicked()
 void AssignmentListModel::onMenuItemSelect(int row)
 {
     auto assinment = mAssignmentList.at(row);
-    if(!mSelectedAssignmentList.contains(assinment))
+    if(!mSelectedAssignmentList.contains(assinment)){
         mSelectedAssignmentList.append(mAssignmentList.at(row));
-    else
+        if(mOperatorNode == assinment->target)
+            assinment->attacker->highlight(true);
+        else
+            assinment->target->highlight(true);
+    }else{
         mSelectedAssignmentList.removeAll(mAssignmentList.at(row));
+            assinment->attacker->highlight(false);
+            assinment->target->highlight(false);
+    }
 }
 //-------------------------------------------------------------------------------
 OperatorListModel::OperatorListModel(AssignmentListModel *assignmentListModel, QObject *parent)
@@ -182,7 +191,7 @@ void OperatorListModel::addTarget(SimpleModelNode *node)
     beginResetModel();
     if(!mTargetList.contains(node))
         mTargetList.append(node);
-     mIsAttacker = false;
+    mIsAttacker = false;
     endResetModel();
 
     int row = mTargetList.indexOf(node);
@@ -201,7 +210,6 @@ void OperatorListModel::select(int row)
         mSelectedNode = mTargetList.at(row);
         mAssignmentListModel->setOperator(mSelectedNode, false);
     }
-//    emit dataChanged(index(row), index(row));
     endResetModel();
 }
 

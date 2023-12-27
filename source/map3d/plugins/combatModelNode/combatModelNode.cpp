@@ -7,7 +7,6 @@
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 
-//int CombatModelNode::mCount{0};
 CombatModelNode::CombatModelNode(QObject *parent)
     :PluginInterface(parent)
 {
@@ -24,7 +23,6 @@ bool CombatModelNode::setup()
     mCombatManager = new CombatManager(mapItem());
     mCombatMenu = new CombatMenu(mCombatManager, mapItem());
 
-
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(mapItem(), &MapItem::modeChanged, this, &CombatModelNode::onModeChanged);
     mIs3D = mapItem()->getMode();
@@ -32,12 +30,6 @@ bool CombatModelNode::setup()
     mCombatModelNodeLayer = new CompositeAnnotationLayer();
     mCombatModelNodeLayer->setName(COMBATMODELNODE);
     mapItem()->getMapObject()->addLayer(mCombatModelNodeLayer);
-
-    //    mDataManager = new DataManager(mapItem(), mainWindow());
-
-    //    auto tankToolboxItem =  new ToolboxItem{"Tank", COMBATMODELNODE, "qrc:/resources/tank.png", true};
-    //    QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &CombatModelNode::onTankItemCheck);
-    //    toolbox()->addItem(tankToolboxItem);
 
     mAttackNodeLayer = new ParenticAnnotationLayer();
     mAttackNodeLayer->setName("Attacker");
@@ -47,7 +39,6 @@ bool CombatModelNode::setup()
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::addAssignmentChecked, this, &CombatModelNode::onAddAssignmentChecked);
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::removeAssignmentChecked, this, &CombatModelNode::onRemoveAssignmentChecked);
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::onCloseMenuClicked, this, &CombatModelNode::onCloseMenuClicked);
-
 
     return true;
 
@@ -63,26 +54,10 @@ void CombatModelNode::makeIconNode(const QString &fileName)
     }
 }
 
-//osgEarth::Annotation::PlaceNode *CombatModelNode::iconNode() const
-//{
-//    return mIconNode.get();
-//}
-
-//CombatModelNode::State CombatModelNode::state() const
-//{
-//    return mState;
-//}
-
-//void CombatModelNode::setState(State newState)
-//{
-//    mState = newState;
-//}
 
 bool CombatModelNode::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-//    if(mState == State::NONE){
-//        return false;
-//    }
+
     SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
     if(modelNode){
         if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
@@ -96,6 +71,7 @@ bool CombatModelNode::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
                 }
             }
             if(mState == State::REMOVE_ASSIGNMENT){
+                modelNode->highlight(false);
                 if(mOperatorIsAttacker){
                     mCombatManager->removeAssignment(mOperatorNode, modelNode);
                     return true;
@@ -116,43 +92,9 @@ bool CombatModelNode::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::G
         else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON) {
             return false;
         }
-
     }
     return false;
 }
-
-//bool CombatModelNode::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-//{
-//    SimpleModelNode* modelNode = pick(ea.getX(), ea.getY());
-//    if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
-//        if(modelNode){
-//            if(modelNode->isAttacker()){
-//                mAttackerNode = modelNode;
-//                mDragModelNode = getDragModel();
-//                mapItem()->addNode(mDragModelNode);
-//                return true;
-//            }
-//        }
-//    }
-//    return false;
-//}
-
-
-//bool CombatModelNode::mouseReleaseEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-//{
-//    if(ea.getButton() == osgGA::GUIEventAdapter::MouseButtonMask::LEFT_MOUSE_BUTTON && mDragModelNode)
-//    {
-//        SimpleModelNode* targetModelNode = pick(ea.getX(), ea.getY());
-
-//        if(targetModelNode)
-//        {
-//            mCombatManager->assign(mAttackerNode,targetModelNode,AssignState::PREASSIGN);
-//        }
-//        mapItem()->removeNode(mDragModelNode);
-//        mDragModelNode = nullptr;
-//    }
-//    return false;
-//}
 
 bool CombatModelNode::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
@@ -177,46 +119,6 @@ bool CombatModelNode::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIAct
     return false;
 }
 
-//bool CombatModelNode::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
-//{
-//    if(mDragModelNode)
-//    {
-//        osgEarth::GeoPoint mouseGeoPoint = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-//        mDragModelNode->setPosition(mouseGeoPoint);
-//        return true;
-//    }
-//    return false;
-//}
-
-
-//osgEarth::Symbology::Style &CombatModelNode::getDefaultStyle()
-//{
-//    static osgEarth::Symbology::Style style;
-//    static bool bFirst = true;
-//    if (bFirst) {
-//        static osg::Node *node = new osg::Node;
-//        style.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(node);
-//        bFirst = false;
-//    }
-
-//    return style;
-//}
-
-
-//void CombatModelNode::onTankItemCheck(bool check)
-//{
-//    if (check) {
-//        makeIconNode("../data/models/tank/tank.png");
-//        setState(State::READY);
-//        mapItem()->addNode(iconNode());
-//    }
-//    else {
-//        if(state() == State::MOVING)
-//            cancel();
-//        setState(State::NONE);
-//        mapItem()->removeNode(iconNode());
-//    }
-//}
 
 
 void CombatModelNode::onModeChanged(bool is3DView)
@@ -244,86 +146,42 @@ void CombatModelNode::onAttackMenuChecked()
 
 void CombatModelNode::onAddAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker)
 {
-    if(check)
+    if(check){
         mState = State::ADD_ASSIGNMENT;
-    else
+        makeIconNode("../data/images/model/add.png");
+        mapItem()->addNode(mIconNode);
+    }
+    else{
         mState = State::NONE;
+        mapItem()->removeNode(mIconNode);
+        mIconNode.release();
+    }
     mOperatorNode = node;
     mOperatorIsAttacker = isAttacker;
 }
 
 void CombatModelNode::onRemoveAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker)
 {
-    if(check)
+    if(check){
         mState = State::REMOVE_ASSIGNMENT;
-    else
+        makeIconNode("../data/images/model/location-delete.png");
+        mapItem()->addNode(mIconNode);
+    }
+    else{
         mState = State::NONE;
+        mapItem()->removeNode(mIconNode);
+        mIconNode.release();
+    }
     mOperatorNode = node;
     mOperatorIsAttacker = isAttacker;
 }
 
 void CombatModelNode::onCloseMenuClicked()
 {
-    // mapItem()->setTopMenuItem(nullptr);
     mapItem()->setTopMenuVisible(false);
 }
 
-//void CombatModelNode::initModel(osgEarth::GeoPoint &geoPos){
-//    mNodeData = sampleNodeData("tank", "../data/models/tank/tank.png", "../data/models/tank/tank.osg",
-//                               "../data/models/tank/tank.png", "qrc:/resources/tank.png", geoPos);
-//    mNodeData->id = 500 + mCount;
-//    if(!mCombatModelNodeLayer->containsLayer(mAttackNodeLayer)){
-//        mAttackNodeLayer->clear();
-//        mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
-//    }
-//    mNodeData->layers.push_back(mAttackNodeLayer);
-//    mCurrentModel = mDataManager->addUpdateNode(mNodeData);
 
-//    // mAttackerNode = new MoveableModelNode(mapItem(),"../data/models/tank/tank.osg","../data/models/tank/tank.png");
-//    // mAttackNodeLayer->addChild(mAttackerNode);
-//    // mCombatManager->setCombatLayer(mAttackNodeLayer);
-//    // mAttackerNode->setAttacker(true);
-//    // // mAttackerNode->setColor(osgEarth::Color(0,0,0,1));
-//    // mAttackerNode->setPosition(geoPos);
-//    // mCurrentModel = mAttackerNode;
-//    setState(State::MOVING);
-//    mCount++;
-//}
-
-//void CombatModelNode::moving(osgEarth::GeoPoint &geoPos){
-//    if (mCurrentModel){
-//        if (mCurrentModel->asFlyableModelNode()){
-//            double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
-//            geoPos.z() += randomHeight;
-//            mCurrentModel->asFlyableModelNode()->flyTo(geoPos,20);
-//            return;
-//        }
-//        if (mCurrentModel->asMoveableModelNode()){
-//            mCurrentModel->asMoveableModelNode()->moveTo(geoPos,20);
-//            return;
-//        }
-//    }
-//    if (mCurrentModel){
-//        mCurrentModel->setPosition(geoPos);
-//    }
-//}
-
-
-//void CombatModelNode::confirm()
-//{
-//    if (state() == State::MOVING) {
-//        setState(State::READY);
-//    }
-//}
-
-//void CombatModelNode::cancel(){
-//    if(state() == State::MOVING){
-//        mAttackNodeLayer->removeChild(mCurrentModel);
-//        mCurrentModel.release();
-//        setState(State::READY);
-//        mCount--;
-//    }
-//}
 
 SimpleModelNode *CombatModelNode::pick(float x, float y)
 {
@@ -368,43 +226,4 @@ SimpleModelNode *CombatModelNode::pick(float x, float y)
     }
     return simpleModelNode;
 }
-
-
-//osgEarth::Annotation::ModelNode *CombatModelNode::getDragModel()
-//{
-//    osgEarth::Symbology::Style  style = mCurrentModel->getStyle();
-//    osg::ref_ptr<osg::Material> mat = new osg::Material;
-//    mat->setDiffuse (osg::Material::FRONT_AND_BACK, osgEarth::Color::Gray);
-//    osg::ref_ptr<osgEarth::Annotation::ModelNode> dragModelNode = new osgEarth::Annotation::ModelNode(mapItem()->getMapNode() , style);
-//    dragModelNode->setCullingActive(false);
-//    dragModelNode->addCullCallback(mCurrentModel->getCullCallback());
-//    dragModelNode->getOrCreateStateSet()->setAttributeAndModes(mat, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
-//    return dragModelNode.release();
-//}
-
-
-//NodeData* CombatModelNode::sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc,osgEarth::GeoPoint geoPos)
-//{
-//    NodeData* nodeData = new NodeData();
-//    //    flyableNodeData->id = 100;
-//    nodeData->name = name + std::to_string(mCount);
-//    nodeData->type = name;
-//    nodeData->longitude = geoPos.x();
-//    nodeData->latitude = geoPos.y();
-//    nodeData->altitude = geoPos.z();
-//    nodeData->url2D = url2d;
-//    nodeData->url3D = url3d;
-//    nodeData->imgSrc = imgSrc;
-//    nodeData->iconSrc = iconSrc;
-//    nodeData->color = QColor("white").name().toStdString();
-//    nodeData->speed = 100;
-//    nodeData->isAttacker = true;
-//    nodeData->fieldData.push_back(NodeFieldData{"name", "Tank" + QString::number(mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Id",QString::number(100 + mCount), "Main Information","qrc:/Resources/exclamation-mark.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Longitude",QString::number(nodeData->longitude), "Location Information","qrc:/Resources/location.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Latitude",QString::number(nodeData->latitude), "Location Information","qrc:/Resources/location.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"Altitude",QString::number(nodeData->altitude), "Location Information","qrc:/Resources/location.png"});
-//    nodeData->fieldData.push_back(NodeFieldData{"speed",QString::number(nodeData->speed), "Location Information","qrc:/Resources/location.png"});
-//    return nodeData;
-//}
 
