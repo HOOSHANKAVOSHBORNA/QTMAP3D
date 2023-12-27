@@ -12,7 +12,7 @@ AssignLine::AssignLine(MapItem *mapItem, SimpleModelNode* attacker, SimpleModelN
     mAttacker(attacker),
     mTarget(target)
 {
-    setWidth(5);
+    setWidth(3);
     setPointVisible(true);
     setPointWidth(20);
     update();

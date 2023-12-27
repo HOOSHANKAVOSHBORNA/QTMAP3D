@@ -58,7 +58,7 @@ public:
     CompositeAnnotationLayer *shapeLayer();
 
 
-    virtual bool mousePressEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
+    virtual bool mouseClickEvent      (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)override;
 
 private slots:

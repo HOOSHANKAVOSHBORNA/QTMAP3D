@@ -13,13 +13,8 @@ LineProperty::LineProperty(QQuickItem *parent):
     setFillColorStatus(false);
     setStrokeStatus(true);
     setPointsStatus(true);
-//    setBearingStatus(true);
-//    setShowSlopStatus(true);
     setTesselationStatus(true);
     setClampStatus(true);
-//    setShowLenStatus(true);
-//    setAltitudeStatus(true);
-//    setHeightStatus(true);
     setHeight(0);
 }
 
@@ -146,11 +141,10 @@ void LineProperty::setLine(LineNode *newLine)
 
 void LineProperty::setRuler(LineNode *newLine)
 {
-//    setShowLenStatus(false);
-//    setBearingStatus(false);
-//    setShowSlopStatus(false);
-//    setTesselationStatus(false);
-//    setClampStatus(false);
+    setShowLenStatus(false);
+    setBearingStatus(false);
+    setShowSlopStatus(false);
+    setClampStatus(false);
 
     mLineNode = newLine;
     if(mLineNode){
@@ -171,11 +165,10 @@ void LineProperty::setRuler(LineNode *newLine)
 
 void LineProperty::setMeasureHeight(LineNode *newLine)
 {
-    //setShowLenStatus(false);
-//    setBearingStatus(false);
-//    setShowSlopStatus(false);
-//    setTesselationStatus(false);
-//    setClampStatus(false);
+    setShowLenStatus(false);
+    setBearingStatus(false);
+    setShowSlopStatus(false);
+    setClampStatus(false);
 
     mLineNode = newLine;
     if(mLineNode){
@@ -197,11 +190,10 @@ void LineProperty::setMeasureHeight(LineNode *newLine)
 
 void LineProperty::setMesureSlope(LineNode *newLine)
 {
-//    setShowLenStatus(false);
-//    setBearingStatus(false);
-//    setShowSlopStatus(false);
-//    setTesselationStatus(false);
-//    setClampStatus(false);
+    setShowLenStatus(false);
+    setBearingStatus(false);
+    setShowSlopStatus(false);
+    setClampStatus(false);
 
     mLineNode = newLine;
     if(mLineNode){
