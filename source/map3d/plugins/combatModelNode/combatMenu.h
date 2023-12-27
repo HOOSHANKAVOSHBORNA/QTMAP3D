@@ -26,12 +26,12 @@ public:
     Q_INVOKABLE void onAddButtonChecked(bool check);
     Q_INVOKABLE void onRemoveButtonChecked(bool check);
     Q_INVOKABLE void onAttackButtonClicked();
-    Q_INVOKABLE void onCloseMenuClicked();
     Q_INVOKABLE void onMenuItemSelect(int row);
 
 signals:
     void addAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);
     void removeAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);
+    Q_INVOKABLE void onCloseMenuClicked();
 
 private:
     CombatManager *mCombatManager;

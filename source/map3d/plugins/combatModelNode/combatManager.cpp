@@ -37,7 +37,7 @@ QColor Assignment::getColor()
     case SUCCEED:
         return QColor(50, 10, 255, 255);
     case FAILED:
-       return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 255);
     default:
         break;
     }
@@ -63,15 +63,17 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
 
 void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , AssignState state)
 {
-    Assignment *assignment{nullptr};
-    assignment = getAssignment(attacker, target);
-    if(!assignment){
-        assignment = new Assignment(mMapItem, attacker, target);
-        mAssignmentList.append(assignment);
-        mCombatLayer->addChild(assignment->assignLine);
+    if(!(attacker->nodeData()->id == target->nodeData()->id) && (attacker->isAttacker())){
+        Assignment *assignment{nullptr};
+        assignment = getAssignment(attacker, target);
+        if(!assignment){
+            assignment = new Assignment(mMapItem, attacker, target);
+            mAssignmentList.append(assignment);
+            mCombatLayer->addChild(assignment->assignLine);
+        }
+        assignment->setState(state);
+        emit dataChanged();
     }
-    assignment->setState(state);
-    emit dataChanged();
 }
 
 void CombatManager::removeAssignment(SimpleModelNode *attacker, SimpleModelNode *target)

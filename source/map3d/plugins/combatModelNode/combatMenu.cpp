@@ -58,8 +58,8 @@ QHash<int, QByteArray> AssignmentListModel::roleNames() const
     hash[Name] = "objectID";
     hash[Icon] = "objectIcon";
     hash[Color] = "objectColor";
-    hash[State] = "stateColor";
-    hash[StateColor] = "stateColor";
+    hash[State] = "objectState";
+    hash[StateColor] = "objectStateColor";
     hash[Select] = "objectSelection";
     return hash;
 }
@@ -99,10 +99,6 @@ void AssignmentListModel::onAttackButtonClicked()
     }
 }
 
-void AssignmentListModel::onCloseMenuClicked()
-{
-
-}
 
 void AssignmentListModel::onMenuItemSelect(int row)
 {
@@ -227,9 +223,7 @@ CombatMenu::CombatMenu(CombatManager *combatManager, MapControllerItem *map)
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
             item->setProperty("assignmentListModel", QVariant::fromValue<AssignmentListModel*>(mAssignmentListModel));
             item->setProperty("operatorListModel", QVariant::fromValue<OperatorListModel*>(mOperatorListModel));
-
             map->setTopMenuItem(item);
-            map->setTopMenuVisible(true);
 
         }
     });
