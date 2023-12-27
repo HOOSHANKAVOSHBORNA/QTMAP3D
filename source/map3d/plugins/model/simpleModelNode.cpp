@@ -93,8 +93,10 @@ bool SimpleModelNode::isSelect() const
 void SimpleModelNode::select(bool value)
 {
     mIsSelected = value;
-    //    setOutline(mIsSelected);
-    mHighlightOutline->setEnabled(mIsSelected);
+    if(!mIsHighlight){
+        mOutlineNode->setColor(mSelectColor);
+        mOutlineNode->setEnabled(mIsSelected);
+    }
     setImageOutlinEnabled(value);
 }
 
@@ -109,10 +111,21 @@ bool SimpleModelNode::isHighlight() const
     return mIsHighlight;
 }
 
-void SimpleModelNode::highlight(bool isHighlight)
+void SimpleModelNode::highlight(bool isHighlight, osgEarth::Color highliteColor)
 {
+    mHighliteColor = highliteColor;
     mIsHighlight = isHighlight;
-    mSwitchMode->setValue(Highlight, isHighlight);
+    if(mIsHighlight){
+        mOutlineNode->setColor(mHighliteColor);
+        mOutlineNode->setEnabled(true);
+    }
+    else if(mIsSelected){
+        mOutlineNode->setColor(mSelectColor);
+    }
+    else{
+        mOutlineNode->setEnabled(false);
+    }
+//    mSwitchMode->setValue(Highlight, isHighlight);
 }
 
 bool SimpleModelNode::isAutoScale() const
@@ -334,11 +347,11 @@ void SimpleModelNode::compile()
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
     m3DNode->addChild(m3DBaseNode, 0, std::numeric_limits<float>::max());
-    mHighlightOutline = new HighlightOutline;
-    mHighlightOutline->setWidth(6);
-    mHighlightOutline->setColor(mSelectColor);
-    mHighlightOutline->setEnabled(false);
-    mHighlightOutline->addChild(m3DNode);
+    mOutlineNode = new HighlightOutline;
+    mOutlineNode->setWidth(6);
+    mOutlineNode->setColor(mSelectColor);
+    mOutlineNode->setEnabled(false);
+    mOutlineNode->addChild(m3DNode);
 
 //    osgEarth::Symbology::Style  modelStyle ;
 //    modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mHighlightOutline);
@@ -383,10 +396,10 @@ void SimpleModelNode::compile()
     else{
         m2DNode->accept(cbv);
     }
-    mConeHighliteNode = new Cone();
-    mConeHighliteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
-    mConeHighliteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
-    mConeHighliteNode->setHeight(osgEarth::Distance(0, osgEarth::Units::METERS));
+//    mConeHighliteNode = new Cone();
+//    mConeHighliteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
+//    mConeHighliteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+//    mConeHighliteNode->setHeight(osgEarth::Distance(0, osgEarth::Units::METERS));
     //        mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
     //        mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
     //        mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
@@ -400,15 +413,15 @@ void SimpleModelNode::compile()
 //    m2DNode->addChild(mConeHighliteNode);
     //--setting--------------------------------------------------------
     if(mIs3D){
-        mSwitchMode->insertChild(Mode3D, mHighlightOutline, true);
+        mSwitchMode->insertChild(Mode3D, mOutlineNode, true);
         mSwitchMode->insertChild(Mode2D, m2DNode, false);
     }
     else{
-        mSwitchMode->insertChild(Mode3D, mHighlightOutline, false);
+        mSwitchMode->insertChild(Mode3D, mOutlineNode, false);
         mSwitchMode->insertChild(Mode2D, m2DNode, true);
 //        setAutoScale(false);
     }
-    mSwitchMode->insertChild(Highlight, mConeHighliteNode, false);
+//    mSwitchMode->insertChild(Highlight, mConeHighliteNode, false);
     //--------------------------------------------------------------------------
     // this.
     osgEarth::Symbology::Style  rootStyle ;

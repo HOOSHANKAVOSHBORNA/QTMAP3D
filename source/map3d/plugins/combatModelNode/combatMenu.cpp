@@ -1,5 +1,6 @@
 #include "combatMenu.h"
 #include "qqmlcomponent.h"
+#include <QQmlContext>
 
 AssignmentListModel::AssignmentListModel(CombatManager *combatManager, QObject *parent)
     :QAbstractListModel(parent),

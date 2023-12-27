@@ -2,6 +2,7 @@
 #include "flyableModelNode.h"
 #include "moveableModelNode.h"
 #include "utility.h"
+#include <QQmlContext>
 
 // ---------------------------------------------------------------------- manager
 Property::Property(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem)
