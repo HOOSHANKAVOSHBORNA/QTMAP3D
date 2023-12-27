@@ -11,22 +11,35 @@ struct Tag {
 
     QString comparision;
     QPair<double, double> values;
+
+    bool operator==(const QVariant& v) const {
+        return v == value;
+    }
+
+    bool operator==(const Tag& t) const{
+        return (t.comparision == comparision) && ((t.value == value) || (t.values == values));
+    }
+
 };
 
 class FilterManager : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
-    QML_SINGLETON
 public:
 
     FilterManager(QObject* parent = nullptr);
+    void addFilterField(NodeData *nodeData);
     void addFilterField(QString field, QString type);
     bool checkNodeToShow(NodeData *nodeData);
 
     Q_INVOKABLE void addFilterTag(QString key, QString value);
     Q_INVOKABLE void addFilterTag(QString key, double value, QString comp);
     Q_INVOKABLE void addFilterTag(QString key, double value1, double value2, QString comp);
+    Q_INVOKABLE void removeFilterTag(QString key, QString value);
+    Q_INVOKABLE void removeFilterTag(QString key, double value, QString comp);
+    Q_INVOKABLE void removeFilterTag(QString key, double value1, double value2, QString comp);
+
     Q_INVOKABLE QSet<QString> getAllFilterFields();
     Q_INVOKABLE QSet<QString> getIntFilterFields();
 
