@@ -6,7 +6,6 @@ AssignmentListModel::AssignmentListModel(CombatManager *combatManager, QObject *
     mCombatManager(combatManager)
 {
     QObject::connect(combatManager, &CombatManager::dataChanged,[&]{
-
         beginResetModel();
         if(mIsAttacker)
             mAssignmentList = mCombatManager->getAttackerAssignments(mOperatorNode);
@@ -225,13 +224,11 @@ CombatMenu::CombatMenu(CombatManager *combatManager, MapControllerItem *map)
         if(status == QQmlComponent::Error) {
             qDebug() << "Can not load this: " << comp->errorString();
         }
-
         if(status == QQmlComponent::Ready) {
             QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
             item->setProperty("assignmentListModel", QVariant::fromValue<AssignmentListModel*>(mAssignmentListModel));
             item->setProperty("operatorListModel", QVariant::fromValue<OperatorListModel*>(mOperatorListModel));
             map->setTopMenuItem(item);
-
         }
     });
     comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));

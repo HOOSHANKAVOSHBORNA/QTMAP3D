@@ -359,6 +359,8 @@ Item {
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {operatorListModel.select(operatorListModel.index(index,0).row)
+                            addCheck = false
+                            removeCheck = false
                         }
                     }
                 }
