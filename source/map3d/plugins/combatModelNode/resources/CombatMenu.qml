@@ -134,7 +134,7 @@ Item {
             Layout.fillHeight: true
             Layout.maximumWidth: 400
             Layout.topMargin: 5/1.3
-            Layout.leftMargin: 15/1.3
+            Layout.leftMargin: 15
 
             clip: true
             RowLayout{
@@ -232,7 +232,7 @@ Item {
         anchors.leftMargin: nodeInfoHolder.width -  attackholder.width / 2
         radius: 10
         color: fg75
-        width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 645/1.3) ?  645/1.3 : rowLay.childrenRect.width + 30 + 75
+        width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 645/1.3) ?  645/1.3 +50 : rowLay.childrenRect.width + 30 + 75 +50
         height: 65 / 1.3 /*Style.monitorRatio*/
         z:-2
         Rectangle{
