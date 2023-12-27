@@ -9,6 +9,7 @@
 #include "statusBar.h"
 Q_DECLARE_METATYPE(SearchNodeModel)
 class SmallMap;
+class FilterManager;
 class MapControllerItem : public MapItem
 {
     Q_OBJECT
@@ -50,6 +51,8 @@ public:
 
     bool topMenuVisible() const;
     void setTopMenuVisible(bool newTopMenuVisible);
+
+    Q_INVOKABLE FilterManager *filterManager() const;
 
 public slots:
     void setFps(double fps);
@@ -108,6 +111,7 @@ private:
     QQmlEngine *mQmlEngine{nullptr};
     QQuickItem *mTopMenuItem = nullptr;
     bool mTopMenuVisible = false;
+    FilterManager *mFilterManager;
 };
 
 #endif // MAPCONTROLLERITEM_H

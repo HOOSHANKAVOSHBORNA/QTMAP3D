@@ -1,10 +1,52 @@
 #include "combatManager.h"
 #include "assignLine.h"
 
+#include <utility.h>
+
+Assignment::Assignment(MapItem *mapItem, SimpleModelNode *attacker, SimpleModelNode *target)
+{
+    this->attacker = attacker;
+    this->target = target;
+    assignLine = new AssignLine(mapItem, attacker, target);
+
+}
+
+void Assignment::setState(AssignState state)
+{
+    this->state = state;
+    assignLine->setFillColor(Utility::qColor2osgEarthColor(getColor()));
+    assignLine->setPointColor(Utility::qColor2osgEarthColor(getColor()));
+}
+
+QColor Assignment::getColor()
+{
+
+    switch (state) {
+    case PREASSIGN:
+        return QColor(50, 10, 255, 255);
+    case ASSIGNED:
+        return QColor(50, 255, 20, 255);
+    case SEARCH:
+        return QColor(50, 10, 255, 255);
+    case LOCK:
+        return QColor(50, 10, 255, 255);
+    case FIRE:
+        return QColor(50, 10, 255, 255);
+    case BUSY:
+        return QColor(50, 10, 255, 255);
+    case SUCCEED:
+        return QColor(50, 10, 255, 255);
+    case FAILED:
+        return QColor(50, 10, 255, 255);
+    default:
+        break;
+    }
+    return QColor(50, 10, 255, 1);
+}
+//---------------------------------------------------------------------------------
 CombatManager::CombatManager(MapItem *map)
 {
     // mEdgeDataList = new QList<assignmentData>;
-    mAssignmentDataMap = new QMap<QString,assignmentData>;
     mBulletList = new QList<osg::ref_ptr<BulletNode>>;
     mMapItem = map;
 }
@@ -21,56 +63,51 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
 
 void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , AssignState state)
 {
-
-    QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
-    if(mAssignmentDataMap->contains(assignmentID)){
-        mAssignmentDataMap->value(assignmentID).setState(state);
+    if(!(attacker->nodeData()->id == target->nodeData()->id) && (attacker->isAttacker())){
+        Assignment *assignment{nullptr};
+        assignment = getAssignment(attacker, target);
+        if(!assignment){
+            assignment = new Assignment(mMapItem, attacker, target);
+            mAssignmentList.append(assignment);
+            mCombatLayer->addChild(assignment->assignLine);
+        }
+        assignment->setState(state);
+        emit dataChanged();
     }
-    attacker->highlight(true);
-    target->highlight(true);
-    assignmentData data ;
-    data.attacker = attacker;
-    data.target = target;
-    data.setLine(state,attacker->getPosition(),target->getPosition(),mMapItem);
-    data.setState(state);
-    mCombatLayer->addChild(data.getLine());
-    mAssignmentDataMap->insert(QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id),data);
 }
 
 void CombatManager::removeAssignment(SimpleModelNode *attacker, SimpleModelNode *target)
 {
-    QString assignmentID = QString::number(attacker->nodeData()->id)+QString::number(target->nodeData()->id);
-    try {
-        mAssignmentDataMap->find(assignmentID).value().getLine()->setNodeMask(false);
-        mAssignmentDataMap->find(assignmentID).value().attacker->highlight(false);
-        mAssignmentDataMap->find(assignmentID).value().target->highlight(false);
-        mAssignmentDataMap->remove(assignmentID);
-    } catch (...) {
+    Assignment *assignment = getAssignment(attacker, target);
+    if(assignment){
+        mAssignmentList.removeOne(assignment);
+        mCombatLayer->removeChild(assignment->assignLine);
+        emit dataChanged();
     }
-
 }
 
-void CombatManager::deleteAttackerNode(SimpleModelNode *attacker)
+void CombatManager::removeAttackerAssignments(SimpleModelNode *attacker)
 {
-    QString attackerID = QString::number(attacker->nodeData()->id);
-    for (auto i = mAssignmentDataMap->cbegin(), end = mAssignmentDataMap->cend(); i != end; ++i)
-        if(i.key().startsWith(attackerID)){
-            mAssignmentDataMap->remove(i.key());
+    if(!attacker)
+        return;
+
+    for(auto assignment: mAssignmentList)
+        if(assignment->attacker->nodeData()->id == attacker->nodeData()->id){
+            removeAssignment(attacker, assignment->target);
+            emit dataChanged();
         }
 }
 
-void CombatManager::deleteTargetNode(SimpleModelNode *target)
+void CombatManager::removeTargetAssignments(SimpleModelNode *target)
 {
-    QString targetID = QString::number(target->nodeData()->id);
-    for (auto i = mAssignmentDataMap->cbegin(), end = mAssignmentDataMap->cend(); i != end; ++i)
-        if(i.key().endsWith(targetID)){
-            mAssignmentDataMap->remove(i.key());
-        }
-}
+    if(!target)
+        return;
 
-QMap<QString, assignmentData> *CombatManager::getAssignmentData()
-{
-    return mAssignmentDataMap;
+    for(auto assignment: mAssignmentList)
+        if(assignment->target->nodeData()->id == target->nodeData()->id){
+            removeAssignment(assignment->attacker, target);
+            emit dataChanged();
+        }
 }
 
 int CombatManager::readyBulletFor(SimpleModelNode *attacker, const std::string &url3D, const std::string &url2D)
@@ -136,23 +173,42 @@ void CombatManager::attackResult(bool result, int bulletID)
     }
 }
 
-void assignmentData::setState(AssignState state) const
+Assignment *CombatManager::getAssignment(SimpleModelNode *attacker, SimpleModelNode *target)
 {
-    mRelationLine->setState(state);
-    mState = state;
+    if(!attacker || !target)
+        return nullptr;
+
+    for(auto assignment: mAssignmentList)
+        if(assignment->attacker->nodeData()->id == attacker->nodeData()->id
+            && assignment->target->nodeData()->id == target->nodeData()->id)
+            return assignment;
+    return nullptr;
 }
 
-void assignmentData::setLine(AssignState state, osgEarth::GeoPoint start, osgEarth::GeoPoint end, MapItem *map)
+QList<Assignment *> CombatManager::getAttackerAssignments(SimpleModelNode *attacker)
 {
-    mRelationLine = new AssignLine(start,end,state);
+    QList<Assignment *> assignments;
+    if(!attacker)
+        return assignments;
+
+    for(auto assignment: mAssignmentList)
+        if(assignment->attacker->nodeData()->id == attacker->nodeData()->id)
+            assignments.append(assignment);
+
+    return assignments;
 }
 
-AssignLine *assignmentData::getLine()
+QList<Assignment *> CombatManager::getTargetAssignments(SimpleModelNode *target)
 {
-    return mRelationLine;
+    QList<Assignment *> assignments;
+    if(!target)
+        return assignments;
+
+    for(auto assignment: mAssignmentList)
+        if(assignment->target->nodeData()->id == target->nodeData()->id)
+            assignments.append(assignment);
+
+    return assignments;
 }
 
-AssignState assignmentData::getState() const
-{
-    return mState;
-}
+

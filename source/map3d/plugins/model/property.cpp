@@ -208,8 +208,8 @@ void PropertyItem::setMoveTo(const QVector3D &newMoveTo)
         return;
 
     mMoveTo = newMoveTo;
-    mCurrentModel->asMoveableModelNode()
-        ->moveTo(Utility::qVector3DToosgEarthGeoPoint(newMoveTo, mMapItem->getMapSRS()), mSpeed);
+//    mCurrentModel->asMoveableModelNode()
+//        ->moveTo(Utility::qVector3DToosgEarthGeoPoint(newMoveTo, mMapItem->getMapSRS()), mSpeed);
     emit propertyChanged();
 }
 
@@ -285,8 +285,8 @@ void PropertyItem::setFlyTo(const QVector3D &newFlyTo)
     if (mFlyTo == newFlyTo)
         return;
     mFlyTo = newFlyTo;
-    mCurrentModel->asFlyableModelNode()
-        ->flyTo(Utility::qVector3DToosgEarthGeoPoint(newFlyTo, mMapItem->getMapSRS()), mSpeed);
+//    mCurrentModel->asFlyableModelNode()
+//        ->flyTo(Utility::qVector3DToosgEarthGeoPoint(newFlyTo, mMapItem->getMapSRS()), mSpeed);
     emit propertyChanged();
 }
 

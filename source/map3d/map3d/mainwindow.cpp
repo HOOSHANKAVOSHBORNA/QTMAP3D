@@ -20,6 +20,7 @@
 #include "layerManager.h"
 #include "locationManager.h"
 #include "qmlNode.h"
+#include "filterManager.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
@@ -94,8 +95,6 @@ void MainWindow::initComponent()
 
             LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
             layerManager->setMapItem(mMapItem);
-
-            BookmarkManager::createSingletonInstance(nullptr, nullptr);
         }
     });
     comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
