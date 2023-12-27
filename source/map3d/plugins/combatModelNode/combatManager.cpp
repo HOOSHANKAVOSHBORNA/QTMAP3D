@@ -23,23 +23,23 @@ QColor Assignment::getColor()
 
     switch (state) {
     case PREASSIGN:
-        return QColor(20, 255, 100, 255);
+       return QColor(20, 255, 100, 110);
     case ASSIGNED:
-        return QColor(255, 0, 60, 255);
+        return  QColor(255, 0, 60, 110);
     case SEARCH:
-        return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 110);
     case LOCK:
-        return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 110);
     case FIRE:
-        return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 110);
     case BUSY:
-        return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 110);
     case SUCCEED:
-        return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 110);
     case FAILED:
-        return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 110);
     default:
-        return QColor(50, 10, 255, 255);
+        return QColor(50, 10, 255, 110);
         break;
     }
 

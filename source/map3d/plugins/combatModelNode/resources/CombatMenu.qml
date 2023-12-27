@@ -33,16 +33,17 @@ Item {
             RowLayout{
                 anchors.centerIn: parent
                 IconImage {
-//                    source:assignmentListModel?  assignmentListModel.iconUrl : ""
+                   source:operatorListModel?  operatorListModel.operatorIcon : ""
                     Layout.preferredHeight: 55/1.3/*Style.monitorRatio*/
                     Layout.preferredWidth: 55/1.3/*Style.monitorRatio*/
                     Layout.leftMargin: 37.5/1.3/*Style.monitorRatio*/
+                    color: operatorListModel?  operatorListModel.operatorColor : "black"
                 }
 
                 ColumnLayout{
                     RowLayout{
                         id : bulletInfo
-//                        visible: assignmentListModel ? assignmentListModel.isAttacker : false
+                       visible: operatorListModel ? operatorListModel.operatorIsAttacker : false
                         IconImage {
                             source: "qrc:/Resources/bullet.png"
                             Layout.preferredHeight: 22/1.3/*Style.monitorRatio*/
@@ -52,14 +53,14 @@ Item {
                             font.pixelSize: 17/1.3/*Style.monitorRatio*/
                             font.family: "Roboto"
                             color: backgroundColor
-//                            text: assignmentListModel?  assignmentListModel.bulletCount : ""
+                           text: operatorListModel?  30 : ""
                         }
                     }
                     Text {
                         font.pixelSize: 17/1.3/*Style.monitorRatio*/
                         font.family: "Roboto"
                         color: backgroundColor
-//                        text: assignmentListModel?  assignmentListModel.title : ""
+                       text: operatorListModel?  operatorListModel.operatorName : ""
                     }
                 }
                 Rectangle{
@@ -203,11 +204,13 @@ Item {
                             }
                             onEntered: {
                                 node.color = bg20
+                                assignmentListModel.onItemHovered(assignmentListModel.index(index,0).row,true)
                             }
                             onExited: {
                                 if (!objectSelection === true){
                                     node.color = "transparent"
                                 }
+                                assignmentListModel.onItemHovered(assignmentListModel.index(index,0).row,false)
                             }
                         }
                     }
