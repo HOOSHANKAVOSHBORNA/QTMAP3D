@@ -70,6 +70,7 @@ Item{
                     closeButton.visible = true
                     textonFocus.running =true
                     searchText.focus = true
+                    print("dddddd", filterManager.getAllFilterFields())
                 }
             }
 

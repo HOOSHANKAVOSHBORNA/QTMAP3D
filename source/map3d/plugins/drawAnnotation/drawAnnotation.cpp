@@ -73,7 +73,7 @@ bool DrawAnnotation::setup()
     mShapeLayer = new CompositeAnnotationLayer();
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
-
+    mLineProperty = new LineProperty();
 
     /***************************draw Line*******************************/
 
@@ -237,29 +237,54 @@ bool DrawAnnotation::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUI
 
 void DrawAnnotation::onRulerItemCheck(bool check)
 {
-    if (check)
+    if (check){
+        mLineProperty->setBearingStatus(false);
+        mLineProperty->setShowSlopStatus(false);
+        mLineProperty->setAltitudeStatus(false);
+        mLineProperty->setHeightStatus(false);
+        mLineProperty->setShowLenStatus(false);
         makeIconNode("../data/images/draw/ruler.png");
+    }
     onItemChecked(Type::RULERR, check);
 }
 
 void DrawAnnotation::onHeightItemCheck(bool check)
 {
-    if (check)
+    if (check){
+        mLineProperty->setBearingStatus(false);
+        mLineProperty->setShowSlopStatus(false);
+        mLineProperty->setAltitudeStatus(false);
+        mLineProperty->setHeightStatus(false);
+        mLineProperty->setShowLenStatus(false);
         makeIconNode("../data/images/draw/height.png");
-    onItemChecked(Type::HEIGHT, check);
+    }
+        onItemChecked(Type::HEIGHT, check);
+
 }
 
 void DrawAnnotation::onSlopeItemCheck(bool check)
 {
-    if (check)
+        if (check){
+        mLineProperty->setBearingStatus(false);
+        mLineProperty->setShowSlopStatus(false);
+        mLineProperty->setAltitudeStatus(false);
+        mLineProperty->setHeightStatus(false);
+        mLineProperty->setShowLenStatus(false);
         makeIconNode("../data/images/draw/slope.png");
+        }
     onItemChecked(Type::SLOPEE, check);
 }
 
 void DrawAnnotation::onLineItemCheck(bool check)
 {
-    if (check)
+    if (check){
+        mLineProperty->setBearingStatus(true);
+        mLineProperty->setShowSlopStatus(true);
+        mLineProperty->setAltitudeStatus(true);
+        mLineProperty->setHeightStatus(true);
+        mLineProperty->setShowLenStatus(true);
         makeIconNode("../data/images/draw/line.png");
+    }
     onItemChecked(Type::LINE, check);
 }
 
@@ -369,7 +394,7 @@ void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
     case Type::HEIGHT:
         name = MEASUREHEIGHT + QString::number(mCount);
         mLine->setName(name.toStdString());
-        mLineProperty->setMeasureHeight(mLine);
+        mLineProperty->setMeasureHeight(mLine);   
         mLine->addPoint(geoPos);
 
         if(!measureLayer->containsLayer(mHeightLayer)){
@@ -406,12 +431,12 @@ void DrawAnnotation::onItemChecked(Type type, bool check)
         if (type == Type::POLYGONN){
             mType = type;
             mPolygonProperty = new PolygonProperty();
+
             createProperty("Polygon", QVariant::fromValue<PolygonProperty*>(mPolygonProperty));
             mapItem()->addNode(iconNode());
         }
         else{
             mType = type;
-            mLineProperty = new LineProperty();
             createProperty("Line", QVariant::fromValue<LineProperty*>(mLineProperty));
             mapItem()->addNode(iconNode());
         }

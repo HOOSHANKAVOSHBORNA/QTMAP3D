@@ -8,7 +8,7 @@
 class Property :  public QQuickItem
 {
     Q_OBJECT
-    QML_ELEMENT
+ //   QML_ELEMENT
     Q_PROPERTY(QString name           READ getName                         WRITE setName                 NOTIFY propretyChanged)
     Q_PROPERTY(bool fillColorStatus   READ getFillColorStatus              WRITE setFillColorStatus      NOTIFY propretyChanged)
     Q_PROPERTY(QColor fillColor       READ getFillColor                    WRITE setFillColor            NOTIFY propretyChanged)
