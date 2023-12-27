@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void onRemoveButtonChecked(bool check);
     Q_INVOKABLE void onAttackButtonClicked();
     Q_INVOKABLE void onMenuItemSelect(int row);
+    Q_INVOKABLE void onItemHovered(int row, bool hover);
 
 signals:
     void addAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);
@@ -45,6 +46,11 @@ private:
 class OperatorListModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(QString operatorName       READ getOperatorName       WRITE setOperatorName       NOTIFY operatorChanged FINAL)
+    Q_PROPERTY(QUrl    operatorIcon       READ getOperatorIcon       WRITE setOperatorIcon       NOTIFY operatorChanged FINAL)
+    Q_PROPERTY(QString operatorColor      READ getOperatorColor      WRITE setOperatorColor      NOTIFY operatorChanged FINAL)
+    Q_PROPERTY(bool    operatorIsAttacker READ getOperatorIsAttacker WRITE setOperatorIsAttacker NOTIFY operatorChanged FINAL)
+
 public:
     enum CustomRoles {
         Name = Qt::UserRole + 1,
@@ -61,8 +67,17 @@ public:
     void addTarget(SimpleModelNode* node);
     Q_INVOKABLE void select(int row);
 
-signals:
+    QString getOperatorName();
+    QUrl getOperatorIcon();
+    QString getOperatorColor();
+    bool getOperatorIsAttacker();
+    void setOperatorName(QString name);
+    void setOperatorIcon(QUrl url);
+    void setOperatorColor(QString color);
+    void setOperatorIsAttacker(bool attacker);
 
+signals:
+    void operatorChanged();
 
 private:
     AssignmentListModel *mAssignmentListModel;
@@ -70,6 +85,11 @@ private:
     QList<SimpleModelNode*> mTargetList;
     SimpleModelNode* mSelectedNode{nullptr};
     bool mIsAttacker{false};
+
+    QString mOperatorName;
+    QUrl mOperatorIcon;
+    QString mOperatorColor;
+    int mOperatorIsAttacker;
 
 };
 
@@ -87,6 +107,8 @@ private:
     MapControllerItem *mMapItem;
     AssignmentListModel *mAssignmentListModel;
     OperatorListModel *mOperatorListModel;
+
+
 
 };
 

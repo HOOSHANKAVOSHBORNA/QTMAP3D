@@ -12,11 +12,10 @@ struct Tag {
     QString comparision;
     QPair<double, double> values;
 
-    bool operator==(const QVariant& v) const {
-        return v == value;
-    }
-
     bool operator==(const Tag& t) const{
+        if (equalCheck == t.equalCheck) {
+            return value == t.value;
+        }
         return (t.comparision == comparision) && ((t.value == value) || (t.values == values));
     }
 
