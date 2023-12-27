@@ -67,6 +67,10 @@ QHash<int, QByteArray> AssignmentListModel::roleNames() const
 
 void AssignmentListModel::setOperator(SimpleModelNode *node, bool isAttacker)
 {
+    for (int var = 0; var < mSelectedAssignmentList.count(); ++var) {
+        mSelectedAssignmentList.at(var)->attacker->highlight(false);
+        mSelectedAssignmentList.at(var)->target->highlight(false);
+    }
     mOperatorNode = node;
     mOperatorNode->highlight(true,osg::Vec4f(0,0.2,1,0.7));
     beginResetModel();
@@ -215,6 +219,8 @@ void OperatorListModel::addTarget(SimpleModelNode *node)
 
 void OperatorListModel::select(int row)
 {
+    if(mSelectedNode)
+        mSelectedNode->highlight(false);
     beginResetModel();
     if(mIsAttacker){
         mSelectedNode = mAttackerList.at(row);
