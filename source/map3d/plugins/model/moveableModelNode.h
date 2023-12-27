@@ -9,7 +9,7 @@ class MoveableModelNode : public SimpleModelNode
 {
 public:
     explicit MoveableModelNode(MapItem* mapControler, const std::string& modelUrl, const std::string &iconUrl, QObject *parent = nullptr);
-    void moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed);
+    void moveTo(osgEarth::GeoPoint destinationPoint, double speed);
     MoveableModelNode* asMoveableModelNode()override {return this;}
 
     virtual double speed() const;

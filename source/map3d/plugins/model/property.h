@@ -15,36 +15,20 @@ class PropertyItem;
 class Property : public QObject
 {
 public:
-    Property(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem);
-    void setPropertyItem(PropertyItem *newPropertyItem);
+    Property(MapControllerItem *mapItem);
 
-    void createQML();
+    osg::ref_ptr<SimpleModelNode> modelNode() const;
+    void setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNode);
 
-    PropertyItem *propertyItem() const;
+    void setName(const std::string &name);
+    void setPosition(const osgEarth::GeoPoint &positon);
+    void moveTo(const osgEarth::GeoPoint &positon);
+    void flyTo(const osgEarth::GeoPoint &positon);
 
     QQuickItem *qmlItem() const;
 
-    QVector3D getLocation() const;
-    void setLocation(const QVector3D &newLocation);
-    void setLocation(const osgEarth::GeoPoint &newLocation);
-
-    QVector3D getMoveTo() const;
-    void setMoveTo(const QVector3D &newMoveTo);
-    void setMoveTo(const osgEarth::GeoPoint &newMoveTo);
-
-    QVector3D getFlyTo() const;
-    void setFlyTo(const QVector3D &newFlyTo);
-    void setFlyTo(const osgEarth::GeoPoint &newFlyTo);
-
-    bool isMovable() const;
-    void setIsMovable(bool newIsMovable);
-
-    bool isFlyable() const;
-    void setIsFlyable(bool newIsFlyable);
-
-    osg::ref_ptr<SimpleModelNode> currentModel() const;
-    void setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel);
-
+private:
+    void createQML();
 private:
     MapControllerItem *mMapItem;
     PropertyItem *mPropertyItem;
@@ -65,7 +49,10 @@ class PropertyItem : public QObject
     Q_PROPERTY(double speed READ speed WRITE setSpeed NOTIFY propertyChanged FINAL)
 
 public:
-    PropertyItem(osg::ref_ptr<SimpleModelNode> mCurrentModel, MapControllerItem *mapItem);
+    PropertyItem(MapControllerItem *mapItem);
+
+    osg::ref_ptr<SimpleModelNode> modelNode() const;
+    void setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNode);
 
     QString name();
     void setName(const QString &newName);
@@ -82,33 +69,27 @@ public:
     double speed() const;
     void setSpeed(double newSpeed);
 
-    osg::ref_ptr<SimpleModelNode> currentModel() const;
-    void setCurrentModel(const osg::ref_ptr<SimpleModelNode> &newCurrentModel);
-
-    void nodeToProperty(const osgEarth::GeoPoint &geoPos, QString state);
+    QVector3D getFlyTo() const;
+    void setFlyTo(const QVector3D &newFlyTo);
 
     bool isMovable() const;
     void setIsMovable(bool newIsMovable);
 
-    QVector3D getFlyTo() const;
-    void setFlyTo(const QVector3D &newFlyTo);
-
     bool isFlyable() const;
     void setIsFlyable(bool newIsFlyable);
-
 signals:
     void propertyChanged();
 
 private:
     MapControllerItem *mMapItem{nullptr};
-    osg::ref_ptr<SimpleModelNode> mCurrentModel{nullptr};
+    osg::ref_ptr<SimpleModelNode> mModelNode{nullptr};
     QString mName{"defaultName"};
-    bool mIsMovable;
-    QColor mColor;
+    QColor mColor{"white"};
     QVector3D mLocation;
     QVector3D mMoveTo;
-    double mSpeed;
+    double mSpeed{10};
     QVector3D mFlyTo;
+    bool mIsMovable;
     bool mIsFlyable;
 };
 

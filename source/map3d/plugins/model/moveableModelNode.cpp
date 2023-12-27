@@ -124,8 +124,9 @@ MoveableModelNode::MoveableModelNode(MapItem *mapControler, const std::string &m
     getGeoTransform()->addUpdateCallback(mMoveAnimationPathCallback);
 }
 
-void MoveableModelNode::moveTo(osgEarth::GeoPoint destinationPoint, double mSpeed)
+void MoveableModelNode::moveTo(osgEarth::GeoPoint destinationPoint, double speed)
 {
+    mSpeed = speed;
 //    mMoveAnimationPathCallback->reset();
     mMoveAnimationPathCallback->getAnimationPath()->clear();
     mMoveAnimationPathCallback->setPause(false);
@@ -135,7 +136,7 @@ void MoveableModelNode::moveTo(osgEarth::GeoPoint destinationPoint, double mSpee
     destinationPoint.toWorld(destinationWPoint);
 
     double distance = getPosition().distanceTo(destinationPoint);
-    double t = distance / mSpeed;
+    double t = distance / speed;
 
     mMoveAnimationPathCallback->getAnimationPath()->insert(0, osg::AnimationPath::ControlPoint(currentWPoint));
     mMoveAnimationPathCallback->getAnimationPath()->insert(t, osg::AnimationPath::ControlPoint(destinationWPoint));
