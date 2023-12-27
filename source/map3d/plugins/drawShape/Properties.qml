@@ -3,7 +3,6 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
-import Crystal 1.0
 import "style"
 
 Item {
@@ -19,7 +18,7 @@ Item {
                                                      Style.backgroundColor.b,
                                                      0.30)
     property string _headerTitleSTR: "Properties"
-    property CProperty model
+    property var model
     property int swtchWidth: 100
     property int lblWidth: 85
     property int valHeight: 30
@@ -89,7 +88,6 @@ Item {
                 pointColorCheckIcon.visible = true
                 pointColorModel.setProperty(pointColorPreviousIndex,
                                             "checkIconVisible", false)
-                console.log(rootItem.model.pointsColor)
             }
         }
 
@@ -1524,7 +1522,6 @@ Item {
                                         to: 100
                                         onValueChanged: {
                                             rootItem.model.pointsColor.a = value / 100
-                                            console.log(rootItem.model.pointsColor.a)
                                         }
                                     }
                                     Binding {
@@ -1612,4 +1609,5 @@ Item {
             }
         }
     }
+
 }

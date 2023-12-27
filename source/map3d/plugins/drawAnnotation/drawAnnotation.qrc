@@ -2,5 +2,11 @@
     <qresource prefix="/">
         <file>resources/arrow.png</file>
         <file>resources/image.png</file>
+        <file>resources/height.png</file>
+        <file>resources/line.png</file>
+        <file>resources/measure_area.png</file>
+        <file>resources/polygon.png</file>
+        <file>resources/ruler.png</file>
+        <file>resources/slope.png</file>
     </qresource>
 </RCC>
