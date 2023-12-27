@@ -6,6 +6,7 @@
 #include <QVector3D>
 #include <osg/Referenced>
 
+#include "mapControllerItem.h"
 #include "simpleModelNode.h"
 
 class PropertyItem;

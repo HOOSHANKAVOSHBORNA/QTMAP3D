@@ -19,8 +19,8 @@
 #include <qmlNode.h>
 #include <osg/ComputeBoundsVisitor>
 #include <osg/Stencil>
-#include "circle.h"
-#include "cone.h"
+//#include "circle.h"
+//#include "cone.h"
 #include "circularMenu.h"
 
 class MoveableModelNode;
@@ -32,8 +32,7 @@ class SimpleModelNode : public QObject, public osgEarth::Annotation::ModelNode
 public:
     enum Mode{
         Mode2D,
-        Mode3D,
-        Highlight
+        Mode3D
     };
 
 public:
@@ -102,15 +101,15 @@ private:
 
     osg::ref_ptr<osg::Switch> mSwitchMode;
     osg::ref_ptr<osg::LOD> m3DNode;
-    osg::ref_ptr<HighlightOutline> mHighlightOutline;
+    osg::ref_ptr<HighlightOutline> mOutlineNode;
     osg::ref_ptr<osg::Node> m3DBaseNode;
     osg::ref_ptr<osg::Image> mImage;
     osg::ref_ptr<osg::Image> mOutlineImage;
     osg::ref_ptr<osg::Geode> m2DNode;
 
-    osg::ref_ptr<Circle> mCircleSelectNode;
-    osg::ref_ptr<Cone> mConeHighliteNode;
-    osg::ref_ptr<Circle> mCircleHighlightNode;
+//    osg::ref_ptr<Circle> mCircleSelectNode;
+//    osg::ref_ptr<Cone> mConeHighliteNode;
+//    osg::ref_ptr<Circle> mCircleHighlightNode;
 
     CircularMenuItem *mAttackerMenuItem;
     osg::ref_ptr<ModelAutoScaler> mAutoScaler;
@@ -127,6 +126,7 @@ private:
     NodeData* mNodeData{nullptr};
     osgEarth::Color mColor{osgEarth::Color::White};
     osgEarth::Color mSelectColor{osg::Vec4(0.12,1,1,0.5)};
+    osgEarth::Color mHighliteColor{osg::Vec4(0.8, 0.3, 0.87, 0.5)};
     NodeInformation* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
     QQmlEngine *mEnigine{nullptr};

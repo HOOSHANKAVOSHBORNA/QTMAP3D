@@ -158,6 +158,14 @@ bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAd
 
 bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
+//    if(mHighliteModelNode){
+//        mHighliteModelNode->highlight(false);
+//    }
+//    SimpleModelNode *modelNode = pick(ea.getX(), ea.getY());
+//    if(modelNode){
+//        mHighliteModelNode = modelNode;
+//        modelNode->highlight(true);
+//    }
     //move icon-----------------------
     if(mIconNode){
         osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
