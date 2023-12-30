@@ -28,6 +28,7 @@ public:
     Q_INVOKABLE void onAttackButtonClicked();
     Q_INVOKABLE void onMenuItemSelect(int row);
     Q_INVOKABLE void onItemHovered(int row, bool hover);
+    QList<Assignment*> getSelectedAssignmentList();
 
 signals:
     void addAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);

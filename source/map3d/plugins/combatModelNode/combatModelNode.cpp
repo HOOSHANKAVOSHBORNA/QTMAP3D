@@ -178,10 +178,12 @@ void CombatModelNode::onRemoveAssignmentChecked(bool check, SimpleModelNode *nod
 
 void CombatModelNode::onCloseMenuClicked()
 {
+    for (int var = 0; var < mCombatMenu->assignmentListModel()->getSelectedAssignmentList().count(); ++var) {
+        mCombatMenu->assignmentListModel()->getSelectedAssignmentList().at(var)->attacker->highlight(false);
+        mCombatMenu->assignmentListModel()->getSelectedAssignmentList().at(var)->target->highlight(false);
+    }
     mapItem()->setTopMenuVisible(false);
 }
-
-
 
 SimpleModelNode *CombatModelNode::pick(float x, float y)
 {

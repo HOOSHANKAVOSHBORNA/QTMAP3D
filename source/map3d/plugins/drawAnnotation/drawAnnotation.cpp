@@ -73,7 +73,6 @@ bool DrawAnnotation::setup()
     mShapeLayer = new CompositeAnnotationLayer();
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
-    mLineProperty = new LineProperty();
 
     /***************************draw Line*******************************/
 
@@ -168,20 +167,14 @@ void DrawAnnotation::addUpdatePolygon(PolygonData *polygonData)
     polygon->setName(polygonData->name);
     polygon->create(&polygonData->points);
     polygon->setPolygonData(polygonData);
-    //    for (auto point: polygonData->points){
-    //        osgEarth::GeoPoint geopos(mapItem()->getMapSRS(), point.x(), point.y(), point.z());
-    //        polygon->addPoint(geopos);
-    //    }
-    //    polygon->setHeight(0);
     polygon->setStrokeWidth(polygonData->width);
     QColor color(QString::fromStdString(polygonData->color));
     polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
     QColor fillColor(QString::fromStdString(polygonData->fillColor));
     polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
-    //    polygon->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
 }
 
-bool DrawAnnotation::mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool DrawAnnotation::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if(mState == State::NONE)
         return false;
@@ -237,55 +230,36 @@ bool DrawAnnotation::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUI
 
 void DrawAnnotation::onRulerItemCheck(bool check)
 {
-    if (check){
-        mLineProperty->setBearingStatus(false);
-        mLineProperty->setShowSlopStatus(false);
-        mLineProperty->setAltitudeStatus(false);
-        mLineProperty->setHeightStatus(false);
-        mLineProperty->setShowLenStatus(false);
-        makeIconNode("../data/images/draw/ruler.png");
-    }
+    if (check)
+    makeIconNode("../data/images/draw/ruler.png");
+
     onItemChecked(Type::RULERR, check);
 }
 
 void DrawAnnotation::onHeightItemCheck(bool check)
 {
-    if (check){
-        mLineProperty->setBearingStatus(false);
-        mLineProperty->setShowSlopStatus(false);
-        mLineProperty->setAltitudeStatus(false);
-        mLineProperty->setHeightStatus(false);
-        mLineProperty->setShowLenStatus(false);
-        makeIconNode("../data/images/draw/height.png");
-    }
-        onItemChecked(Type::HEIGHT, check);
+    if (check)
+
+    makeIconNode("../data/images/draw/height.png");
+
+    onItemChecked(Type::HEIGHT, check);
 
 }
 
 void DrawAnnotation::onSlopeItemCheck(bool check)
 {
-        if (check){
-        mLineProperty->setBearingStatus(false);
-        mLineProperty->setShowSlopStatus(false);
-        mLineProperty->setAltitudeStatus(false);
-        mLineProperty->setHeightStatus(false);
-        mLineProperty->setShowLenStatus(false);
+        if (check)
         makeIconNode("../data/images/draw/slope.png");
-        }
-    onItemChecked(Type::SLOPEE, check);
+
+        onItemChecked(Type::SLOPEE, check);
 }
 
 void DrawAnnotation::onLineItemCheck(bool check)
 {
-    if (check){
-        mLineProperty->setBearingStatus(true);
-        mLineProperty->setShowSlopStatus(true);
-        mLineProperty->setAltitudeStatus(true);
-        mLineProperty->setHeightStatus(true);
-        mLineProperty->setShowLenStatus(true);
+        if (check)
         makeIconNode("../data/images/draw/line.png");
-    }
-    onItemChecked(Type::LINE, check);
+
+        onItemChecked(Type::LINE, check);
 }
 
 
@@ -431,12 +405,12 @@ void DrawAnnotation::onItemChecked(Type type, bool check)
         if (type == Type::POLYGONN){
             mType = type;
             mPolygonProperty = new PolygonProperty();
-
             createProperty("Polygon", QVariant::fromValue<PolygonProperty*>(mPolygonProperty));
             mapItem()->addNode(iconNode());
         }
         else{
             mType = type;
+            mLineProperty = new LineProperty();
             createProperty("Line", QVariant::fromValue<LineProperty*>(mLineProperty));
             mapItem()->addNode(iconNode());
         }
