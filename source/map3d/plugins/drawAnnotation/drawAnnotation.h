@@ -2,13 +2,8 @@
 #define DRAWANNOTATION_H
 
 #include <QMouseEvent>
-//#include <osgEarthAnnotation/FeatureNode>
-//#include <osgEarthAnnotation/ModelNode>
-//#include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
 #include "polygonProperty.h"
-//#include <osgEarthAnnotation/AnnotationLayer>
-//#include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
 #include <QQmlEngine>
 #include <QQmlComponent>
@@ -28,7 +23,6 @@
 #define POLYLINE "Polyline"
 #define POLYGON "Polygon"
 
-//Q_DECLARE_METATYPE(Property)
 
 class DrawAnnotation : public PluginInterface
 {

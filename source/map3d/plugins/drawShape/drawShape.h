@@ -2,23 +2,15 @@
 #define DRAWSHAPE_H
 
 #include <QMouseEvent>
-//#include <osgEarthAnnotation/FeatureNode>
-//#include <osgEarthAnnotation/ModelNode>
-//#include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
-
-//#include <osgEarthAnnotation/AnnotationLayer>
-//#include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
 #include <QQmlEngine>
 #include <QQmlComponent>
-
 #include "compositeAnnotationLayer.h"
 #include "mapItem.h"
 
-#define CATEGORY "Draw Shape"
+#define CATEGORY   "Draw Shape"
 #define M_CATEGORY "Measurement"
-
 
 class DrawShape : public PluginInterface
 {
@@ -34,6 +26,7 @@ public:
         CANCEL,
         CONFIRM
     };
+
 public:
     explicit DrawShape(QObject *parent = nullptr);
     ~DrawShape()override;
@@ -62,13 +55,14 @@ protected:
 
     void createProperty(QString name, QVariant property);
     void hideProperty();
+
 private:
     State mState{State::NONE};
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     CompositeAnnotationLayer* mShapeLayer{nullptr};
     CompositeAnnotationLayer* mMeasureLayer{nullptr};
     QQuickItem *mItem{nullptr};
-
+    static int mCount;
 };
 
 #endif // DRAWSHAPE_H

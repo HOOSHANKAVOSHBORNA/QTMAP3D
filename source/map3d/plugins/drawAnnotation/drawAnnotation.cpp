@@ -74,8 +74,6 @@ bool DrawAnnotation::setup()
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
 
-    /***************************draw Line*******************************/
-
     connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawAnnotation::LineNodeDataReceived);
     connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawAnnotation::polygonDataReceived);
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
@@ -301,28 +299,10 @@ void DrawAnnotation::onPolygonItemCheck(bool check)
         makeIconNode("../data/images/draw/polygon.png");
     onItemChecked(Type::POLYGONN, check);
 
-
-//    if (check) {
-//        setState(State::READY);
-//        mPolygonProperty = new PolygonProperty();
-//        createProperty("Polygon", QVariant::fromValue<PolygonProperty*>(mPolygonProperty));
-//        mapItem()->addNode(iconNode());
-//    }
-//    else {
-//        if(state() == State::DRAWING)
-//            cancelDraw();
-
-//        setState(State::NONE);
-//        mPolygon = nullptr;
-//        hideProperty();
-//        mapItem()->removeNode(iconNode());
-//    }
 }
 
 void DrawAnnotation::initDraw(const osgEarth::GeoPoint &geoPos)
 {
-  /************initDraw for Line*************/
-
     mLine = new LineNode(mapItem());
     QString name;
     auto shapeLayer = DrawAnnotation::shapeLayer();
