@@ -74,7 +74,7 @@ bool Model::setup()
     mFlyableNodelLayer->setName("Flying");
 
     // property item setup
-    mProperty = new Property(mCurrentModel, mapItem());
+    mProperty = new Property(mapItem());
 
     return true;
 }
@@ -205,15 +205,17 @@ void Model::onTreeItemCheck(bool check)
         makeIconNode("../data/models/tree/tree.png");
         mType = Type::SIMPLE;
         setState(State::READY);
-        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Tree");
         mapItem()->addNode(iconNode());
+
+        mProperty->setModelNode(nullptr);
+        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Tree");
     } else {
         if (state() == State::MOVING)
             cancel();
 
-        mainWindow()->getToolboxManager()->removePropertyItem();
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
+        mainWindow()->getToolboxManager()->removePropertyItem();
     }
 }
 
@@ -228,15 +230,16 @@ void Model::onCarItemCheck(bool check)
         makeIconNode("../data/models/car/car.png");
         mType = Type::MOVEABLE;
         setState(State::READY);
-        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Car");
         mapItem()->addNode(iconNode());
+        mProperty->setModelNode(nullptr);
+        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Car");
     } else {
         if (state() == State::MOVING)
             cancel();
 
-        mainWindow()->getToolboxManager()->removePropertyItem();
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
+        mainWindow()->getToolboxManager()->removePropertyItem();
     }
 }
 
@@ -251,15 +254,16 @@ void Model::onAirplanItemCheck(bool check)
         makeIconNode("../data/models/airplane/airplane.png");
         mType = Type::FLYABLE;
         setState(State::READY);
-        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Airplane");
         mapItem()->addNode(iconNode());
+        mProperty->setModelNode(nullptr);
+        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Airplane");
     } else {
         if (state() == State::MOVING)
             cancel();
 
-        mainWindow()->getToolboxManager()->removePropertyItem();
         setState(State::NONE);
         mapItem()->removeNode(iconNode());
+        mainWindow()->getToolboxManager()->removePropertyItem();
     }
 }
 
@@ -342,8 +346,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
     default:
         break;
     }
-    mProperty->setCurrentModel(mCurrentModel);
-    mProperty->setLocation(geoPos);
+    mProperty->setModelNode(mCurrentModel);
     setState(State::MOVING);
     mCount++;
 }
@@ -355,18 +358,18 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
             mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
-            mProperty->setFlyTo(geoPos);
+            mProperty->flyTo(geoPos);
             return;
         }
 
         if (mCurrentModel->asMoveableModelNode()) {
             mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
-            mProperty->setMoveTo(geoPos);
+            mProperty->moveTo(geoPos);
             return;
         }
 
         mCurrentModel->setPosition(geoPos);
-        mProperty->setLocation(geoPos);
+        mProperty->setPosition(geoPos);
         qDebug() << "position changed";
     }
 }

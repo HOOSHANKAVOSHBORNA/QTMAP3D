@@ -18,7 +18,7 @@ Item {
     readonly property color fg20: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.20)
-    property var cppInterface: modelPropertyInterface ?? "null"
+    property var cppInterface/*: modelPropertyInterface ?? "null"*/
 
     // DEBUG
     //    Text {

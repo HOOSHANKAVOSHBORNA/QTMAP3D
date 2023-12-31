@@ -67,6 +67,10 @@ QHash<int, QByteArray> AssignmentListModel::roleNames() const
 
 void AssignmentListModel::setOperator(SimpleModelNode *node, bool isAttacker)
 {
+    for (int var = 0; var < mSelectedAssignmentList.count(); ++var) {
+        mSelectedAssignmentList.at(var)->attacker->highlight(false);
+        mSelectedAssignmentList.at(var)->target->highlight(false);
+    }
     mOperatorNode = node;
     mOperatorNode->highlight(true,osg::Vec4f(0,0.2,1,0.7));
     beginResetModel();
@@ -97,8 +101,13 @@ void AssignmentListModel::onAttackButtonClicked()
         if(mAssignmentList.contains(assignment)){
             assignment->setState(ASSIGNED);
         }
-
     }
+    for (int var = 0; var < mSelectedAssignmentList.count(); ++var) {
+        mSelectedAssignmentList.at(var)->attacker->highlight(false);
+        mSelectedAssignmentList.at(var)->target->highlight(false);
+    }
+    mSelectedAssignmentList.clear();
+    mOperatorNode->highlight(true,osg::Vec4f(1,0,0,0.7));
 }
 
 
@@ -130,6 +139,11 @@ void AssignmentListModel::onItemHovered(int row , bool hover)
         assinment->assignLine->setFillColor(Utility::qColor2osgEarthColor(color));
         assinment->assignLine->setWidth(3);
     }
+}
+
+QList<Assignment *> AssignmentListModel::getSelectedAssignmentList()
+{
+    return mSelectedAssignmentList;
 }
 //-------------------------------------------------------------------------------
 OperatorListModel::OperatorListModel(AssignmentListModel *assignmentListModel, QObject *parent)
@@ -215,6 +229,8 @@ void OperatorListModel::addTarget(SimpleModelNode *node)
 
 void OperatorListModel::select(int row)
 {
+    if(mSelectedNode)
+        mSelectedNode->highlight(false);
     beginResetModel();
     if(mIsAttacker){
         mSelectedNode = mAttackerList.at(row);
