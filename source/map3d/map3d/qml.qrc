@@ -34,5 +34,7 @@
         <file>BookmarkItem.qml</file>
         <file>TestItem.qml</file>
         <file>LoginPage.qml</file>
+        <file>Components/ColorPicker.qml</file>
+        <file>Components/qmldir</file>
     </qresource>
 </RCC>

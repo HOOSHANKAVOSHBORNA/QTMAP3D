@@ -5,9 +5,9 @@ import "style"
 Item {
     property string title: 'aydefault'
 
-    //    Layout.fillWidth: true
-    //    Layout.fillHeight: true
-    anchors.fill: parent
+    Layout.fillWidth: true
+    Layout.fillHeight: true
+    //    anchors.fill: parent
     Rectangle {
         color: Style.foregroundColor
         border.width: 1
