@@ -20,6 +20,7 @@ add_executable(test
   nodeTest.cpp nodeTest.h
   layerTest.cpp layerTest.h
   movableNodeTest.h movableNodeTest.cpp
+  assignmentTest.h assignmentTest.cpp
 )
 target_link_libraries(test Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Gui)
 

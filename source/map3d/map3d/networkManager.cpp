@@ -12,6 +12,7 @@ void NetworkManager::start()
 {
     connect(&mClient, &QAmqpClient::connected, this, &NetworkManager::clientConnected);
     mClient.connectToHost();
+
 }
 
 void NetworkManager::dataQueueDeclared()
@@ -32,7 +33,7 @@ void NetworkManager::dataMessageReceived()
         return;
 
     QAmqpMessage message = queue->dequeue();
-   qDebug() << "message: " << message.payload();
+    qDebug() << "message: " << message.payload();
     mServiceManager->messageData(message.payload());
 }
 

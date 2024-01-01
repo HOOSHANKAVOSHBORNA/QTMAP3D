@@ -87,6 +87,17 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
         emit statusNodeDataReceived(statusNodeData);
 }
 
+void ServiceManager::assignmentData(QJsonObject jsonObject)
+{
+    AssignData *assignData = new AssignData;
+    QJsonObject jsonObjectData = jsonObject.value("Data").toObject();
+    assignData->attackerID = jsonObjectData.value("attackerID").toInt();
+    assignData->targetID = jsonObjectData.value("targetID").toInt();
+    assignData->state = jsonObjectData.value("state").toString().toStdString();
+    assignData->command = jsonObject.value("COMMAND").toString().toStdString();
+}
+
+
 void ServiceManager::messageData(QString jsonData)
 {
     QJsonDocument doc = QJsonDocument::fromJson(jsonData.toUtf8());
