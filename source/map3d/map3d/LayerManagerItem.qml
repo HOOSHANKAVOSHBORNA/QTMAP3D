@@ -198,9 +198,14 @@ Item {
                             propagateComposedEvents: true
 
                             anchors.fill: parent
-                            acceptedButtons: Qt.RightButton
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
                             onClicked: function (mouse) {
-                                contextMenu.popup()
+                                if (mouse.button === Qt.RightButton) {
+                                    contextMenu.popup()
+                                } else {
+                                    rootItem.layerModel.onItemLeftClicked(
+                                                treeView.index(row, column))
+                                }
                             }
                         }
 
@@ -404,6 +409,60 @@ Item {
                                 opacity: .85
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        Rectangle {
+            id: propertySection
+
+            //            visible: propertyContainer.children.length
+
+            //            Layout.preferredHeight: 300 / Style.monitorRatio
+            Layout.preferredHeight: 450 / Style.monitorRatio
+            Layout.fillWidth: true
+            color: 'transparent'
+
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                Text {
+                    color: Style.foregroundColor
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: contentHeight
+                    text: LayerManagerInstance.propertyItemTitle
+                    font.family: Style.fontFamily
+                    font.pixelSize: 20 / Style.monitorRatio
+
+                    Layout.bottomMargin: 1
+                    //                    Layout.topMargin: 25 / Style.monitorRatio
+                    Layout.leftMargin: 3 / Style.monitorRatio
+                }
+
+                Rectangle {
+                    color: Style.foregroundColor
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 2 / Style.monitorRatio
+                    Layout.bottomMargin: 20 / Style.monitorRatio
+
+                    radius: 1
+                }
+
+                Rectangle {
+                    color: 'transparent'
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Item {
+                        id: propertyContainer
+
+                        clip: true
+
+                        anchors.fill: parent
+                        data: LayerManagerInstance.propertyItem
                     }
                 }
             }

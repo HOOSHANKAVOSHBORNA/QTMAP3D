@@ -20,6 +20,7 @@ CombatModelNode::~CombatModelNode()
 
 bool CombatModelNode::setup()
 {
+    auto modelPlugin = getPlugin("libmodel.so");
     mCombatManager = new CombatManager(mapItem());
     mCombatMenu = new CombatMenu(mCombatManager, mapItem());
 
