@@ -11,7 +11,6 @@
 #include "plugininterface.h"
 #include "application.h"
 #include "mainwindow.h"
-#include "qqmlapplicationengine.h"
 
 EventHandler::EventHandler(PluginManager *pluginManager)
 {
@@ -29,28 +28,28 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
     switch (ea.getEventType())
     {
     case osgGA::GUIEventAdapter::FRAME:
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->frameEvent(ea, aa);
             if(res)
                 return true;
         }
         return false;
     case (osgGA::GUIEventAdapter::KEYDOWN):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->keyPressEvent(ea, aa);
             if(res)
                 return true;
         }
         return false;
     case (osgGA::GUIEventAdapter::KEYUP):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->keyReleaseEvent(ea, aa);
             if(res)
                 return true;
         }
         return false;
     case (osgGA::GUIEventAdapter::PUSH):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->mousePressEvent(ea, aa);
             mCurrentPressPoint.setX(ea.getX());
             mCurrentPressPoint.setY(ea.getY());
@@ -59,14 +58,14 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
         }
         return false;
     case (osgGA::GUIEventAdapter::DRAG):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->mouseDragEvent(ea, aa);
             if(res)
                 return true;
         }
         return false;
     case (osgGA::GUIEventAdapter::RELEASE):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->mouseReleaseEvent(ea, aa);
             if((ea.getX() - 2) < mCurrentPressPoint.x() &&  mCurrentPressPoint.x() < (ea.getX() + 2)
                 && (ea.getY() - 2) < mCurrentPressPoint.y() && mCurrentPressPoint.y() < (ea.getY() + 2))
@@ -76,21 +75,21 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
         }
         return false;
     case (osgGA::GUIEventAdapter::DOUBLECLICK):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->mouseDoubleClickEvent(ea, aa);
             if(res)
                 return true;
         }
         return false;
     case (osgGA::GUIEventAdapter::MOVE):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->mouseMoveEvent(ea, aa);
             if(res)
                 return true;
         }
         return false;
     case (osgGA::GUIEventAdapter::SCROLL):
-        for (auto& item : mPluginManager->mPluginsInfoList) {
+        for (auto& item : mPluginManager->mPluginsMap) {
             bool res = item->wheelEvent(ea, aa);
             if(res)
                 return true;
@@ -122,6 +121,8 @@ void PluginManager::setup()
     PluginInterface::setMainWindow(mainWindow);
     auto mapItem = mainWindow->getMapItem();
     mapItem->getViewer()->addEventHandler(new EventHandler(this));
+    //----------------------------------
+    PluginInterface::setPluginsMap(mPluginsMap);
     //--------------------------------
     DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
     PluginInterface::setDefenseDataManager(defenseDataManager);
@@ -129,7 +130,7 @@ void PluginManager::setup()
     ServiceManager *serviceManager = Application::instance()->serviceManager();
     PluginInterface::setServiceManager(serviceManager);
     //-------------------------------------
-    for (auto item : mPluginsInfoList) {
+    for (auto item : qAsConst(mPluginsMap)) {
         item->setup();
     }
 }
@@ -202,8 +203,13 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
 
         if (pluginInterface) {
             pluginInterface->setName(pluginFileName);
-            mPluginsInfoList.push_back(pluginInterface);
+            mPluginsMap.insert(pluginFileName, pluginInterface);
         }
     }
+}
+
+QMap<QString, PluginInterface *> PluginManager::pluginsMap() const
+{
+    return mPluginsMap;
 }
 
