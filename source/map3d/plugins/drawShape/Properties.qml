@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
+import "Components"
 import "style"
 
 Item {
@@ -39,58 +40,56 @@ Item {
         anchors.margins: 6 / Style.monitorRatio
         radius: 10 / Style.monitorRatio
 
-        ColorBoxInput {
-            id: colorBox
-            z: mainLayout.z + 10
-            x: nameSec.x
-            y: nameSec.y
-            width: frame.width
-            visible: false
-            onColorChosen: {
-                colorSelectCircle.color = selectedColor
-                rootItem.model.fillColor = selectedColor
-                addIconImage.visible = false
-                propertyCheckIcon.visible = true
-                colorModel.setProperty(previousIndex, "checkIconVisible", false)
-            }
-        }
+        //        ColorPicker {
+        //            id: colorBox
+        //            z: mainLayout.z + 10
+        //            x: nameSec.x
+        //            y: nameSec.y
+        //            width: frame.width
+        //            visible: false
+        //            onColorChosen: {
+        //                colorSelectCircle.color = selectedColor
+        //                rootItem.model.fillColor = selectedColor
+        //                addIconImage.visible = false
+        //                propertyCheckIcon.visible = true
+        //                colorModel.setProperty(previousIndex, "checkIconVisible", false)
+        //            }
+        //        }
 
-        ColorBoxInput {
-            id: colorBoxStroke
-            z: mainLayout.z + 10
-            x: nameSec.x
-            y: nameSec.y
-            width: frame.width
-            visible: false
-            onColorChosen: {
-                strokeColorCircle.color = selectedColor
-                rootItem.model.strokeColor = selectedColor
-                strokeColorAddIcon.visible = false
-                strokeCheckIcon.visible = true
-                strokeColorModel.setProperty(strokePreviousIndex,
-                                             "checkIconVisible", false)
-            }
-        }
-
-        ColorBoxInput {
-            id: colorBoxPointColor
-            z: mainLayout.z + 10
-            x: nameSec.x
-            y: nameSec.y
-            width: frame.width
-            visible: false
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            onColorChosen: {
-                pointColorCircle.color = selectedColor
-                rootItem.model.pointsColor = selectedColor
-                pointColorAddIcon.visible = false
-                pointColorCheckIcon.visible = true
-                pointColorModel.setProperty(pointColorPreviousIndex,
-                                            "checkIconVisible", false)
-            }
-        }
-
+        //        ColorPicker {
+        //            id: colorBoxStroke
+        //            z: mainLayout.z + 10
+        //            x: nameSec.x
+        //            y: nameSec.y
+        //            width: frame.width
+        //            visible: false
+        //            onColorChosen: {
+        //                strokeColorCircle.color = selectedColor
+        //                rootItem.model.strokeColor = selectedColor
+        //                strokeColorAddIcon.visible = false
+        //                strokeCheckIcon.visible = true
+        //                strokeColorModel.setProperty(strokePreviousIndex,
+        //                                             "checkIconVisible", false)
+        //            }
+        //        }
+        //        ColorBoxInput {
+        //            id: colorBoxPointColor
+        //            z: mainLayout.z + 10
+        //            x: nameSec.x
+        //            y: nameSec.y
+        //            width: frame.width
+        //            visible: false
+        //            Layout.fillWidth: true
+        //            Layout.fillHeight: true
+        //            onColorChosen: {
+        //                pointColorCircle.color = selectedColor
+        //                rootItem.model.pointsColor = selectedColor
+        //                pointColorAddIcon.visible = false
+        //                pointColorCheckIcon.visible = true
+        //                pointColorModel.setProperty(pointColorPreviousIndex,
+        //                                            "checkIconVisible", false)
+        //            }
+        //        }
         ScrollView {
             id: frame
             clip: true
@@ -135,125 +134,39 @@ Item {
 
                 RowLayout {
                     id: fillcolorSec
+
                     Layout.fillWidth: true
+                    Layout.preferredHeight: 26
                     visible: rootItem.model ? rootItem.model.fillColorStatus : false
                     spacing: 0
+
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Color"
                         font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
-                    RowLayout {
-                        Layout.rightMargin: 15 / Style.monitorRatio
+
+                    ColorPicker {
+                        id: fillColorPick
+
                         Layout.fillWidth: true
-                        spacing: 3 / Style.monitorRatio
-                        ListModel {
-                            id: colorModel
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#EF2929"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#FCAF3E"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#FCE94F"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#8AE234"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#729FCF"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#FFFFFF"
-                            }
-                        }
+                        Layout.fillHeight: true
 
-                        Repeater {
-                            id: colorModelRepeater
-                            model: colorModel
-                            Button {
-                                required property color propertyColorSelect
-                                required property bool checkIconVisible
-                                required property int index
-
-                                checkable: true
-                                implicitWidth: 26 / Style.monitorRatio
-                                implicitHeight: 26 / Style.monitorRatio
-                                background: Rectangle {
-                                    radius: width
-                                    color: propertyColorSelect
-                                }
-                                Image {
-                                    anchors.fill: parent
-                                    source: "qrc:/Resources/add-place-color-select.png"
-                                    visible: checkIconVisible
-                                }
-                                onClicked: {
-                                    addIconImage.visible = true
-                                    propertyCheckIcon.visible = false
-                                    colorSelectCircle.color = Style.backgroundColor
-
-                                    colorModel.setProperty(previousIndex,
-                                                           "checkIconVisible",
-                                                           false)
-                                    nextIndex = index
-                                    if (previousIndex !== nextIndex) {
-                                        colorModelRepeater.itemAt(
-                                                    previousIndex).checked = false
-                                    }
-                                    colorModel.setProperty(nextIndex,
-                                                           "checkIconVisible",
-                                                           checked)
-                                    if (checked) {
-                                        previousIndex = index
-                                        rootItem.model.fillColor = propertyColorSelect
-                                    } else {
-                                        rootItem.model.fillColor = "#FFFFFF"
-                                    }
-                                }
-                            }
-                        }
-
-                        Rectangle {
-                            id: colorSelectCircle
-                            implicitWidth: 26 / Style.monitorRatio
-                            implicitHeight: 26 / Style.monitorRatio
-                            radius: width
-                            border.width: 1 / Style.monitorRatio
-                            border.color: Style.foregroundColor
-                            IconImage {
-                                id: addIconImage
-                                anchors.centerIn: parent
-                                width: 20 / Style.monitorRatio
-                                height: 20 / Style.monitorRatio
-                                source: "qrc:/Resources/location-add.png"
-                            }
-                            IconImage {
-                                id: propertyCheckIcon
-                                anchors.centerIn: parent
-                                width: 20 / Style.monitorRatio
-                                height: 20 / Style.monitorRatio
-                                source: "qrc:/Resources/add-place-color-select.png"
-                                visible: false
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: colorBox.visible = true
-                            }
+                        //                        selectedColor: '#099999'
+                        onSelectedColorChanged: {
+                            print('it is what it is')
+                            rootItem.model.fillColor = selectedColor
                         }
                     }
                 }
+
                 RowLayout {
                     spacing: 0
+
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 34
+
                     Text {
                         text: "Stroke"
                         color: Style.foregroundColor
@@ -262,153 +175,21 @@ Item {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         visible: rootItem.model ? rootItem.model.strokeStatus : false
                     }
-                    GroupBox {
-                        id: strokeSec
+
+                    ColorPicker {
+                        id: strokeColorPick
+
                         visible: rootItem.model ? rootItem.model.strokeStatus : false
-                        Layout.rightMargin: 15 / Style.monitorRatio
-                        padding: 0
+
+                        Layout.preferredHeight: 34
                         Layout.fillWidth: true
-                        Layout.margins: 0
+                        Layout.topMargin: 5
+                        Layout.bottomMargin: 5
 
-                        background: Rectangle {
-                            color: foregroundColor
-                            radius: 10 / Style.monitorRatio
-                            border.color: "transparent"
-                        }
-
-                        ColumnLayout {
-                            anchors.fill: parent
-
-                            RowLayout {
-                                spacing: 3 / Style.monitorRatio
-                                Layout.leftMargin: 7 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                ListModel {
-                                    id: strokeColorModel
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#EF2929"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#FCAF3E"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#FCE94F"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#8AE234"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#729FCF"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#FFFFFF"
-                                    }
-                                }
-                                Repeater {
-                                    id: strokeColorModelRepeater
-                                    model: strokeColorModel
-                                    Button {
-                                        required property color propertyColorSelect
-                                        required property bool checkIconVisible
-                                        required property int index
-                                        checkable: true
-                                        implicitWidth: 26 / Style.monitorRatio
-                                        implicitHeight: 26 / Style.monitorRatio
-                                        background: Rectangle {
-                                            radius: width
-                                            color: propertyColorSelect
-                                        }
-                                        Image {
-                                            anchors.centerIn: parent
-                                            anchors.fill: parent
-                                            source: "qrc:/Resources/add-place-color-select.png"
-                                            visible: checkIconVisible
-                                        }
-                                        onClicked: {
-                                            strokeColorAddIcon.visible = true
-                                            strokeCheckIcon.visible = false
-                                            strokeColorCircle.color = Style.backgroundColor
-
-                                            strokeColorModel.setProperty(
-                                                        strokePreviousIndex,
-                                                        "checkIconVisible",
-                                                        false)
-                                            strokeNextIndex = index
-                                            if (strokePreviousIndex !== strokeNextIndex) {
-                                                strokeColorModelRepeater.itemAt(
-                                                            strokePreviousIndex).checked = false
-                                            }
-                                            strokeColorModel.setProperty(
-                                                        strokeNextIndex,
-                                                        "checkIconVisible",
-                                                        checked)
-                                            if (checked) {
-                                                rootItem.model.strokeColor = propertyColorSelect
-                                                strokePreviousIndex = index
-                                            } else {
-                                                rootItem.model.strokeColor = "#FFFFFF"
-                                            }
-                                        }
-                                    }
-                                }
-
-                                Rectangle {
-                                    id: strokeColorCircle
-                                    implicitWidth: 26 / Style.monitorRatio
-                                    implicitHeight: 26 / Style.monitorRatio
-                                    radius: width
-                                    border.width: 1 / Style.monitorRatio
-                                    border.color: Style.foregroundColor
-                                    IconImage {
-                                        id: strokeColorAddIcon
-                                        anchors.centerIn: parent
-                                        width: 20 / Style.monitorRatio
-                                        height: 20 / Style.monitorRatio
-                                        source: "qrc:/Resources/location-add.png"
-                                    }
-                                    IconImage {
-                                        id: strokeCheckIcon
-                                        anchors.fill: parent
-                                        source: "qrc:/Resources/add-place-color-select.png"
-                                        visible: false
-                                    }
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: colorBoxStroke.visible = true
-                                    }
-                                }
-                            }
-
-                            FloatSpinbox {
-                                id: strokeWidthValue
-                                editable: true
-                                Layout.fillWidth: true
-                                Layout.alignment: Qt.AlignCenter
-                                Layout.topMargin: 10 / Style.monitorRatio
-                                Layout.bottomMargin: 5 / Style.monitorRatio
-                                Layout.rightMargin: 5 / Style.monitorRatio
-                                Layout.leftMargin: 5 / Style.monitorRatio
-                                height: 20 / Style.monitorRatio
-                                from: 0
-                                to: 20000000
-                                stepSize: 1
-                                onValueChanged: {
-                                    if (rootItem.model)
-                                        rootItem.model.strokeWidth = value
-                                }
-                            }
-                            Binding {
-                                target: strokeWidthValue
-                                property: "value"
-                                value: rootItem.model ? rootItem.model.strokeWidth : 0
-                                delayed: true
-                            }
+                        //                        selectedColor: '#099999'
+                        onSelectedColorChanged: {
+                            print('it is what it is')
+                            rootItem.model.strokeColor = selectedColor
                         }
                     }
                 }
@@ -1480,7 +1261,6 @@ Item {
                                             }
                                         }
 
-
                                         Rectangle {
                                             id: pointColorCircle
                                             implicitWidth: 26 / Style.monitorRatio
@@ -1609,5 +1389,4 @@ Item {
             }
         }
     }
-
 }

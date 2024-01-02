@@ -2,8 +2,6 @@
     <qresource prefix="/">
         <file>StepSpinBox.qml</file>
         <file>Properties.qml</file>
-        <file>ColorBox.qml</file>
         <file>FloatSpinbox.qml</file>
-        <file>ColorBoxInput.qml</file>
     </qresource>
 </RCC>

@@ -1,10 +1,11 @@
 #ifndef LAYERMANAGER_H
 #define LAYERMANAGER_H
 
-#include "mapItem.h"
-#include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QStandardItemModel>
 #include <osgEarth/Layer>
+
+#include "mapItem.h"
 
 Q_DECLARE_METATYPE(osgEarth::Layer);
 
@@ -15,6 +16,10 @@ class LayerManager : public QObject
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
+    Q_PROPERTY(QQuickItem *propertyItem READ propertyItem WRITE setPropertyItem NOTIFY
+                   propertyItemChanged FINAL)
+    Q_PROPERTY(QString propertyItemTitle READ propertyItemTitle WRITE setPropertyItemTitle NOTIFY
+                   propertyItemTitleChanged FINAL)
 
 public:
     static LayerManager* createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
@@ -22,12 +27,29 @@ public:
     void setMapItem(MapItem *mapItem);
     Q_INVOKABLE LayerModel *layerModel() const;
 
+    QQuickItem *propertyItem() const;
+    void setPropertyItem(QQuickItem *newPropertyItem);
+    void addPropertyItem(QQuickItem *newPropertyItem, QString title);
+    Q_INVOKABLE void removePropertyItem();
+
+    void createProperty(/*model, */ QString title);
+
+    QString propertyItemTitle() const;
+    void setPropertyItemTitle(const QString &newPropertyItemTitle);
+
+signals:
+    void propertyItemChanged();
+
+    void propertyItemTitleChanged();
+
 private:
     explicit LayerManager();
 
 private:
     inline static LayerManager *mInstance;
     LayerModel *mLayerModel;
+    QQuickItem *mPropertyItem = nullptr;
+    QString mPropertyItemTitle;
 };
 
 class LayerModel : public QSortFilterProxyModel
@@ -44,7 +66,10 @@ class LayerModel : public QSortFilterProxyModel
 
 public:
     explicit LayerModel();
+
     void setMapItem(MapItem *mapItem);
+    MapItem *getMapItem();
+
     QHash<int, QByteArray> roleNames() const override;
 
     QModelIndex getDragIndex();
@@ -54,6 +79,7 @@ public slots:
     void setDragIndex(QModelIndex value);
     void setFilterString(const QString &newFilterString);
     void onVisibleItemClicked(const QModelIndex &current);
+    void onItemLeftClicked(const QModelIndex &current);
     void onRemoveItemClicked(const QModelIndex &current);
     void onMoveItem(QModelIndex oldIndex, QModelIndex newIndex);
 

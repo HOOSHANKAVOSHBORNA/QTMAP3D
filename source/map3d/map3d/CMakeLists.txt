@@ -52,7 +52,7 @@ add_executable(Map3d
         splash.h splash.cpp)
 
 
-target_include_directories(Map3d PUBLIC "/usr/local/include" "style/")
+target_include_directories(Map3d PUBLIC "/usr/local/include" "style/" "Components/")
 target_link_directories(Map3d PUBLIC ${PLUGINS_OUTPUT_DIR})
 target_link_libraries(Map3d
         PRIVATE Qt6::Core Qt6::Quick Qt6::Gui Qt6::Widgets Qt6::Network
