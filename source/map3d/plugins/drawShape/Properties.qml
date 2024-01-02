@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
+
 import "Components"
 import "style"
 
@@ -102,7 +103,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
-                        selectedColor: /*rootItem.model.fillColor*/ '#099999'
+                        //                        selectedColor: /*rootItem.model.fillColor*/ '#099999'
                         onSelectedColorChanged: {
                             rootItem.model.fillColor = selectedColor
                         }
@@ -132,7 +133,7 @@ Item {
                         Layout.topMargin: 5
                         Layout.bottomMargin: 5
 
-                        selectedColor: /*rootItem.model.strokeColor*/ '#099999'
+                        //                        selectedColor: /*rootItem.model.strokeColor*/ '#099999'
                         onSelectedColorChanged: {
                             rootItem.model.strokeColor = selectedColor
                         }
@@ -470,7 +471,7 @@ Item {
                                 font.pixelSize: 17 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            FloatSpinbox {
+                            FloatSpinBox {
                                 id: startArcValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -499,7 +500,7 @@ Item {
                                 font.pixelSize: 17 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            FloatSpinbox {
+                            FloatSpinBox {
                                 id: endArcValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -918,7 +919,7 @@ Item {
                         Layout.preferredHeight: valHeight / Style.monitorRatio
                         Layout.rightMargin: 15 / Style.monitorRatio
 
-                        FloatSpinbox {
+                        FloatSpinBox {
                             id: tesselationValue
                             editable: true
                             anchors.left: parent.left
@@ -1134,13 +1135,13 @@ Item {
                                         Layout.fillWidth: true
                                         Layout.fillHeight: true
 
-                                        selectedColor: /*rootItem.model.pointsColor*/ '#099999'
+                                        //                                        selectedColor: /*rootItem.model.pointsColor*/ '#099999'
                                         onSelectedColorChanged: {
                                             rootItem.model.pointsColor = selectedColor
                                         }
                                     }
 
-                                    FloatSpinbox {
+                                    FloatSpinBox {
                                         id: pointOpacityValue
                                         Layout.fillWidth: true
                                         Layout.preferredHeight: 20 / Style.monitorRatio
@@ -1187,7 +1188,7 @@ Item {
                                 Layout.preferredHeight: valHeight / Style.monitorRatio
                                 Layout.preferredWidth: 200 / Style.monitorRatio
 
-                                FloatSpinbox {
+                                FloatSpinBox {
                                     id: pointWidthValue
                                     editable: true
                                     enabled: pointVisible.checked

@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>FloatSpinbox.qml</file>
         <file>AnnotationProperties.qml</file>
-        <file>StepSpinBox.qml</file>
         <file>LineProperty.qml</file>
     </qresource>
 </RCC>
