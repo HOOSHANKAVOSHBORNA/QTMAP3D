@@ -7,6 +7,7 @@ import QtQuick.Effects
 import Crystal 1.0
 import "style"
 
+
 CMainWindow {
     id: mainWindow
     // visible: true
@@ -14,45 +15,6 @@ CMainWindow {
     minimumWidth: 800
     minimumHeight: 700
     title: qsTr("MAP3D")
-
-    property Splash splash: Splash {
-        onTimeout: mainWindow.show()
-    }
-    component Splash: Window {
-        id: splash
-        flags: Qt.SplashScreen
-        // the transparent color lets background behind the image edges show through
-        color: "transparent"
-        modality: Qt.ApplicationModal // in case another application window is showing
-        title: "Splash Window" // for the taskbar/dock, task switcher etc.
-        visible: true
-
-        // here we use the Screen attached property to center the splash window
-        // x: (Screen.width - splashImage.width) / 2
-        // y: (Screen.height - splashImage.height) / 2
-        width: splashImage.width
-        height: splashImage.height
-
-        property int timeoutInterval: 2000
-        signal timeout
-
-        Image {
-            id: splashImage
-            source: "qrc:/Resources/login.png"
-        }
-
-        TapHandler {
-            onTapped: splash.timeout()
-        }
-
-        Timer {
-            interval: splash.timeoutInterval; running: true; repeat: false
-            onTriggered: {
-                splash.visible = false
-                splash.timeout()
-            }
-        }
-    }
 
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
