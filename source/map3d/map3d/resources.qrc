@@ -518,5 +518,6 @@
         <file>Resources/information.png</file>
         <file>Resources/inform.png</file>
         <file>Resources/bullet.png</file>
+        <file>Resources/splash.gif</file>
     </qresource>
 </RCC>

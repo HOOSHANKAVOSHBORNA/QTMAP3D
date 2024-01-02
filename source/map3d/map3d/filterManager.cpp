@@ -1,20 +1,40 @@
 #include "filterManager.h"
 
+#include "serviceManager.h"
 FilterManager::FilterManager(QObject *parent) : QObject(parent){
 }
 
 void FilterManager::addFilterField(NodeData *nodeData)
 {
     for (auto &field : nodeData->fieldData){
-        addFilterField(field.name, field.value.typeName());
+        addFilterField(field.name, field.value);
     }
 }
 
-void FilterManager::addFilterField(QString field, QString type)
+void FilterManager::addFilterField(QString field, QVariant value)
 {
-    mFilterFields.insert(field);
-    if (type == typeid(5).name())
+    if (field.toLower() == "color")
+        mFilterFieldsColor.insert(value.toString());
+    else if (std::strcmp(value.typeName(), "double") == 0 || std::strcmp(value.typeName(), "qlonglong") == 0)
         mFilterFieldsNum.insert(field);
+    else
+        mFilterFieldsStr.insert(field);
+    emit filterFieldsChanged();
+}
+
+QSet<QString> FilterManager::numFilterFields() const
+{
+    return mFilterFieldsNum;
+}
+
+QSet<QString> FilterManager::colorFilterFields() const
+{
+    return mFilterFieldsColor;
+}
+
+QSet<QString> FilterManager::stringFilterFields() const
+{
+    return mFilterFieldsStr;
 }
 
 bool FilterManager::checkNodeToShow(NodeData *nodeData)
@@ -25,7 +45,7 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData)
         if(it != nodeData->fieldData.end()) {
             for (auto &field: mFilterTags[tag]) {
                 if (field.equalCheck) {
-                    if (field.value == it->value) {
+                    if (it->value.toString().startsWith(field.value.toString())) {
                         andTag = true;
                         break;
                     }
@@ -83,6 +103,7 @@ void FilterManager::addFilterTag(QString key, QString value)
     } else {
         mFilterTags[key] = QVector<Tag>{Tag{true, value}};
     }
+    emit filterTagsEdited();
 }
 
 void FilterManager::addFilterTag(QString key, double value, QString comp)
@@ -92,6 +113,7 @@ void FilterManager::addFilterTag(QString key, double value, QString comp)
     } else {
         mFilterTags[key] = QVector<Tag>{Tag{false, value, comp}};
     }
+    emit filterTagsEdited();
 }
 
 void FilterManager::addFilterTag(QString key, double value1, double value2, QString comp)
@@ -101,6 +123,7 @@ void FilterManager::addFilterTag(QString key, double value1, double value2, QStr
     } else {
         mFilterTags[key] = QVector<Tag>{Tag{false, 0, comp, QPair<double, double>{value1, value2}}};
     }
+    emit filterTagsEdited();
 }
 
 void FilterManager::removeFilterTag(QString key, QString value)
@@ -109,6 +132,7 @@ void FilterManager::removeFilterTag(QString key, QString value)
     if (it != mFilterTags[key].end()) {
         mFilterTags[key].erase(it);
     }
+    emit filterTagsEdited();
 }
 
 void FilterManager::removeFilterTag(QString key, double value, QString comp)
@@ -117,6 +141,7 @@ void FilterManager::removeFilterTag(QString key, double value, QString comp)
     if (it != mFilterTags[key].end()) {
         mFilterTags[key].erase(it);
     }
+    emit filterTagsEdited();
 }
 
 void FilterManager::removeFilterTag(QString key, double value1, double value2, QString comp)
@@ -125,14 +150,5 @@ void FilterManager::removeFilterTag(QString key, double value1, double value2, Q
     if (it != mFilterTags[key].end()) {
         mFilterTags[key].erase(it);
     }
-}
-
-QSet<QString> FilterManager::getAllFilterFields()
-{
-    return mFilterFields;
-}
-
-QSet<QString> FilterManager::getIntFilterFields()
-{
-    return mFilterFieldsNum;
+    emit filterTagsEdited();
 }
