@@ -102,9 +102,8 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
-                        //                        selectedColor: '#099999'
+                        selectedColor: /*rootItem.model.fillColor*/ '#099999'
                         onSelectedColorChanged: {
-                            print('it is what it is')
                             rootItem.model.fillColor = selectedColor
                         }
                     }
@@ -133,9 +132,8 @@ Item {
                         Layout.topMargin: 5
                         Layout.bottomMargin: 5
 
-                        //                        selectedColor: '#099999'
+                        selectedColor: /*rootItem.model.strokeColor*/ '#099999'
                         onSelectedColorChanged: {
-                            print('it is what it is')
                             rootItem.model.strokeColor = selectedColor
                         }
                     }
@@ -1136,9 +1134,8 @@ Item {
                                         Layout.fillWidth: true
                                         Layout.fillHeight: true
 
-                                        //                        selectedColor: '#099999'
+                                        selectedColor: /*rootItem.model.pointsColor*/ '#099999'
                                         onSelectedColorChanged: {
-                                            print('it is what it is')
                                             rootItem.model.pointsColor = selectedColor
                                         }
                                     }

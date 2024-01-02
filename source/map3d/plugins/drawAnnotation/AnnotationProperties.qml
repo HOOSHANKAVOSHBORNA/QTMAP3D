@@ -105,7 +105,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
-                        //                        selectedColor: '#099999'
+                        selectedColor: rootItem.cppInterface.fillColor /*'#099999'*/
                         onSelectedColorChanged: {
                             rootItem.cppInterface.fillColor = selectedColor
                         }
@@ -150,7 +150,7 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
 
-                                //                        selectedColor: '#099999'
+                                selectedColor: rootItem.cppInterface.strokeColor /*'#099999'*/
                                 onSelectedColorChanged: {
                                     rootItem.cppInterface.strokeColor = selectedColor
                                 }
@@ -557,7 +557,7 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
 
-                                //                        selectedColor: '#099999'
+                                selectedColor: rootItem.cppInterface.pointsColor /*'#099999'*/
                                 onSelectedColorChanged: {
                                     rootItem.cppInterface.pointsColor = selectedColor
                                 }
