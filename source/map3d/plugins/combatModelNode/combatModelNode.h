@@ -2,6 +2,7 @@
 #define COMBATMODELNODE_H
 
 #include <QObject>
+#include "assignDataManager.h"
 #include "combatManager.h"
 #include "plugininterface.h"
 #include <osgEarthAnnotation/PlaceNode>
@@ -57,6 +58,7 @@ private:
     osg::ref_ptr<ParenticAnnotationLayer> mAttackNodeLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mOperatorNode {nullptr};
     bool mOperatorIsAttacker{false};
+    AssignDataManager *mDataManager{nullptr};
 };
 
 #endif // COMBATMODELNODE_H

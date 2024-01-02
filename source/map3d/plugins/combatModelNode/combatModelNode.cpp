@@ -4,6 +4,7 @@
 #include <moveableModelNode.h>
 #include <flyableModelNode.h>
 #include "combatManager.h"
+#include "model.h"
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 
@@ -21,8 +22,10 @@ CombatModelNode::~CombatModelNode()
 bool CombatModelNode::setup()
 {
     auto modelPlugin = getPlugin("libmodel.so");
+    auto *model = dynamic_cast<Model*>(modelPlugin);
     mCombatManager = new CombatManager(mapItem());
     mCombatMenu = new CombatMenu(mCombatManager, mapItem());
+    mDataManager = new AssignDataManager(mCombatManager,model);
 
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(mapItem(), &MapItem::modeChanged, this, &CombatModelNode::onModeChanged);
@@ -40,6 +43,7 @@ bool CombatModelNode::setup()
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::addAssignmentChecked, this, &CombatModelNode::onAddAssignmentChecked);
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::removeAssignmentChecked, this, &CombatModelNode::onRemoveAssignmentChecked);
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::onCloseMenuClicked, this, &CombatModelNode::onCloseMenuClicked);
+    // QObject::connect(serviceManager(), &ServiceManager::assignDataReceived, mDataManager, &AssignDataManager::assignDataReceived);
 
     return true;
 
