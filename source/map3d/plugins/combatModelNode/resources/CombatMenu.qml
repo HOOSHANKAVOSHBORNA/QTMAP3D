@@ -197,11 +197,11 @@ Item {
                 }
             }
         }
-
+// nodeholder
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.maximumWidth: 400
+            Layout.maximumWidth: 425
             Layout.topMargin: 5 / 1.3
             Layout.leftMargin: 15
 
@@ -209,7 +209,7 @@ Item {
             RowLayout {
                 id: rowLay
                 Layout.alignment: Qt.AlignVCenter
-                Layout.maximumWidth: 400
+//                Layout.maximumWidth: 400
                 spacing: 0
                 clip: true
                 Repeater {
@@ -260,12 +260,16 @@ Item {
                                 antialiasing: true
                             }
                             Text {
+                                width:75 / 1.3
+                                elide: Text.ElideRight
+
                                 anchors.left: repeaterImg.right
                                 anchors.leftMargin: 5
                                 text: objectID
                                 font.pixelSize: 17 / 1.3 /*Style.monitorRatio*/
                                 color: objectStateColor
                                 anchors.verticalCenter: parent.verticalCenter
+
                             }
                         }
                         MouseArea {
@@ -273,24 +277,19 @@ Item {
                             hoverEnabled: true
                             onClicked: {
                                 assignmentListModel.onMenuItemSelect(
-                                            assignmentListModel.index(index,
-                                                                      0).row)
+                                            assignmentListModel.index(index,0).row)
                             }
                             onEntered: {
                                 node.color = bg20
                                 assignmentListModel.onItemHovered(
-                                            assignmentListModel.index(index,
-                                                                      0).row,
-                                            true)
+                                            assignmentListModel.index(index,0).row,true)
                             }
                             onExited: {
                                 if (!objectSelection === true) {
                                     node.color = "transparent"
                                 }
                                 assignmentListModel.onItemHovered(
-                                            assignmentListModel.index(index,
-                                                                      0).row,
-                                            false)
+                                            assignmentListModel.index(index,0).row,false)
                             }
                         }
                     }
@@ -298,8 +297,9 @@ Item {
             }
         }
     }
-
+/////   nodeholderbackground
     Rectangle {
+
         id: nodesBackground
         anchors.left: mainRow.left
         anchors.verticalCenter: mainRow.verticalCenter
@@ -308,9 +308,11 @@ Item {
         color: fg75
         width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 645
                 / 1.3) ? 645 / 1.3 + 50 : rowLay.childrenRect.width + 30 + 75 + 50
-        height: 65 / 1.3 /*Style.monitorRatio*/
+        height: 75 / 1.3 /*Style.monitorRatio*/
         z: -2
         Rectangle {
+            anchors.top:parent.top
+            anchors.topMargin: 5/1.3
             anchors.right: parent.right
             width: 65 / 1.3 /*Style.monitorRatio*/
             height: 65 / 1.3 /*Style.monitorRatio*/
@@ -332,6 +334,8 @@ Item {
             }
         }
         Rectangle {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 5
             anchors.right: parent.right
             width: 65 / 1.3 /*Style.monitorRatio*/
             height: 65 / 1.3 /*Style.monitorRatio*/
@@ -380,7 +384,7 @@ Item {
             }
         }
     }
-
+////////// bottom layer
     Rectangle {
         color: "#DEE3E6"
         radius: 10
@@ -443,8 +447,7 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            operatorListModel.select(operatorListModel.index(
-                                                         index, 0).row)
+                            operatorListModel.select(operatorListModel.index(index, 0).row)
                         }
                     }
                 }
