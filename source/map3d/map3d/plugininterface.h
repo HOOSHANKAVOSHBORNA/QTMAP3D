@@ -52,6 +52,8 @@ public:
 
     ServiceManager *serviceManager() const;
     static void setServiceManager(ServiceManager *newServiceManager);
+    static void setPluginsMap(const QMap<QString, PluginInterface *> &newPluginsMap);
+    PluginInterface *getPlugin(QString name);
 
 public:
     virtual bool frameEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
@@ -65,16 +67,15 @@ public:
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
 
-
-
 private:
-    static MapControllerItem *mMapItem;
-    static QQmlEngine *mQmlEngine;
-    static DefenseDataManager *mDefenseDataManager;
-    static MainWindow *mMainWindow;
-    static Toolbox *mToolbox;
-    static ServiceManager *mServiceManager;
+    static inline MapControllerItem *mMapItem;
+    static inline QQmlEngine *mQmlEngine;
+    static inline DefenseDataManager *mDefenseDataManager;
+    static inline MainWindow *mMainWindow;
+    static inline Toolbox *mToolbox;
+    static inline ServiceManager *mServiceManager;
     static inline BookmarkManager *mBookmarkManager;
+    static inline QMap<QString, PluginInterface*> mPluginsMap;
     QString mName;
 
 };

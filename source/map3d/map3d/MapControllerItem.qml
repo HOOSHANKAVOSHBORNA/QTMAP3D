@@ -105,6 +105,7 @@ MapController {
         //        model: map.searchNodeManager().searchNodeProxyModel()
         filterManager: map.filterManager()
     }
+
     MultiEffect {
         source: searcbar
         enabled: true

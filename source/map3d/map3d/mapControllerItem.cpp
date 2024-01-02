@@ -30,6 +30,7 @@ MapControllerItem::MapControllerItem():
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
     mFilterManager = new FilterManager(this);
+    getMapObject()->setFilterManager(mFilterManager);
     connect(getMapObject(), &MapObject::nodeToLayerAdded, [this](osg::Node *node, osgEarth::Layer *layer){
         auto data = node->getUserData();
         NodeData *nodeData = dynamic_cast<NodeData*>(data);
