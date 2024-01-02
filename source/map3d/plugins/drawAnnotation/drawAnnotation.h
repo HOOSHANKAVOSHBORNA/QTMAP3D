@@ -14,7 +14,6 @@
 #include <QQmlComponent>
 
 #include "compositeAnnotationLayer.h"
-#include "mapItem.h"
 #include "lineNode.h"
 #include "lineProperty.h"
 #include "measureHeight.h"

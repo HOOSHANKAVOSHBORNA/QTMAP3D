@@ -3,12 +3,6 @@
 #define PluginManager_H
 
 #include <QObject>
-#include <QQmlEngine>
-#include <list>
-#include <QMap>
-#include <utility>
-#include <tuple>
-
 #include "plugininterface.h"
 
 class PluginManager;
@@ -34,13 +28,15 @@ public:
     void loadPlugins();
     void setup();
 
+    QMap<QString, PluginInterface *> pluginsMap() const;
+
 private:
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
     void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);
 
 private:
     friend EventHandler;
-    std::list<PluginInterface*> mPluginsInfoList;
+    QMap<QString, PluginInterface*> mPluginsMap;
     QStringList mPluginFileNameList;
     QStringList mLoadedPluginList;
 };
