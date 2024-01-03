@@ -88,6 +88,30 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
         emit statusNodeDataReceived(statusNodeData);
 }
 
+void ServiceManager::receiveAssignmentData(QJsonObject jsonObject)
+{
+    AssignData *assignData = new AssignData;
+    QJsonObject jsonObjectData = jsonObject.value("Data").toObject();
+    assignData->attackerID = jsonObjectData.value("attackerID").toInt();
+    assignData->targetID = jsonObjectData.value("targetID").toInt();
+    assignData->state = jsonObjectData.value("state").toString().toStdString();
+    assignData->command = jsonObject.value("COMMAND").toString().toStdString();
+    emit assignDataReceived(assignData);
+}
+
+void ServiceManager::sendJsonAssignData(AssignData data)
+{
+    QJsonObject jsonObject;
+    jsonObject.insert("Type","Assign");
+    jsonObject.insert("COMMAND",QString::fromStdString(data.command));
+    jsonObject.insert("attackerID",QString::fromStdString(data.attackerID));
+    jsonObject.insert("targetID",QString::fromStdString(data.targetID));
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(jsonObject);
+    sendAction(jsonDoc.toJson(QJsonDocument::Indented));
+}
+
+
 void ServiceManager::messageData(QString jsonData)
 {
     QJsonDocument doc = QJsonDocument::fromJson(jsonData.toUtf8());
@@ -104,6 +128,8 @@ void ServiceManager::messageData(QString jsonData)
                 statusNodeData(obj);
             else if (type == "Line")
                 polylineData(obj);
+            else if (type == "Assign")
+                receiveAssignmentData(obj);
             else if (type == "Movable")
                 movableNodeData(obj);
             else if(type == "Node")

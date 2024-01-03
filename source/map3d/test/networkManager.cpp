@@ -82,6 +82,9 @@ void NetworkManager::actionQueueReceived()
                 jsonDoc.setObject(jsonObject);
                 sendData(jsonDoc.toJson(QJsonDocument::Indented));
             }
+            else if (type == "Assign"){
+                emit assignDataReceived(obj);
+            }
         }
     }
 
