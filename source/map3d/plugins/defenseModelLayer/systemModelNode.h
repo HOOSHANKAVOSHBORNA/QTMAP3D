@@ -6,7 +6,7 @@
 #include "systemInfoItem.h"
 #include "circle.h"
 #include "sphereNode.h"
-#include "polygon.h"
+#include "annotatedNode.h"
 #include "aircraftModelNode.h"
 #include "lineNode.h"
 #include "truck.h"
@@ -85,7 +85,7 @@ private:
 
     osg::ref_ptr<Circle> mRangeCircle;
     osg::ref_ptr<SphereNode> mMezSphere;
-    osg::ref_ptr<Polygon> mWezPolygon;
+    osg::ref_ptr<AnnotatedNode> mWezPolygon;
 
     osg::ref_ptr<class TruckS> mTruckS;
     osg::ref_ptr<class TruckF> mTruckF;

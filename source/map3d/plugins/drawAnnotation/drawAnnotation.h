@@ -2,20 +2,14 @@
 #define DRAWANNOTATION_H
 
 #include <QMouseEvent>
-//#include <osgEarthAnnotation/FeatureNode>
-//#include <osgEarthAnnotation/ModelNode>
-//#include <osgEarthSymbology/GeometryFactory>
 #include "plugininterface.h"
-#include "polygonProperty.h"
-//#include <osgEarthAnnotation/AnnotationLayer>
-//#include <osgEarthAnnotation/ImageOverlayEditor>
 #include <osgEarthAnnotation/PlaceNode>
 #include <QQmlEngine>
 #include <QQmlComponent>
-
+#include "annotatedNode.h"
 #include "compositeAnnotationLayer.h"
 #include "lineNode.h"
-#include "lineProperty.h"
+#include "annotationProperty.h"
 #include "measureHeight.h"
 #include "polygon.h"
 #define CATEGORY "Draw Annotation"
@@ -27,7 +21,6 @@
 #define POLYLINE "Polyline"
 #define POLYGON "Polygon"
 
-//Q_DECLARE_METATYPE(Property)
 
 class DrawAnnotation : public PluginInterface
 {
@@ -48,7 +41,7 @@ public:
 public:
     explicit DrawAnnotation(QObject *parent = nullptr);
     ~DrawAnnotation()override;
-    void addUpdateLineNode(PolyLineData *lineNodeData);
+    void addUpdateAnnotatedNode(PolyLineData *lineNodeData);
     virtual bool setup() override;
     void makeIconNode(const QString &fileName);
     osgEarth::Annotation::PlaceNode *iconNode() const;
@@ -66,10 +59,10 @@ private slots:
     void onHeightItemCheck(bool check);
     void onSlopeItemCheck(bool check);
     void onLineItemCheck(bool check);
-    void LineNodeDataReceived(PolyLineData *lineNodeData);
+    void AnnotatedNodeDataReceived(PolyLineData *lineNodeData);
     /*********polygon*********/
-    void addUpdatePolygon(PolygonData *polygonData);
-    void polygonDataReceived(PolygonData *polygonData);
+    void addUpdatePolygon(PolygonData *polygonNodeData);
+    void polygonDataReceived(PolygonData *polygonNodeData);
     void onPolygonItemCheck (bool check);
 
 protected:
@@ -88,20 +81,21 @@ private:
     CompositeAnnotationLayer* mShapeLayer{nullptr};
     CompositeAnnotationLayer* mMeasureLayer{nullptr};
     QQuickItem *mItem{nullptr};
+    PropertyItem *mPropertyItem;
     Type mType;
-    osg::ref_ptr<LineNode> mLine{nullptr};
-    osg::ref_ptr<Polygon> mPolygon{nullptr};
-    MeasureHeight *mMeasureHeight{nullptr};
-    LineProperty *mLineProperty = nullptr;
-    PolygonProperty *mPolygonProperty{nullptr};
+    bool mIsLine;
+    osg::ref_ptr<AnnotatedNode> mAnnotation{nullptr};
+//    MeasureHeight *mMeasureHeight{nullptr};
+    AnnotationProperty *mAnnotationProperty = nullptr;
+    AnnotationProperty *mPolygonProperty{nullptr};
     CompositeAnnotationLayer *measureLayer();
     osg::ref_ptr<ParenticAnnotationLayer> mLineLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mRulerLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mHeightLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mSlopeLayer;
     osg::ref_ptr<ParenticAnnotationLayer> mPolygonLayer;
-    QMap<int, osg::ref_ptr<LineNode>> mLineNodeMap;
-    QMap<int, osg::ref_ptr<Polygon>> mPolygonMap;
+    QMap<int, osg::ref_ptr<AnnotatedNode>> mLineMap;
+    QMap<int, osg::ref_ptr<AnnotatedNode>> mPolygonMap;
     static int mCount;
 };
 

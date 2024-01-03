@@ -99,7 +99,7 @@ void AssignmentListModel::onAttackButtonClicked()
 {
     for(auto assignment: mSelectedAssignmentList){
         if(mAssignmentList.contains(assignment)){
-            assignment->setState(ASSIGNED);
+            emit sendAssignRequested(assignment->attacker,assignment->target);
         }
     }
     for (int var = 0; var < mSelectedAssignmentList.count(); ++var) {

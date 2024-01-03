@@ -13,19 +13,21 @@ find_package(Qt6 COMPONENTS Gui Quick Widgets REQUIRED)
 
 add_library(drawShape SHARED
   drawShapeQml.qrc
+  drawShape.h
   drawShape.cpp
   drawShape.qrc
+  spherenodeeditor.h
   spherenodeeditor.cpp
   drawShape.json
+  drawshapeautoscaler.h
   drawshapeautoscaler.cpp
+  property.h
   property.cpp
-
 )
 
 target_include_directories(drawShape PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d"
 "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d/style")
 target_link_libraries(drawShape PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
-
 target_compile_definitions(drawShape PRIVATE CPTEST_LIBRARY)
 
 add_custom_command(TARGET drawShape POST_BUILD

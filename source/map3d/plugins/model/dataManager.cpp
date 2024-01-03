@@ -99,6 +99,11 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
     return movableNode;
 }
 
+QMap<int, osg::ref_ptr<SimpleModelNode>> *DataManager::getNodeMap()
+{
+    return &mNodeMap;
+}
+
 void DataManager::flyableNodeDataReceived(NodeData *nodeData)
 {
     if (nodeData->command == "REMOVE"){

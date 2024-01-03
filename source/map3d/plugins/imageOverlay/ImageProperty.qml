@@ -5,21 +5,19 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import Crystal 1.0
 
+import "Components"
+
 Item {
     id: rootItem
     implicitHeight: parent ? parent.height : 0
 
-
-
     property ImageProperty ImageProperty
     property string headerTitleSTR: "Image Properties"
-
 
     Item {
         id: dialog
         width: 250
         height: rootItem.height
-
 
         //////////////////////////Main Content////////////////////////
         Rectangle {
@@ -33,9 +31,9 @@ Item {
             anchors.margins: 6
             radius: 10
 
-            Rectangle{
-                id:header
-                width: parent.width -2
+            Rectangle {
+                id: header
+                width: parent.width - 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: 2
                 height: 30
@@ -50,7 +48,6 @@ Item {
                     font.pointSize: 14
                     color: "white"
                 }
-
             }
 
             ScrollView {
@@ -66,27 +63,25 @@ Item {
                     width: 240
 
                     Rectangle {
-                        id : innerContainer
+                        id: innerContainer
                         color: "transparent"
                         anchors.fill: parent
 
                         /////////////////////// components Grid ////////////////////////////
-                        GridLayout{
+                        GridLayout {
                             id: props
                             width: 235
-                            y: innerContainer.y +3
+                            y: innerContainer.y + 3
                             anchors.horizontalCenter: parent.horizontalCenter
                             columnSpacing: 0
                             rowSpacing: 1
-                            columns:2
+                            columns: 2
                             rows: 6
                             layoutDirection: Qt.RightToLeft
 
-
-
                             ///////////////////////////////////center Property///////////////////////////////
-                            Rectangle{
-                                id:centerContainer
+                            Rectangle {
+                                id: centerContainer
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.6
                                 color: "#404040"
@@ -94,8 +89,8 @@ Item {
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
-                                Column{
-                                    Row{
+                                Column {
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -106,26 +101,25 @@ Item {
                                             text: qsTr("X:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 id: mcenterX
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.location.x : 0
+                                                showText: ImageProperty ? ImageProperty.location.x : 0
                                                 onValueChanged: {
                                                     ImageProperty.location.x = value
-
                                                 }
                                             }
                                         }
                                     }
-                                    Row{
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -136,21 +130,20 @@ Item {
                                             text: qsTr("Y:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 id: mcenterY
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.location.y : 0
+                                                showText: ImageProperty ? ImageProperty.location.y : 0
                                                 onValueChanged: {
                                                     ImageProperty.location.y = value
-
                                                 }
                                             }
                                         }
@@ -158,7 +151,7 @@ Item {
                                 }
                             }
 
-                            Rectangle{
+                            Rectangle {
                                 id: centerTitle
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.4
@@ -173,13 +166,13 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     y: 10
-                                    x:7
+                                    x: 7
                                 }
                             }
 
                             ///////////////////////////////////tl Property///////////////////////////////
-                            Rectangle{
-                                id:tlContainer
+                            Rectangle {
+                                id: tlContainer
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.6
                                 color: "#404040"
@@ -187,8 +180,8 @@ Item {
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
-                                Column{
-                                    Row{
+                                Column {
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -199,25 +192,24 @@ Item {
                                             text: qsTr("X:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.tl.x : 0
+                                                showText: ImageProperty ? ImageProperty.tl.x : 0
                                                 onValueChanged: {
                                                     ImageProperty.tl.x = value
-
                                                 }
                                             }
                                         }
                                     }
-                                    Row{
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -228,20 +220,19 @@ Item {
                                             text: qsTr("Y:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.tl.y : 0
+                                                showText: ImageProperty ? ImageProperty.tl.y : 0
                                                 onValueChanged: {
                                                     ImageProperty.tl.y = value
-
                                                 }
                                             }
                                         }
@@ -249,7 +240,7 @@ Item {
                                 }
                             }
 
-                            Rectangle{
+                            Rectangle {
                                 id: tlTitle
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.4
@@ -264,13 +255,13 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     y: 10
-                                    x:7
+                                    x: 7
                                 }
                             }
 
                             ///////////////////////////////////tr Property///////////////////////////////
-                            Rectangle{
-                                id:trContainer
+                            Rectangle {
+                                id: trContainer
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.6
                                 color: "#404040"
@@ -278,8 +269,8 @@ Item {
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
-                                Column{
-                                    Row{
+                                Column {
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -290,25 +281,24 @@ Item {
                                             text: qsTr("X:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.tr.x : 0
+                                                showText: ImageProperty ? ImageProperty.tr.x : 0
                                                 onValueChanged: {
                                                     ImageProperty.tr.x = value
-
                                                 }
                                             }
                                         }
                                     }
-                                    Row{
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -319,20 +309,19 @@ Item {
                                             text: qsTr("Y:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.tr.y : 0
+                                                showText: ImageProperty ? ImageProperty.tr.y : 0
                                                 onValueChanged: {
                                                     ImageProperty.tr.y = value
-
                                                 }
                                             }
                                         }
@@ -340,7 +329,7 @@ Item {
                                 }
                             }
 
-                            Rectangle{
+                            Rectangle {
                                 id: trTitle
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.4
@@ -355,13 +344,13 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     y: 10
-                                    x:7
+                                    x: 7
                                 }
                             }
 
                             ///////////////////////////////////br Property///////////////////////////////
-                            Rectangle{
-                                id:brContainer
+                            Rectangle {
+                                id: brContainer
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.6
                                 color: "#404040"
@@ -369,8 +358,8 @@ Item {
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
-                                Column{
-                                    Row{
+                                Column {
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -381,25 +370,24 @@ Item {
                                             text: qsTr("X:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.br.x : 0
+                                                showText: ImageProperty ? ImageProperty.br.x : 0
                                                 onValueChanged: {
                                                     ImageProperty.br.x = value
-
                                                 }
                                             }
                                         }
                                     }
-                                    Row{
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -410,20 +398,19 @@ Item {
                                             text: qsTr("Y:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.br.y : 0
+                                                showText: ImageProperty ? ImageProperty.br.y : 0
                                                 onValueChanged: {
                                                     ImageProperty.br.y = value
-
                                                 }
                                             }
                                         }
@@ -431,7 +418,7 @@ Item {
                                 }
                             }
 
-                            Rectangle{
+                            Rectangle {
                                 id: brTitle
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.4
@@ -446,14 +433,13 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     y: 10
-                                    x:7
+                                    x: 7
                                 }
                             }
 
-
                             ///////////////////////////////////bl Property///////////////////////////////
-                            Rectangle{
-                                id:blContainer
+                            Rectangle {
+                                id: blContainer
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.6
                                 color: "#404040"
@@ -461,8 +447,8 @@ Item {
                                 border.color: "#5f5f5f"
                                 border.width: 1
 
-                                Column{
-                                    Row{
+                                Column {
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -473,25 +459,24 @@ Item {
                                             text: qsTr("X:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 anchors.fill: parent
                                                 decimals: 5
-                                                 showText: ImageProperty ? ImageProperty.bl.x : 0
+                                                showText: ImageProperty ? ImageProperty.bl.x : 0
                                                 onValueChanged: {
                                                     ImageProperty.bl.x = value
-
                                                 }
                                             }
                                         }
                                     }
-                                    Row{
+                                    Row {
                                         spacing: 8
                                         leftPadding: 5
                                         topPadding: 5
@@ -502,20 +487,19 @@ Item {
                                             text: qsTr("Y:")
                                             font.pointSize: 10
                                         }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 20
                                             width: 100
                                             color: "transparent"
-                                            clip:  true
+                                            clip: true
                                             radius: 5
                                             Layout.fillWidth: true
                                             FloatSpinBox {
                                                 decimals: 5
                                                 anchors.fill: parent
-                                                 showText: ImageProperty ? ImageProperty.bl.y : 0
+                                                showText: ImageProperty ? ImageProperty.bl.y : 0
                                                 onValueChanged: {
                                                     ImageProperty.bl.y = value
-
                                                 }
                                             }
                                         }
@@ -523,7 +507,7 @@ Item {
                                 }
                             }
 
-                            Rectangle{
+                            Rectangle {
                                 id: blTitle
                                 //                                Layout.fillWidth: true
                                 width: parent.width * 0.4
@@ -538,7 +522,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     y: 10
-                                    x:7
+                                    x: 7
                                 }
                             }
                         }

@@ -19,6 +19,7 @@ public:
     FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
     SimpleModelNode* addUpdateNode(NodeData *nodeData);
     MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
+    QMap<int, osg::ref_ptr<SimpleModelNode>> *getNodeMap();
 
 public slots:
     void flyableNodeDataReceived(NodeData *nodeData);
