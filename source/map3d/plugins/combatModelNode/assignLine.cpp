@@ -8,7 +8,7 @@ void AssignLineCallback::operator()(osg::Node *node, osg::NodeVisitor *nv)
 }
 
 AssignLine::AssignLine(MapItem *mapItem, SimpleModelNode* attacker, SimpleModelNode *target)
-    : LineNode(mapItem),
+    : AnnotatedNode(mapItem, AnnotatedNode::GeneralType::POLYLINETYPE),
     mAttacker(attacker),
     mTarget(target)
 {

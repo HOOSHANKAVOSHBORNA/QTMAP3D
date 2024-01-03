@@ -150,7 +150,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: xLocationValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -182,7 +182,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: yLocationValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -215,7 +215,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: zLocationValue
 
                                 editable: true
@@ -307,7 +307,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: valHeight / Style.monitorRatio
 
-                    ModelStepSpinBox {
+                    StepSpinBox {
                         id: lengthValue
                         editable: true
                         anchors.leftMargin: 5 / Style.monitorRatio
@@ -374,7 +374,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: xMoveToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -406,7 +406,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: yMoveToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -439,7 +439,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: zMoveToValue
 
                                 editable: true
@@ -512,7 +512,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: xFlyToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -544,7 +544,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: yFlyToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -577,7 +577,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: zFlyToValue
 
                                 editable: true

@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "qamqpclient.h"
+#include <QJsonObject>
 
 class NetworkManager: public QObject
 {
@@ -20,6 +21,8 @@ private slots:
     void actionQueueDeclared();
 signals:
     void dataQueueDeclared();
+    void assignDataReceived(QJsonObject obj);
+
 private:
     QAmqpClient mClient;
     QString mUsername{"Admin"};

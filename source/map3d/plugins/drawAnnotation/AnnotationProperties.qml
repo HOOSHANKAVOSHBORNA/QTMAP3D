@@ -105,7 +105,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
-                        selectedColor: rootItem.cppInterface.fillColor /*'#099999'*/
+                        //                        selectedColor: rootItem.cppInterface ? rootItem.cppInterface.fillColor : 'transparent'
                         onSelectedColorChanged: {
                             rootItem.cppInterface.fillColor = selectedColor
                         }
@@ -150,13 +150,13 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
 
-                                selectedColor: rootItem.cppInterface.strokeColor /*'#099999'*/
+                                //                                selectedColor: rootItem.cppInterface.strokeColor /*'#099999'*/
                                 onSelectedColorChanged: {
                                     rootItem.cppInterface.strokeColor = selectedColor
                                 }
                             }
 
-                            FloatSpinbox {
+                            FloatSpinBox {
                                 id: strokeWidthValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -169,6 +169,8 @@ Item {
                                 onValueChanged: {
                                     if (rootItem.cppInterface)
                                         rootItem.cppInterface.strokeWidth = value
+
+
                                 }
                             }
 
@@ -353,7 +355,7 @@ Item {
                         Layout.preferredHeight: valHeight / Style.monitorRatio
                         Layout.rightMargin: 15 / Style.monitorRatio
 
-                        FloatSpinbox {
+                        FloatSpinBox {
                             id: tesselationValue
                             editable: true
                             anchors.left: parent.left
@@ -551,13 +553,15 @@ Item {
                                 visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
                             }
 
+
+
                             ColorPicker {
                                 id: pointsColorPick
 
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
 
-                                selectedColor: rootItem.cppInterface.pointsColor /*'#099999'*/
+                                //                                selectedColor: rootItem.cppInterface.pointsColor /*'#099999'*/
                                 onSelectedColorChanged: {
                                     rootItem.cppInterface.pointsColor = selectedColor
                                 }
@@ -582,7 +586,7 @@ Item {
                                 Layout.preferredHeight: valHeight / Style.monitorRatio
                                 Layout.preferredWidth: 200 / Style.monitorRatio
 
-                                FloatSpinbox {
+                                FloatSpinBox {
                                     id: pointWidthValue
                                     editable: true
                                     enabled: pointVisible.checked

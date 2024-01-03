@@ -11,22 +11,6 @@ Rectangle {
 
     color: 'transparent'
 
-    Connections {
-        target: rootItem
-        function onSelectedColorChanged() {
-            let found = -1
-            for (var i = 0; i < colorsrowl.mainModel.length; i++) {
-                if (selectedColor.toString().toUpperCase(
-                            ) === colorsrowl.mainModel[i])
-                    found = i
-            }
-
-            if (found === -1) {
-                mainRepeater.currentIndex = -1
-            }
-        }
-    }
-
     RowLayout {
         id: colorsrowl
 
