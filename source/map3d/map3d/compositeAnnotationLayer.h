@@ -45,6 +45,9 @@ public:
 
     void setFilterManager(FilterManager *newFilterManager);
 
+    int refreshTime() const;
+    void setRefreshTime(int newRefreshTime);
+
 protected:
     virtual void addParent(CompositeAnnotationLayer* parent);
     virtual void removeParent(CompositeAnnotationLayer* parent);
@@ -57,6 +60,7 @@ private:
     int mUserId;
     int mOrder{-1};
     FilterManager *mFilterManager;
+    int mRefreshTime{0};
 };
 
 class CompositeLayerCallback : public ParenticLayerCallback

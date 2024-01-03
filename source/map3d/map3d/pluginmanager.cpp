@@ -133,6 +133,7 @@ void PluginManager::setup()
     for (auto item : qAsConst(mPluginsMap)) {
         item->setup();
     }
+    emit pluginsLoaded();
 }
 
 void PluginManager::parsePlugin(const QString &pluginFileName, const QDir &pluginsDir)

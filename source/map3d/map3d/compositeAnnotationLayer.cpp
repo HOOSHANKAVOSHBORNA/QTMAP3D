@@ -98,6 +98,16 @@ void ParenticAnnotationLayer::insertParent(CompositeAnnotationLayer *parent, uns
         mParents.insert(mParents.begin() + index, parent);
 }
 
+int ParenticAnnotationLayer::refreshTime() const
+{
+    return mRefreshTime;
+}
+
+void ParenticAnnotationLayer::setRefreshTime(int newRefreshTime)
+{
+    mRefreshTime = newRefreshTime;
+}
+
 void ParenticAnnotationLayer::setFilterManager(FilterManager *newFilterManager)
 {
     mFilterManager = newFilterManager;

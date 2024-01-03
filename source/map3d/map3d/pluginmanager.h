@@ -29,7 +29,8 @@ public:
     void setup();
 
     QMap<QString, PluginInterface *> pluginsMap() const;
-
+signals:
+    void pluginsLoaded();
 private:
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
     void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);

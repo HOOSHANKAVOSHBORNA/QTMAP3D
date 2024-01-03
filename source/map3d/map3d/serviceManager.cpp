@@ -1,5 +1,5 @@
 #include "serviceManager.h"
-
+#include "mapObject.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -12,17 +12,10 @@ ServiceManager::ServiceManager(QObject *parent):
 
 void ServiceManager::layersData(QJsonObject layers)
 {
-    // emit clearMap();
-    mRefreshTime++;
+    mMapObject->clearCompositeLayers();
     for (auto it : layers.value("Data").toArray())
         parseLayersFromJson(it.toObject());
-    qDebug() << mParenticLayerMap;
-    for (auto i : mParenticLayerMap) {
-        if (mParenticLayerMap[i.first].first != mRefreshTime) {
-            delete mParenticLayerMap[i.first].second;
-            mParenticLayerMap.erase(i.first);
-        }
-    }
+    mMapObject->clearOldParenticLayers();
 }
 
 void ServiceManager::flyableNodeData(QJsonObject jsonObject)
@@ -284,15 +277,12 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
         CompositeAnnotationLayer* comp = new CompositeAnnotationLayer(jsonObject.value("Id").toInt());
         comp->setName(jsonObject.value("Text").toString().toStdString());
         comp->setOrder(jsonObject.value("Order").toInt());
-        //        qDebug()<<"composite:"<<comp->getName();
 
         if (parent){
             parent->addLayer(comp);
         }
         else{
-            emit layerDataReceived(comp);
-
-            // mParenticLayerMap[jsonObject.value("Id").toInt()] = comp;
+            mMapObject->addLayerFromServeice(comp);
         }
 
         for (auto it: jsonObject.value("Children").toArray()) {
@@ -301,28 +291,24 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
     }
     else {
         int layerId = jsonObject.value("Id").toInt();
-        ParenticAnnotationLayer *p{nullptr};
-        QPair<int, ParenticAnnotationLayer*> pair;
-        if (mParenticLayerMap.find(layerId) == mParenticLayerMap.end()) {
-            p = new ParenticAnnotationLayer(layerId);
-            p->setName(jsonObject.value("Text").toString().toStdString());
-        } else {
-            p = mParenticLayerMap[layerId].second;
-        }
-        pair.second = p;
-        pair.first = mRefreshTime;
-        mParenticLayerMap[layerId] = pair;
-        parent->addLayer(pair.second);
-
-        //        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
+        ParenticAnnotationLayer *p = new ParenticAnnotationLayer(layerId);
+        p->setName(jsonObject.value("Text").toString().toStdString());
+        parent->addLayer(p);
+        mMapObject->addLayerFromServeice(p);
         return;
     }
 }
 
 ParenticAnnotationLayer *ServiceManager::findParenticLayer(int id)
 {
-    if (mParenticLayerMap.find(id) != mParenticLayerMap.end())
-        return mParenticLayerMap[id].second;
+    ParenticAnnotationLayer *p = mMapObject->getServiceLayerBiId(id);
+    if (p)
+        return p;
     qDebug()<<"Can not found layer: "<<id;
     return nullptr;
+}
+
+void ServiceManager::setMapObject(MapObject *newMapObject)
+{
+    mMapObject = newMapObject;
 }

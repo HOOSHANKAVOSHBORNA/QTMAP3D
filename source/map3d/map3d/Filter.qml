@@ -293,7 +293,7 @@ Rectangle {
                         }
                         onAccepted: {
                             filterManager.addFilterTag(control.currentText, descriptionField.text)
-                            print(filterManager.getAllFilterFields())
+                            // print(filterManager.getAllFilterFields())
                             tagsModel.append({
                                                  "name": control.currentText,
                                                  "value1": descriptionField.text,
