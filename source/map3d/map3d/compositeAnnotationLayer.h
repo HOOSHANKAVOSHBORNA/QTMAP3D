@@ -1,15 +1,16 @@
 #ifndef COMPOSITELAYER_H
 #define COMPOSITELAYER_H
 
+
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/AnnotationNode>
 #include <QObject>
 #include <osgEarth/MapCallback>
 #include <osgEarth/VisibleLayer>
 
+class FilterManager;
 class CompositeAnnotationLayer;
 class ParenticAnnotationLayer;
-
 class ParenticLayerCallback : public QObject, public osgEarth::VisibleLayerCallback
 {
     Q_OBJECT
@@ -18,6 +19,7 @@ public:
     virtual void onNodeRemoved(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer){};
     typedef void (ParenticLayerCallback::*MethodPtr)(class osgEarth::Annotation::AnnotationNode* node, ParenticAnnotationLayer *layer);
 };
+
 class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::AnnotationLayer
 {
 public:
@@ -36,10 +38,12 @@ public:
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() { return nullptr; }
 
     void setOrder(int newOrder);
-    void setFilter();
+    void filter();
     void clearFilter();
 
     int userId() const;
+
+    void setFilterManager(FilterManager *newFilterManager);
 
 protected:
     virtual void addParent(CompositeAnnotationLayer* parent);
@@ -52,6 +56,7 @@ private:
     friend class CompositeAnnotationLayer;
     int mUserId;
     int mOrder{-1};
+    FilterManager *mFilterManager;
 };
 
 class CompositeLayerCallback : public ParenticLayerCallback

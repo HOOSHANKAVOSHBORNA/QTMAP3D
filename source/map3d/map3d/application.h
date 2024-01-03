@@ -9,6 +9,7 @@
 #include "pluginmanager.h"
 #include "defenseDataManager.h"
 #include "networkManager.h"
+#include "splash.h"
 
 
 class MainWindow;
@@ -38,6 +39,7 @@ public:
         SimpleUser = 1,
         AdminUser
     };
+    void showSplash();
 
 signals:
     void ready();
@@ -62,6 +64,7 @@ private:
     ServiceManager *mServiceManager{nullptr};
 
     Authenticator *mAuthenticator{nullptr};
+    Splash *mSplash{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};

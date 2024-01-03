@@ -9,12 +9,6 @@
 #include <QtQml>
 #include "bookmark.h"
 //-------------------------------------------------------------------------
-MapControllerItem *PluginInterface::mMapItem;
-DefenseDataManager *PluginInterface::mDefenseDataManager;
-QQmlEngine *PluginInterface::mQmlEngine;
-Toolbox *PluginInterface::mToolbox;
-MainWindow *PluginInterface::mMainWindow;
-ServiceManager *PluginInterface::mServiceManager;
 
 PluginInterface::PluginInterface(QObject *parent):
     QObject(parent)
@@ -79,6 +73,18 @@ ServiceManager *PluginInterface::serviceManager() const
 void PluginInterface::setServiceManager(ServiceManager *newServiceManager)
 {
     mServiceManager = newServiceManager;
+}
+
+void PluginInterface::setPluginsMap(const QMap<QString, PluginInterface *> &newPluginsMap)
+{
+    mPluginsMap = newPluginsMap;
+}
+
+PluginInterface *PluginInterface::getPlugin(QString name)
+{
+    if(mPluginsMap.contains(name))
+        return mPluginsMap[name];
+    return nullptr;
 }
 
 BookmarkManager *PluginInterface::bookmarkManager() const

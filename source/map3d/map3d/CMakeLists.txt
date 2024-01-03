@@ -48,10 +48,11 @@ add_executable(Map3d
         locationManager.h locationManager.cpp
         qmlNode.h qmlNode.cpp
         authenticator.h authenticator.cpp
-        filterManager.h filterManager.cpp)
+        filterManager.h filterManager.cpp
+        splash.h splash.cpp)
 
 
-target_include_directories(Map3d PUBLIC "/usr/local/include" "style/")
+target_include_directories(Map3d PUBLIC "/usr/local/include" "style/" "Components/")
 target_link_directories(Map3d PUBLIC ${PLUGINS_OUTPUT_DIR})
 target_link_libraries(Map3d
         PRIVATE Qt6::Core Qt6::Quick Qt6::Gui Qt6::Widgets Qt6::Network

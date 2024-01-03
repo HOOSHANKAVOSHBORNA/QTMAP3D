@@ -200,6 +200,7 @@ void Particle::add(const osgEarth::GeoPoint &geoPos)
         break;
     case Mode::Explosion:
         mExplosion = new Explosion(mapItem());
+        mExplosion->getPositionAttitudeTransform()->setScale(osg::Vec3d(10000,10000,10000));
         mExplosion->setPosition(geoPos);
         mParticleLayer->addChild(mExplosion);
         break;

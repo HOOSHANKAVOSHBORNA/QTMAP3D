@@ -1,7 +1,8 @@
 import QtQuick
 import QtQuick.Controls.Basic 2.5
 import QtQuick.Layouts
-import "style"
+
+import "../style"
 
 Item {
     id: root
@@ -88,6 +89,7 @@ Item {
             x: spinBox.mirrored ? 0 : parent.width - width
             height: parent.height
             width: 15
+
             Image {
                 width: 15
                 height: 15
@@ -95,6 +97,7 @@ Item {
                 source: "qrc:/Resources/add.png"
             }
         }
+
         background: Rectangle {
             color: bg30
             radius: 15

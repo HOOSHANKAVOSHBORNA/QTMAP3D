@@ -8,7 +8,6 @@
 #include <QQmlComponent>
 #include "annotatedNode.h"
 #include "compositeAnnotationLayer.h"
-#include "mapItem.h"
 #include "lineNode.h"
 #include "annotationProperty.h"
 #include "measureHeight.h"
