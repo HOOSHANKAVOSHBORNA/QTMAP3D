@@ -85,7 +85,7 @@ Explosion::Explosion(MapItem *map, double duration):
 //    m2DNode = new osgEarth::Annotation::PlaceNode();
     mImage = osgDB::readImageFile("../data/images/particle/explosion.png");
     if(mImage)
-        mImage->scaleImage(24, 24, mImage->r());
+        mImage->scaleImage(16, 16, mImage->r());
 //    m2DNode->setIconImage(image);
 
     m2DNode = new osg::Geode();
