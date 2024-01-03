@@ -59,8 +59,12 @@ public:
     CompositeCallback* getCompositeCallback(osgEarth::Layer* layer);
     ParenticAnnotationLayer *getLayerByUserId(int userid);
     void setFilterManager(FilterManager *newFilterManager);
+
+    void addLayerFromServeice(ParenticAnnotationLayer *layer);
+    ParenticAnnotationLayer *getServiceLayerBiId(int id);
+    void clearOldParenticLayers();
 public slots:
-    void clearParenticLayers();
+    void clearCompositeLayers();
     void filterNodes();
 signals:
     void layerAdded(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
@@ -75,8 +79,10 @@ signals:
 
 private:
     QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
-    std::map<int, ParenticAnnotationLayer*> mParenticLayers;
+    std::map<int, osg::ref_ptr<ParenticAnnotationLayer>> mParenticLayers;
+    std::map<int, osg::ref_ptr<CompositeAnnotationLayer>> mCompositeLayers;
     FilterManager *mFilterManager;
+    int mRefrehsTime{0};
 };
 
 #endif // CUSTOMMAP_H
