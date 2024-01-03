@@ -111,7 +111,7 @@ private:
     QQmlEngine *mQmlEngine{nullptr};
     QQuickItem *mTopMenuItem = nullptr;
     bool mTopMenuVisible = false;
-    FilterManager *mFilterManager;
+    FilterManager *mFilterManager{nullptr};
 };
 
 #endif // MAPCONTROLLERITEM_H

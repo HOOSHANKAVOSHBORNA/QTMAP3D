@@ -2,6 +2,7 @@
 #define NODEINFORMATIONMANAGER_H
 
 #include <QObject>
+#include <QQuickWindow>
 #include <QStandardItemModel>
 #include "serviceManager.h"
 

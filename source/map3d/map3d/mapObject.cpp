@@ -3,6 +3,7 @@
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <QDebug>
 #include "compositeAnnotationLayer.h"
+#include "filterManager.h"
 
 //------------------------------------------------------------------------------
 CompositeCallback::CompositeCallback(MapObject *mapObject):
@@ -200,12 +201,21 @@ ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
     return nullptr;
 }
 
-// void MapObject::setFilter()
-// {
-//     for (auto &l: mParenticLayers) {
-//         l.second.se
-//     }
-// }
+void MapObject::setFilterManager(FilterManager *newFilterManager)
+{
+    mFilterManager = newFilterManager;
+    for (auto &l: mParenticLayers) {
+        l.second->setFilterManager(newFilterManager);
+    }
+    connect(mFilterManager, &FilterManager::filterTagsEdited, this, &MapObject::filterNodes);
+}
+
+void MapObject::filterNodes()
+{
+    for (auto &l: mParenticLayers) {
+        l.second->filter();
+    }
+}
 
 void MapObject::clearParenticLayers()
 {

@@ -3,6 +3,8 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
+
+import "Components"
 import "style"
 
 Item {
@@ -38,58 +40,6 @@ Item {
         color: "transparent"
         anchors.margins: 6 / Style.monitorRatio
         radius: 10 / Style.monitorRatio
-
-        ColorBoxInput {
-            id: colorBox
-            z: mainLayout.z + 10
-            x: nameSec.x
-            y: nameSec.y
-            width: frame.width
-            visible: false
-            onColorChosen: {
-                colorSelectCircle.color = selectedColor
-                rootItem.cppInterface.fillColor = selectedColor
-                addIconImage.visible = false
-                propertyCheckIcon.visible = true
-                colorModel.setProperty(previousIndex, "checkIconVisible", false)
-            }
-        }
-
-        ColorBoxInput {
-            id: colorBoxStroke
-            z: mainLayout.z + 10
-            x: nameSec.x
-            y: nameSec.y
-            width: frame.width
-            visible: false
-            onColorChosen: {
-                strokeColorCircle.color = selectedColor
-                rootItem.cppInterface.strokeColor = selectedColor
-                strokeColorAddIcon.visible = false
-                strokeCheckIcon.visible = true
-                strokeColorModel.setProperty(strokePreviousIndex,
-                                             "checkIconVisible", false)
-            }
-        }
-
-        ColorBoxInput {
-            id: colorBoxPointColor
-            z: mainLayout.z + 10
-            x: nameSec.x
-            y: nameSec.y
-            width: frame.width
-            visible: false
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            onColorChosen: {
-                pointColorCircle.color = selectedColor
-                rootItem.cppInterface.pointsColor = selectedColor
-                pointColorAddIcon.visible = false
-                pointColorCheckIcon.visible = true
-                pointColorModel.setProperty(pointColorPreviousIndex,
-                                            "checkIconVisible", false)
-            }
-        }
 
         ScrollView {
             id: frame
@@ -135,141 +85,54 @@ Item {
 
                 RowLayout {
                     id: fillcolorSec
+
                     Layout.fillWidth: true
+                    Layout.preferredHeight: 34
+
                     visible: rootItem.cppInterface ? rootItem.cppInterface.fillColorStatus : false
                     spacing: 0
+
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Color"
                         font.pixelSize: 17 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
-                    RowLayout {
-                        Layout.rightMargin: 15 / Style.monitorRatio
+
+                    ColorPicker {
+                        id: fillColorPick
+
                         Layout.fillWidth: true
-                        spacing: 3 / Style.monitorRatio
-                        ListModel {
-                            id: colorModel
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#EF2929"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#FCAF3E"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#FCE94F"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#8AE234"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#729FCF"
-                            }
-                            ListElement {
-                                checkIconVisible: false
-                                propertyColorSelect: "#FFFFFF"
-                            }
-                        }
+                        Layout.fillHeight: true
 
-                        Repeater {
-                            id: colorModelRepeater
-                            model: colorModel
-                            Button {
-                                required property color propertyColorSelect
-                                required property bool checkIconVisible
-                                required property int index
-
-                                checkable: true
-                                implicitWidth: 26 / Style.monitorRatio
-                                implicitHeight: 26 / Style.monitorRatio
-                                background: Rectangle {
-                                    radius: width
-                                    color: propertyColorSelect
-                                }
-                                Image {
-                                    anchors.fill: parent
-                                    source: "qrc:/Resources/add-place-color-select.png"
-                                    visible: checkIconVisible
-                                }
-                                onClicked: {
-                                    addIconImage.visible = true
-                                    propertyCheckIcon.visible = false
-                                    colorSelectCircle.color = Style.backgroundColor
-
-                                    colorModel.setProperty(previousIndex,
-                                                           "checkIconVisible",
-                                                           false)
-                                    nextIndex = index
-                                    if (previousIndex !== nextIndex) {
-                                        colorModelRepeater.itemAt(
-                                                    previousIndex).checked = false
-                                    }
-                                    colorModel.setProperty(nextIndex,
-                                                           "checkIconVisible",
-                                                           checked)
-                                    if (checked) {
-                                        previousIndex = index
-                                        rootItem.cppInterface.fillColor = propertyColorSelect
-                                    } else {
-                                        rootItem.cppInterface.fillColor = "#FFFFFF"
-                                    }
-                                }
-                            }
-                        }
-
-                        Rectangle {
-                            id: colorSelectCircle
-                            implicitWidth: 26 / Style.monitorRatio
-                            implicitHeight: 26 / Style.monitorRatio
-                            radius: width
-                            border.width: 1 / Style.monitorRatio
-                            border.color: Style.foregroundColor
-                            IconImage {
-                                id: addIconImage
-                                anchors.centerIn: parent
-                                width: 20 / Style.monitorRatio
-                                height: 20 / Style.monitorRatio
-                                source: "qrc:/Resources/location-add.png"
-                            }
-                            IconImage {
-                                id: propertyCheckIcon
-                                anchors.centerIn: parent
-                                width: 20 / Style.monitorRatio
-                                height: 20 / Style.monitorRatio
-                                source: "qrc:/Resources/add-place-color-select.png"
-                                visible: false
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: colorBox.visible = true
-                            }
+                        //                        selectedColor: rootItem.cppInterface ? rootItem.cppInterface.fillColor : 'transparent'
+                        onSelectedColorChanged: {
+                            rootItem.cppInterface.fillColor = selectedColor
                         }
                     }
                 }
+
                 RowLayout {
                     spacing: 0
+
+                    visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
+
                     Text {
                         text: "Stroke"
                         color: Style.foregroundColor
                         font.pixelSize: 17 / Style.monitorRatio
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
-
                     }
+
                     GroupBox {
                         id: strokeSec
-                        visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
-                        Layout.rightMargin: 15 / Style.monitorRatio
+
                         padding: 0
+
                         Layout.fillWidth: true
-                        Layout.margins: 0
+                        Layout.preferredHeight: 64 / Style.monitorRatio
+                        Layout.rightMargin: 15 / Style.monitorRatio
 
                         background: Rectangle {
                             color: foregroundColor
@@ -279,122 +142,26 @@ Item {
 
                         ColumnLayout {
                             anchors.fill: parent
+                            anchors.margins: 5
 
-                            RowLayout {
-                                spacing: 3 / Style.monitorRatio
-                                Layout.leftMargin: 7 / Style.monitorRatio
-                                Layout.topMargin: 5 / Style.monitorRatio
-                                ListModel {
-                                    id: strokeColorModel
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#EF2929"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#FCAF3E"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#FCE94F"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#8AE234"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#729FCF"
-                                    }
-                                    ListElement {
-                                        checkIconVisible: false
-                                        propertyColorSelect: "#FFFFFF"
-                                    }
-                                }
-                                Repeater {
-                                    id: strokeColorModelRepeater
-                                    model: strokeColorModel
-                                    Button {
-                                        required property color propertyColorSelect
-                                        required property bool checkIconVisible
-                                        required property int index
-                                        checkable: true
-                                        implicitWidth: 26 / Style.monitorRatio
-                                        implicitHeight: 26 / Style.monitorRatio
-                                        background: Rectangle {
-                                            radius: width
-                                            color: propertyColorSelect
-                                        }
-                                        Image {
-                                            anchors.centerIn: parent
-                                            anchors.fill: parent
-                                            source: "qrc:/Resources/add-place-color-select.png"
-                                            visible: checkIconVisible
-                                        }
-                                        onClicked: {
-                                            strokeColorAddIcon.visible = true
-                                            strokeCheckIcon.visible = false
-                                            strokeColorCircle.color = Style.backgroundColor
+                            ColorPicker {
+                                id: strokeColorPick
 
-                                            strokeColorModel.setProperty(
-                                                        strokePreviousIndex,
-                                                        "checkIconVisible",
-                                                        false)
-                                            strokeNextIndex = index
-                                            if (strokePreviousIndex !== strokeNextIndex) {
-                                                strokeColorModelRepeater.itemAt(
-                                                            strokePreviousIndex).checked = false
-                                            }
-                                            strokeColorModel.setProperty(
-                                                        strokeNextIndex,
-                                                        "checkIconVisible",
-                                                        checked)
-                                            if (checked) {
-                                                rootItem.cppInterface.strokeColor = propertyColorSelect
-                                                strokePreviousIndex = index
-                                            } else {
-                                                rootItem.cppInterface.strokeColor = "#FFFFFF"
-                                            }
-                                        }
-                                    }
-                                }
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
 
-                                Rectangle {
-                                    id: strokeColorCircle
-                                    implicitWidth: 26 / Style.monitorRatio
-                                    implicitHeight: 26 / Style.monitorRatio
-                                    radius: width
-                                    border.width: 1 / Style.monitorRatio
-                                    border.color: Style.foregroundColor
-                                    IconImage {
-                                        id: strokeColorAddIcon
-                                        anchors.centerIn: parent
-                                        width: 20 / Style.monitorRatio
-                                        height: 20 / Style.monitorRatio
-                                        source: "qrc:/Resources/location-add.png"
-                                    }
-                                    IconImage {
-                                        id: strokeCheckIcon
-                                        anchors.fill: parent
-                                        source: "qrc:/Resources/add-place-color-select.png"
-                                        visible: false
-                                    }
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: colorBoxStroke.visible = true
-                                    }
+                                //                                selectedColor: rootItem.cppInterface.strokeColor /*'#099999'*/
+                                onSelectedColorChanged: {
+                                    rootItem.cppInterface.strokeColor = selectedColor
                                 }
                             }
 
-                            FloatSpinbox {
+                            FloatSpinBox {
                                 id: strokeWidthValue
                                 editable: true
                                 Layout.fillWidth: true
                                 Layout.alignment: Qt.AlignCenter
                                 Layout.topMargin: 10 / Style.monitorRatio
-                                Layout.bottomMargin: 5 / Style.monitorRatio
-                                Layout.rightMargin: 5 / Style.monitorRatio
-                                Layout.leftMargin: 5 / Style.monitorRatio
                                 height: 20 / Style.monitorRatio
                                 from: 0
                                 to: 20000000
@@ -404,6 +171,7 @@ Item {
                                         rootItem.cppInterface.strokeWidth = value
                                 }
                             }
+
                             Binding {
                                 target: strokeWidthValue
                                 property: "value"
@@ -458,7 +226,6 @@ Item {
                         }
                     }
                 }
-
 
                 // --------------------------------- clamp -----------------------////////////
                 RowLayout {
@@ -586,7 +353,7 @@ Item {
                         Layout.preferredHeight: valHeight / Style.monitorRatio
                         Layout.rightMargin: 15 / Style.monitorRatio
 
-                        FloatSpinbox {
+                        FloatSpinBox {
                             id: tesselationValue
                             editable: true
                             anchors.left: parent.left
@@ -734,6 +501,7 @@ Item {
                     visible: rootItem.cppInterface ? rootItem.cppInterface.pointsStatus : false
                     padding: 0
                     Layout.fillWidth: true
+                    Layout.fillHeight: true
 
                     background: Rectangle {
                         color: "transparent"
@@ -742,6 +510,7 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
+
                         RowLayout {
                             spacing: 0
                             Text {
@@ -767,8 +536,12 @@ Item {
                                 delayed: true
                             }
                         }
+
                         RowLayout {
                             spacing: 0
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 34 / Style.monitorRatio
+
                             Text {
                                 text: "Point Color"
                                 color: Style.foregroundColor
@@ -777,154 +550,16 @@ Item {
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
                             }
-                            GroupBox {
-                                padding: 0
+
+                            ColorPicker {
+                                id: pointsColorPick
+
                                 Layout.fillWidth: true
-                                Layout.margins: 0
-                                Layout.rightMargin: 15 / Style.monitorRatio
-                                enabled: pointVisible.checked
-                                background: Rectangle {
-                                    color: foregroundColor
-                                    radius: 10 / Style.monitorRatio
-                                    border.color: "transparent"
-                                }
+                                Layout.fillHeight: true
 
-                                ColumnLayout {
-                                    anchors.fill: parent
-
-                                    RowLayout {
-                                        spacing: 3 / Style.monitorRatio
-                                        Layout.leftMargin: 7 / Style.monitorRatio
-                                        Layout.topMargin: 5 / Style.monitorRatio
-
-                                        ListModel {
-                                            id: pointColorModel
-                                            ListElement {
-                                                checkIconVisible: false
-                                                propertyColorSelect: "#EF2929"
-                                            }
-                                            ListElement {
-                                                checkIconVisible: false
-                                                propertyColorSelect: "#FCAF3E"
-                                            }
-                                            ListElement {
-                                                checkIconVisible: false
-                                                propertyColorSelect: "#FCE94F"
-                                            }
-                                            ListElement {
-                                                checkIconVisible: false
-                                                propertyColorSelect: "#8AE234"
-                                            }
-                                            ListElement {
-                                                checkIconVisible: false
-                                                propertyColorSelect: "#729FCF"
-                                            }
-                                            ListElement {
-                                                checkIconVisible: false
-                                                propertyColorSelect: "#FFFFFF"
-                                            }
-                                        }
-                                        Repeater {
-                                            id: pointColorRepeater
-                                            model: pointColorModel
-                                            Button {
-                                                required property color propertyColorSelect
-                                                required property bool checkIconVisible
-                                                required property int index
-                                                checkable: true
-                                                implicitWidth: 26 / Style.monitorRatio
-                                                implicitHeight: 26 / Style.monitorRatio
-                                                background: Rectangle {
-                                                    radius: width
-                                                    color: propertyColorSelect
-                                                }
-                                                Image {
-                                                    anchors.fill: parent
-                                                    source: "qrc:/Resources/add-place-color-select.png"
-                                                    visible: checkIconVisible
-                                                }
-
-                                                onClicked: {
-                                                    pointColorAddIcon.visible = true
-                                                    pointColorCheckIcon.visible = false
-                                                    pointColorCircle.color = Style.backgroundColor
-                                                    pointColorModel.setProperty(
-                                                                pointColorPreviousIndex,
-                                                                "checkIconVisible",
-                                                                false)
-                                                    pointColorNextIndex = index
-                                                    if (pointColorPreviousIndex
-                                                            !== pointColorNextIndex) {
-                                                        pointColorRepeater.itemAt(
-                                                                    pointColorPreviousIndex).checked
-                                                                = false
-                                                    }
-                                                    pointColorModel.setProperty(
-                                                                pointColorNextIndex,
-                                                                "checkIconVisible",
-                                                                checked)
-                                                    if (checked) {
-                                                        pointColorPreviousIndex = index
-                                                        rootItem.cppInterface.pointsColor
-                                                                = propertyColorSelect
-                                                    } else {
-                                                        rootItem.cppInterface.pointsColor = "#FFFFFF"
-                                                    }
-                                                }
-                                            }
-                                        }
-
-
-                                        Rectangle {
-                                            id: pointColorCircle
-                                            implicitWidth: 26 / Style.monitorRatio
-                                            implicitHeight: 26 / Style.monitorRatio
-                                            radius: width
-                                            border.width: 1 / Style.monitorRatio
-                                            border.color: Style.foregroundColor
-                                            IconImage {
-                                                id: pointColorAddIcon
-                                                anchors.centerIn: parent
-                                                width: 20 / Style.monitorRatio
-                                                height: 20 / Style.monitorRatio
-                                                source: "qrc:/Resources/location-add.png"
-                                            }
-                                            IconImage {
-                                                id: pointColorCheckIcon
-                                                anchors.fill: parent
-                                                source: "qrc:/Resources/add-place-color-select.png"
-                                                visible: false
-                                            }
-                                            MouseArea {
-                                                anchors.fill: parent
-                                                onClicked: colorBoxPointColor.visible = true
-                                            }
-                                        }
-                                    }
-                                    FloatSpinbox {
-                                        id: pointOpacityValue
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 20 / Style.monitorRatio
-                                        Layout.bottomMargin: 5 / Style.monitorRatio
-                                        Layout.topMargin: 10 / Style.monitorRatio
-                                        Layout.rightMargin: 5 / Style.monitorRatio
-                                        Layout.leftMargin: 5 / Style.monitorRatio
-                                        editable: true
-                                        stepSize: 1
-                                        height: 20 / Style.monitorRatio
-                                        from: 0
-                                        to: 100
-                                        onValueChanged: {
-                                            rootItem.cppInterface.pointsColor.a = value / 100
-                                        }
-                                    }
-                                    Binding {
-                                        target: pointOpacityValue
-                                        property: "value"
-                                        value: rootItem.cppInterface ? rootItem.cppInterface.pointsColor.a
-                                                                * 100 : 0
-                                        delayed: true
-                                    }
+                                //                                selectedColor: rootItem.cppInterface.pointsColor /*'#099999'*/
+                                onSelectedColorChanged: {
+                                    rootItem.cppInterface.pointsColor = selectedColor
                                 }
                             }
                         }
@@ -947,7 +582,7 @@ Item {
                                 Layout.preferredHeight: valHeight / Style.monitorRatio
                                 Layout.preferredWidth: 200 / Style.monitorRatio
 
-                                FloatSpinbox {
+                                FloatSpinBox {
                                     id: pointWidthValue
                                     editable: true
                                     enabled: pointVisible.checked
@@ -1003,5 +638,4 @@ Item {
             }
         }
     }
-
 }

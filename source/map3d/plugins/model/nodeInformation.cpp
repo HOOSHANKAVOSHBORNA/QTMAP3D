@@ -4,6 +4,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQuickView>
+#include <QQmlComponent>
 
 NodeInformationModel::NodeInformationModel(QObject *parent):QStandardItemModel(parent)
 {

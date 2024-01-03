@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Layouts
 import QtQuick.Controls
+
+import "Components"
 import "style"
 
 Item {
@@ -18,7 +20,8 @@ Item {
     readonly property color fg20: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.20)
-    property var cppInterface/*: modelPropertyInterface ?? "null"*/
+    property var cppInterface
+    /*: modelPropertyInterface ?? "null"*/
 
     // DEBUG
     //    Text {
@@ -80,6 +83,7 @@ Item {
             // --------------------------------------------------------- Color
             RowLayout {
                 id: fillcolorSec
+
                 Layout.fillWidth: true
                 Layout.preferredHeight: valHeight
                 spacing: 0
@@ -92,91 +96,16 @@ Item {
                     color: Style.foregroundColor
                 }
 
-                RowLayout {
-                    id: colorsrowl
+                ColorPicker {
+                    id: fillColorPick
+
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    spacing: 3 / Style.monitorRatio
 
-                    property var colorModel: ["#EF2929", "#FCAF3E", "#FCAF3E", "#FCE94F", "#8AE234", "#729FCF", "#FFFFFF"]
-
-                    Repeater {
-                        id: colorModelRepeater
-                        model: colorsrowl.colorModel
-                        property int currentIndex: -1
-
-                        Button {
-                            required property var model
-
-                            checkable: true
-                            implicitWidth: 26 / Style.monitorRatio
-                            implicitHeight: 26 / Style.monitorRatio
-
-                            background: Rectangle {
-                                radius: width
-                                color: colorsrowl.colorModel[model.index]
-                            }
-
-                            Image {
-                                anchors.fill: parent
-                                source: "qrc:/Resources/add-place-color-select.png"
-                                visible: colorModelRepeater.currentIndex === model.index
-                            }
-
-                            onClicked: {
-                                colorModelRepeater.currentIndex = model.index
-                                rootItem.cppInterface.color = colorsrowl.colorModel[model.index]
-                                colorBox.visible = false
-                                propertySelectIcon.visible = false
-                                addIconImage.visible = true
-                            }
-                        }
+                    //                        selectedColor: '#099999'
+                    onSelectedColorChanged: {
+                        rootItem.cppInterface.color = selectedColor
                     }
-
-                    Rectangle {
-                        id: colorBoxOpener
-
-                        implicitWidth: 26 / Style.monitorRatio
-                        implicitHeight: 26 / Style.monitorRatio
-                        radius: width
-                        border.width: 1 / Style.monitorRatio
-                        border.color: Style.foregroundColor
-
-                        IconImage {
-                            id: addIconImage
-                            anchors.centerIn: parent
-                            width: 20 / Style.monitorRatio
-                            height: 20 / Style.monitorRatio
-                            source: "qrc:/Resources/location-add.png"
-                        }
-
-                        IconImage {
-                            id: propertySelectIcon
-                            anchors.centerIn: parent
-                            width: 20 / Style.monitorRatio
-                            height: 20 / Style.monitorRatio
-                            source: "qrc:/Resources/add-place-color-select.png"
-                            visible: false
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: colorBox.visible = true
-                        }
-                    }
-                }
-            }
-
-            ColorBoxInput {
-                id: colorBox
-
-                visible: false
-                onColorChosen: {
-                    colorBoxOpener.color = selectedColor
-                    rootItem.cppInterface.color = selectedColor
-                    addIconImage.visible = false
-                    propertySelectIcon.visible = true
-                    colorModelRepeater.currentIndex = -1
                 }
             }
 
@@ -221,7 +150,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: xLocationValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -253,7 +182,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: yLocationValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -286,7 +215,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: zLocationValue
 
                                 editable: true
@@ -378,7 +307,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: valHeight / Style.monitorRatio
 
-                    ModelStepSpinBox {
+                    StepSpinBox {
                         id: lengthValue
                         editable: true
                         anchors.leftMargin: 5 / Style.monitorRatio
@@ -445,7 +374,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: xMoveToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -477,7 +406,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: yMoveToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -510,7 +439,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: zMoveToValue
 
                                 editable: true
@@ -583,7 +512,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: xFlyToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -615,7 +544,7 @@ Item {
                                 font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: yFlyToValue
                                 editable: true
                                 Layout.fillWidth: true
@@ -648,7 +577,7 @@ Item {
                                 color: Style.foregroundColor
                             }
 
-                            ModelStepSpinBox {
+                            StepSpinBox {
                                 id: zFlyToValue
 
                                 editable: true
