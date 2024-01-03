@@ -12,8 +12,8 @@ AssignDataManager::AssignDataManager(CombatManager *combatManager, Model *model,
 void AssignDataManager::onSendAssignRequest(SimpleModelNode *attacker, SimpleModelNode *target)
 {
     AssignData data;
-    data.attackerID = std::to_string(attacker->nodeData()->id);
-    data.targetID = std::to_string(target->nodeData()->id);
+    data.attackerID = attacker->nodeData()->id;
+    data.targetID = target->nodeData()->id;
     data.command = "ASSIGNREQUEST";
 
     mService->sendJsonAssignData(data);
@@ -33,12 +33,17 @@ void AssignDataManager::onSendCancelRequest(SimpleModelNode *attacker, SimpleMod
 void AssignDataManager::assignDataReceived(AssignData *assignData)
 {
     QMap<int,osg::ref_ptr<SimpleModelNode>> *dataMap = mModel->getDataManager()->getNodeMap();
-    SimpleModelNode *attackerNode = dataMap->find(std::stoi(assignData->attackerID)).value();
-    SimpleModelNode *targetNode = dataMap->find(std::stoi(assignData->targetID)).value();
+    SimpleModelNode *attackerNode = dataMap->find(assignData->attackerID).value();
+    SimpleModelNode *targetNode = dataMap->find(assignData->targetID).value();
+    qDebug() << assignData->attackerID;
+    qDebug() << assignData->targetID;
+    qDebug() << assignData->state;
+
     AssignState state = parseState(assignData->state);
 
     if(assignData->command == "ADDORUPDATE")
-        addOrUpdateAssignment(attackerNode,targetNode,state);
+        if(attackerNode && targetNode)
+            mCombatManagaer->assign(attackerNode,targetNode,state);
 
     if(assignData->command == "REMOVE")
         removeAssignment(attackerNode,targetNode);

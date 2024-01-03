@@ -150,7 +150,7 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
     CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
     if (compositeLayer){
         if(compositeLayer->userId() >= 0)
-            mParenticLayers[compositeLayer->userId()] = compositeLayer;
+            mCompositeLayers[compositeLayer->userId()] = compositeLayer;
 
         auto compositCallback = new CompositeCallback(this);
         mCompositeCallbacks[layer] = compositCallback;
@@ -192,7 +192,7 @@ CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
 
 ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
 {
-    for (auto& l: mParenticLayers){
+    for (auto& l: mCompositeLayers){
         ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
         if (p){
             return p;
@@ -204,22 +204,59 @@ ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
 void MapObject::setFilterManager(FilterManager *newFilterManager)
 {
     mFilterManager = newFilterManager;
-    for (auto &l: mParenticLayers) {
+    for (auto &l: mCompositeLayers) {
         l.second->setFilterManager(newFilterManager);
     }
     connect(mFilterManager, &FilterManager::filterTagsEdited, this, &MapObject::filterNodes);
 }
 
+void MapObject::addLayerFromServeice(ParenticAnnotationLayer *layer)
+{
+    if (layer->asCompositeAnnotationLayer() && layer->asCompositeAnnotationLayer()->getNumParents() == 0) {
+        mCompositeLayers[layer->userId()] = layer->asCompositeAnnotationLayer();
+        addLayer(layer);
+    }
+    else if (!layer->asCompositeAnnotationLayer()) {
+        mParenticLayers[layer->userId()] = layer;
+    }
+    layer->setRefreshTime(mRefrehsTime);
+}
+
+ParenticAnnotationLayer *MapObject::getServiceLayerBiId(int id)
+{
+    ParenticAnnotationLayer *p{nullptr};
+    if (mParenticLayers.find(id) != mParenticLayers.end())
+        p = mParenticLayers[id];
+    return p;
+}
+
+void MapObject::clearOldParenticLayers()
+{
+    for (auto it = mParenticLayers.cbegin(); it != mParenticLayers.end();){
+        if (it->second->refreshTime() != mRefrehsTime)
+            it = mParenticLayers.erase(it);
+        else
+            it++;
+    }
+    // for (auto &i : mParenticLayers) {
+    //     if (mParenticLayers[i.first]->refreshTime() != mRefrehsTime) {
+    //         // delete mParenticLayers[i.first];
+    //         mParenticLayers.erase(i.first);
+    //     }
+    // }
+}
+
 void MapObject::filterNodes()
 {
-    for (auto &l: mParenticLayers) {
+    for (auto &l: mCompositeLayers) {
         l.second->filter();
     }
 }
 
-void MapObject::clearParenticLayers()
+void MapObject::clearCompositeLayers()
 {
-    for (auto &i : mParenticLayers){
+    for (auto &i : mCompositeLayers){
         removeLayer(i.second);
     }
+    ++mRefrehsTime;
 }

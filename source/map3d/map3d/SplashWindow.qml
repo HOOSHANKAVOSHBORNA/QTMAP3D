@@ -3,11 +3,11 @@ import Crystal
 
 CSplash {
     id: splash
-    // flags: Qt.SplashScreen
+    flags: Qt.SplashScreen
     // // the transparent color lets background behind the image edges show through
-    // color: "transparent"
-    // modality: Qt.ApplicationModal // in case another application window is showing
-    // title: "Splash Window" // for the taskbar/dock, task switcher etc.
+    color: "transparent"
+    modality: Qt.ApplicationModal // in case another application window is showing
+    title: "Splash Window" // for the taskbar/dock, task switcher etc.
     // visible: true
 
     // // here we use the Screen attached property to center the splash window
@@ -16,29 +16,36 @@ CSplash {
     width: splashImage.width
     height: splashImage.height
 
-    property int timeoutInterval: 4000
+    Image {
+        id: splashImage
+        source: "qrc:/Resources/login.png"
+        width: 400
+        height: 400
+    }
+
+    property int timeoutInterval: 100
     // // signal timeout
 
-    AnimatedImage { id: splashImage; source: "qrc:/Resources/splash.gif"; speed: 0.4    }
+    // AnimatedImage { id: splashImage; source: "qrc:/Resources/splash.gif"; speed: 0.4    }
 
-    // Rectangle {
-    //     property int frames: splashImage.frameCount
+    Rectangle {
+        property int frames: splashImage.frameCount
 
-    //     width: 4; height: 8
-    //     x: (splashImage.width - width) * splashImage.currentFrame / frames
-    //     y: splashImage.height
-    //     color: "red"
-    // }
+        width: 4; height: 8
+        x: (splashImage.width - width) * splashImage.currentFrame / frames
+        y: splashImage.height
+        color: "red"
+    }
 
     // TapHandler {
     //     onTapped: splash.timeout()
     // }
 
-    Timer {
-        interval: splash.timeoutInterval; running: true; repeat: false
-        onTriggered: {
-            splash.visible = false
-            splash.timeout()
-        }
-    }
+    // Timer {
+    //     interval: splash.timeoutInterval; running: true; repeat: false
+    //     onTriggered: {
+    //         splash.visible = false
+    //         splash.timeout()
+    //     }
+    // }
 }

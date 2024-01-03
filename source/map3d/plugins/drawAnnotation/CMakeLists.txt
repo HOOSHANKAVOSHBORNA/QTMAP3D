@@ -16,19 +16,15 @@ add_library(drawAnnotation SHARED
   drawAnnotation.cpp
   property.h
   property.cpp
-  lineNode.h
-  lineNode.cpp
-  lineProperty.h
-  lineProperty.cpp
-  polygonProperty.cpp
-  polygonProperty.h
+  annotationProperty.h
+  annotationProperty.cpp
   measureHeight.h
   measureHeight.cpp
-  polygon.h
-  polygon.cpp
   drawAnnotation.json
   drawAnnotation.qrc
   drawAnnotationQml.qrc
+  annotatedNode.h
+  annotatedNode.cpp
 )
 
 target_include_directories(drawAnnotation PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d"

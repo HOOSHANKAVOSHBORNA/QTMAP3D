@@ -8,7 +8,6 @@
 class Property :  public QQuickItem
 {
     Q_OBJECT
- //   QML_ELEMENT
     Q_PROPERTY(QString name           READ getName                         WRITE setName                 NOTIFY propretyChanged)
     Q_PROPERTY(bool fillColorStatus   READ getFillColorStatus              WRITE setFillColorStatus      NOTIFY propretyChanged)
     Q_PROPERTY(QColor fillColor       READ getFillColor                    WRITE setFillColor            NOTIFY propretyChanged)
@@ -221,8 +220,20 @@ private:
     bool mPointsSmooth{true};
     double mPointsWidth{10};
 
+};
+
+class PropertyItem: public QQuickItem
+{
+public:
+
+    PropertyItem(QQmlEngine *Engine, QVariant property, QQuickItem *parent = nullptr);
+    QQuickItem* getQuickItem();
+    Property* getLineProperty();
 
 
+private:
+    QQuickItem *mItem{nullptr};
+    Property *mLinePropertyItem;
 
 };
 

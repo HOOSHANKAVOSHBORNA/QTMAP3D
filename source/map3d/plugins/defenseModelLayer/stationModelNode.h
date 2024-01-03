@@ -5,7 +5,7 @@
 #include "stationInformation.h"
 #include "circle.h"
 #include "polygon.h"
-
+#include "annotatedNode.h"
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 
@@ -43,7 +43,7 @@ private:
     DefenseModelLayer* mDefenseModelLayer;
     Station::Data* mData;
     osg::ref_ptr<Circle> mRangeCircle;
-    osg::ref_ptr<Polygon> mVisiblePolygon;
+    osg::ref_ptr<AnnotatedNode> mVisiblePolygon;
 
     static osg::ref_ptr<osg::Node> mNode3DRef;
 	static constexpr int LABEL_IMAGE_WIDTH = 180;
