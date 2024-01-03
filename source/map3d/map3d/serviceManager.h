@@ -50,8 +50,8 @@ struct NodeData: public osg::Referenced
 
 struct AssignData: public osg::Referenced
 {
-    std::string attackerID;
-    std::string targetID;
+    int attackerID;
+    int targetID;
     std::string command{"ADD"};
     std::string state{"PREASSIGN"};
 };
