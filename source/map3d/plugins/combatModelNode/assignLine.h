@@ -2,7 +2,7 @@
 #define ASSIGNLINE_H
 
 #include <osgEarth/LineDrawable>
-#include "lineNode.h"
+#include "annotatedNode.h"
 #include "simpleModelNode.h"
 
 class AssignLineCallback : public osg::NodeCallback
@@ -11,7 +11,7 @@ public:
     void operator()(osg::Node* node, osg::NodeVisitor* nv) override;
 };
 
-class AssignLine : public LineNode
+class AssignLine : public AnnotatedNode
 {
 public:
     AssignLine(MapItem *mapItem, SimpleModelNode *attacker, SimpleModelNode *target);

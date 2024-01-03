@@ -1,7 +1,6 @@
 #include "drawShape.h"
 #include "mainwindow.h"
 #include "property.h"
-
 #include <osgEarthSymbology/Style>
 #include <osgEarth/ModelLayer>
 #include <osgEarthDrivers/arcgis/ArcGISOptions>
@@ -42,11 +41,6 @@ DrawShape::DrawShape(QObject *parent)
 DrawShape::~DrawShape()
 {
     mIconNode.release();
-    //    qDebug()<<name();
-    //    if(mIconNode.valid()){
-    //    qDebug()<<mIconNode->referenceCount();
-    //    qDebug()<<mIconNode->referenceCount();
-    //    }
 }
 
 bool DrawShape::setup()
@@ -158,12 +152,15 @@ bool DrawShape::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
 
 }
 
+
 void DrawShape::confirmDraw()
 {
     if (state() == State::EDIT || state() == State::DRAWING) {
         setState(State::READY);
     }
 }
+
+
 
 void DrawShape::createProperty(QString name, QVariant property)
 {
@@ -187,4 +184,8 @@ void DrawShape::hideProperty()
 {
     mainWindow()->getToolboxManager()->removePropertyItem();
 }
+
+
+
+
 

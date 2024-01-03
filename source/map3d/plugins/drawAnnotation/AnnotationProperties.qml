@@ -169,6 +169,8 @@ Item {
                                 onValueChanged: {
                                     if (rootItem.cppInterface)
                                         rootItem.cppInterface.strokeWidth = value
+
+
                                 }
                             }
 
@@ -550,6 +552,8 @@ Item {
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
                             }
+
+
 
                             ColorPicker {
                                 id: pointsColorPick

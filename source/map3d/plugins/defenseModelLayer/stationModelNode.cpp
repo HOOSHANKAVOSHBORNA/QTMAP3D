@@ -165,7 +165,7 @@ StationModelNode::StationModelNode(DefenseModelLayer *defenseModelLayer, Station
 	mRangeCircle->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
 
 
-    mVisiblePolygon = new Polygon(mDefenseModelLayer->mapItem());
+    mVisiblePolygon = new AnnotatedNode(mDefenseModelLayer->mapItem(),AnnotatedNode::GeneralType::POLYGONTYPE);
     mVisiblePolygon->setStrokeColor(osg::Vec4(1.0, 0.0, 0.0, 0.3f));
 	mVisiblePolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mVisiblePolygon->setClamp(osgEarth::Symbology::AltitudeSymbol::Clamping::CLAMP_TO_TERRAIN);
@@ -280,7 +280,8 @@ void StationModelNode::onVisibleButtonToggled(bool checked)
     {
         if(mVisiblePolygon->getSize() <=0)
         {
-        mVisiblePolygon->clearPoints();
+//        mVisiblePolygon->clearPoint();
+        mVisiblePolygon->removePoint();
         osg::Vec3d worldPosition;
         getPosition().toWorld(worldPosition, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
         osgEarth::GeoPoint geoPoint;

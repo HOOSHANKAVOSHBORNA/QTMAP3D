@@ -121,6 +121,7 @@ signals:
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
     void assignDataReceived(AssignData *assignData);
     void lineNodeDataReceived(PolyLineData *lineNodeData);
+    void annotationNodeDataReceived(PolyLineData *lineNodeData);
     void movableNodeDataReceived(NodeData *modelNodeData);
     void nodeDataReceived(NodeData *nodeData);
     void circleDataReceived(CircleData *circleData);

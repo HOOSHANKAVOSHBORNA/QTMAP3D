@@ -186,7 +186,7 @@ SystemModelNode::SystemModelNode(DefenseModelLayer* defenseModelLayer, System::D
     mMezSphere->setFillColor(osg::Vec4(1.0, 1.0, 0.0, 0.3f));
 	mMezSphere->setSphereShape(SphereNode::SphereShape::SphereTopHalf);
 
-    mWezPolygon = new Polygon(mDefenseModelLayer->mapItem());
+    mWezPolygon = new AnnotatedNode(mDefenseModelLayer->mapItem(),AnnotatedNode::GeneralType::POLYGONTYPE);
     mWezPolygon->setStrokeColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
     mWezPolygon->setFillColor(osg::Vec4(0.0, 1.0, 0.0, 0.3f));
 
@@ -469,7 +469,8 @@ void SystemModelNode::onWezButtonToggled(bool checked)
 {
 	if(checked)
 	{
-		mWezPolygon->clearPoints();
+//		mWezPolygon->clearPoints();
+        mWezPolygon->removePoint();
 		osg::Vec3d worldPosition;
         getPosition().toWorld(worldPosition, mDefenseModelLayer->mapItem()->getMapNode()->getTerrain());
 		osgEarth::GeoPoint geoPoint;
