@@ -111,6 +111,7 @@ signals:
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
     void lineNodeDataReceived(PolyLineData *lineNodeData);
+    void annotationNodeDataReceived(PolyLineData *lineNodeData);
     void movableNodeDataReceived(NodeData *modelNodeData);
     void nodeDataReceived(NodeData *nodeData);
     void circleDataReceived(CircleData *circleData);

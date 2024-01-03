@@ -402,6 +402,8 @@ Item {
                                 onValueChanged: {
                                     if (rootItem.cppInterface)
                                         rootItem.cppInterface.strokeWidth = value
+
+
                                 }
                             }
                             Binding {
@@ -777,25 +779,11 @@ Item {
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
                             }
-                            GroupBox {
-                                padding: 0
-                                Layout.fillWidth: true
-                                Layout.margins: 0
-                                Layout.rightMargin: 15 / Style.monitorRatio
-                                enabled: pointVisible.checked
-                                background: Rectangle {
-                                    color: foregroundColor
-                                    radius: 10 / Style.monitorRatio
-                                    border.color: "transparent"
-                                }
 
-                                ColumnLayout {
-                                    anchors.fill: parent
 
                                     RowLayout {
                                         spacing: 3 / Style.monitorRatio
                                         Layout.leftMargin: 7 / Style.monitorRatio
-                                        Layout.topMargin: 5 / Style.monitorRatio
 
                                         ListModel {
                                             id: pointColorModel
@@ -901,32 +889,6 @@ Item {
                                             }
                                         }
                                     }
-                                    FloatSpinbox {
-                                        id: pointOpacityValue
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 20 / Style.monitorRatio
-                                        Layout.bottomMargin: 5 / Style.monitorRatio
-                                        Layout.topMargin: 10 / Style.monitorRatio
-                                        Layout.rightMargin: 5 / Style.monitorRatio
-                                        Layout.leftMargin: 5 / Style.monitorRatio
-                                        editable: true
-                                        stepSize: 1
-                                        height: 20 / Style.monitorRatio
-                                        from: 0
-                                        to: 100
-                                        onValueChanged: {
-                                            rootItem.cppInterface.pointsColor.a = value / 100
-                                        }
-                                    }
-                                    Binding {
-                                        target: pointOpacityValue
-                                        property: "value"
-                                        value: rootItem.cppInterface ? rootItem.cppInterface.pointsColor.a
-                                                                * 100 : 0
-                                        delayed: true
-                                    }
-                                }
-                            }
                         }
 
                         RowLayout {
