@@ -1,148 +1,180 @@
 #include "explosion.h"
 #include <osgEarth/Registry>
+#include <osgEarthAnnotation/AnnotationUtils>
+#include <osgDB/WriteFile>
+#include <utility.h>
+#include "autoScaler.h"
+#include "qtimer.h"
+#include <osg/Depth>
 
-Explosion::Explosion(MapItem *map)
+Explosion::Explosion(MapItem *map, double duration):
+    osgEarth::Annotation::ModelNode(map->getMapNode(), Utility::getDefaultStyle())
 {
     connect(map, &MapItem::modeChanged, this, &Explosion::onModeChanged);
-    is3D = map->getMode();
+    mIs3D = map->getMode();
+    //---------------------------------------------------
+    mRoot = new osg::Group;
     mSwitchNode = new osg::Switch;
+    mRoot->addChild(mSwitchNode);
     osg::ref_ptr<osg::Group> group3D = new osg::Group;
 
     //--explosion 3D Node---------------------------------------------------
-    pSphereGroup = new osg::PositionAttitudeTransform;
     float scale = 1;
-    explosion1 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 6.0f * scale, 1.128f);
-    explosion2 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 4.0f * scale, 1.25f);
-    explosion3 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 2.0f * scale, 1.5f);
-    explosion4 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 1.0f * scale, 2.0f);
+    mExplosion1 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 6.0f * scale, 1.128f);
+    mExplosion2 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 4.0f * scale, 1.25f);
+    mExplosion3 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 2.0f * scale, 1.5f);
+    mExplosion4 = new osgParticle::ExplosionEffect(osg::Vec3(0,0,0), 1.0f * scale, 2.0f);
 
-    explosion1->setParticleDuration(1.0);
-    explosion2->setParticleDuration(1.2);
-    explosion3->setParticleDuration(1.4);
-    explosion4->setParticleDuration(1.8);
+    mExplosion1->setParticleDuration(1.0);
+    mExplosion2->setParticleDuration(1.2);
+    mExplosion3->setParticleDuration(1.4);
+    mExplosion4->setParticleDuration(1.8);
 
-    debris1 = new osgParticle::ExplosionDebrisEffect(osg::Vec3(0,0,0), 3*scale, 1.0f);
-    smoke = new osgParticle::SmokeEffect(osg::Vec3(0,0,scale), 18.0f * scale ,0.2);
-    fire = new osgParticle::FireEffect(osg::Vec3(0,0,0),9.0f * scale , 2.0);
+    mDebris = new osgParticle::ExplosionDebrisEffect(osg::Vec3(0,0,0), 3*scale, 1.0f);
+    mSmoke = new osgParticle::SmokeEffect(osg::Vec3(0,0,scale), 10.0f * scale ,0.7);
+    mFire = new osgParticle::FireEffect(osg::Vec3(0,0,0),9.0f * scale , 2.0);
 
-    explosion1->setUseLocalParticleSystem(false);
-    explosion2->setUseLocalParticleSystem(false);
-    explosion3->setUseLocalParticleSystem(false);
-    explosion4->setUseLocalParticleSystem(false);
-    debris1->setUseLocalParticleSystem(false);
-    smoke->setUseLocalParticleSystem(false);
-    fire->setUseLocalParticleSystem(false);
+    mExplosion1->setUseLocalParticleSystem(false);
+    mExplosion2->setUseLocalParticleSystem(false);
+    mExplosion3->setUseLocalParticleSystem(false);
+    mExplosion4->setUseLocalParticleSystem(false);
+    mDebris->setUseLocalParticleSystem(false);
+    mSmoke->setUseLocalParticleSystem(false);
+    mFire->setUseLocalParticleSystem(false);
 
-    smoke->setEmitterDuration(30.6);
-    smoke->setParticleDuration(10.6);
-    fire->setEmitterDuration(15.9);
-    fire->setParticleDuration(7.5);
+    mSmoke->setEmitterDuration(duration);
+    mSmoke->setParticleDuration(duration/6);
+    mFire->setEmitterDuration(duration/2);
+    mFire->setParticleDuration(duration/10);
 
-    explosion1->setTextureFileName("../data/images/fire_p1.png");
-    explosion2->setTextureFileName("../data/images/fire_p2.png");
-    explosion3->setTextureFileName("../data/images/fire_p3.png");
-    explosion4->setTextureFileName("../data/images/fire_p4.png");
+    mExplosion1->setTextureFileName("../data/images/fire_p1.png");
+    mExplosion2->setTextureFileName("../data/images/fire_p2.png");
+    mExplosion3->setTextureFileName("../data/images/fire_p3.png");
+    mExplosion4->setTextureFileName("../data/images/fire_p4.png");
 
-    debris1->setTextureFileName("../data/images/debris_p1.png");
-    smoke->setTextureFileName("../data/images/smoke_p1.png");
-    fire->setTextureFileName("../data/images/fire_p5.png");
+    mDebris->setTextureFileName("../data/images/debris_p1.png");
+    mSmoke->setTextureFileName("../data/images/smoke_p1.png");
+    mFire->setTextureFileName("../data/images/fire_p5.png");
 
-//    pSphereGroup->addChild(explosion1);
-//    pSphereGroup->addChild(explosion2);
-//    pSphereGroup->addChild(explosion3);
-//    pSphereGroup->addChild(explosion4);
-//    pSphereGroup->addChild(debris1);
-//    pSphereGroup->addChild(fire);
-//    pSphereGroup->addChild(smoke);
+    osgEarth::Registry::shaderGenerator().run(mExplosion1);
+    osgEarth::Registry::shaderGenerator().run(mExplosion2);
+    osgEarth::Registry::shaderGenerator().run(mExplosion3);
+    osgEarth::Registry::shaderGenerator().run(mExplosion4);
+    osgEarth::Registry::shaderGenerator().run(mDebris);
+    osgEarth::Registry::shaderGenerator().run(mSmoke);
+    osgEarth::Registry::shaderGenerator().run(mFire);
 
-
-    osgEarth::Registry::shaderGenerator().run(explosion1);
-    osgEarth::Registry::shaderGenerator().run(explosion2);
-    osgEarth::Registry::shaderGenerator().run(explosion3);
-    osgEarth::Registry::shaderGenerator().run(explosion4);
-    osgEarth::Registry::shaderGenerator().run(debris1);
-    osgEarth::Registry::shaderGenerator().run(smoke);
-    osgEarth::Registry::shaderGenerator().run(fire);
-
-//    getPositionAttitudeTransform()->addChild(explosion1);
-//    getPositionAttitudeTransform()->addChild(explosion2);
-//    getPositionAttitudeTransform()->addChild(explosion3);
-//    getPositionAttitudeTransform()->addChild(explosion4);
-//    getPositionAttitudeTransform()->addChild(debris1);
-//    getPositionAttitudeTransform()->addChild(smoke);
-//    getPositionAttitudeTransform()->addChild(fire);
-
-    osgEarth::Registry::shaderGenerator().run(explosion1->getParticleSystem());
-    osgEarth::Registry::shaderGenerator().run(explosion2->getParticleSystem());
-    osgEarth::Registry::shaderGenerator().run(explosion3->getParticleSystem());
-    osgEarth::Registry::shaderGenerator().run(explosion4->getParticleSystem());
-    osgEarth::Registry::shaderGenerator().run(debris1->getParticleSystem());
-    osgEarth::Registry::shaderGenerator().run(smoke->getParticleSystem());
-    osgEarth::Registry::shaderGenerator().run(fire->getParticleSystem());
+    osgEarth::Registry::shaderGenerator().run(mExplosion1->getParticleSystem());
+    osgEarth::Registry::shaderGenerator().run(mExplosion2->getParticleSystem());
+    osgEarth::Registry::shaderGenerator().run(mExplosion3->getParticleSystem());
+    osgEarth::Registry::shaderGenerator().run(mExplosion4->getParticleSystem());
+    osgEarth::Registry::shaderGenerator().run(mDebris->getParticleSystem());
+    osgEarth::Registry::shaderGenerator().run(mSmoke->getParticleSystem());
+    osgEarth::Registry::shaderGenerator().run(mFire->getParticleSystem());
 
 
-    group3D->addChild(explosion1);
-    group3D->addChild(explosion2);
-    group3D->addChild(explosion3);
-    group3D->addChild(explosion3);
-    group3D->addChild(debris1);
-    group3D->addChild(smoke);
-    group3D->addChild(fire);
+    group3D->addChild(mExplosion1);
+    group3D->addChild(mExplosion2);
+    group3D->addChild(mExplosion3);
+    group3D->addChild(mExplosion3);
+    group3D->addChild(mDebris);
+    group3D->addChild(mSmoke);
+    group3D->addChild(mFire);
 
     //--2D node---------------------------------------------------------
-    m2DNode = new osgEarth::Annotation::PlaceNode();
-    osg::ref_ptr<osg::Image> image = osgDB::readImageFile("../data/images/particle/explosion.png");
-    m2DNode->setIconImage(image);
+//    m2DNode = new osgEarth::Annotation::PlaceNode();
+    mImage = osgDB::readImageFile("../data/images/particle/explosion.png");
+    if(mImage)
+        mImage->scaleImage(24, 24, mImage->r());
+//    m2DNode->setIconImage(image);
 
+    m2DNode = new osg::Geode();
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    osgEarth::ScreenSpaceLayoutOptions option;
+    option.technique() = osgEarth::ScreenSpaceLayoutOptions::TECHNIQUE_LABELS;
+    option.leaderLineMaxLength() = 64;
+    option.leaderLineWidth() = 32;
+    osgEarth::ScreenSpaceLayout::setOptions(option);
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 1);
+    m2DNode->setStateSet(geodeStateSet);
+    m2DNode->addDrawable(imgGeom);
+    //--Auto scale----------------------------------------------------
+    setCullingActive(false);
+    mAutoScaler = new AutoScaler(1, 1, 1000);
+    setCullCallback(mAutoScaler);
     //--setting--------------------------------------------------------
-    if(is3D){
-        mSwitchNode->addChild(group3D, true);
-        mSwitchNode->addChild(m2DNode, false);
-        getPositionAttitudeTransform()->addChild(explosion1->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(explosion2->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(explosion3->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(explosion4->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(debris1->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(smoke->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(fire->getParticleSystem());
+    if(mIs3D){
+        mSwitchNode->insertChild(0, group3D, true);
+        mSwitchNode->insertChild(1, m2DNode, false);
+        mRoot->addChild(mExplosion1->getParticleSystem());
+        mRoot->addChild(mExplosion2->getParticleSystem());
+        mRoot->addChild(mExplosion3->getParticleSystem());
+        mRoot->addChild(mExplosion4->getParticleSystem());
+        mRoot->addChild(mDebris->getParticleSystem());
+        mRoot->addChild(mSmoke->getParticleSystem());
+        mRoot->addChild(mFire->getParticleSystem());
     }
     else{
-        mSwitchNode->addChild(group3D, false);
-        mSwitchNode->addChild(m2DNode, true);
+        mSwitchNode->insertChild(0, group3D, false);
+        mSwitchNode->insertChild(1, m2DNode, true);
     }
-
-    getPositionAttitudeTransform()->addChild(mSwitchNode);
+    osgEarth::Symbology::Style  rootStyle ;
+    rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
+    setStyle(rootStyle);
+    //--duration---------------------------------------------------------------
+    mTimerDuration = new QTimer();
+    QObject::connect(mTimerDuration, &QTimer::timeout, [&](){
+        mAutoScaler->setScaled(false);
+        setCullCallback(nullptr);//cancel auto scale
+        mRoot->setNodeMask(false);
+        mTimerDuration->stop();
+    });
+    mTimerDuration->start(duration*1000);
 }
 
-osg::PositionAttitudeTransform *Explosion::getExplosion()
+Explosion::~Explosion()
 {
-    return pSphereGroup;
+    delete mTimerDuration;
+//    mRoot->removeChild(mExplosion1->getParticleSystem());
+//    mRoot->removeChild(mExplosion2->getParticleSystem());
+//    mRoot->removeChild(mExplosion3->getParticleSystem());
+//    mRoot->removeChild(mExplosion4->getParticleSystem());
+//    mRoot->removeChild(mDebris->getParticleSystem());
+//    mRoot->removeChild(mSmoke->getParticleSystem());
+//    mRoot->removeChild(mFire->getParticleSystem());
 }
 
-void Explosion::onModeChanged(bool is3DView)
+void Explosion::setScaleRatio(double ratio)
 {
-    is3D = is3DView;
-    if(is3D){
+    if(mAutoScaler)
+        mAutoScaler->setDefaultScale(ratio);
+}
+
+void Explosion::onModeChanged(bool mIs3DView)
+{
+    mIs3D = mIs3DView;
+    if(mIs3D){
         mSwitchNode->setValue(0,true);
         mSwitchNode->setValue(1, false);
-        getPositionAttitudeTransform()->addChild(explosion1->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(explosion2->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(explosion3->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(explosion4->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(debris1->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(smoke->getParticleSystem());
-        getPositionAttitudeTransform()->addChild(fire->getParticleSystem());
+        mRoot->addChild(mExplosion1->getParticleSystem());
+        mRoot->addChild(mExplosion2->getParticleSystem());
+        mRoot->addChild(mExplosion3->getParticleSystem());
+        mRoot->addChild(mExplosion4->getParticleSystem());
+        mRoot->addChild(mDebris->getParticleSystem());
+        mRoot->addChild(mSmoke->getParticleSystem());
+        mRoot->addChild(mFire->getParticleSystem());
     }
     else{
         mSwitchNode->setValue(0, false);
         mSwitchNode->setValue(1,true);
-        getPositionAttitudeTransform()->removeChild(explosion1->getParticleSystem());
-        getPositionAttitudeTransform()->removeChild(explosion2->getParticleSystem());
-        getPositionAttitudeTransform()->removeChild(explosion3->getParticleSystem());
-        getPositionAttitudeTransform()->removeChild(explosion4->getParticleSystem());
-        getPositionAttitudeTransform()->removeChild(debris1->getParticleSystem());
-        getPositionAttitudeTransform()->removeChild(smoke->getParticleSystem());
-        getPositionAttitudeTransform()->removeChild(fire->getParticleSystem());
+        mRoot->removeChild(mExplosion1->getParticleSystem());
+        mRoot->removeChild(mExplosion2->getParticleSystem());
+        mRoot->removeChild(mExplosion3->getParticleSystem());
+        mRoot->removeChild(mExplosion4->getParticleSystem());
+        mRoot->removeChild(mDebris->getParticleSystem());
+        mRoot->removeChild(mSmoke->getParticleSystem());
+        mRoot->removeChild(mFire->getParticleSystem());
     }
 
 }

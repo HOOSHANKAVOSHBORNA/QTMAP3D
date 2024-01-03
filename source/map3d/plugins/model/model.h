@@ -57,6 +57,7 @@ public:
     void updateNodeFromProperty();
 
     static osgEarth::Symbology::Style &getDefaultStyle();
+    DataManager *getDataManager();
 
 public slots:
     void onTreeItemCheck (bool check);

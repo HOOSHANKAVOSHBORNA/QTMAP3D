@@ -48,6 +48,14 @@ struct NodeData: public osg::Referenced
     std::vector<NodeFieldData> fieldData;
 };
 
+struct AssignData: public osg::Referenced
+{
+    std::string attackerID;
+    std::string targetID;
+    std::string command{"ADD"};
+    std::string state{"PREASSIGN"};
+};
+
 struct PolyLineData: public osg::Referenced
 {
     int id;
@@ -94,6 +102,8 @@ public:
     void layersData(QJsonObject layers);
     void flyableNodeData(QJsonObject jsonObject);
     void statusNodeData(QJsonObject jsonObject);
+    void receiveAssignmentData(QJsonObject jsonObject);
+    void sendJsonAssignData(AssignData data);
     void messageData(QString jsonData);
     void sendAction(const QString &action);
     void polylineData(QJsonObject polyline);
@@ -109,6 +119,7 @@ signals:
     void layerDataReceived(CompositeAnnotationLayer *layer);
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
+    void assignDataReceived(AssignData *assignData);
     void lineNodeDataReceived(PolyLineData *lineNodeData);
     void annotationNodeDataReceived(PolyLineData *lineNodeData);
     void movableNodeDataReceived(NodeData *modelNodeData);

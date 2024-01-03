@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include "assignmentTest.h"
 #include "layerTest.h"
 #include "networkManager.h"
 #include "flyableNodeTest.h"
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     FlyableNodeTest flyableNodeTest(&networkManager);
     MovableNodeTest movableNodeTest(&networkManager);
     NodeTest nodeTest(&networkManager);
+    AssignmentTest assignmentTest(&networkManager);
 
     return a.exec();
 }
