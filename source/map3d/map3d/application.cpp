@@ -37,10 +37,12 @@ void Application::initialize()
     qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
     qmlRegisterType<Authenticator>("Crystal", 1, 0, "Authenticator");
+    qmlRegisterType<Splash>("Crystal", 1, 0, "CSplash");
 
     initializeQmlEngine();
     initializeDefenseDataManager();
 
+    mQmlEngine->load(QStringLiteral("qrc:///SplashWindow.qml"));
     mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
     mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
     // mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
@@ -49,10 +51,10 @@ void Application::initialize()
 void Application::show()
 {
     if (mIsReady) {
-        // mMainWindow->show();
+        mMainWindow->show();
     } else {
         QObject::connect(this, &Application::ready, [this]() {
-            // mMainWindow->show();
+            mMainWindow->show();
         });
     }
 }
@@ -96,8 +98,9 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
     Authenticator *authenticator = qobject_cast<Authenticator*>(obj);
     MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
     ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
+    Splash *splash = qobject_cast<Splash*>(obj);
 
-    // if (authenticator){
+    if (mainWnd){
         // mAuthenticator = authenticator;
         mServiceManager = new ServiceManager();
         mNetworkManager = new NetworkManager(mServiceManager);
@@ -111,7 +114,14 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         //         mRole = static_cast<UserRoles>(role);
         //     }
         // });
-    // }
+    }
+    if (splash) {
+        mSplash = splash;
+        // mSplash->show();
+        // connect(mSplash, &Splash::timeout, [this](){
+            // mMainWindow->show();
+        // });
+    }
     if (mainWnd) {
         mMainWindow = mainWnd;
         mMainWindow->initComponent();
@@ -142,6 +152,14 @@ void Application::onUICreated()
 ServiceManager *Application::serviceManager() const
 {
     return mServiceManager;
+}
+
+void Application::showSplash()
+{
+    mSplash->show();
+    connect(mSplash, &Splash::timeout, [this](){
+        mMainWindow->show();
+    });
 }
 
 

@@ -11,7 +11,6 @@
 #include "combatMenu.h"
 
 #define COMBATMODELNODE "Combat"
-#define TANK "Tank"
 
 
 class CombatModelNode : public PluginInterface

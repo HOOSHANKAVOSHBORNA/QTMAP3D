@@ -2,7 +2,6 @@
 #define SERVICEMANAGER_H
 
 #include "compositeAnnotationLayer.h"
-#include "mapItem.h"
 #include <QJsonDocument>
 #include <osgEarth/Layer>
 
@@ -103,7 +102,8 @@ public:
     void layersData(QJsonObject layers);
     void flyableNodeData(QJsonObject jsonObject);
     void statusNodeData(QJsonObject jsonObject);
-    void assignmentData(QJsonObject jsonObject);
+    void receiveAssignmentData(QJsonObject jsonObject);
+    void sendJsonAssignData(AssignData data);
     void messageData(QString jsonData);
     void sendAction(const QString &action);
     void polylineData(QJsonObject polyline);
@@ -138,7 +138,7 @@ private:
     ParenticAnnotationLayer* findParenticLayer(int id);
 private:
 
-    QMap<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
+    std::map<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
     int mRefreshTime{0};
 
 };

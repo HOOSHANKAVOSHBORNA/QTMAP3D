@@ -2,18 +2,21 @@
 #define ASSIGNDATAMANAGER_H
 
 #include "combatManager.h"
-#include "model.h"
 #include "qobject.h"
+#include "model.h"
+
+
 
 class AssignDataManager: public QObject
 {
     Q_OBJECT
 public:
-    AssignDataManager(CombatManager *combatManager , Model *model);
-    ~AssignDataManager();
+    AssignDataManager(CombatManager *combatManager , Model *model, ServiceManager *service);
 
 public slots:
     void assignDataReceived(AssignData *assignData);
+    void onSendAssignRequest(SimpleModelNode *attacker, SimpleModelNode *target);
+    void onSendCancelRequest(SimpleModelNode *attacker, SimpleModelNode *target);
 
 private:
     AssignState parseState(std::string state);
@@ -24,9 +27,8 @@ private:
 
 private:
     CombatManager *mCombatManagaer;
+    ServiceManager *mService;
     Model *mModel;
-    AssignData* mAssignData;
-    static inline int mCount = 0;
 };
 
 #endif // ASSIGNDATAMANAGER_H

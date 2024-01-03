@@ -36,3 +36,8 @@ void AssignmentTest::updateAssignment()
 {
 
 }
+
+void AssignmentTest::removeAssignment()
+{
+
+}

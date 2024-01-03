@@ -1,12 +1,34 @@
 #include "assignDataManager.h"
 
 
-AssignDataManager::AssignDataManager(CombatManager *combatManager, Model *model)
+AssignDataManager::AssignDataManager(CombatManager *combatManager, Model *model, ServiceManager *service)
     : mCombatManagaer(combatManager),
-    mModel(model)
+    mModel(model),
+    mService(service)
 {
 
 }
+
+void AssignDataManager::onSendAssignRequest(SimpleModelNode *attacker, SimpleModelNode *target)
+{
+    AssignData data;
+    data.attackerID = std::to_string(attacker->nodeData()->id);
+    data.targetID = std::to_string(target->nodeData()->id);
+    data.command = "ASSIGNREQUEST";
+
+    mService->sendJsonAssignData(data);
+}
+
+void AssignDataManager::onSendCancelRequest(SimpleModelNode *attacker, SimpleModelNode *target)
+{
+    AssignData data;
+    data.attackerID = attacker->nodeData()->id;
+    data.targetID = target->nodeData()->id;
+    data.command = "CANCELREQUEST";
+
+    mService->sendJsonAssignData(data);
+}
+
 
 void AssignDataManager::assignDataReceived(AssignData *assignData)
 {

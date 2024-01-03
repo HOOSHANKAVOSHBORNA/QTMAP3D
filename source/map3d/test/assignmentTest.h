@@ -20,6 +20,7 @@ public:
 private:
     void createAssignment();
     void updateAssignment();
+    void removeAssignment();
 
 private:
     NetworkManager *mNetworkManager;

@@ -12,14 +12,15 @@ ServiceManager::ServiceManager(QObject *parent):
 
 void ServiceManager::layersData(QJsonObject layers)
 {
-    emit clearMap();
+    // emit clearMap();
     mRefreshTime++;
     for (auto it : layers.value("Data").toArray())
         parseLayersFromJson(it.toObject());
-    for (auto i : mParenticLayerMap.keys()) {
-        if (mParenticLayerMap[i].first != mRefreshTime) {
-            delete mParenticLayerMap[i].second;
-            mParenticLayerMap.remove(i);
+    qDebug() << mParenticLayerMap;
+    for (auto i : mParenticLayerMap) {
+        if (mParenticLayerMap[i.first].first != mRefreshTime) {
+            delete mParenticLayerMap[i.first].second;
+            mParenticLayerMap.erase(i.first);
         }
     }
 }
@@ -87,7 +88,7 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
         emit statusNodeDataReceived(statusNodeData);
 }
 
-void ServiceManager::assignmentData(QJsonObject jsonObject)
+void ServiceManager::receiveAssignmentData(QJsonObject jsonObject)
 {
     AssignData *assignData = new AssignData;
     QJsonObject jsonObjectData = jsonObject.value("Data").toObject();
@@ -95,6 +96,17 @@ void ServiceManager::assignmentData(QJsonObject jsonObject)
     assignData->targetID = jsonObjectData.value("targetID").toInt();
     assignData->state = jsonObjectData.value("state").toString().toStdString();
     assignData->command = jsonObject.value("COMMAND").toString().toStdString();
+    emit assignDataReceived(assignData);
+}
+
+void ServiceManager::sendJsonAssignData(AssignData data)
+{
+    QJsonObject jsonObject;
+    jsonObject.insert("Type","Assign");
+    jsonObject.insert("COMMAND",QString::fromStdString(data.command));
+    jsonObject.insert("attackerID",QString::fromStdString(data.attackerID));
+    jsonObject.insert("targetID",QString::fromStdString(data.targetID));
+    // sendAction();
 }
 
 
@@ -114,6 +126,8 @@ void ServiceManager::messageData(QString jsonData)
                 statusNodeData(obj);
             else if (type == "Line")
                 polylineData(obj);
+            else if (type == "Assign")
+                receiveAssignmentData(obj);
             else if (type == "Movable")
                 movableNodeData(obj);
             else if(type == "Node")
@@ -311,16 +325,18 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
     }
     else {
         int layerId = jsonObject.value("Id").toInt();
-        ParenticAnnotationLayer *p;
-        if (!mParenticLayerMap.contains(layerId)) {
+        ParenticAnnotationLayer *p{nullptr};
+        QPair<int, ParenticAnnotationLayer*> pair;
+        if (mParenticLayerMap.find(layerId) == mParenticLayerMap.end()) {
             p = new ParenticAnnotationLayer(layerId);
             p->setName(jsonObject.value("Text").toString().toStdString());
-            mParenticLayerMap[layerId].second = p;
         } else {
             p = mParenticLayerMap[layerId].second;
         }
-        mParenticLayerMap[layerId].first = mRefreshTime;
-        parent->addLayer(p);
+        pair.second = p;
+        pair.first = mRefreshTime;
+        mParenticLayerMap[layerId] = pair;
+        parent->addLayer(pair.second);
 
         //        emit layerAdded(parentic, obj.value("Id").toInt(), obj.value("ParentId").toInt(), obj.value("Order").toInt());
         return;
@@ -329,7 +345,7 @@ void ServiceManager::parseLayersFromJson(QJsonObject jsonObject, CompositeAnnota
 
 ParenticAnnotationLayer *ServiceManager::findParenticLayer(int id)
 {
-    if (mParenticLayerMap.contains(id))
+    if (mParenticLayerMap.find(id) != mParenticLayerMap.end())
         return mParenticLayerMap[id].second;
     qDebug()<<"Can not found layer: "<<id;
     return nullptr;

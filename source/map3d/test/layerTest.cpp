@@ -12,12 +12,12 @@ LayerTest::LayerTest(NetworkManager *networkManager):
                          QJsonDocument layerDoc = createLayers();
                          mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
 
-                         QTimer *timerUpdateMovable = new QTimer();
-                         QObject::connect(timerUpdateMovable, &QTimer::timeout, [this](){
-                             QJsonDocument layerDoc = updateLayers();
-                             mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
-                         });
-                         timerUpdateMovable->start(10000);
+                         // QTimer *timerUpdateMovable = new QTimer();
+                         // QObject::connect(timerUpdateMovable, &QTimer::timeout, [this](){
+                         //     QJsonDocument layerDoc = updateLayers();
+                         //     mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
+                         // });
+                         // timerUpdateMovable->start(10000);
                      });
 }
 
@@ -76,17 +76,6 @@ QJsonDocument LayerTest::createLayers()
         route.insert("Text", "Route");
         route.insert("Order", 2);
         route.insert("Command", "ADD");
-        QJsonArray routeNodeChildren;
-        {
-            QJsonObject unknown2;
-            unknown2.insert("Id", 102);
-            unknown2.insert("ParentId", 105);
-            unknown2.insert("Text", "Unknown");
-            unknown2.insert("Order", 1);
-            unknown2.insert("Command", "ADD");
-            routeNodeChildren.push_back(unknown2);
-        }
-        route.insert("Children", routeNodeChildren);
         flableChildren.push_back(route);
 
         QJsonObject status;
