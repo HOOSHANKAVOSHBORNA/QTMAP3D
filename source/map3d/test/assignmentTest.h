@@ -5,20 +5,14 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-enum AssignState{
-    ASSIGNED,
-    SEARCH,
-    LOCK,
-    FIRE,
-    SUCCEED,
-    FAILED
-};
+#define stringify( name ) #name
+
 
 struct AssignmentData
 {
-    std::string attackerID;
-    std::string targetID;
-    AssignState state;
+    int attackerID;
+    int targetID;
+    std::string state;
 };
 
 

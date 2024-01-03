@@ -84,10 +84,9 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
 void ServiceManager::receiveAssignmentData(QJsonObject jsonObject)
 {
     AssignData *assignData = new AssignData;
-    QJsonObject jsonObjectData = jsonObject.value("Data").toObject();
-    assignData->attackerID = jsonObjectData.value("attackerID").toInt();
-    assignData->targetID = jsonObjectData.value("targetID").toInt();
-    assignData->state = jsonObjectData.value("state").toString().toStdString();
+    assignData->attackerID = jsonObject.value("attackerID").toInt();
+    assignData->targetID = jsonObject.value("targetID").toInt();
+    assignData->state = jsonObject.value("state").toString().toStdString();
     assignData->command = jsonObject.value("COMMAND").toString().toStdString();
     emit assignDataReceived(assignData);
 }
@@ -97,8 +96,8 @@ void ServiceManager::sendJsonAssignData(AssignData data)
     QJsonObject jsonObject;
     jsonObject.insert("Type","Assign");
     jsonObject.insert("COMMAND",QString::fromStdString(data.command));
-    jsonObject.insert("attackerID",QString::fromStdString(data.attackerID));
-    jsonObject.insert("targetID",QString::fromStdString(data.targetID));
+    jsonObject.insert("attackerID",data.attackerID);
+    jsonObject.insert("targetID",data.targetID);
     QJsonDocument jsonDoc;
     jsonDoc.setObject(jsonObject);
     sendAction(jsonDoc.toJson(QJsonDocument::Indented));
