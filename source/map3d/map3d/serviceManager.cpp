@@ -106,7 +106,9 @@ void ServiceManager::sendJsonAssignData(AssignData data)
     jsonObject.insert("COMMAND",QString::fromStdString(data.command));
     jsonObject.insert("attackerID",QString::fromStdString(data.attackerID));
     jsonObject.insert("targetID",QString::fromStdString(data.targetID));
-    // sendAction();
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(jsonObject);
+    sendAction(jsonDoc.toJson(QJsonDocument::Indented));
 }
 
 

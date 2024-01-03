@@ -3,29 +3,43 @@
 
 #include "networkManager.h"
 #include <QJsonDocument>
+#include <QJsonObject>
+
+enum AssignState{
+    ASSIGNED,
+    SEARCH,
+    LOCK,
+    FIRE,
+    SUCCEED,
+    FAILED
+};
 
 struct AssignmentData
 {
-    QJsonDocument movableDoc;
-    QJsonDocument statusDoc;
-    QJsonDocument lineDoc;
+    std::string attackerID;
+    std::string targetID;
+    AssignState state;
 };
 
 
-class AssignmentTest
+class AssignmentTest : public QObject
 {
+    Q_OBJECT
 public:
     AssignmentTest(NetworkManager *networkManager);
 
 private:
-    void createAssignment();
-    void updateAssignment();
-    void removeAssignment();
+    bool randomBool();
+    void createAssignment(AssignmentData data);
+    void updateAssignment(AssignmentData data);
+    void removeAssignment(AssignmentData data);
+
+public slots:
+    void dataReceived(QJsonObject obj);
 
 private:
     NetworkManager *mNetworkManager;
     QVector<AssignmentData> mAssignmentDataList;
-    int  mMaxAssignNumber{5};
     bool mAssignmentQueueDeclared{false};
     int  mCount{0};
 };
