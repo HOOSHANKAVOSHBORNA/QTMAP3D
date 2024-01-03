@@ -2,7 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
-import "style"
+
+import "../style"
 
 Item {
     id: rootItem
@@ -52,7 +53,7 @@ Item {
             indicator: Item {}
         }
 
-        FloatSpinbox {
+        FloatSpinBox {
             id: floatSpinBox
             stepSize: stepCombobox.currentValue
             Layout.fillWidth: true

@@ -11,28 +11,12 @@ Rectangle {
 
     color: 'transparent'
 
-    Connections {
-        target: rootItem
-        function onSelectedColorChanged() {
-            let found = -1
-            for (var i = 0; i < colorsrowl.mainModel.length; i++) {
-                if (selectedColor.toString().toUpperCase(
-                            ) === colorsrowl.mainModel[i])
-                    found = i
-            }
-
-            if (found === -1) {
-                mainRepeater.currentIndex = -1
-            }
-        }
-    }
-
     RowLayout {
         id: colorsrowl
 
         Layout.fillWidth: true
         Layout.fillHeight: true
-        spacing: 2
+        spacing: 3 / Style.monitorRatio
 
         property var mainModel: ["#EF2929", "#FCAF3E", "#FCE94F", "#8AE234", "#729FCF", "#FFFFFF"]
 
@@ -49,8 +33,8 @@ Rectangle {
                 padding: 0
 
                 checkable: true
-                implicitWidth: 26
-                implicitHeight: 26
+                implicitWidth: 26 / Style.monitorRatio
+                implicitHeight: 26 / Style.monitorRatio
 
                 background: Rectangle {
                     radius: width
@@ -79,8 +63,8 @@ Rectangle {
         Rectangle {
             id: popupItemOpener
 
-            implicitWidth: 26
-            implicitHeight: 26
+            implicitWidth: 26 / Style.monitorRatio
+            implicitHeight: 26 / Style.monitorRatio
             radius: width
             border.width: 1
             border.color: Style.foregroundColor
@@ -89,21 +73,26 @@ Rectangle {
             IconImage {
                 id: addIconImage
                 anchors.centerIn: parent
-                width: 24
-                height: 24
+                width: 24 / Style.monitorRatio
+                height: 24 / Style.monitorRatio
                 source: "qrc:/Resources/location-add.png"
+                visible: mainRepeater.currentIndex !== -1
             }
-            //            IconImage {
-            //                id: propertySelectIcon
-            //                anchors.centerIn: parent
-            //                width: 20
-            //                height: 20
-            //                source: "qrc:/Resources/add-place-color-select.png"
-            //                visible: false
-            //            }
+
+            IconImage {
+                id: propertySelectIcon
+                anchors.centerIn: parent
+                width: 20 / Style.monitorRatio
+                height: 20 / Style.monitorRatio
+                source: "qrc:/Resources/add-place-color-select.png"
+                visible: !addIconImage.visible
+            }
+
             MouseArea {
+                id: addColorArea
                 anchors.fill: parent
                 onClicked: popupItem.visible = true
+                hoverEnabled: true
             }
         }
     }
@@ -145,8 +134,8 @@ Rectangle {
 
         // absolute position
         parent: Overlay.overlay
-        x: 90
-        y: 200
+        x: 90 / Style.monitorRatio
+        y: 200 / Style.monitorRatio
 
         z: 10
 
@@ -154,31 +143,31 @@ Rectangle {
 
         background: Rectangle {
             color: Style.backgroundColor
-            width: 288
-            height: 371
-            radius: 20
+            width: 288 / Style.monitorRatio
+            height: 371 / Style.monitorRatio
+            radius: 20 / Style.monitorRatio
         }
 
         contentItem: ColumnLayout {
             id: popupColumn
             anchors.fill: parent
-            anchors.topMargin: 15
-            anchors.leftMargin: 15
-            anchors.rightMargin: 15
-            spacing: 0
+            anchors.topMargin: 15 / Style.monitorRatio
+            anchors.leftMargin: 15 / Style.monitorRatio
+            anchors.rightMargin: 15 / Style.monitorRatio
+            spacing: 0 / Style.monitorRatio
 
             Text {
                 text: "Select Color"
-                font.pixelSize: 17
+                font.pixelSize: 17 / Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.bottomMargin: 10
+                Layout.bottomMargin: 10 / Style.monitorRatio
             }
 
             Flow {
                 Layout.fillWidth: true
-                Layout.bottomMargin: 15
-                spacing: 3
+                Layout.bottomMargin: 15 / Style.monitorRatio
+                spacing: 3 / Style.monitorRatio
 
                 Repeater {
                     id: colorBoxRepeater
@@ -188,8 +177,8 @@ Rectangle {
                     model: popupItem.colorBoxModel
 
                     Button {
-                        implicitWidth: 26
-                        implicitHeight: 26
+                        implicitWidth: 26 / Style.monitorRatio
+                        implicitHeight: 26 / Style.monitorRatio
                         checkable: true
 
                         background: Rectangle {
@@ -224,7 +213,7 @@ Rectangle {
                 font.pixelSize: 15
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.bottomMargin: 5
+                Layout.bottomMargin: 5 / Style.monitorRatio
             }
 
             RowLayout {
@@ -232,38 +221,38 @@ Rectangle {
 
                 property bool isCustomSet: false
 
-                Layout.bottomMargin: 15
+                Layout.bottomMargin: 15 / Style.monitorRatio
                 spacing: 0
 
                 Rectangle {
                     id: customColorCircle
-                    width: 26
-                    height: 26
-                    radius: 26
+                    width: 26 / Style.monitorRatio
+                    height: 26 / Style.monitorRatio
+                    radius: 26 / Style.monitorRatio
                     border.color: Style.foregroundColor
                     border.width: 1
                 }
 
                 Text {
                     text: "HEX"
-                    font.pixelSize: 12
-                    Layout.leftMargin: 9
+                    font.pixelSize: 12 / Style.monitorRatio
+                    Layout.leftMargin: 9 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
 
                 Rectangle {
-                    Layout.preferredHeight: 20
-                    Layout.preferredWidth: 60
-                    Layout.leftMargin: 5
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 60 / Style.monitorRatio
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     border.color: "black"
-                    border.width: 1
+                    border.width: 1 / Style.monitorRatio
                     color: Style.backgroundColor
-                    radius: 5
+                    radius: 5 / Style.monitorRatio
 
                     TextInput {
                         id: hexInput
                         anchors.fill: parent
-                        font.pixelSize: 12
+                        font.pixelSize: 12 / Style.monitorRatio
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         validator: RegularExpressionValidator {
@@ -290,24 +279,24 @@ Rectangle {
 
                 Text {
                     text: "R"
-                    font.pixelSize: 12
-                    Layout.leftMargin: 15
+                    font.pixelSize: 12 / Style.monitorRatio
+                    Layout.leftMargin: 15 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
 
                 Rectangle {
-                    Layout.preferredHeight: 20
-                    Layout.preferredWidth: 20
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 20 / Style.monitorRatio
                     Layout.leftMargin: 5
                     border.color: "black"
-                    border.width: 1
+                    border.width: 1 / Style.monitorRatio
                     color: Style.backgroundColor
-                    radius: 5
+                    radius: 5 / Style.monitorRatio
 
                     TextInput {
                         id: rInput
                         anchors.fill: parent
-                        font.pixelSize: 12
+                        font.pixelSize: 12 / Style.monitorRatio
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         validator: IntValidator {
@@ -336,24 +325,24 @@ Rectangle {
 
                 Text {
                     text: "G"
-                    font.pixelSize: 12
-                    Layout.leftMargin: 10
+                    font.pixelSize: 12 / Style.monitorRatio
+                    Layout.leftMargin: 10 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
 
                 Rectangle {
-                    Layout.preferredHeight: 20
-                    Layout.preferredWidth: 20
-                    Layout.leftMargin: 5
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 20 / Style.monitorRatio
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     border.color: "black"
-                    border.width: 1
+                    border.width: 1 / Style.monitorRatio
                     color: Style.backgroundColor
-                    radius: 5
+                    radius: 5 / Style.monitorRatio
 
                     TextInput {
                         id: gInput
                         anchors.fill: parent
-                        font.pixelSize: 12
+                        font.pixelSize: 12 / Style.monitorRatio
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         validator: IntValidator {
@@ -383,24 +372,24 @@ Rectangle {
 
                 Text {
                     text: "B"
-                    font.pixelSize: 12
-                    Layout.leftMargin: 10
+                    font.pixelSize: 12 / Style.monitorRatio
+                    Layout.leftMargin: 10 / Style.monitorRatio
                     color: Style.foregroundColor
                 }
 
                 Rectangle {
-                    Layout.preferredHeight: 20
-                    Layout.preferredWidth: 20
-                    Layout.leftMargin: 5
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.preferredWidth: 20 / Style.monitorRatio
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     border.color: "black"
-                    border.width: 1
+                    border.width: 1 / Style.monitorRatio
                     color: Style.backgroundColor
-                    radius: 5
+                    radius: 5 / Style.monitorRatio
 
                     TextInput {
                         id: bInput
                         anchors.fill: parent
-                        font.pixelSize: 12
+                        font.pixelSize: 12 / Style.monitorRatio
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         validator: IntValidator {
@@ -431,37 +420,37 @@ Rectangle {
 
             Text {
                 text: "Opacity"
-                font.pixelSize: 15
+                font.pixelSize: 15 / Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.bottomMargin: 3
+                Layout.bottomMargin: 3 / Style.monitorRatio
             }
 
             RowLayout {
-                Layout.bottomMargin: 15
+                Layout.bottomMargin: 15 / Style.monitorRatio
                 spacing: 0
 
                 Text {
                     text: Math.trunc(slider.value * 100).toString() + "%"
                     color: Style.foregroundColor
-                    font.pixelSize: 12
-                    Layout.preferredWidth: 30
+                    font.pixelSize: 12 / Style.monitorRatio
+                    Layout.preferredWidth: 30 / Style.monitorRatio
                 }
 
                 Slider {
                     id: slider
                     value: 1
-                    Layout.leftMargin: 5
+                    Layout.leftMargin: 5 / Style.monitorRatio
                     background: Rectangle {
                         x: slider.leftPadding
                         y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                        implicitWidth: 225
-                        implicitHeight: 10
-                        border.width: 1
+                        implicitWidth: 225 / Style.monitorRatio
+                        implicitHeight: 10 / Style.monitorRatio
+                        border.width: 1 / Style.monitorRatio
                         border.color: Style.foregroundColor
                         width: slider.availableWidth
                         height: implicitHeight
-                        radius: 10
+                        radius: 10 / Style.monitorRatio
                         gradient: Gradient {
                             orientation: Gradient.Horizontal
                             GradientStop {
@@ -480,9 +469,9 @@ Rectangle {
                         x: slider.leftPadding + slider.visualPosition
                            * (slider.availableWidth - width)
                         y: slider.topPadding + slider.availableHeight / 2 - height / 2
-                        implicitWidth: 10
-                        implicitHeight: 10
-                        radius: 10
+                        implicitWidth: 10 / Style.monitorRatio
+                        implicitHeight: 10 / Style.monitorRatio
+                        radius: 10 / Style.monitorRatio
                         color: Style.backgroundColor
                         border.color: Style.foregroundColor
                     }
@@ -494,16 +483,16 @@ Rectangle {
 
             Text {
                 text: "Recent Color"
-                font.pixelSize: 15
+                font.pixelSize: 15 / Style.monitorRatio
                 color: Style.foregroundColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                Layout.bottomMargin: 10
+                Layout.bottomMargin: 10 / Style.monitorRatio
             }
 
             RowLayout {
-                Layout.bottomMargin: 15
-                Layout.preferredHeight: 26
-                spacing: 3
+                Layout.bottomMargin: 15 / Style.monitorRatio
+                Layout.preferredHeight: 26 / Style.monitorRatio
+                spacing: 3 / Style.monitorRatio
 
                 Repeater {
                     id: historyRepeater
@@ -511,8 +500,8 @@ Rectangle {
                     model: popupItem.historyModel
 
                     Button {
-                        implicitWidth: 26
-                        implicitHeight: 26
+                        implicitWidth: 26 / Style.monitorRatio
+                        implicitHeight: 26 / Style.monitorRatio
                         checkable: true
                         background: Rectangle {
                             radius: width
@@ -546,7 +535,7 @@ Rectangle {
 
             RowLayout {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 24
+                Layout.preferredHeight: 24 / Style.monitorRatio
 
                 Item {
                     Layout.fillHeight: true
@@ -554,20 +543,20 @@ Rectangle {
                 }
 
                 Button {
-                    padding: 0
+                    padding: 0 / Style.monitorRatio
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 65
+                    Layout.preferredWidth: 65 / Style.monitorRatio
                     contentItem: Text {
                         text: "Cancel"
-                        font.pixelSize: 15
+                        font.pixelSize: 15 / Style.monitorRatio
                         color: Style.foregroundColor
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
                     background: Rectangle {
-                        radius: 10
+                        radius: 10 / Style.monitorRatio
                         color: Style.backgroundColor
-                        border.width: 1
+                        border.width: 1 / Style.monitorRatio
                         border.color: Style.foregroundColor
                     }
                     onClicked: {
@@ -579,17 +568,17 @@ Rectangle {
                     id: doneBtn
                     padding: 0
                     Layout.fillHeight: true
-                    Layout.preferredWidth: 65
+                    Layout.preferredWidth: 65 / Style.monitorRatio
 
                     contentItem: Text {
                         text: "Done"
-                        font.pixelSize: 15
+                        font.pixelSize: 15 / Style.monitorRatio
                         color: Style.backgroundColor
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
                     background: Rectangle {
-                        radius: 10
+                        radius: 10 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
                     onClicked: {

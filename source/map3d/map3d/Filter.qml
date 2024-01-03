@@ -119,7 +119,6 @@ Rectangle {
                     onClicked: {
                         if (hbar.position > 0)
                             hbar.position -= 0.24
-
                     }
                 }
             }
@@ -144,7 +143,8 @@ Rectangle {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    filterManager.addFilterTag("color", modelData)
+                                    filterManager.addFilterTag("color",
+                                                               modelData)
                                     tagsModel.append({
                                                          "name": "color",
                                                          "color": modelData,
@@ -213,8 +213,7 @@ Rectangle {
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
-                        model: filterManager.stringFilterFields// /* columnModel*/ ["test","test2"]
-
+                        model: filterManager.stringFilterFields // /* columnModel*/ ["test","test2"]
 
                         function findLongestString(stringList) {
                             var longest = ""
@@ -294,6 +293,7 @@ Rectangle {
                         onAccepted: {
                             filterManager.addFilterTag(control.currentText, descriptionField.text)
                             // print(filterManager.getAllFilterFields())
+
                             tagsModel.append({
                                                  "name": control.currentText,
                                                  "value1": descriptionField.text,
@@ -334,7 +334,7 @@ Rectangle {
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
-                        model: filterManager.numFilterFields///* compareModel*/ ["test","test2"]
+                        model: filterManager.numFilterFields ///* compareModel*/ ["test","test2"]
 
                         function findLongestString(stringList) {
                             var longest = ""
@@ -483,14 +483,16 @@ Rectangle {
                         }
                         onAccepted: {
                             if (rootObj.isNumeric(numbfield3.text)) {
-                                filterManager.addFilterTag(control3.currentText, parseFloat(numbfield3.text), comparison.currentText)
+                                filterManager.addFilterTag(
+                                            control3.currentText,
+                                            parseFloat(numbfield3.text),
+                                            comparison.currentText)
                                 tagsModel.append({
                                                      "name": control3.currentText,
                                                      "value4": numbfield3.text,
                                                      "compVal": comparison.currentText
                                                  })
-                            }
-                            else {
+                            } else {
                                 redBackG3.color = "red"
                                 rbg3.running = true
                             }
@@ -524,7 +526,8 @@ Rectangle {
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
-                        model: filterManager.numFilterFields /* rangeModel*/ /*["test","test2"]*/
+                        model: filterManager.numFilterFields /* rangeModel*/
+                        /*["test","test2"]*/
                         function findLongestString(stringList) {
                             var longest = ""
 
@@ -613,14 +616,16 @@ Rectangle {
                                     && numField.text !== ""
                                     && rootObj.isNumeric(numField.text)) {
 
-                                filterManager.addFilterTag(control2.currentText, parseFloat(numField.text), parseFloat(numField2.text), "<=>")
+                                filterManager.addFilterTag(
+                                            control2.currentText,
+                                            parseFloat(numField.text),
+                                            parseFloat(numField2.text), "<=>")
                                 tagsModel.append({
                                                      "name": control2.currentText,
                                                      "value2": numField.text,
                                                      "value3": numField2.text
                                                  })
-                            }
-                            else {
+                            } else {
                                 redBackG1.color = "red"
                                 rbg1.running = true
                             }
@@ -664,15 +669,17 @@ Rectangle {
                                  && numField.text !== "ERROR")
                                     && numField2.text !== ""
                                     && rootObj.isNumeric(numField2.text)) {
-                                filterManager.addFilterTag(control2.currentText, parseFloat(numField.text), parseFloat(numField2.text), "<=>")
+                                filterManager.addFilterTag(
+                                            control2.currentText,
+                                            parseFloat(numField.text),
+                                            parseFloat(numField2.text), "<=>")
 
                                 tagsModel.append({
                                                      "name": control2.currentText,
                                                      "value2": numField.text,
                                                      "value3": numField2.text
                                                  })
-                            }
-                            else {
+                            } else {
                                 redBackG2.color = "red"
                                 rbg2.running = true
                             }
