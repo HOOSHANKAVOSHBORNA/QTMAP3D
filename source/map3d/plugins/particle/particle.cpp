@@ -52,37 +52,34 @@ bool Particle::setup()
     return true;
 }
 
-
-
 bool Particle::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     if(mState == State::None)
         return false;
 
     if (ea.getButton() == osgMouseButton::LEFT_MOUSE_BUTTON) {
-        if (mState == State::Ready) {
+        if (mState == State::Ready || mState == State::Init) {
             osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
             init(geoPos);
             return true;
         }
-        if (mState == State::Moving) {
-            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
-            moving(geoPos);
-            return true;
-        }
+//        if (mState == State::Moving) {
+//            osgEarth::GeoPoint geoPos = mapItem()->screenToGeoPoint(ea.getX(), ea.getY());
+//            moving(geoPos);
+//            return true;
+//        }
     }
-    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::Moving)) {
-        cancelAdd();
+    else if (ea.getButton() == osgMouseButton::RIGHT_MOUSE_BUTTON && (mState == State::Init)) {
+        cancel();
         return false;
     }
-    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::Moving)) {
+    else if (ea.getButton() == osgMouseButton::MIDDLE_MOUSE_BUTTON && (mState == State::Init)) {
         confirm();
         return false;
     }
     return false;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
 void Particle::onExplodeClicked(bool check)
 {
     if (check) {
@@ -90,13 +87,13 @@ void Particle::onExplodeClicked(bool check)
         mType = Type::Explosion;
     }
     else {
-        if(mState == State::Moving)
-            cancelAdd();
+        if(mState == State::Init)
+            cancel();
         mState =State::None;
         mType = Type::None;
     }
 }
-///////////////////////////////////////////////////////////////////////////////////////////////
+
 void Particle::onFireClicked(bool check)
 {
     if (check) {
@@ -105,13 +102,13 @@ void Particle::onFireClicked(bool check)
         mType = Type::Fire;
     }
     else {
-        if(mState == State::Moving)
-            cancelAdd();
+        if(mState == State::Init)
+            cancel();
         mState =State::None;
         mType = Type::None;
     }
 }
-/////////////////////////////////////////////////////////////////////////
+
 void Particle::onSnowClicked(bool check)
 {
     if (check) {
@@ -120,13 +117,13 @@ void Particle::onSnowClicked(bool check)
         mType = Type::Snow;
     }
     else {
-        if(mState == State::Moving)
-            cancelAdd();
+        if(mState == State::Init)
+            cancel();
         mState =State::None;
         mType = Type::None;
     }
 }
-///////////////////////////////////////////////////////////////////////////
+
 void Particle::onRainClicked(bool check)
 {
     if (check) {
@@ -135,13 +132,13 @@ void Particle::onRainClicked(bool check)
         mType = Type::Rain;
     }
     else {
-        if(mState == State::Moving)
-            cancelAdd();
+        if(mState == State::Init)
+            cancel();
         mState =State::None;
         mType = Type::None;
     }
 }
-///////////////////////////////////////////////////////////////////////////
+
 void Particle::onCloudClicked(bool check)
 {
     if (check) {
@@ -150,13 +147,13 @@ void Particle::onCloudClicked(bool check)
         mType = Type::Cloud;
     }
     else {
-        if(mState == State::Moving)
-            cancelAdd();
+        if(mState == State::Init)
+            cancel();
         mState =State::None;
         mType = Type::None;
     }
 }
-///////////////////////////////////////////////////////////////////////////
+
 void Particle::onWindClicked(bool check)
 {
     if (check) {
@@ -165,13 +162,13 @@ void Particle::onWindClicked(bool check)
         mType = Type::Wind;
     }
     else {
-        if(mState == State::Moving)
-            cancelAdd();
+        if(mState == State::Init)
+            cancel();
         mState =State::None;
         mType = Type::None;
     }
 }
-///////////////////////////////////////////////////////////////////////////
+
 void Particle::onFogClicked(bool check)
 {
     if (check) {
@@ -179,14 +176,12 @@ void Particle::onFogClicked(bool check)
         mType = Type::Fog;
     }
     else {
-        if(mState == State::Moving)
-            cancelAdd();
+        if(mState == State::Init)
+            cancel();
         mState =State::None;
         mType = Type::None;
     }
 }
-///////////////////////////////////////////////////////////////////////////
-
 
 void Particle::init(const osgEarth::GeoPoint &geoPos)
 {
@@ -232,50 +227,49 @@ void Particle::init(const osgEarth::GeoPoint &geoPos)
     default:
         break;
     }
-    mState = State::Moving;
+    mState = State::Init;
 }
 
-void Particle::moving(const osgEarth::GeoPoint &geoPos)
-{
-//    switch (mType) {
-//    case Type::Fire:
-//        mFire->setPosition(geoPos);
-//        break;
-//    case Type::Explosion:
-//        mExplosion->setPosition(geoPos);
-//        break;
-//    case Type::Cloud:
-//        mCloud->setPosition(geoPos);
-//        break;
-//    case Type::Wind:
-//        mWind->setPosition(geoPos);
-//        break;
-//    case Type::Snow:
-//        mSnow->setPosition(geoPos);
-//        break;
-//    case Type::Rain:
-//        mRain->setPosition(geoPos);
-//        break;
-//    case Type::Fog:
-//        mFog->setPosition(geoPos);
-//        break;
-//    default:
-//        break;
-//    }
+//void Particle::moving(const osgEarth::GeoPoint &geoPos)
+//{
+////    switch (mType) {
+////    case Type::Fire:
+////        mFire->setPosition(geoPos);
+////        break;
+////    case Type::Explosion:
+////        mExplosion->setPosition(geoPos);
+////        break;
+////    case Type::Cloud:
+////        mCloud->setPosition(geoPos);
+////        break;
+////    case Type::Wind:
+////        mWind->setPosition(geoPos);
+////        break;
+////    case Type::Snow:
+////        mSnow->setPosition(geoPos);
+////        break;
+////    case Type::Rain:
+////        mRain->setPosition(geoPos);
+////        break;
+////    case Type::Fog:
+////        mFog->setPosition(geoPos);
+////        break;
+////    default:
+////        break;
+////    }
 
-}
-
+//}
 
 void Particle::confirm()
 {
-    if (mState == State::Moving) {
+    if (mState == State::Init) {
         mState = State::Ready;
     }
 }
 
-void Particle::cancelAdd(){
+void Particle::cancel(){
 
-    if(mState == State::Moving){
+    if(mState == State::Init){
         switch (mType) {
         case Type::Fire:
             mParticleLayer->removeChild(mFire);
@@ -301,8 +295,6 @@ void Particle::cancelAdd(){
         default:
             break;
         }
-//
-
         mState = State::Ready;
     }
 }

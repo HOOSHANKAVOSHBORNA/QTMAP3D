@@ -37,9 +37,7 @@ public:
     enum class State{
         None,
         Ready,
-        Moving,
-        Cancel,
-        Confirm
+        Init
     };
 
     enum class Type{
@@ -57,9 +55,6 @@ public:
     bool setup() override;
     bool mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
-
-
-
 public slots:
     void onExplodeClicked(bool check);
     void onFireClicked(bool check);
@@ -71,9 +66,9 @@ public slots:
 
 protected:
     void init(const osgEarth::GeoPoint &geoPos);
-    void moving(const osgEarth::GeoPoint &geoPos);
+//    void moving(const osgEarth::GeoPoint &geoPos);
     void confirm();
-    void cancelAdd();
+    void cancel();
 
 
 private:
