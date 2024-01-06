@@ -203,12 +203,9 @@ Item {
             Layout.fillHeight: true
             Layout.maximumWidth: 425
             Layout.topMargin: 5 / 1.3
-//            Layout.leftMargin: 15
-//            boundsBehavior: Flickable.DragAndOvershootBounds
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-            ScrollBar.horizontal.interactive: false
+            ScrollBar.horizontal.interactive: true
             clip: true
-            RowLayout {
+            RowLayout{
                 id: rowLay
                 Layout.alignment: Qt.AlignVCenter
                 //                Layout.maximumWidth: 400
@@ -306,6 +303,7 @@ Item {
         anchors.leftMargin: nodeInfoHolder.width - attackholder.width / 2
         radius: 20
         color: fg75
+
         width: (rowLay.childrenRect.width  > 420 ? 500 : (rowLay.childrenRect.width  +  80))
 //                / 1.3) ? 645 / 1.3  : */rowLay.childrenRect.width  +  80
         height: 75 / 1.3 /*Style.monitorRatio*/
@@ -395,6 +393,7 @@ Item {
     }
 
     Rectangle {
+        id:closebtn
         width: 45 / 1.3 /*Style.monitorRatio*/
         height: 45 / 1.3 /*Style.monitorRatio*/
         color: fg50
@@ -421,21 +420,25 @@ Item {
         }
     }
     //////////
+
     Rectangle{
-        width: 215 / 1.3
+        width: bottomLayer .width   < 215 / 1.3  ? bottomLayer .width  : 215 / 1.3
         height: 150 / 1.3
         color: "#DEE3E6"
         anchors.left: mainRow.left
         anchors.top: mainRow.top
         z:-2
         radius: 20
+
     }
 
     ////////// bottom layer
+
     Rectangle {
+        id:bottomLayer
         color: "#DEE3E6"
         radius: 20
-        width: 600 / 1.3
+        width:  operatorLayout.width + battleLocationIcons.width + 10 < 455 ? operatorLayout.width + battleLocationIcons.width + 10 : 455
         height: 70 / 1.3
         anchors.left: mainRow.left
         anchors.top: mainRow.bottom
@@ -498,11 +501,18 @@ Item {
                 }
             }
         }
+        ScrollView{
+            anchors.left: battleLocationIcons.right
+            width: 405
+
+            Layout.topMargin: 5 / 1.3
+            ScrollBar.horizontal.interactive: true
+            clip: true
         RowLayout {
             id: operatorLayout
             Layout.alignment: Qt.AlignVCenter
-            anchors.left: battleLocationIcons.right
-            Layout.maximumWidth: 600
+//            anchors.left: battleLocationIcons.right
+            Layout.maximumWidth: 450
             Layout.topMargin: 5 / 1.3
             spacing: 0
             clip: true
@@ -519,6 +529,7 @@ Item {
                     radius: 7
                     Layout.topMargin: 5 / 1.3
                     Layout.leftMargin: 5 / 1.3
+
                     Rectangle {
                         anchors.top: parent.top
                         anchors.topMargin: 5
@@ -556,12 +567,24 @@ Item {
                     }
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
                         onClicked: {
                             operatorListModel.select(operatorListModel.index(index, 0).row)
+                        }
+                        onEntered: {
+                            if(!operatorSelect){
+                                objects.color = bg20
+                            }
+                        }
+                        onExited: {
+                            if(!operatorSelect){
+                                objects.color = "transparent"
+                            }
                         }
                     }
                 }
             }
+        }
         }
     }
 }
