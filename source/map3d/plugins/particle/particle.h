@@ -64,6 +64,8 @@ public slots:
     void onWindClicked(bool check);
     void onFogClicked(bool check);
 
+    void onExplosionDataReceived(ExplosionData *explosionData);
+
 protected:
     void init(const osgEarth::GeoPoint &geoPos);
 //    void moving(const osgEarth::GeoPoint &geoPos);
