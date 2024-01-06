@@ -449,20 +449,11 @@ Item {
                     radius: 1
                 }
 
-                Rectangle {
-                    color: 'transparent'
-
+                LayerProperty {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
-                    Item {
-                        id: propertyContainer
-
-                        clip: true
-
-                        anchors.fill: parent
-                        data: LayerManagerInstance.propertyItem
-                    }
+                    cppInterface: LayerManagerInstance.propertyInterface
                 }
             }
         }

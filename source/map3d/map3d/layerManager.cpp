@@ -45,33 +45,7 @@ void LayerManager::setMapItem(MapItem *mapItem)
     // property item setup
     mPropertyInterface = new LayerPropertyItem;
     mLayerModel->setPropertyInterface(mPropertyInterface);
-    createPropertyItem();
-}
-
-void LayerManager::createPropertyItem()
-{
-    QQmlComponent *comp = new QQmlComponent(qmlEngine(mLayerModel->getMapItem()));
-    connect(comp, &QQmlComponent::statusChanged, [&] {
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
-
-        setPropertyItem(qobject_cast<QQuickItem *>(comp->create()));
-        mPropertyItem->setProperty("cppInterface", QVariant::fromValue(mPropertyInterface));
-    });
-
-    comp->loadUrl(QUrl("qrc:/LayerProperty.qml"));
-}
-
-QQuickItem *LayerManager::propertyItem() const
-{
-    return mPropertyItem;
-}
-
-void LayerManager::setPropertyItem(QQuickItem *newPropertyItem)
-{
-    mPropertyItem = newPropertyItem;
-    emit propertyItemChanged();
+    setPropertyInterface(mPropertyInterface);
 }
 
 QString LayerManager::propertyItemTitle() const
@@ -83,6 +57,17 @@ void LayerManager::setPropertyItemTitle(const QString &newPropertyItemTitle)
 {
     mPropertyItemTitle = newPropertyItemTitle;
     emit propertyItemTitleChanged();
+}
+
+LayerPropertyItem *LayerManager::propertyInterface() const
+{
+    return mPropertyInterface;
+}
+
+void LayerManager::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
+{
+    mPropertyInterface = newPropertyInterface;
+    emit propertyInterfaceChanged();
 }
 
 // ----------------------------------------------------------------- model
@@ -173,8 +158,6 @@ void LayerModel::onVisibleItemClicked(const QModelIndex &current)
 
 void LayerModel::onItemLeftClicked(const QModelIndex &current)
 {
-    qDebug() << "layer left clicked!";
-    // TODO
     QModelIndex indexSource = mapToSource(current);
     QStandardItem *item = mSourceModel->itemFromIndex(indexSource);
     QStandardItem *parentItem = item->parent();
@@ -184,7 +167,7 @@ void LayerModel::onItemLeftClicked(const QModelIndex &current)
     }
 
     osgEarth::Layer *layer = item->data(LayerRole).value<osgEarth::Layer *>();
-    osgEarth::Layer *parentLayer = parentItem->data(LayerRole).value<osgEarth::Layer *>();
+    //    osgEarth::Layer *parentLayer = parentItem->data(LayerRole).value<osgEarth::Layer *>();
 
     mPropertyInterface->setModelNodeLayer(layer);
 }

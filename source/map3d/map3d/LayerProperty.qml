@@ -18,8 +18,6 @@ Item {
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.20)
 
-    anchors.fill: parent
-
     ScrollView {
         anchors.fill: parent
         clip: true

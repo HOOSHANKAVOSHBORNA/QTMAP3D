@@ -17,8 +17,8 @@ class LayerManager : public QObject
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(QQuickItem *propertyItem READ propertyItem WRITE setPropertyItem NOTIFY
-                   propertyItemChanged FINAL)
+    Q_PROPERTY(LayerPropertyItem *propertyInterface READ propertyInterface WRITE
+                   setPropertyInterface NOTIFY propertyInterfaceChanged FINAL)
     Q_PROPERTY(QString propertyItemTitle READ propertyItemTitle WRITE setPropertyItemTitle NOTIFY
                    propertyItemTitleChanged FINAL)
 
@@ -31,17 +31,17 @@ public:
 
     Q_INVOKABLE LayerModel *layerModel() const;
 
-    void createPropertyItem();
-    QQuickItem *propertyItem() const;
-    void setPropertyItem(QQuickItem *newPropertyItem);
-    void addPropertyItem(QQuickItem *newPropertyItem, QString title);
-
     QString propertyItemTitle() const;
     void setPropertyItemTitle(const QString &newPropertyItemTitle);
+
+    LayerPropertyItem *propertyInterface() const;
+    void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
 
 signals:
     void propertyItemChanged();
     void propertyItemTitleChanged();
+
+    void propertyInterfaceChanged();
 
 private:
     explicit LayerManager();
@@ -50,7 +50,6 @@ private:
     inline static LayerManager *mInstance;
     LayerModel *mLayerModel = nullptr;
     LayerPropertyItem *mPropertyInterface = nullptr;
-    QQuickItem *mPropertyItem = nullptr;
     QString mPropertyItemTitle;
 };
 
