@@ -4,7 +4,7 @@
 #include "compositeAnnotationLayer.h"
 #include <QJsonDocument>
 #include <osgEarth/Layer>
-
+class MapObject;
 struct NodeFieldData
 {
     QString name;
@@ -46,6 +46,23 @@ struct NodeData: public osg::Referenced
     std::string command{"ADD"};
     std::vector<ParenticAnnotationLayer*> layers;
     std::vector<NodeFieldData> fieldData;
+};
+
+struct AssignData: public osg::Referenced
+{
+    int attackerID;
+    int targetID;
+    std::string command{"ADD"};
+    std::string state{"PREASSIGN"};
+};
+
+struct ExplosionData: public osg::Referenced
+{
+    double latitude;
+    double longitude;
+    double duration;
+    double scale;
+    std::string command{"ADD"};
 };
 
 struct PolyLineData: public osg::Referenced
@@ -94,6 +111,9 @@ public:
     void layersData(QJsonObject layers);
     void flyableNodeData(QJsonObject jsonObject);
     void statusNodeData(QJsonObject jsonObject);
+    void receiveExplosionData(QJsonObject jsonObject);
+    void receiveAssignmentData(QJsonObject jsonObject);
+    void sendJsonAssignData(AssignData data);
     void messageData(QString jsonData);
     void sendAction(const QString &action);
     void polylineData(QJsonObject polyline);
@@ -105,11 +125,16 @@ public:
 //    void addSphere(QJsonDocument *sphere);
 //    void addCircle(QJsonDocument *circle);
 
+    void setMapObject(MapObject *newMapObject);
+
 signals:
     void layerDataReceived(CompositeAnnotationLayer *layer);
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
+    void explosionDataReceived(ExplosionData *explosionData);
+    void assignDataReceived(AssignData *assignData);
     void lineNodeDataReceived(PolyLineData *lineNodeData);
+    void annotationNodeDataReceived(PolyLineData *lineNodeData);
     void movableNodeDataReceived(NodeData *modelNodeData);
     void nodeDataReceived(NodeData *nodeData);
     void circleDataReceived(CircleData *circleData);
@@ -126,7 +151,7 @@ private:
     void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
     ParenticAnnotationLayer* findParenticLayer(int id);
 private:
-
+    MapObject *mMapObject;
     std::map<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
     int mRefreshTime{0};
 

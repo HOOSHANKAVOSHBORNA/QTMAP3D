@@ -33,6 +33,8 @@ public:
 signals:
     void addAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);
     void removeAssignmentChecked(bool check, SimpleModelNode *node, bool isAttacker);
+    void sendAssignRequested(SimpleModelNode *attacker, SimpleModelNode *target);
+    void cancelAssignRequested(SimpleModelNode *attacker, SimpleModelNode *target);
     Q_INVOKABLE void onCloseMenuClicked();
 
 private:

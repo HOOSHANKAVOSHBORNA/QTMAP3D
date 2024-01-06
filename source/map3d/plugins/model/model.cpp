@@ -195,6 +195,11 @@ osgEarth::Symbology::Style &Model::getDefaultStyle()
     return style;
 }
 
+DataManager *Model::getDataManager()
+{
+    return mDataManager;
+}
+
 void Model::onTreeItemCheck(bool check)
 {
     if (check) {

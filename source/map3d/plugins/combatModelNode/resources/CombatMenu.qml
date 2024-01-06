@@ -197,19 +197,18 @@ Item {
                 }
             }
         }
-// nodeholder
+        // nodeholder
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.maximumWidth: 425
             Layout.topMargin: 5 / 1.3
-            Layout.leftMargin: 15
-
+            ScrollBar.horizontal.interactive: true
             clip: true
-            RowLayout {
+            RowLayout{
                 id: rowLay
                 Layout.alignment: Qt.AlignVCenter
-//                Layout.maximumWidth: 400
+                //                Layout.maximumWidth: 400
                 spacing: 0
                 clip: true
                 Repeater {
@@ -262,14 +261,12 @@ Item {
                             Text {
                                 width:75 / 1.3
                                 elide: Text.ElideRight
-
                                 anchors.left: repeaterImg.right
                                 anchors.leftMargin: 5
                                 text: objectID
                                 font.pixelSize: 17 / 1.3 /*Style.monitorRatio*/
                                 color: objectStateColor
                                 anchors.verticalCenter: parent.verticalCenter
-
                             }
                         }
                         MouseArea {
@@ -297,68 +294,106 @@ Item {
             }
         }
     }
-/////   nodeholderbackground
+    /////   nodeholderbackground
     Rectangle {
 
         id: nodesBackground
         anchors.left: mainRow.left
         anchors.verticalCenter: mainRow.verticalCenter
         anchors.leftMargin: nodeInfoHolder.width - attackholder.width / 2
-        radius: 10
+        radius: 20
         color: fg75
-        width: (rowLay.childrenRect.width + 30 + 65 / 1.3 >= 645
-                / 1.3) ? 645 / 1.3 + 50 : rowLay.childrenRect.width + 30 + 75 + 50
+
+        width: (rowLay.childrenRect.width  > 420 ? 500 : (rowLay.childrenRect.width  +  80))
+//                / 1.3) ? 645 / 1.3  : */rowLay.childrenRect.width  +  80
         height: 75 / 1.3 /*Style.monitorRatio*/
         z: -2
-        Rectangle {
-            anchors.top:parent.top
-            anchors.topMargin: 5/1.3
+        Rectangle{
+            height: 75 / 1.3 /*Style.monitorRatio*/
+            width: 55 / 1.3 /*Style.monitorRatio*/
+            radius: 20
+            color:Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
+                          nodeInfoHolder.b, .03)
             anchors.right: parent.right
-            width: 65 / 1.3 /*Style.monitorRatio*/
-            height: 65 / 1.3 /*Style.monitorRatio*/
-            color: "transparent"
-            IconImage {
-                anchors.top: parent.top
-                source: "qrc:/Resources/add"
-                height: 50 / 2 /*Style.monitorRatio*/
-                width: 50 / 2 /*Style.monitorRatio*/
-                color: addCheck ? "orange" : "#003569"
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        addCheck = !addCheck
-                        removeCheck = false
-                        assignmentListModel.onAddButtonChecked(addCheck)
+            Rectangle {
+                id:addbtn
+                anchors.top:parent.top
+                anchors.topMargin: 8/1.3
+                anchors.horizontalCenter: parent.horizontalCenter
+                radius: parent.radius
+                width: 39 / 1.3 /*Style.monitorRatio*/
+                height: 29 / 1.3  /*Style.monitorRatio*/
+                color: addCheck ? root.bg20 : "transparent"
+                IconImage {
+                    anchors.top: parent.top
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    source: "qrc:/Resources/add"
+                    height: 25 / 1.3 /*Style.monitorRatio*/
+                    width: 25 / 1.3 /*Style.monitorRatio*/
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled:true
+                        onEntered: addbtn.color = root.bg20
+                        onExited: {if(!addCheck)
+                                addbtn.color = "transparent"}
+                        onClicked: {
+                            print(nodesBackground.width )
+                            addCheck = !addCheck
+                            removeCheck = false
+                            assignmentListModel.onAddButtonChecked(addCheck)
+                            if(addCheck){
+                                deletebtn.color = "transparent"
+                            }
+
+                        }
                     }
                 }
             }
-        }
-        Rectangle {
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 5
-            anchors.right: parent.right
-            width: 65 / 1.3 /*Style.monitorRatio*/
-            height: 65 / 1.3 /*Style.monitorRatio*/
-            color: "transparent"
-            IconImage {
+            Rectangle {
+                id:deletebtn
                 anchors.bottom: parent.bottom
-                source: "qrc:/Resources/location-delete"
-                height: 50 / 2 /*Style.monitorRatio*/
-                width: 50 / 2 /*Style.monitorRatio*/
-                color: removeCheck ? "orange" : "#003569"
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        removeCheck = !removeCheck
-                        addCheck = false
-                        assignmentListModel.onRemoveButtonChecked(removeCheck)
+                anchors.bottomMargin: 8/1.3
+                anchors.horizontalCenter: parent.horizontalCenter
+                radius: parent.radius
+                width: 39 / 1.3 /*Style.monitorRatio*/
+                height: 29 / 1.3  /*Style.monitorRatio*/
+
+                color: removeCheck ? root.bg20 : "transparent"
+                IconImage {
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    source: "qrc:/Resources/location-delete"
+                    height: 25 / 1.3 /*Style.monitorRatio*/
+                    width: 25 / 1.3 /*Style.monitorRatio*/
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled:true
+                        onEntered: deletebtn.color = root.bg20
+                        onExited: {if(!removeCheck)
+                                deletebtn.color = "transparent"}
+                        onClicked: {
+                            removeCheck = !removeCheck
+                            addCheck = false
+                            assignmentListModel.onRemoveButtonChecked(removeCheck)
+                            if(removeCheck){
+                                addbtn.color = "transparent"
+                            }
+
+
+                        }
                     }
                 }
             }
+
         }
+
     }
 
     Rectangle {
+        id:closebtn
         width: 45 / 1.3 /*Style.monitorRatio*/
         height: 45 / 1.3 /*Style.monitorRatio*/
         color: fg50
@@ -384,19 +419,101 @@ Item {
             }
         }
     }
-////////// bottom layer
-    Rectangle {
+    //////////
+
+    Rectangle{
+        width: bottomLayer .width   < 215 / 1.3  ? bottomLayer .width  : 215 / 1.3
+        height: 150 / 1.3
         color: "#DEE3E6"
-        radius: 10
-        width: 600
-        height: 60
+        anchors.left: mainRow.left
+        anchors.top: mainRow.top
+        z:-2
+        radius: 20
+
+    }
+
+    ////////// bottom layer
+
+    Rectangle {
+        id:bottomLayer
+        color: "#DEE3E6"
+        radius: 20
+        width:  operatorLayout.width + battleLocationIcons.width + 10 < 455 ? operatorLayout.width + battleLocationIcons.width + 10 : 455
+        height: 70 / 1.3
         anchors.left: mainRow.left
         anchors.top: mainRow.bottom
+        anchors.topMargin: 5
         clip: true
+        Rectangle {
+            id:battleLocationIcons
+            anchors.top: parent.top
+            anchors.left: parent.left
+            height: 70 / 1.3
+            width : 55 / 1.3
+            color :Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
+                           nodeInfoHolder.b, .02)
+            radius: 20
+            Rectangle{
+                width: 39 / 1.3 /*Style.monitorRatio*/
+                height: 29 / 1.3  /*Style.monitorRatio*/
+                anchors.top: parent.top
+
+                anchors.topMargin: 7 /1.3
+                anchors.horizontalCenter: parent.horizontalCenter
+                radius: 12
+                color: mouseArea.containsMouse ? bg20 : "transparent"
+                IconImage {
+                    anchors.centerIn: parent
+                    source: "qrc:/Resources/attacker.png"
+                    width: 25 / 1.3 /*Style.monitorRatio*/
+                    height: 25 / 1.3 /*Style.monitorRatio*/
+                    //                color: operatorColor
+                }
+                MouseArea{
+                    id:mouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                }
+            }
+
+            Rectangle{
+                width: 39 / 1.3 /*Style.monitorRatio*/
+                height: 29 / 1.3  /*Style.monitorRatio*/
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 7 / 1.3
+                anchors.horizontalCenter: parent.horizontalCenter
+                radius: parent.radius
+                color: mouseA.containsMouse ? bg20 : "transparent"
+
+                IconImage {
+                    anchors.centerIn: parent
+                    source: "qrc:/Resources/target.png"
+                    width: 25 / 1.3 /*Style.monitorRatio*/
+                    height: 25 / 1.3 /*Style.monitorRatio*/
+                    //                color: operatorColor
+                }
+                MouseArea{
+                    id:mouseA
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                }
+            }
+        }
+        ScrollView{
+            anchors.left: battleLocationIcons.right
+            width: 405
+
+            Layout.topMargin: 5 / 1.3
+            ScrollBar.horizontal.interactive: true
+            clip: true
         RowLayout {
             id: operatorLayout
             Layout.alignment: Qt.AlignVCenter
-            Layout.maximumWidth: 600
+//            anchors.left: battleLocationIcons.right
+            Layout.maximumWidth: 450
+            Layout.topMargin: 5 / 1.3
             spacing: 0
             clip: true
             Repeater {
@@ -405,12 +522,14 @@ Item {
 
                 delegate: Rectangle {
                     id: objects
-                    width: 131 / 1.3 /*Style.monitorRatio*/
-                    height: 65 / 1.3 /*Style.monitorRatio*/
+                    width: 81 / 1.3 /*Style.monitorRatio*/
+                    height: 60 / 1.3 /*Style.monitorRatio*/
                     color: operatorSelect ? bg20 : "transparent"
                     z: -2
                     radius: 7
+                    Layout.topMargin: 5 / 1.3
                     Layout.leftMargin: 5 / 1.3
+
                     Rectangle {
                         anchors.top: parent.top
                         anchors.topMargin: 5
@@ -420,7 +539,7 @@ Item {
                         color: "transparent"
 
                         IconImage {
-                            id: opIcon
+                            id: opIco
                             anchors.centerIn: parent
                             source: operatorIcon
                             width: 35 / 1.3 /*Style.monitorRatio*/
@@ -428,30 +547,44 @@ Item {
                             color: operatorColor
                         }
                     }
-                    Rectangle {
+                    RowLayout {
                         anchors.bottom: parent.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottomMargin: -3
                         height: parent.height / 2
                         width: parent.width
-                        color: "transparent"
+                        //                        color: "transparent"
 
                         Text {
-                            anchors.leftMargin: 5
+                            Layout.maximumWidth: 81 / 1.3
+                            Layout.alignment: Qt.AlignHCenter
                             text: operatorName
                             font.pixelSize: 17 / 1.3 /*Style.monitorRatio*/
                             color: operatorSelect ? "red" : operatorColor
-                            anchors.verticalCenter: parent.verticalCenter
+                            //                            anchors.verticalCenter: parent.verticalCenter
+                            elide: Text.ElideRight
                         }
                     }
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
                         onClicked: {
                             operatorListModel.select(operatorListModel.index(index, 0).row)
+                        }
+                        onEntered: {
+                            if(!operatorSelect){
+                                objects.color = bg20
+                            }
+                        }
+                        onExited: {
+                            if(!operatorSelect){
+                                objects.color = "transparent"
+                            }
                         }
                     }
                 }
             }
+        }
         }
     }
 }

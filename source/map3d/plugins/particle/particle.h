@@ -35,15 +35,13 @@ class Particle: public PluginInterface
 
 public:
     enum class State{
-        NONE,
-        READY,
-        MOVING,
-        CANCEL,
-        CONFIRM
+        None,
+        Ready,
+        Init
     };
 
-    enum class Mode{
-        NONE,
+    enum class Type{
+        None,
         Fire,
         Explosion,
         Snow,
@@ -55,10 +53,7 @@ public:
 
     Particle(QObject *parent = nullptr);
     bool setup() override;
-    bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-
-
-
+    bool mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
 
 public slots:
     void onExplodeClicked(bool check);
@@ -69,24 +64,26 @@ public slots:
     void onWindClicked(bool check);
     void onFogClicked(bool check);
 
+    void onExplosionDataReceived(ExplosionData *explosionData);
+
 protected:
-    void add(const osgEarth::GeoPoint &geoPos);
-    void moving(const osgEarth::GeoPoint &geoPos);
+    void init(const osgEarth::GeoPoint &geoPos);
+//    void moving(const osgEarth::GeoPoint &geoPos);
     void confirm();
-    void cancelAdd();
+    void cancel();
 
 
 private:
 //    MapItem *mapItem() const;
-    State mState{State::NONE};
-    Mode mMode{Mode::NONE};
-    Explosion *mExplosion;
-    FireSmoke *mFire;
-    Snow *mSnow;
-    Cloud *mCloud;
-    WindEffect *mWind;
-    Rain *mRain;
-    Fog *mFog;
+    State mState{State::None};
+    Type mType{Type::None};
+    osg::ref_ptr<Explosion> mExplosion;
+    osg::ref_ptr<FireSmoke> mFire;
+    osg::ref_ptr<Snow> mSnow;
+    osg::ref_ptr<Cloud> mCloud;
+    osg::ref_ptr<WindEffect> mWind;
+    osg::ref_ptr<Rain> mRain;
+    osg::ref_ptr<Fog> mFog;
 
     osg::ref_ptr<ParenticAnnotationLayer> mParticleLayer{nullptr};
 

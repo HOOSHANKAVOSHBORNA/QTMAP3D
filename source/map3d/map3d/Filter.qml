@@ -291,9 +291,7 @@ Rectangle {
                             radius: 15
                         }
                         onAccepted: {
-                            filterManager.addFilterTag(control.currentText,
-                                                       descriptionField.text)
-                            //                            print(filterManager.getAllFilterFields())
+                            filterManager.addFilterTag(control.currentText, descriptionField.text)
                             tagsModel.append({
                                                  "name": control.currentText,
                                                  "value1": descriptionField.text,

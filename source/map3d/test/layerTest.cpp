@@ -12,12 +12,12 @@ LayerTest::LayerTest(NetworkManager *networkManager):
                          QJsonDocument layerDoc = createLayers();
                          mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
 
-                         // QTimer *timerUpdateMovable = new QTimer();
-                         // QObject::connect(timerUpdateMovable, &QTimer::timeout, [this](){
-                         //     QJsonDocument layerDoc = updateLayers();
-                         //     mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
-                         // });
-                         // timerUpdateMovable->start(10000);
+                         QTimer *timerUpdateMovable = new QTimer();
+                         QObject::connect(timerUpdateMovable, &QTimer::timeout, [this](){
+                             QJsonDocument layerDoc = updateLayers();
+                             mNetworkManager->sendData(layerDoc.toJson(QJsonDocument::Compact));
+                         });
+                         timerUpdateMovable->start(10000);
                      });
 }
 

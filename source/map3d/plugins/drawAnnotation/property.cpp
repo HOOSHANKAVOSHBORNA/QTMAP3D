@@ -292,7 +292,6 @@ void Property::setPointsColor(const QColor &pointColor)
 {
     mPointsColor = pointColor;
     emit propretyChanged();
-
 }
 
 bool Property::getPointsSmooth() const
@@ -322,4 +321,31 @@ void Property::setPointsWidth(double pointWidth)
 {
     mPointsWidth = pointWidth;
     emit propretyChanged();
+}
+
+
+PropertyItem::PropertyItem(QQmlEngine *Engine, QVariant property, QQuickItem *parent):
+    QQuickItem(parent)
+{
+    QQmlComponent* comp = new QQmlComponent(Engine);
+    connect(comp, &QQmlComponent::statusChanged, [comp, property, this](){
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
+        mItem = qobject_cast<QQuickItem*>(comp->create());
+        mItem->setProperty("cppInterface", property);
+
+    });
+
+    comp->loadUrl(QUrl("qrc:/AnnotationProperties.qml"));
+}
+
+QQuickItem *PropertyItem::getQuickItem()
+{
+    return mItem;
+}
+
+Property *PropertyItem::getLineProperty()
+{
+    return mLinePropertyItem;
 }

@@ -9,15 +9,16 @@
 #include <QVector3D>
 #include <QQuickItem>
 #include <QQmlEngine>
+#include "annotatedNode.h"
 
-
-class LineProperty: public Property
+class AnnotationProperty: public Property
 {
     Q_OBJECT
 public:
-    LineProperty(QQuickItem *parent=nullptr);
+    AnnotationProperty(QQuickItem *parent=nullptr);
     void setStrokeWidth(double width)        override;
     void setStrokeColor(const QColor &color) override;
+    void setFillColor(const QColor &color) override;
     void setPointsVisible(bool visible)      override;
     void setPointsColor(const QColor &point) override;
     void setPointsWidth(double point)        override;
@@ -31,14 +32,17 @@ public:
     void setShowAltitude(bool showAltitude)  override;
 
 
-    LineNode *getLine() const;
+    AnnotatedNode *getAnnotatedNode() const;
 
-    void setLine(LineNode *newLine);
-    void setRuler(LineNode *newLine);
-    void setMesureSlope(LineNode *newLine);
-    void setMeasureHeight(LineNode *newLine);
+    void setAnnotatedNode(AnnotatedNode *newLine);
+    void setRuler(AnnotatedNode *newLine);
+    void setMesureSlope(AnnotatedNode *newLine);
+    void setMeasureHeight(AnnotatedNode *newLine);
 
 private:
-    LineNode *mLineNode = nullptr;
+    AnnotatedNode *mAnnotatedNode = nullptr;
 };
+
+
+
 #endif // LINEPROPERTIES_H

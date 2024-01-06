@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
 
     Application *const map3DApp = Application::instance();
     //--run demo------------------------
-//    QObject::connect(map3DApp, &Application::defenseDataManagerInitialized, [](DefenseDataManager *defenseDataManager) {
-//        Demo* demo = new Demo(defenseDataManager);
-//    });
+   // QObject::connect(map3DApp, &Application::defenseDataManagerInitialized, [](DefenseDataManager *defenseDataManager) {
+   //     Demo* demo = new Demo(defenseDataManager);
+   // });
     //---------------------------------
     map3DApp->initialize();
     map3DApp->show();
