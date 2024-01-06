@@ -41,5 +41,6 @@
         <file>Components/StepSpinBox.qml</file>
         <file>Components/FloatSpinBox.qml</file>
         <file>LayerProperty.qml</file>
+        <file>Components/OpacitySlider.qml</file>
     </qresource>
 </RCC>
