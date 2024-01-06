@@ -7,6 +7,7 @@ import "style"
 
 Item {
     id: rootItem
+
     property var layerModel
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
@@ -162,7 +163,6 @@ Item {
 
                     Drag.dragType: Drag.Automatic
                     Drag.onDragStarted: {
-
                         rootItem.layerModel.dragIndex = treeView.index(row,
                                                                        column)
                     }
@@ -183,6 +183,9 @@ Item {
                         propagateComposedEvents: true
                         onClicked: function (mouse) {
                             treeView.toggleExpanded(row)
+                            // TODO
+                            rootItem.layerModel.onItemLeftClicked(
+                                        treeView.index(row, column))
                         }
                     }
 
@@ -193,19 +196,15 @@ Item {
                         color: (treeDelegate.hasChildren
                                 && expanded) ? backgroundColor : "transparent"
                         radius: height / 2
+
                         MouseArea {
                             id: containerMouse
                             propagateComposedEvents: true
 
                             anchors.fill: parent
-                            acceptedButtons: Qt.LeftButton | Qt.RightButton
+                            acceptedButtons: Qt.RightButton
                             onClicked: function (mouse) {
-                                if (mouse.button === Qt.RightButton) {
-                                    contextMenu.popup()
-                                } else {
-                                    rootItem.layerModel.onItemLeftClicked(
-                                                treeView.index(row, column))
-                                }
+                                contextMenu.popup()
                             }
                         }
 
@@ -417,7 +416,7 @@ Item {
         Rectangle {
             id: propertySection
 
-            //            visible: propertyContainer.children.length
+            visible: true
 
             //            Layout.preferredHeight: 300 / Style.monitorRatio
             Layout.preferredHeight: 450 / Style.monitorRatio
@@ -432,7 +431,7 @@ Item {
                     color: Style.foregroundColor
                     Layout.fillWidth: true
                     Layout.preferredHeight: contentHeight
-                    text: LayerManagerInstance.propertyItemTitle
+                    text: 'Layer Property'
                     font.family: Style.fontFamily
                     font.pixelSize: 20 / Style.monitorRatio
 

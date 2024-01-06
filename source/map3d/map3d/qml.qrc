@@ -40,5 +40,6 @@
         <file>Components/qmldir</file>
         <file>Components/StepSpinBox.qml</file>
         <file>Components/FloatSpinBox.qml</file>
+        <file>LayerProperty.qml</file>
     </qresource>
 </RCC>

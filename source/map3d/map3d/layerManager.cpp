@@ -16,6 +16,8 @@
 LayerManager::LayerManager()
 {
     mLayerModel = new LayerModel();
+
+    // write your setup in setMapItem method after set mapItem
 }
 
 LayerModel *LayerManager::layerModel() const
@@ -40,14 +42,13 @@ void LayerManager::setMapItem(MapItem *mapItem)
 {
     mLayerModel->setMapItem(mapItem);
 
-    // TEST
-    createProperty("test");
-    qDebug() << mPropertyItem;
-    // ENDTEST
+    // property item setup
+    mPropertyInterface = new LayerPropertyItem;
+    mLayerModel->setPropertyInterface(mPropertyInterface);
+    createPropertyItem();
 }
 
-// TODO: move this function to proper layers plugin AND also consider model
-void LayerManager::createProperty(/*model,*/ QString title)
+void LayerManager::createPropertyItem()
 {
     QQmlComponent *comp = new QQmlComponent(qmlEngine(mLayerModel->getMapItem()));
     connect(comp, &QQmlComponent::statusChanged, [&] {
@@ -55,13 +56,11 @@ void LayerManager::createProperty(/*model,*/ QString title)
             qDebug() << comp->errorString();
         }
 
-        // TEST
         setPropertyItem(qobject_cast<QQuickItem *>(comp->create()));
-        setPropertyItemTitle(title);
-        // ENDTEST
+        mPropertyItem->setProperty("cppInterface", QVariant::fromValue(mPropertyInterface));
     });
 
-    comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+    comp->loadUrl(QUrl("qrc:/LayerProperty.qml"));
 }
 
 QQuickItem *LayerManager::propertyItem() const
@@ -71,20 +70,9 @@ QQuickItem *LayerManager::propertyItem() const
 
 void LayerManager::setPropertyItem(QQuickItem *newPropertyItem)
 {
-    if (mPropertyItem == newPropertyItem)
-        return;
     mPropertyItem = newPropertyItem;
     emit propertyItemChanged();
 }
-
-// TODO: move this function to proper plugin
-void LayerManager::addPropertyItem(QQuickItem *newPropertyItem, QString newTitle)
-{
-    setPropertyItem(newPropertyItem);
-    setPropertyItemTitle(newTitle);
-}
-
-void LayerManager::removePropertyItem() {}
 
 QString LayerManager::propertyItemTitle() const
 {
@@ -93,8 +81,6 @@ QString LayerManager::propertyItemTitle() const
 
 void LayerManager::setPropertyItemTitle(const QString &newPropertyItemTitle)
 {
-    if (mPropertyItemTitle == newPropertyItemTitle)
-        return;
     mPropertyItemTitle = newPropertyItemTitle;
     emit propertyItemTitleChanged();
 }
@@ -189,6 +175,18 @@ void LayerModel::onItemLeftClicked(const QModelIndex &current)
 {
     qDebug() << "layer left clicked!";
     // TODO
+    QModelIndex indexSource = mapToSource(current);
+    QStandardItem *item = mSourceModel->itemFromIndex(indexSource);
+    QStandardItem *parentItem = item->parent();
+
+    if (!parentItem) {
+        parentItem = mSourceModel->invisibleRootItem();
+    }
+
+    osgEarth::Layer *layer = item->data(LayerRole).value<osgEarth::Layer *>();
+    osgEarth::Layer *parentLayer = parentItem->data(LayerRole).value<osgEarth::Layer *>();
+
+    mPropertyInterface->setModelNodeLayer(layer);
 }
 
 void LayerModel::onRemoveItemClicked(const QModelIndex &current)
@@ -196,21 +194,21 @@ void LayerModel::onRemoveItemClicked(const QModelIndex &current)
     QModelIndex indexSource = mapToSource(current);
     QStandardItem *item =  mSourceModel->itemFromIndex(indexSource);
     QStandardItem *parentItem = item->parent();
-    if(!parentItem){
+
+    if (!parentItem) {
         parentItem = mSourceModel->invisibleRootItem();
     }
-    osgEarth::Layer *layer = item->data(LayerRole).value<osgEarth::Layer*>();
+
+    osgEarth::Layer *layer = item->data(LayerRole).value<osgEarth::Layer *>();
     osgEarth::Layer *parentLayer = parentItem->data(LayerRole).value<osgEarth::Layer*>();
 
     ParenticAnnotationLayer *parenticLayer = dynamic_cast<ParenticAnnotationLayer*>(layer);
     auto compositParentLayer = dynamic_cast<CompositeAnnotationLayer*>(parentLayer);
-    if (compositParentLayer && parenticLayer){
+    if (compositParentLayer && parenticLayer) {
         compositParentLayer->removeLayer(parenticLayer);
-    }else{
+    } else {
         mMapItem->getMapObject()->removeLayer(layer, parentLayer);
     }
-
-
 }
 
 void LayerModel::onMoveItem(QModelIndex oldIndex, QModelIndex newIndex)
@@ -246,7 +244,7 @@ void LayerModel::onMoveItem(QModelIndex oldIndex, QModelIndex newIndex)
 void LayerModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)
 {
     QStandardItem *newItem = new QStandardItem(QString(layer->getName().c_str()));
-    newItem->setData(getLayerVisible(layer),VisibleRole);
+    newItem->setData(getLayerVisible(layer), VisibleRole);
     newItem->setData(false, DropRole);
 
     QVariant layerVariant;
@@ -311,6 +309,16 @@ bool LayerModel::getLayerVisible(osgEarth::Layer *layer) const
     return visible;
 }
 
+LayerPropertyItem *LayerModel::propertyInterface() const
+{
+    return mPropertyInterface;
+}
+
+void LayerModel::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
+{
+    mPropertyInterface = newPropertyInterface;
+}
+
 void LayerModel::setLayerVisible(osgEarth::VisibleLayer *layer)
 {
     bool visible = layer->getVisible();
@@ -320,14 +328,19 @@ void LayerModel::setLayerVisible(osgEarth::VisibleLayer *layer)
 bool LayerModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
+
     if (index.data().toString().contains(mFilterString, Qt::CaseInsensitive))
         return true;
+
     for (int i = 0; i < sourceModel()->rowCount(index); ++i) {
         if (filterAcceptsRow(i, index))
             return true;
     }
-    if (source_parent.isValid() && source_parent.data().toString().contains(mFilterString, Qt::CaseInsensitive))
+
+    if (source_parent.isValid()
+        && source_parent.data().toString().contains(mFilterString, Qt::CaseInsensitive))
         return true;
+
     return false;
 }
 

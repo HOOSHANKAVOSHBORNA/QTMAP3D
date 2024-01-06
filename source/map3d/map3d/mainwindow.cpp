@@ -88,8 +88,8 @@ void MainWindow::initComponent()
 //                }
 //            });
 
-//            comp->loadUrl(QUrl("qrc:/TestItem.qml"));
-            // END TEST
+            //            comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+            // ENDTEST
 
             ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
 

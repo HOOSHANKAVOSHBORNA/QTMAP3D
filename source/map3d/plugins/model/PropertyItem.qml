@@ -8,20 +8,17 @@ import "style"
 Item {
     id: rootItem
 
-    anchors.fill: parent
-
+    property var cppInterface
+    /*: modelPropertyInterface ?? "null"*/
     property int lblWidth: 85
     property int valHeight: 30
-    property int previousIndex: 0
-    property int nextIndex: 0
-
     property int zMax: 200000
 
     readonly property color fg20: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.20)
-    property var cppInterface
-    /*: modelPropertyInterface ?? "null"*/
+
+    anchors.fill: parent
 
     // DEBUG
     //    Text {
