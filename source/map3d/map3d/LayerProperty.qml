@@ -99,12 +99,10 @@ Item {
             OpacitySlider {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 20
-            }
 
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 20
-                color: 'red'
+                onValueChanged: {
+
+                }
             }
         }
     }

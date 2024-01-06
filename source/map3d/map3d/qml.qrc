@@ -42,5 +42,7 @@
         <file>Components/FloatSpinBox.qml</file>
         <file>LayerProperty.qml</file>
         <file>Components/OpacitySlider.qml</file>
+        <file>Components/DebugInAnchor.qml</file>
+        <file>Components/DebugInLayout.qml</file>
     </qresource>
 </RCC>

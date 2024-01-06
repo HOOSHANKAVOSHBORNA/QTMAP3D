@@ -4,6 +4,7 @@ import QtQuick.Layouts
 
 import "../style"
 
+// TODO: this file name does not seem to be very good
 Item {
     id: rootItem
 
@@ -42,7 +43,7 @@ Item {
             //                width: control.visualPosition * parent.width
             //                height: parent.height
             //                color: "red"
-            //                radius: 2
+            //                radius: height / 2
             //            }
         }
 
