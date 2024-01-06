@@ -18,6 +18,7 @@ class LayerPropertyItem : public QObject
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged FINAL)
+    Q_PROPERTY(double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged FINAL)
     Q_PROPERTY(bool isVisible READ isVisible WRITE setIsVisible NOTIFY isVisibleChanged FINAL)
 
 public:
@@ -33,16 +34,22 @@ public:
     bool isVisible() const;
     void setIsVisible(bool newIsVisible);
 
+    double opacity() const;
+    void setOpacity(double newOpacity);
+
 signals:
     void nameChanged();
     void colorChanged();
     void isVisibleChanged();
+
+    void opacityChanged();
 
 private:
     osg::ref_ptr<osgEarth::Layer> mModelNodeLayer;
     QString mName;
     QColor mColor;
     bool mIsVisible;
+    double mOpacity;
 };
 
 #endif // LAYERPROPERTY_H

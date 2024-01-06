@@ -96,12 +96,33 @@ Item {
             }
 
             // --------------------------------------------------------- Opacity
-            OpacitySlider {
+            RowLayout {
+                id: opacitySec
+
+                Layout.alignment: Qt.AlignVCenter
                 Layout.fillWidth: true
-                Layout.preferredHeight: 20
+                spacing: 0
 
-                onValueChanged: {
+                Text {
+                    Layout.preferredWidth: lblWidth / Style.monitorRatio
+                    Layout.fillHeight: true
+                    text: "Opacity"
+                    font.pixelSize: 17 / Style.monitorRatio
+                    color: Style.foregroundColor
+                }
 
+                OpacitySlider {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 10
+
+                    backgroundColor: rootItem.cppInterface ? rootItem.cppInterface.color : "transparent"
+
+                    //                    initialValue: rootItem.cppInterface.opacity
+                    onValueChanged: value => {
+                                        if (!rootItem.cppInterface)
+                                        return
+                                        rootItem.cppInterface.opacity = value
+                                    }
                 }
             }
         }

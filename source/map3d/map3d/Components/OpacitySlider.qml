@@ -9,12 +9,13 @@ Item {
     id: rootItem
 
     property color backgroundColor: '#000000'
+    property double initialValue: 1
 
-    signal valueChanged(int newValue)
+    signal valueChanged(double newValue)
 
     Slider {
         id: control
-        value: 0.5
+        value: rootItem.initialValue
         anchors.fill: parent
 
         background: Rectangle {

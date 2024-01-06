@@ -183,7 +183,15 @@ Item {
                         propagateComposedEvents: true
                         onClicked: function (mouse) {
                             treeView.toggleExpanded(row)
-                            // TODO
+
+                            // TODO: change property visible in better way
+                            if (LayerManagerInstance.propertyInterface.name === display) {
+                                propertySection.visible = !propertySection.visible
+                            } else {
+                                propertySection.visible = true
+                            }
+
+                            // TODO: onItemLeftClick is not a good name
                             rootItem.layerModel.onItemLeftClicked(
                                         treeView.index(row, column))
                         }
@@ -416,7 +424,7 @@ Item {
         Rectangle {
             id: propertySection
 
-            visible: true
+            visible: false
 
             //            Layout.preferredHeight: 300 / Style.monitorRatio
             Layout.preferredHeight: 450 / Style.monitorRatio
@@ -435,7 +443,7 @@ Item {
                     font.family: Style.fontFamily
                     font.pixelSize: 20 / Style.monitorRatio
 
-                    Layout.bottomMargin: 1
+                    Layout.bottomMargin: 1 / Style.monitorRatio
                     //                    Layout.topMargin: 25 / Style.monitorRatio
                     Layout.leftMargin: 3 / Style.monitorRatio
                 }
