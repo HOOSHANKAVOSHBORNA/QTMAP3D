@@ -1,4 +1,6 @@
 module Components
+OpacitySlider       1.0     OpacitySlider.qml
 ColorPicker         1.0     ColorPicker.qml
 StepSpinBox         1.0     StepSpinBox.qml
 FloatSpinBox        1.0     FloatSpinBox.qml
+DebugComponent      1.0     DebugComponent.qml

@@ -14,17 +14,30 @@ Rectangle {
     property int locationColorIconMargin: 3
 
     // colors
-    readonly property color bg40: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.40)
-    readonly property color bg20: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.20)
-    readonly property color bg25: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.25)
-    readonly property color bg50: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.50)
+    readonly property color bg40: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.40)
+    readonly property color bg20: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.20)
+    readonly property color bg25: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.25)
+    readonly property color bg50: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.50)
 
-    readonly property color fg80: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.80)
-    readonly property color fg75: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
-    readonly property color fg50: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
+    readonly property color fg80: Qt.rgba(Style.foregroundColor.r,
+                                          Style.foregroundColor.g,
+                                          Style.foregroundColor.b, 0.80)
+    readonly property color fg75: Qt.rgba(Style.foregroundColor.r,
+                                          Style.foregroundColor.g,
+                                          Style.foregroundColor.b, 0.75)
+    readonly property color fg50: Qt.rgba(Style.foregroundColor.r,
+                                          Style.foregroundColor.g,
+                                          Style.foregroundColor.b, 0.50)
 
     readonly property color beautifulWhite: "#EDF3F9"
-
 
     color: "transparent"
 
@@ -101,7 +114,7 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
-                        popup.editIndex = -1;
+                        popup.editIndex = -1
                         popup.myOpen()
                     }
                 }
@@ -114,13 +127,14 @@ Rectangle {
 
             property int editIndex: -1
 
-            function myOpen () {
-                txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
+            function myOpen() {
+                txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(
+                            6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
 
                 popup.visible = true
             }
 
-            function myClose () {
+            function myClose() {
                 tiLocationName.text = ""
                 tiLocationDescription.text = ""
                 lvColors.selectedColor = "black"
@@ -397,7 +411,6 @@ Rectangle {
                                                 //                                                console.log(index)
                                                 lvColors.selectedColor = parent.modelData
                                             }
-
                                         }
                                     }
                                 }
@@ -482,9 +495,19 @@ Rectangle {
 
                             onClicked: {
                                 if (popup.editIndex === -1) {
-                                    lvLocationManger.model.addNewLocation(tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
+                                    lvLocationManger.model.addNewLocation(
+                                                tiLocationName.text,
+                                                tiLocationDescription.text,
+                                                "qrc:/Resources/airplane1.jpg",
+                                                lvColors.selectedColor)
                                 } else {
-                                    lvLocationManger.model.editLocation(lvLocationManger.model.index(popup.editIndex, 0), tiLocationName.text, tiLocationDescription.text, "qrc:/Resources/airplane1.jpg", lvColors.selectedColor)
+                                    lvLocationManger.model.editLocation(
+                                                lvLocationManger.model.index(
+                                                    popup.editIndex, 0),
+                                                tiLocationName.text,
+                                                tiLocationDescription.text,
+                                                "qrc:/Resources/airplane1.jpg",
+                                                lvColors.selectedColor)
                                 }
 
                                 lvLocationManger.model.sourceModel.writeToFile()
@@ -513,7 +536,6 @@ Rectangle {
             clip: true
 
             // model set from MainWindow.qml by listModel property in this file
-
             delegate: Rectangle {
                 id: rDelegate
 
@@ -536,9 +558,10 @@ Rectangle {
                         console.log("model.heading: ", model.heading)
                         console.log("model.pitch: ", model.pitch)
                         console.log("model.range: ", model.range)
-                        // ---
 
-                        lvLocationManger.model.goToLocation(lvLocationManger.model.index(index, 0))
+                        // ---
+                        lvLocationManger.model.goToLocation(
+                                    lvLocationManger.model.index(index, 0))
                     }
                 }
 
@@ -590,7 +613,8 @@ Rectangle {
                                 anchors.fill: parent
 
                                 onDoubleClicked: {
-                                    lvLocationManger.model.printCurrentLocation();
+                                    lvLocationManger.model.printCurrentLocation(
+                                                )
                                 }
                             }
                         }
@@ -610,7 +634,9 @@ Rectangle {
                             icon.height: 25 / Style.monitorRatio
 
                             onClicked: {
-                                lvLocationManger.model.goToLocation(lvLocationManger.model.index(index, 0))
+                                lvLocationManger.model.goToLocation(
+                                            lvLocationManger.model.index(index,
+                                                                         0))
 
                                 tiLocationName.text = model.name
                                 tiLocationDescription.text = model.description
@@ -635,14 +661,17 @@ Rectangle {
                             icon.width: 25 / Style.monitorRatio
                             icon.height: 25 / Style.monitorRatio
 
-                            onClicked: lvLocationManger.model.myRemoveRow(lvLocationManger.model.index(index, 0))
+                            onClicked: lvLocationManger.model.myRemoveRow(
+                                           lvLocationManger.model.index(index,
+                                                                        0))
                         }
                     }
 
                     // ----------------------------------------------- Location details
                     ColumnLayout {
                         anchors.left: rDelegateContent.left
-                        anchors.leftMargin: (locationColorIconWidth + locationColorIconMargin) / Style.monitorRatio
+                        anchors.leftMargin: (locationColorIconWidth
+                                             + locationColorIconMargin) / Style.monitorRatio
                         anchors.bottom: rDelegateContent.bottom
                         anchors.bottomMargin: 5 / Style.monitorRatio
                         spacing: 0
@@ -655,7 +684,8 @@ Rectangle {
                         }
 
                         Text {
-                            text: model.lon.toFixed(6) + ", " + model.lat.toFixed(6)
+                            text: model.lon.toFixed(
+                                      6) + ", " + model.lat.toFixed(6)
                             font.pixelSize: 17 / Style.monitorRatio
                             font.family: Style.fontFamily
                             color: fg75

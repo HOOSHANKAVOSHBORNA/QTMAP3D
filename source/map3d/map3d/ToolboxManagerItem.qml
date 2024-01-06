@@ -73,181 +73,190 @@ Item {
             }
         }
 
-        ScrollView {
+        SplitView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.topMargin: 10 / Style.monitorRatio
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-            TreeView {
-                id: treeView
-                anchors.fill: parent
-                clip: true
-                model: rootItem.listModel
-                rowSpacing: 5 / Style.monitorRatio
+            orientation: Qt.Vertical
 
-                selectionModel: ItemSelectionModel {
-                    id: selectionM
-                    onCurrentChanged: function (cur, pre) {
-                        select(cur, ItemSelectionModel.Select)
-                        treeView.model.onItemClicked(cur)
-                    }
-                    onSelectionChanged: function (sel, des) {
-                        reset()
-                    }
-                }
+            ScrollView {
+                SplitView.fillWidth: true
+                SplitView.fillHeight: true
+                //                Layout.topMargin: 10 / Style.monitorRatio
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                TreeView {
+                    id: treeView
+                    anchors.fill: parent
+                    clip: true
+                    model: rootItem.listModel
+                    rowSpacing: 5 / Style.monitorRatio
 
-                delegate: Item {
-
-                    readonly property real indent: 30
-                    required property TreeView treeView
-                    required property bool isTreeNode
-                    required property bool expanded
-                    required property int hasChildren
-                    required property int depth
-                    required property bool selected
-                    required property bool current
-
-                    implicitWidth: treeView ? treeView.width ?? 0 : 0
-                    implicitHeight: 30 / Style.monitorRatio
-
-                    //vertical line for item children
-                    Rectangle {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: indent * depth
-                        width: 2 / Style.monitorRatio
-                        height: parent.height + (treeView ? treeView.rowSpacing
-                                                            ?? 0 : 0)
-                        visible: depth
-                        color: Style.foregroundColor
-                        opacity: 0.2
+                    selectionModel: ItemSelectionModel {
+                        id: selectionM
+                        onCurrentChanged: function (cur, pre) {
+                            select(cur, ItemSelectionModel.Select)
+                            treeView.model.onItemClicked(cur)
+                        }
+                        onSelectionChanged: function (sel, des) {
+                            reset()
+                        }
                     }
 
-                    Rectangle {
-                        id: itemRect
-                        anchors.fill: parent
-                        anchors.leftMargin: depth ? (indent) * depth + 10 / Style.monitorRatio : 0
-                        color: (expanded
-                                || checkedd) ? backgroundColor : "transparent"
-                        radius: height / 2
+                    delegate: Item {
 
-                        IconImage {
-                            id: itemIcon
+                        readonly property real indent: 30
+                        required property TreeView treeView
+                        required property bool isTreeNode
+                        required property bool expanded
+                        required property int hasChildren
+                        required property int depth
+                        required property bool selected
+                        required property bool current
+
+                        implicitWidth: treeView ? treeView.width ?? 0 : 0
+                        implicitHeight: 30 / Style.monitorRatio
+
+                        //vertical line for item children
+                        Rectangle {
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.left: parent.left
-                            anchors.leftMargin: 15 / Style.monitorRatio
-                            source: imageSource ?? ""
-                            width: 24 / Style.monitorRatio
-                            height: 24 / Style.monitorRatio
+                            anchors.leftMargin: indent * depth
+                            width: 2 / Style.monitorRatio
+                            height: parent.height + (treeView ? treeView.rowSpacing
+                                                                ?? 0 : 0)
+                            visible: depth
                             color: Style.foregroundColor
+                            opacity: 0.2
                         }
 
-                        Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: itemIcon.right
-                            anchors.leftMargin: 10 / Style.monitorRatio
-                            clip: true
-                            font.pixelSize: 17 / Style.monitorRatio
-                            font.weight: Font.Medium
-                            color: Style.foregroundColor
-                            text: display
+                        Rectangle {
+                            id: itemRect
+                            anchors.fill: parent
+                            anchors.leftMargin: depth ? (indent) * depth + 10
+                                                        / Style.monitorRatio : 0
+                            color: (expanded
+                                    || checkedd) ? backgroundColor : "transparent"
+                            radius: height / 2
+
+                            IconImage {
+                                id: itemIcon
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 15 / Style.monitorRatio
+                                source: imageSource ?? ""
+                                width: 24 / Style.monitorRatio
+                                height: 24 / Style.monitorRatio
+                                color: Style.foregroundColor
+                            }
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: itemIcon.right
+                                anchors.leftMargin: 10 / Style.monitorRatio
+                                clip: true
+                                font.pixelSize: 17 / Style.monitorRatio
+                                font.weight: Font.Medium
+                                color: Style.foregroundColor
+                                text: display
+                            }
+
+                            IconImage {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10 / Style.monitorRatio
+                                source: "qrc:/Resources/down.png"
+                                width: 16 / Style.monitorRatio
+                                height: 16 / Style.monitorRatio
+                                visible: hasChildren
+                                rotation: expanded ? 180 : 0
+                                color: Style.foregroundColor
+                            }
                         }
 
-                        IconImage {
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.right: parent.right
-                            anchors.rightMargin: 10 / Style.monitorRatio
-                            source: "qrc:/Resources/down.png"
-                            width: 16 / Style.monitorRatio
-                            height: 16 / Style.monitorRatio
-                            visible: hasChildren
-                            rotation: expanded ? 180 : 0
-                            color: Style.foregroundColor
+                        Rectangle {
+                            id: selectRect
+                            anchors.fill: parent
+                            anchors.leftMargin: depth ? (indent) * depth + 10
+                                                        / Style.monitorRatio : 0
+                            radius: height / 2
+                            visible: false
+                            z: -1
                         }
-                    }
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
 
-                    Rectangle {
-                        id: selectRect
-                        anchors.fill: parent
-                        anchors.leftMargin: depth ? (indent) * depth + 10 / Style.monitorRatio : 0
-                        radius: height / 2
-                        visible: false
-                        z: -1
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
+                            onEntered: {
+                                selectRect.color = backgroundColor
+                                selectRect.visible = true
+                            }
+                            onExited: {
+                                selectRect.visible = false
+                            }
+                            onPressed: function (mouse) {
+                                mouse.accepted = false
+                            }
+                        }
 
-                        onEntered: {
-                            selectRect.color = backgroundColor
-                            selectRect.visible = true
-                        }
-                        onExited: {
-                            selectRect.visible = false
-                        }
-                        onPressed: function (mouse) {
-                            mouse.accepted = false
-                        }
-                    }
-
-                    TapHandler {
-                        onTapped: function () {
-                            treeView.toggleExpanded(row)
+                        TapHandler {
+                            onTapped: function () {
+                                treeView.toggleExpanded(row)
+                            }
                         }
                     }
                 }
             }
-        }
 
-        Rectangle {
-            id: propertySection
+            Rectangle {
+                id: propertySection
 
-            visible: propertyContainer.children.length
+                visible: propertyContainer.children.length
 
-            //            Layout.preferredHeight: 300 / Style.monitorRatio
-            Layout.preferredHeight: 450 / Style.monitorRatio
-            Layout.fillWidth: true
-            color: 'transparent'
+                //                SplitView.preferredHeight: 300 / Style.monitorRatio
+                SplitView.preferredHeight: 450 / Style.monitorRatio
+                SplitView.fillWidth: true
+                color: 'transparent'
 
-            ColumnLayout {
-                anchors.fill: parent
-                spacing: 0
+                ColumnLayout {
+                    anchors.fill: parent
+                    spacing: 0
 
-                Text {
-                    color: Style.foregroundColor
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: contentHeight
-                    text: ToolboxManagerInstance.propertyItemTitle
-                    font.family: Style.fontFamily
-                    font.pixelSize: 20 / Style.monitorRatio
+                    Text {
+                        color: Style.foregroundColor
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: contentHeight
+                        text: ToolboxManagerInstance.propertyItemTitle
+                        font.family: Style.fontFamily
+                        font.pixelSize: 20 / Style.monitorRatio
 
-                    Layout.bottomMargin: 1
-                    //                    Layout.topMargin: 25 / Style.monitorRatio
-                    Layout.leftMargin: 3 / Style.monitorRatio
-                }
+                        Layout.bottomMargin: 1
+                        //                    Layout.topMargin: 25 / Style.monitorRatio
+                        Layout.topMargin: 10 / Style.monitorRatio
+                        Layout.leftMargin: 3 / Style.monitorRatio
+                    }
 
-                Rectangle {
-                    color: Style.foregroundColor
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 2 / Style.monitorRatio
-                    Layout.bottomMargin: 20 / Style.monitorRatio
+                    Rectangle {
+                        color: Style.foregroundColor
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 2 / Style.monitorRatio
+                        Layout.bottomMargin: 20 / Style.monitorRatio
 
-                    radius: 1
-                }
+                        radius: 1
+                    }
 
-                Rectangle {
-                    color: 'transparent'
+                    Rectangle {
+                        color: 'transparent'
 
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
 
-                    Item {
-                        id: propertyContainer
+                        Item {
+                            id: propertyContainer
 
-                        clip: true
+                            clip: true
 
-                        anchors.fill: parent
-                        data: ToolboxManagerInstance.propertyItem
+                            anchors.fill: parent
+                            data: ToolboxManagerInstance.propertyItem
+                        }
                     }
                 }
             }
