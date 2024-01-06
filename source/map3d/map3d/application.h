@@ -49,6 +49,7 @@ private:
     static void initializeSurfaceFormat();
     void initializeQmlEngine();
     void initializeDefenseDataManager();
+    void authenticate();
 
 private slots:
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);

@@ -56,9 +56,14 @@ AnnotatedNode::~AnnotatedNode()
 
 void AnnotatedNode::create(std::vector<osg::Vec3d> *points)
 {
-    auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_LINESTRING, points);
-    // auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_POLYGON, points);
-    getFeature()->setGeometry(geometry);
+    if (mType == GeneralType::POLYLINETYPE){
+        auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_LINESTRING, points);
+        getFeature()->setGeometry(geometry);
+    }
+    else{
+         auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_POLYGON, points);
+        getFeature()->setGeometry(geometry);
+    }
     dirty();
 }
 

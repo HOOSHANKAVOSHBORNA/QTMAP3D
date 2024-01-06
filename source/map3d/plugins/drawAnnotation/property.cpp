@@ -292,7 +292,6 @@ void Property::setPointsColor(const QColor &pointColor)
 {
     mPointsColor = pointColor;
     emit propretyChanged();
-
 }
 
 bool Property::getPointsSmooth() const

@@ -14,6 +14,8 @@ CMainWindow {
     width: 800
     minimumWidth: 800
     minimumHeight: 700
+    x: (Screen.width - width) / 2
+    y: (Screen.height - height) / 2
     title: qsTr("MAP3D")
 
     property real widgetsPositionFactor: 1.0

@@ -4,7 +4,7 @@
 #include "compositeAnnotationLayer.h"
 #include <QJsonDocument>
 #include <osgEarth/Layer>
-
+class MapObject;
 struct NodeFieldData
 {
     QString name;
@@ -50,8 +50,8 @@ struct NodeData: public osg::Referenced
 
 struct AssignData: public osg::Referenced
 {
-    std::string attackerID;
-    std::string targetID;
+    int attackerID;
+    int targetID;
     std::string command{"ADD"};
     std::string state{"PREASSIGN"};
 };
@@ -115,6 +115,8 @@ public:
 //    void addSphere(QJsonDocument *sphere);
 //    void addCircle(QJsonDocument *circle);
 
+    void setMapObject(MapObject *newMapObject);
+
 signals:
     void layerDataReceived(CompositeAnnotationLayer *layer);
     void flyableNodeDataReceived(NodeData *modelNodeData);
@@ -138,7 +140,7 @@ private:
     void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
     ParenticAnnotationLayer* findParenticLayer(int id);
 private:
-
+    MapObject *mMapObject;
     std::map<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
     int mRefreshTime{0};
 
