@@ -256,7 +256,21 @@ Item {
 //                property: "isWindow"
 //                value: sideModel.get(3).isWindow
 //            }
+
  //-----------------------------------------------------
+            DockWindow{
+                id:settingsDocItem
+                windowTitle: sideModel.get(4).name
+
+                containerItem: SettingsItem{
+                    id:settingsItem
+                    model: SettingsInstance.getSettings()
+                }
+
+                onWindowClose: {
+                   sideModel.get(4).isWindow = false
+                }
+            }
 
         }
     }

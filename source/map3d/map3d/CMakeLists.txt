@@ -51,7 +51,8 @@ add_executable(Map3d
         filterManager.h filterManager.cpp
         layerProperty.h layerProperty.cpp
         autoScaler.h autoScaler.cpp
-        splash.h splash.cpp)
+        splash.h splash.cpp
+        settings.h settings.cpp)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/" "Components/")

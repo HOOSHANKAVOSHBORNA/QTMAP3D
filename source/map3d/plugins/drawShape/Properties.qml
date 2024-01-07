@@ -167,8 +167,6 @@ Item {
                                 onValueChanged: {
                                     if (rootItem.model)
                                         rootItem.model.strokeWidth = value
-
-
                                 }
                             }
 
