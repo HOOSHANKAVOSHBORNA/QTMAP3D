@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 //    QObject::connect(&networkManager, &NetworkManager::flyableQueueDeclared,[&networkManager]{
 //        networkManager.sendFlyableData("data");
 //    });
-//    LayerTest LayerTest(&networkManager);
+    LayerTest LayerTest(&serviceManager);
 //    FlyableNodeTest flyableNodeTest(&networkManager);
 //    MovableNodeTest movableNodeTest(&networkManager);
      NodeTest nodeTest(&serviceManager);

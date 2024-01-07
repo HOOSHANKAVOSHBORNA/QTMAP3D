@@ -10,9 +10,9 @@ ServiceManager::ServiceManager(NetworkManager *networkManager, QObject *parent):
     connect(mNetworkManager, &NetworkManager::messageReceived, this, &ServiceManager::onMessageReceived);
 }
 
-void ServiceManager::sendLayer(const Layer &layer)
+void ServiceManager::sendLayer(const LayerData &layerData)
 {
-    auto inputJsonObject = layer.toJson();
+    auto inputJsonObject = layerData.toJson();
     QJsonObject jsonObject;
     jsonObject.insert("Type", "Layer");
     jsonObject.insert("Data", inputJsonObject);

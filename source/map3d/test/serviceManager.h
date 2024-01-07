@@ -262,12 +262,13 @@ struct ExplosionData
     }
 };
 
-struct Layer {
+struct LayerData {
     int id;
     int parentId;
     QString text;
     int order;
     QString command{Command::Add};
+    std::vector<LayerData> children;
 
     QJsonObject toJson() const{
         QJsonObject jsonObject;
@@ -276,7 +277,11 @@ struct Layer {
         jsonObject.insert("Text", text);
         jsonObject.insert("Order", order);
         jsonObject.insert("Command", command);
-
+        QJsonArray childrenArray;
+        for(const LayerData& child: children){
+            childrenArray.push_back(child.toJson());
+        }
+        jsonObject.insert("Children", childrenArray);
         return jsonObject;
     }
 };
@@ -287,7 +292,7 @@ class ServiceManager: public QObject
 public:
     ServiceManager(NetworkManager *networkManager, QObject *parent = nullptr);
 
-    void sendLayer(const Layer &layer);
+    void sendLayer(const LayerData &layerData);
     void sendNode(const NodeData &nodeData);
     void sendStatusNode(const StatusNodeData &statusNodeData);
     void sendAssignment(const AssignmentData &assignmentData);
