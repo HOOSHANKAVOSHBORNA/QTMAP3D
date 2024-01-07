@@ -2,28 +2,26 @@
 #define NETWORKMANAGER_H
 
 #include <QObject>
-
 #include "qamqpclient.h"
-#include "serviceManager.h"
 
 class NetworkManager: public QObject
 {
     Q_OBJECT
 public:
-    NetworkManager(ServiceManager *serviceManger, QObject *parent = nullptr);
+    NetworkManager(QObject *parent = nullptr);
     void start();
-
-public slots:
-    void sendData(const QString &action);
+    void sendMessage(const QString &message);
 private slots:
     void clientConnected();
-    void sendDataQueueDeclared();
-    void dataQueueDeclared();
-    void dataMessageReceived();
+    void clientError(QAMQP::Error error);
+    void onMap3dQueueDeclare();
+    void onMap3dClientQueueDeclare();
+    void onMessageReceived();
 signals:
-//    void ready();
+    void map3dClientQueueDeclared();
+    void messageReceived(const QString &message);
+
 private:
-    ServiceManager *mServiceManager;
     QAmqpClient mClient;
 };
 

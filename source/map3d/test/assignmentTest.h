@@ -1,41 +1,30 @@
-#ifndef ASSIGNMENTTEST_H
-#define ASSIGNMENTTEST_H
+//#ifndef ASSIGNMENTTEST_H
+//#define ASSIGNMENTTEST_H
 
-#include "networkManager.h"
-#include <QJsonDocument>
-#include <QJsonObject>
-
-#define stringify( name ) #name
+//#include "networkManager.h"
+//#include <QJsonDocument>
+//#include <QJsonObject>
 
 
-struct AssignmentData
-{
-    int attackerID;
-    int targetID;
-    std::string state;
-};
+//class AssignmentTest : public QObject
+//{
+//    Q_OBJECT
+//public:
+//    AssignmentTest(NetworkManager *networkManager);
 
+//private:
+//    void createAssignment(QJsonDocument data);
+//    void updateAssignment(QJsonDocument data);
+//    void removeAssignment(QJsonDocument data);
 
-class AssignmentTest : public QObject
-{
-    Q_OBJECT
-public:
-    AssignmentTest(NetworkManager *networkManager);
+//public slots:
+//    void dataReceived(QJsonObject obj);
 
-private:
-    bool randomBool();
-    void createAssignment(AssignmentData data);
-    void updateAssignment(AssignmentData data);
-    void removeAssignment(AssignmentData data);
+//private:
+//    NetworkManager *mNetworkManager;
+//    QVector<QJsonDocument> mAssignmentDataList;
+//    QVector<std::string> mStates{"Assigned", "Search", "Lock", "Fire", "Success", "Failed"};
+//    int  mCount{0};
+//};
 
-public slots:
-    void dataReceived(QJsonObject obj);
-
-private:
-    NetworkManager *mNetworkManager;
-    QVector<AssignmentData> mAssignmentDataList;
-    bool mAssignmentQueueDeclared{false};
-    int  mCount{0};
-};
-
-#endif // ASSIGNMENTTEST_H
+//#endif // ASSIGNMENTTEST_H

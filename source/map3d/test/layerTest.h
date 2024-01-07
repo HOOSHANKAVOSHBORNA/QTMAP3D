@@ -1,21 +1,20 @@
 #ifndef LAYERTEST_H
 #define LAYERTEST_H
 
-#include "networkManager.h"
-
-#include <QJsonDocument>
+#include "serviceManager.h"
 
 class LayerTest
 {
 public:
-    LayerTest(NetworkManager *networkManager);
+    LayerTest(ServiceManager *serviceManager);
 
 private:
-    QJsonDocument createLayers();
+    void createLayers();
     QJsonDocument updateLayers();
 
 private:
-    NetworkManager *mNetworkManager;
+    ServiceManager *mServiceManager;
+    std::vector<LayerData> LayerDataList;
 };
 
 #endif // LAYERTEST_H

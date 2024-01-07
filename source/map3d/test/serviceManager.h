@@ -1,13 +1,12 @@
 #ifndef SERVICEMANAGER_H
 #define SERVICEMANAGER_H
 
-#include "compositeAnnotationLayer.h"
+#include "networkManager.h"
 #include "qjsonarray.h"
-#include "qjsonobject.h"
+#include "qvectornd.h"
 #include <QJsonDocument>
-#include <osgEarth/Layer>
+#include <QJsonObject>
 
-class MapObject;
 struct Command
 {
     static inline QString Add{"Add"};
@@ -291,53 +290,27 @@ class ServiceManager: public QObject
 {
     Q_OBJECT
 public:
-    ServiceManager(QObject *parent = nullptr);
+    ServiceManager(NetworkManager *networkManager, QObject *parent = nullptr);
 
-    void layersData(QJsonObject layers);
-    void flyableNodeData(QJsonObject jsonObject);
-    void statusNodeData(QJsonObject jsonObject);
-    void receiveExplosionData(QJsonObject jsonObject);
-    void receiveAssignmentData(QJsonObject jsonObject);
-    void sendJsonAssignData(AssignData data);
-    void messageData(QString jsonData);
-    void sendAction(const QString &action);
-    void polylineData(QJsonObject polyline);
-    void movableNodeData(QJsonObject jsonObject);
-    void signInData(QJsonObject jsonObject);
-    void signUpData(QJsonObject jsonObject);
+    void sendLayer(const LayerData &layerData);
+    void sendNode(const NodeData &nodeData);
+    void sendStatusNode(const StatusNodeData &statusNodeData);
+    void sendAssignment(const AssignmentData &assignmentData);
+    void sendPolyLine(const PolyLineData &polyLineData);
+    void sendPolygon(const PolygonData &polygonData);
+    void sendCircle(const CircleData &circleData);
+    void sendExplosion(const ExplosionData &explosionData);
 
-//    void addPolygon(QJsonDocument *polygon);
-//    void addSphere(QJsonDocument *sphere);
-//    void addCircle(QJsonDocument *circle);
 
-    void setMapObject(MapObject *newMapObject);
-
+//    void signInData(QJsonObject jsonObject);
+//    void signUpData(QJsonObject jsonObject);
+private slots:
+    void onMessageReceived(const QString &message);
 signals:
-    void layerDataReceived(CompositeAnnotationLayer *layer);
-    void flyableNodeDataReceived(NodeData *modelNodeData);
-    void statusNodeDataReceived(StatusNodeData *statusNodeData);
-    void explosionDataReceived(ExplosionData *explosionData);
-    void assignDataReceived(AssignData *assignData);
-    void lineNodeDataReceived(PolyLineData *lineNodeData);
-    void movableNodeDataReceived(NodeData *modelNodeData);
-    void nodeDataReceived(NodeData *nodeData);
-    void circleDataReceived(CircleData *circleData);
-    void polygonDataReceived(PolygonData *polygonData);
-    void actionSent(const QString &action);
-    void signUpResponseReceived(bool status);
-    void signInResponseReceived(bool status, int role);
-    void clearMap();
-private:
-    void nodeData(QJsonObject jsonObject);
-    void circleData(QJsonObject jsonObject);
-    void polygonData(QJsonObject jsonObject);
+    void assignmentDataReceived(const AssignmentData &assignmentData);
 
-    void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
-    ParenticAnnotationLayer* findParenticLayer(int id);
 private:
-    MapObject *mMapObject;
-    std::map<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
-    int mRefreshTime{0};
+    NetworkManager *mNetworkManager{nullptr};
 
 };
 
