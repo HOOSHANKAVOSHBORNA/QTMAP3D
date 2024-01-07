@@ -11,42 +11,40 @@ AssignmentTest::AssignmentTest(NetworkManager *networkManager):
 {
     QObject::connect(mNetworkManager,&NetworkManager::assignDataReceived, this, &AssignmentTest::dataReceived);
     QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]{
-        mAssignmentQueueDeclared = true;
 
         //--create and update assignment info------------------------
         QTimer *timerUpdateAssign = new QTimer();
         QObject::connect(timerUpdateAssign, &QTimer::timeout, [this](){
 
-            if(mAssignmentQueueDeclared)
-                for(auto& AssignmentData: mAssignmentDataList){
+            for(auto& AssignmentData: mAssignmentDataList){
+                if(randomBool()){
                     if(randomBool()){
-                        if(randomBool()){
-                            AssignmentData.state = "SEARCH";
-                        }else{
-                            AssignmentData.state = "FIRE";
-                        }
+                        AssignmentData.state = "SEARCH";
                     }else{
-                        if(randomBool()){
-                            AssignmentData.state = "LOCK";
-                        }else{
-                            AssignmentData.state = "ASSIGNED";
-                        }
+                        AssignmentData.state = "FIRE";
                     }
-                    QJsonObject obj;
-                    obj.insert("Type","Assign");
-                    obj.insert("COMMAND","ADDORUPDATE");
-                    obj.insert("attackerID",AssignmentData.attackerID);
-                    obj.insert("targetID",AssignmentData.targetID);
-                    obj.insert("state", AssignmentData.state.data());
-                    QJsonDocument doc;
-                    doc.setObject(obj);
-                    mNetworkManager->sendData(doc.toJson(QJsonDocument::Indented));
+                }else{
+                    if(randomBool()){
+                        AssignmentData.state = "LOCK";
+                    }else{
+                        AssignmentData.state = "ASSIGNED";
+                    }
                 }
+                QJsonObject obj;
+                obj.insert("Type","Assign");
+                obj.insert("COMMAND","ADDORUPDATE");
+                obj.insert("attackerID",AssignmentData.attackerID);
+                obj.insert("targetID",AssignmentData.targetID);
+                obj.insert("state", AssignmentData.state.data());
+                QJsonDocument doc;
+                doc.setObject(obj);
+                mNetworkManager->sendData(doc.toJson(QJsonDocument::Indented));
+            }
         });
         timerUpdateAssign->start(1000);
     });
 }
-void AssignmentTest::createAssignment(AssignmentData data)
+void AssignmentTest::createAssignment(QJsonDocument data)
 {
     if(randomBool()){
         mAssignmentDataList.append(data);
@@ -62,19 +60,12 @@ void AssignmentTest::createAssignment(AssignmentData data)
     }
 }
 
-void AssignmentTest::updateAssignment(AssignmentData data)
+void AssignmentTest::updateAssignment(QJsonDocument data)
 {
 
 }
 
-bool AssignmentTest::randomBool()
-{
-    static auto gen = std::bind(std::uniform_int_distribution<>(0,1),std::default_random_engine());
-    return gen();
-}
-
-
-void AssignmentTest::removeAssignment(AssignmentData data)
+void AssignmentTest::removeAssignment(QJsonDocument data)
 {
     if(randomBool()){
         // mAssignmentDataList.removeOne(data);

@@ -6,27 +6,26 @@
 #include <QTimer>
 #include <QJsonArray>
 
-NodeTest::NodeTest(NetworkManager *networkManager):
-    mNetworkManager(networkManager)
+NodeTest::NodeTest(ServiceManager *serviceManager):
+    mServiceManager(serviceManager)
 {
-    QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]{
     //--create and update aircraft info------------------------
-        QTimer *timerUpdateAircraft = new QTimer();
-        QObject::connect(timerUpdateAircraft, &QTimer::timeout, [this](){
+        QTimer *timerUpdate = new QTimer();
+        QObject::connect(timerUpdate, &QTimer::timeout, [this](){
             createInfo();
 //            updateInfo();
-            for(auto& nodeData: mNodeDataList){
-                mNetworkManager->sendData(nodeData.nodeDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(nodeData.statusDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(nodeData.circleDoc.toJson(QJsonDocument::Compact));
-                mNetworkManager->sendData(nodeData.polygonDoc.toJson(QJsonDocument::Compact));
+            for(auto& nodeInfo: mNodeInfoList){
+                mServiceManager->sendNode(nodeInfo.nodeData);
+                mServiceManager->sendStatusNode(nodeInfo.statusNodeData);
+                mServiceManager->sendCircle(nodeInfo.circleData);
+                mServiceManager->sendPolygon(nodeInfo.polygonData);
             }
         });
-        timerUpdateAircraft->start(2000);
+        timerUpdate->start(2000);
 
-        QTimer *timerRemoveAircraft = new QTimer();
-        QObject::connect(timerRemoveAircraft, &QTimer::timeout, [this](){
-            if (mNodeDataList.size() > 0){
+        QTimer *timerRemove = new QTimer();
+        QObject::connect(timerRemove, &QTimer::timeout, [this](){
+            if (mNodeInfoList.size() > 0){
                 // QJsonObject jsonObject = mNodeDataList[0].nodeDoc.object();
                 // QJsonObject jsonStatusObject = mNodeDataList[0].statusDoc.object();
                 // QJsonObject jsonCircleObject = mNodeDataList[0].circleDoc.object();
@@ -54,8 +53,7 @@ NodeTest::NodeTest(NetworkManager *networkManager):
                 // mNetworkManager->sendData(jsonPolygonDoc.toJson(QJsonDocument::Compact));
             }
         });
-        timerRemoveAircraft->start(7000);
-    });
+        timerRemove->start(7000);
 }
 
 void NodeTest::createInfo()
@@ -70,154 +68,149 @@ void NodeTest::createInfo()
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
     double altitude =0;/* (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));*/
     //--------------------------------------------------------
-    QJsonDocument jsonDocument;
-    QJsonObject jsonObject;
+    NodeInfo nodInfo;
+    NodeData nodData;
+    nodData.id = id;
+    nodData.name = name;
+    nodData.type = NodeType::Fixed;
+    nodData.command = Command::Add;
+    nodData.iconInfoUrl = "../data/models/station/station.png";
+    nodData.imgInfoUrl = "qrc:/Resources/system.jpg";
+    nodData.url2D = "../data/models/station/station.png";
+    nodData.url3D = "../data/models/station/station.osgb";
+    nodData.color = color.name();
+    nodData.isAttacker = false;
+    nodData.latitude = latitude;
+    nodData.longitude = longitude;
+    nodData.altitude = altitude;
 
-    jsonObject.insert("Type", "Node");
-    jsonObject.insert("COMMAND", "ADD");
-
-    QJsonObject jsonData;
-
-    QJsonObject nameObject;
-    nameObject.insert("value", name);
-    nameObject.insert("category", "Main Information");
-    jsonData.insert("Name", nameObject);
-    QJsonObject idObject;
-    idObject.insert("value", id);
-    idObject.insert("category", "Main Information");
-    jsonData.insert("Id", idObject);
-
-    jsonData.insert("Color", color.name());
-    jsonData.insert("Url2d", "../data/models/station/station.png");
-    jsonData.insert("Url3d", "../data/models/station/station.osgb");
-    jsonData.insert("ImgSrc", "qrc:/Resources/system.jpg");
-
-    QJsonObject longObject;
-    longObject.insert("value", longitude);
-    longObject.insert("category", "Location Information");
-    jsonData.insert("Longitude", longObject);
-    QJsonObject latObject;
-    latObject.insert("value", latitude);
-    latObject.insert("category", "Location Information");
-    jsonData.insert("Latitude", latObject);
-    QJsonObject altObject;
-    altObject.insert("value", altitude);
-    altObject.insert("category", "Location Information");
-    jsonData.insert("Altitude", altObject);
-
-    QJsonArray layer;
     double rand = (QRandomGenerator::global()->generate() % (2));
     if(rand < 1)
-        layer.push_back(302);
+        nodData.layersId.push_back(302);
     else
-        layer.push_back(303);
-    jsonData.insert("LayersId", layer);
+        nodData.layersId.push_back(303);
 
-    jsonObject.insert("Data", jsonData);
-    jsonDocument.setObject(jsonObject);
-    NodeData nodeData;
-    nodeData.nodeDoc = jsonDocument;
+    NodeFieldData nameField;
+    nameField.name = "Name";
+    nameField.value = name;
+    nameField.category = "Main Information";
+    nodData.fieldData.push_back(nameField);
 
+    NodeFieldData idField;
+    idField.name = "Id";
+    idField.value = id;
+    idField.category = "Main Information";
+    nodData.fieldData.push_back(idField);
+
+    NodeFieldData colorField;
+    colorField.name = "Color";
+    colorField.value = color.name();
+    colorField.category = "Main Information";
+    nodData.fieldData.push_back(colorField);
+
+    NodeFieldData latField;
+    latField.name = "Latitude";
+    latField.value = latitude;
+    latField.category = "Location Information";
+    nodData.fieldData.push_back(latField);
+
+    NodeFieldData longField;
+    longField.name = "Longitude";
+    longField.value = longitude;
+    longField.category = "Location Information";
+    nodData.fieldData.push_back(longField);
+
+    NodeFieldData altField;
+    altField.name = "Altitude";
+    altField.value = altitude;
+    altField.category = "Location Information";
+    nodData.fieldData.push_back(altField);
+
+    nodInfo.nodeData = nodData;
     //--status node-----------------------------------------------
-    QJsonDocument jsonDocStatus;
-    QJsonObject jsonObjectStatus;
+    StatusNodeData statusNodeData;
+    statusNodeData.id = id;
+    statusNodeData.name = "Status" + QString::number(mCount);
+    statusNodeData.latitude = latitude;
+    statusNodeData.longitude = longitude;
+    statusNodeData.altitude = altitude;
+    statusNodeData.command = Command::Add;
+    statusNodeData.layerId = 305;
 
-    jsonObjectStatus.insert("Type", "Status");
-    jsonObjectStatus.insert("COMMAND", "ADD");
+    NodeFieldData info1Field;
+    info1Field.name = "Info1";
+    info1Field.value = 200;
+    info1Field.category = "";
+    statusNodeData.fieldData.push_back(info1Field);
 
-    QJsonObject jsonObjectStatusData;
-    jsonObjectStatusData.insert("Name", name);
-    jsonObjectStatusData.insert("Id", id);
-    jsonObjectStatusData.insert("Longitude", longitude);
-    jsonObjectStatusData.insert("Latitude", latitude);
-    jsonObjectStatusData.insert("Altitude", altitude);
-    jsonObjectStatusData.insert("LayerId", 305);
+    NodeFieldData info2Field;
+    info2Field.name = "Info2";
+    info2Field.value = "StatusInfo";
+    info2Field.category = "";
+    statusNodeData.fieldData.push_back(info2Field);
+    statusNodeData.fieldData.push_back(colorField);
 
-    QJsonObject jsonObjectStatusFieldData;
-    jsonObjectStatusFieldData.insert("Info1", "info1");
-    jsonObjectStatusFieldData.insert("Info2", 200);
-    jsonObjectStatusData.insert("FieldData", jsonObjectStatusFieldData);
-
-    jsonObjectStatus.insert("Data", jsonObjectStatusData);
-    jsonDocStatus.setObject(jsonObjectStatus);
-    nodeData.statusDoc = jsonDocStatus;
+    nodInfo.statusNodeData = statusNodeData;
 
     //--circle node------------------------------------------------
-    double radius = 1000 + (QRandomGenerator::global()->generate() % (5000 - 1000));
     QColor colorCircle("red");
     colorCircle.setAlpha(100);
-    QJsonDocument jsonDocCircle;
-    QJsonObject jsonObjectCircle;
+    CircleData circleData;
+    circleData.id = id;
+    circleData.name = "Circle" + QString::number(mCount);
+    circleData.radius = 1000 + (QRandomGenerator::global()->generate() % (5000 - 1000));
+    circleData.color = colorCircle.name();
+    circleData.strokeColor = colorCircle.name();
+    circleData.strokeWidth = 0;
+    circleData.altitude = altitude;
+    circleData.latitude = latitude;
+    circleData.longitude = longitude;
+    circleData.command = Command::Add;
+    circleData.layerId = 304;
 
-    jsonObjectCircle.insert("Type", "Circle");
-    jsonObjectCircle.insert("COMMAND", "ADD");
-
-    QJsonObject jsonObjectCircleData;
-    jsonObjectCircleData.insert("Name", name + " circle");
-    jsonObjectCircleData.insert("Id", id);
-
-    jsonObjectCircleData.insert("Longitude", longitude);
-    jsonObjectCircleData.insert("Latitude", latitude);
-    jsonObjectCircleData.insert("Altitude", altitude);
-    jsonObjectCircleData.insert("Radius", radius);
-    jsonObjectCircleData.insert("Color", colorCircle.name(QColor::HexArgb));
-
-    jsonObjectCircleData.insert("LayerId", 304);
-
-    jsonObjectCircle.insert("Data", jsonObjectCircleData);
-    jsonDocCircle.setObject(jsonObjectCircle);
-    nodeData.circleDoc = jsonDocCircle;
+    nodInfo.circleData = circleData;
     //--polygon----------------------------------------------------
     QColor colorPolygon("green");
     colorPolygon.setAlpha(50);
     QColor colorStroke("blue");
-    QJsonDocument jsonDocPolygon;
-    QJsonObject jsonObjectPolygon;
 
-    jsonObjectPolygon.insert("Type", "Polygon");
-    jsonObjectPolygon.insert("COMMAND", "ADD");
+    PolygonData polygonData;
+    polygonData.id = id;
+    polygonData.name = "Polygon" + QString::number(mCount);
+    polygonData.fillColor = colorPolygon.name(QColor::HexArgb);
+    polygonData.color = colorStroke.name(QColor::HexArgb);
+    polygonData.width = 7;
+    polygonData.command = Command::Add;
+    polygonData.layerId = 306;
 
-    QJsonObject jsonObjectPolygonData;
-    jsonObjectPolygonData.insert("Name", name + " polygon");
-    jsonObjectPolygonData.insert("Id", id);
-    jsonObjectPolygonData.insert("Width", 7);
-    jsonObjectPolygonData.insert("Color", colorStroke.name(QColor::HexArgb));
-    jsonObjectPolygonData.insert("FillColor", colorPolygon.name(QColor::HexArgb));
-
-    QJsonArray points;
     double step = 0.01;
-    QJsonObject point1;
-    point1.insert("Longitude", longitude - step);
-    point1.insert("Latitude", latitude - step);
-    point1.insert("Altitude", altitude);
-    points.push_back(point1);
+    QVector3D point1;
+    point1.setX(longitude - step);
+    point1.setY(latitude - step);
+    point1.setX(altitude);
+    polygonData.points.push_back(point1);
 
-    QJsonObject point2;
-    point2.insert("Longitude", longitude + step);
-    point2.insert("Latitude", latitude - step);
-    point2.insert("Altitude", altitude);
-    points.push_back(point2);
+    QVector3D point2;
+    point2.setX(longitude + step);
+    point2.setY(latitude - step);
+    point2.setX(altitude);
+    polygonData.points.push_back(point2);
 
-    QJsonObject point3;
-    point3.insert("Longitude", longitude + step);
-    point3.insert("Latitude", latitude + step);
-    point3.insert("Altitude", altitude);
-    points.push_back(point3);
+    QVector3D point3;
+    point3.setX(longitude + step);
+    point3.setY(latitude + step);
+    point3.setX(altitude);
+    polygonData.points.push_back(point3);
 
-    QJsonObject point4;
-    point4.insert("Longitude", longitude - step);
-    point4.insert("Latitude", latitude + step);
-    point4.insert("Altitude", altitude);
-    points.push_back(point4);
+    QVector3D point4;
+    point4.setX(longitude - step);
+    point4.setY(latitude + step);
+    point4.setX(altitude);
+    polygonData.points.push_back(point4);
 
-    jsonObjectPolygonData.insert("Points", points);
-    jsonObjectPolygonData.insert("LayerId", 306);
+    nodInfo.polygonData = polygonData;
 
-    jsonObjectPolygon.insert("Data", jsonObjectPolygonData);
-    jsonDocPolygon.setObject(jsonObjectPolygon);
-    nodeData.polygonDoc = jsonDocPolygon;
-
-    mNodeDataList.append(nodeData);
+    mNodeInfoList.append(nodInfo);
 }
 
 void NodeTest::updateInfo()

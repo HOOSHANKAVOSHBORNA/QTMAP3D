@@ -5,16 +5,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#define stringify( name ) #name
-
-
-struct AssignmentData
-{
-    int attackerID;
-    int targetID;
-    std::string state;
-};
-
 
 class AssignmentTest : public QObject
 {
@@ -23,18 +13,17 @@ public:
     AssignmentTest(NetworkManager *networkManager);
 
 private:
-    bool randomBool();
-    void createAssignment(AssignmentData data);
-    void updateAssignment(AssignmentData data);
-    void removeAssignment(AssignmentData data);
+    void createAssignment(QJsonDocument data);
+    void updateAssignment(QJsonDocument data);
+    void removeAssignment(QJsonDocument data);
 
 public slots:
     void dataReceived(QJsonObject obj);
 
 private:
     NetworkManager *mNetworkManager;
-    QVector<AssignmentData> mAssignmentDataList;
-    bool mAssignmentQueueDeclared{false};
+    QVector<QJsonDocument> mAssignmentDataList;
+    QVector<std::string> mStates{"Assigned", "Search", "Lock", "Fire", "Success", "Failed"};
     int  mCount{0};
 };
 

@@ -1,21 +1,21 @@
-#ifndef LAYERTEST_H
-#define LAYERTEST_H
+//#ifndef LAYERTEST_H
+//#define LAYERTEST_H
 
-#include "networkManager.h"
+//#include "networkManager.h"
 
-#include <QJsonDocument>
+//#include <QJsonDocument>
 
-class LayerTest
-{
-public:
-    LayerTest(NetworkManager *networkManager);
+//class LayerTest
+//{
+//public:
+//    LayerTest(NetworkManager *networkManager);
 
-private:
-    QJsonDocument createLayers();
-    QJsonDocument updateLayers();
+//private:
+//    QJsonDocument createLayers();
+//    QJsonDocument updateLayers();
 
-private:
-    NetworkManager *mNetworkManager;
-};
+//private:
+//    NetworkManager *mNetworkManager;
+//};
 
-#endif // LAYERTEST_H
+//#endif // LAYERTEST_H

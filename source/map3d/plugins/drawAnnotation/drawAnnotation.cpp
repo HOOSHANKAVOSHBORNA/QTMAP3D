@@ -96,7 +96,7 @@ bool DrawAnnotation::setup()
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
 
-    connect(serviceManager(), &ServiceManager::annotationNodeDataReceived, this, &DrawAnnotation::AnnotatedNodeDataReceived);
+    connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawAnnotation::AnnotatedNodeDataReceived);
     connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawAnnotation::polygonDataReceived);
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 

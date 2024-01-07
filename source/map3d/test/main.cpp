@@ -5,6 +5,7 @@
 #include "flyableNodeTest.h"
 #include "movableNodeTest.h"
 #include "nodeTest.h"
+#include "serviceManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
 
     NetworkManager networkManager;
     networkManager.start();
+    ServiceManager serviceManager(&networkManager);
 //    QObject::connect(&networkManager, &NetworkManager::flyableQueueDeclared,[&networkManager]{
 //        networkManager.sendFlyableData("data");
 //    });

@@ -16,6 +16,7 @@ find_package(Qt6 REQUIRED COMPONENTS Gui)
 add_executable(test
   main.cpp
   networkManager.h networkManager.cpp
+  serviceManager.h serviceManager.cpp
   flyableNodeTest.h flyableNodeTest.cpp
   nodeTest.cpp nodeTest.h
   layerTest.cpp layerTest.h

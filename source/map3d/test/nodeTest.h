@@ -1,29 +1,29 @@
 #ifndef NODETEST_H
 #define NODETEST_H
 
-#include "networkManager.h"
+#include "serviceManager.h"
 #include <QJsonDocument>
 
-struct NodeData
+struct NodeInfo
 {
-    QJsonDocument nodeDoc;
-    QJsonDocument statusDoc;
-    QJsonDocument circleDoc;
-    QJsonDocument polygonDoc;
+    NodeData nodeData;
+    StatusNodeData statusNodeData;
+    CircleData circleData;
+    PolygonData polygonData;
 };
 
 class NodeTest
 {
 public:
-    NodeTest(NetworkManager *networkManager);
+    NodeTest(ServiceManager *serviceManager);
 
 private:
     void createInfo();
     void updateInfo();
 
 private:
-    NetworkManager *mNetworkManager;
-    QVector<NodeData> mNodeDataList;
+    ServiceManager *mServiceManager;
+    QVector<NodeInfo> mNodeInfoList;
     int mMaxNumber{20};
     int mCount{0};
 };
