@@ -35,9 +35,7 @@ void AssignDataManager::assignDataReceived(AssignData *assignData)
     QMap<int,osg::ref_ptr<SimpleModelNode>> *dataMap = mModel->getDataManager()->getNodeMap();
     SimpleModelNode *attackerNode = dataMap->find(assignData->attackerID).value();
     SimpleModelNode *targetNode = dataMap->find(assignData->targetID).value();
-    qDebug() << assignData->attackerID;
-    qDebug() << assignData->targetID;
-    qDebug() << assignData->state;
+
 
     AssignState state = parseState(assignData->state);
 

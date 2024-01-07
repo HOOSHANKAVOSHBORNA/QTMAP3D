@@ -56,6 +56,15 @@ struct AssignData: public osg::Referenced
     std::string state{"PREASSIGN"};
 };
 
+struct ExplosionData: public osg::Referenced
+{
+    double latitude;
+    double longitude;
+    double duration;
+    double scale;
+    std::string command{"ADD"};
+};
+
 struct PolyLineData: public osg::Referenced
 {
     int id;
@@ -102,6 +111,7 @@ public:
     void layersData(QJsonObject layers);
     void flyableNodeData(QJsonObject jsonObject);
     void statusNodeData(QJsonObject jsonObject);
+    void receiveExplosionData(QJsonObject jsonObject);
     void receiveAssignmentData(QJsonObject jsonObject);
     void sendJsonAssignData(AssignData data);
     void messageData(QString jsonData);
@@ -121,6 +131,7 @@ signals:
     void layerDataReceived(CompositeAnnotationLayer *layer);
     void flyableNodeDataReceived(NodeData *modelNodeData);
     void statusNodeDataReceived(StatusNodeData *statusNodeData);
+    void explosionDataReceived(ExplosionData *explosionData);
     void assignDataReceived(AssignData *assignData);
     void lineNodeDataReceived(PolyLineData *lineNodeData);
     void movableNodeDataReceived(NodeData *modelNodeData);

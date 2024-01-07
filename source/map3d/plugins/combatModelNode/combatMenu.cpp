@@ -107,7 +107,22 @@ void AssignmentListModel::onAttackButtonClicked()
         mSelectedAssignmentList.at(var)->target->highlight(false);
     }
     mSelectedAssignmentList.clear();
-    mOperatorNode->highlight(true,osg::Vec4f(1,0,0,0.7));
+    mOperatorNode->highlight(true,osg::Vec4f(0,0.2,1,0.7));
+}
+
+void AssignmentListModel::onCancelButtonClicked()
+{
+    for(auto assignment: mSelectedAssignmentList){
+        if(mAssignmentList.contains(assignment)){
+            emit cancelAssignRequested(assignment->attacker,assignment->target);
+        }
+    }
+    for (int var = 0; var < mSelectedAssignmentList.count(); ++var) {
+        mSelectedAssignmentList.at(var)->attacker->highlight(false);
+        mSelectedAssignmentList.at(var)->target->highlight(false);
+    }
+    mSelectedAssignmentList.clear();
+    mOperatorNode->highlight(true,osg::Vec4f(0,0.2,1,0.7));
 }
 
 
@@ -139,6 +154,24 @@ void AssignmentListModel::onItemHovered(int row , bool hover)
         assinment->assignLine->setFillColor(Utility::qColor2osgEarthColor(color));
         assinment->assignLine->setWidth(3);
     }
+}
+
+void AssignmentListModel::selectAll(bool select)
+{
+    for(auto assignment:mAssignmentList){
+        if(select){
+            if(!mSelectedAssignmentList.contains(assignment)){
+                mSelectedAssignmentList.append(assignment);
+                assignment->attacker->highlight(true,osg::Vec4f(1,0,0,0.7)) ;
+                assignment->target->highlight(true,osg::Vec4f(1,0,0,0.7)) ;
+            }
+        }else{
+            mSelectedAssignmentList.clear();
+            assignment->attacker->highlight(false) ;
+            assignment->target->highlight(false) ;
+        }
+    }
+    mOperatorNode->highlight(true,osg::Vec4f(0,0.2,1,0.7));
 }
 
 QList<Assignment *> AssignmentListModel::getSelectedAssignmentList()

@@ -113,29 +113,71 @@ Item {
                 RowLayout {
                     spacing: 0
 
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 34
-
                     visible: rootItem.model ? rootItem.model.strokeStatus : false
 
                     Text {
                         text: "Stroke"
                         color: Style.foregroundColor
                         font.pixelSize: 17 / Style.monitorRatio
+                        Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                     }
 
-                    ColorPicker {
-                        id: strokeColorPick
+                    GroupBox {
+                        id: strokeSec
 
-                        Layout.preferredHeight: 34
+                        padding: 0
+
                         Layout.fillWidth: true
-                        Layout.topMargin: 5
-                        Layout.bottomMargin: 5
+                        Layout.preferredHeight: 64 / Style.monitorRatio
+                        Layout.rightMargin: 15 / Style.monitorRatio
 
-                        //                        selectedColor: /*rootItem.model.strokeColor*/ '#099999'
-                        onSelectedColorChanged: {
-                            rootItem.model.strokeColor = selectedColor
+                        background: Rectangle {
+                            color: foregroundColor
+                            radius: 10 / Style.monitorRatio
+                            border.color: "transparent"
+                        }
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 5
+
+                            ColorPicker {
+                                id: strokeColorPick
+
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+
+                                //                                selectedColor: rootItem.model.strokeColor /*'#099999'*/
+                                onSelectedColorChanged: {
+                                    rootItem.model.strokeColor = selectedColor
+                                }
+                            }
+
+                            FloatSpinBox {
+                                id: strokeWidthValue
+                                editable: true
+                                Layout.fillWidth: true
+                                Layout.alignment: Qt.AlignCenter
+                                Layout.topMargin: 10 / Style.monitorRatio
+                                height: 20 / Style.monitorRatio
+                                from: 0
+                                to: 20000000
+                                stepSize: 1
+                                onValueChanged: {
+                                    if (rootItem.model)
+                                        rootItem.model.strokeWidth = value
+
+
+                                }
+                            }
+
+                            Binding {
+                                target: strokeWidthValue
+                                property: "value"
+                                value: rootItem.model ? rootItem.model.strokeWidth : 0
+                                delayed: true
+                            }
                         }
                     }
                 }
@@ -189,6 +231,12 @@ Item {
                                     Layout.minimumWidth: 100 / Style.monitorRatio
                                     Layout.rightMargin: 5 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
+
+
+
+
+
+
                                     height: valHeight / Style.monitorRatio
                                     decimals: 4
                                     from: -180
@@ -1058,187 +1106,6 @@ Item {
                         property: "checked"
                         value: rootItem.model ? rootItem.model.showSlop : 0
                         delayed: true
-                    }
-                }
-
-                ////------------------------ Points  -------------------- ///////////////
-                GroupBox {
-                    id: pointSec
-                    //                    visible: rootItem.model ? rootItem.model.pointsStatus : false
-                    padding: 0
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 64 / Style.monitorRatio
-
-                    background: Rectangle {
-                        color: "transparent"
-                        border.color: "transparent"
-                        height: 64 / Style.monitorRatio
-                    }
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        RowLayout {
-                            spacing: 0
-                            Text {
-                                Layout.preferredWidth: swtchWidth / Style.monitorRatio
-                                text: "Points "
-                                font.pixelSize: 17 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-
-                            Switch {
-                                id: pointVisible
-                                padding: 0
-                                width: 100
-                                height: valHeight
-                                checked: false
-                                onToggled: function () {
-                                    rootItem.model.pointsVisible = pointVisible.checked
-                                }
-                            }
-
-                            Binding {
-                                target: pointVisible
-                                property: "checked"
-                                value: rootItem.model ? rootItem.model.pointsVisible : 0
-                                delayed: true
-                            }
-                        }
-                        RowLayout {
-                            spacing: 0
-                            Text {
-                                text: "Point Color"
-                                color: Style.foregroundColor
-                                font.pixelSize: 17 / Style.monitorRatio
-                                Layout.alignment: Qt.AlignTop
-                                Layout.preferredWidth: lblWidth / Style.monitorRatio
-                                visible: rootItem.model ? rootItem.model.strokeStatus : false
-                            }
-                            GroupBox {
-                                padding: 0
-                                Layout.fillWidth: true
-                                Layout.margins: 0
-                                Layout.rightMargin: 15 / Style.monitorRatio
-                                enabled: pointVisible.checked
-                                background: Rectangle {
-                                    color: foregroundColor
-                                    radius: 10 / Style.monitorRatio
-                                    border.color: "transparent"
-                                }
-
-                                ColumnLayout {
-                                    anchors.fill: parent
-
-                                    ColorPicker {
-                                        id: pointColorPick
-
-                                        Layout.fillWidth: true
-                                        Layout.fillHeight: true
-
-                                        //                                        selectedColor: /*rootItem.model.pointsColor*/ '#099999'
-                                        onSelectedColorChanged: {
-                                            rootItem.model.pointsColor = selectedColor
-                                        }
-                                    }
-
-                                    FloatSpinBox {
-                                        id: pointOpacityValue
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 20 / Style.monitorRatio
-                                        Layout.bottomMargin: 5 / Style.monitorRatio
-                                        Layout.topMargin: 10 / Style.monitorRatio
-                                        Layout.rightMargin: 5 / Style.monitorRatio
-                                        Layout.leftMargin: 5 / Style.monitorRatio
-                                        editable: true
-                                        stepSize: 1
-                                        height: 20 / Style.monitorRatio
-                                        from: 0
-                                        to: 100
-                                        onValueChanged: {
-                                            rootItem.model.pointsColor.a = value / 100
-                                        }
-                                    }
-
-                                    Binding {
-                                        target: pointOpacityValue
-                                        property: "value"
-                                        value: rootItem.model ? rootItem.model.pointsColor.a
-                                                                * 100 : 0
-                                        delayed: true
-                                    }
-                                }
-                            }
-                        }
-
-                        RowLayout {
-                            spacing: 0
-                            Text {
-                                text: "Point Width "
-                                font.pixelSize: 17 / Style.monitorRatio
-                                Layout.preferredWidth: lblWidth / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-                            Rectangle {
-                                color: foregroundColor
-                                radius: 10 / Style.monitorRatio
-                                border.color: "transparent"
-                                Layout.rightMargin: 15 / Style.monitorRatio
-                                Layout.fillWidth: true
-                                Layout.alignment: Qt.AlignVCenter
-                                Layout.preferredHeight: valHeight / Style.monitorRatio
-                                Layout.preferredWidth: 200 / Style.monitorRatio
-
-                                FloatSpinBox {
-                                    id: pointWidthValue
-                                    editable: true
-                                    enabled: pointVisible.checked
-                                    anchors.leftMargin: 5 / Style.monitorRatio
-                                    anchors.rightMargin: 5 / Style.monitorRatio
-                                    anchors.left: parent.left
-                                    anchors.right: parent.right
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    height: 20 / Style.monitorRatio
-                                    stepSize: 1
-                                    from: 0
-                                    to: 20000000
-                                    onValueChanged: {
-                                        rootItem.model.pointsWidth = value
-                                    }
-                                }
-                                Binding {
-                                    target: pointWidthValue
-                                    property: "value"
-                                    value: rootItem.model ? rootItem.model.pointsWidth : 0
-                                    delayed: true
-                                }
-                            }
-                        }
-                        RowLayout {
-                            spacing: 0
-                            Text {
-                                Layout.preferredWidth: swtchWidth / Style.monitorRatio
-                                text: "Point Smooth "
-                                font.pixelSize: 17 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-                            Switch {
-                                id: pointSmoothValue
-                                enabled: pointVisible.checked
-                                padding: 0
-                                width: 100 / Style.monitorRatio
-                                height: valHeight
-                                checked: false
-                                onToggled: function () {
-                                    rootItem.model.pointsSmooth = pointSmoothValue.checked
-                                }
-                            }
-                            Binding {
-                                target: pointSmoothValue
-                                property: "checked"
-                                value: rootItem.model ? rootItem.model.pointsSmooth : 0
-                                delayed: true
-                            }
-                        }
                     }
                 }
             }

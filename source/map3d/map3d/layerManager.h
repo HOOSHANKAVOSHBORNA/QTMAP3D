@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include <osgEarth/Layer>
 
+#include "layerProperty.h"
 #include "mapItem.h"
 
 Q_DECLARE_METATYPE(osgEarth::Layer);
@@ -16,39 +17,39 @@ class LayerManager : public QObject
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(QQuickItem *propertyItem READ propertyItem WRITE setPropertyItem NOTIFY
-                   propertyItemChanged FINAL)
+    Q_PROPERTY(LayerPropertyItem *propertyInterface READ propertyInterface WRITE
+                   setPropertyInterface NOTIFY propertyInterfaceChanged FINAL)
     Q_PROPERTY(QString propertyItemTitle READ propertyItemTitle WRITE setPropertyItemTitle NOTIFY
                    propertyItemTitleChanged FINAL)
 
 public:
-    static LayerManager* createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+    static LayerManager *createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+
     ~LayerManager() override;
+
     void setMapItem(MapItem *mapItem);
+
     Q_INVOKABLE LayerModel *layerModel() const;
-
-    QQuickItem *propertyItem() const;
-    void setPropertyItem(QQuickItem *newPropertyItem);
-    void addPropertyItem(QQuickItem *newPropertyItem, QString title);
-    Q_INVOKABLE void removePropertyItem();
-
-    void createProperty(/*model, */ QString title);
 
     QString propertyItemTitle() const;
     void setPropertyItemTitle(const QString &newPropertyItemTitle);
 
+    LayerPropertyItem *propertyInterface() const;
+    void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
+
 signals:
     void propertyItemChanged();
-
     void propertyItemTitleChanged();
+
+    void propertyInterfaceChanged();
 
 private:
     explicit LayerManager();
 
 private:
     inline static LayerManager *mInstance;
-    LayerModel *mLayerModel;
-    QQuickItem *mPropertyItem = nullptr;
+    LayerModel *mLayerModel = nullptr;
+    LayerPropertyItem *mPropertyInterface = nullptr;
     QString mPropertyItemTitle;
 };
 
@@ -75,6 +76,9 @@ public:
     QModelIndex getDragIndex();
     QString filterString() const;
 
+    LayerPropertyItem *propertyInterface() const;
+    void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
+
 public slots:
     void setDragIndex(QModelIndex value);
     void setFilterString(const QString &newFilterString);
@@ -94,6 +98,7 @@ private slots:
     void onLayerAdded(osgEarth::Layer* layer, osgEarth::Layer *parentLayer, unsigned index);
     void onLayerRemoved(osgEarth::Layer* layer, osgEarth::Layer *parentLayer, unsigned index);
     void setLayerVisible(osgEarth::VisibleLayer *layer);
+
 private:
     void moveItem(QModelIndex from , QModelIndex to);
     void setItemVisible(QStandardItem *item, bool visible);
@@ -105,6 +110,7 @@ private:
     QModelIndex mDragIndex;
     std::map<osgEarth::Layer*, QStandardItem*> mLayerToItemMap;
     QString mFilterString;
+    LayerPropertyItem *mPropertyInterface = nullptr;
 };
 
 

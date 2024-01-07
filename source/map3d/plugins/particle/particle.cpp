@@ -19,6 +19,8 @@ bool Particle::setup()
     mParticleLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mParticleLayer);
 
+    connect(serviceManager(),&ServiceManager::explosionDataReceived,this,&Particle::onExplosionDataReceived);
+
     ///////////////////////////add explosion/////////////////////////////////
     auto toolboxItemExplode =  new ToolboxItem{EXPLOSION, CATEGORY, "qrc:/resources/explosion.png", true};
     QObject::connect(toolboxItemExplode, &ToolboxItem::itemChecked, this, &Particle::onExplodeClicked);
@@ -183,10 +185,16 @@ void Particle::onFogClicked(bool check)
     }
 }
 
+void Particle::onExplosionDataReceived(ExplosionData *explosionData)
+{
+    mExplosion = new Explosion(mapItem(),explosionData->duration);
+    mExplosion->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(),explosionData->longitude, explosionData->latitude));
+    mExplosion->setScaleRatio(explosionData->scale);
+    mParticleLayer->addChild(mExplosion);
+}
+
 void Particle::init(const osgEarth::GeoPoint &geoPos)
 {
-
-
     switch (mType) {
     case Type::Fire:
         mFire = new FireSmoke(mapItem());

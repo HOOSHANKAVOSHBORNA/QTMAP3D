@@ -50,14 +50,14 @@ public:
     TabbarModel *tabbarModel() const;
     void setTabbarModel(TabbarModel *newTabbarModel);
 
-    // just for test
+    // TEST
     Q_INVOKABLE void appendTest(TabbarItem *newTabbarItem) {
         mTabbarModel->appendRow(newTabbarItem);
     }
 
-    Q_INVOKABLE void appendTest(QString newTitle) {
-        // TEST
-        QQmlComponent* comp = new QQmlComponent(qmlEngine(this));
+    Q_INVOKABLE void appendTest(QString newTitle)
+    {
+        QQmlComponent *comp = new QQmlComponent(qmlEngine(this));
 
         QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
             if(status == QQmlComponent::Error) {
@@ -75,8 +75,8 @@ public:
         });
 
         comp->loadUrl(QUrl("qrc:/TestItem.qml"));
-        // END TEST
     }
+    // ENDTEST
 
 signals:
     void tabbarModelChanged();

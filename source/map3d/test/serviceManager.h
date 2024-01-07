@@ -235,6 +235,33 @@ struct CircleData
     }
 };
 
+struct ExplosionData
+{
+    int id;
+    QString name;
+    double latitude;
+    double longitude;
+    double altitude;
+    double duration;
+    double scale;
+    QString command{Command::Add};
+    int layerId;
+    QJsonObject toJson() const{
+        QJsonObject jsonObject;
+        jsonObject.insert("Id", id);
+        jsonObject.insert("Name", name);
+        jsonObject.insert("Latitude", latitude);
+        jsonObject.insert("Longitude", longitude);
+        jsonObject.insert("Altitude", altitude);
+        jsonObject.insert("Duration", duration);
+        jsonObject.insert("Scale", scale);
+        jsonObject.insert("Command", command);
+        jsonObject.insert("LayerId", layerId);
+
+        return jsonObject;
+    }
+};
+
 struct Layer {
     int id;
     int parentId;
@@ -267,6 +294,7 @@ public:
     void sendPolyLine(const PolyLineData &polyLineData);
     void sendPolygon(const PolygonData &polygonData);
     void sendCircle(const CircleData &circleData);
+    void sendExplosion(const ExplosionData &explosionData);
 
 
 //    void signInData(QJsonObject jsonObject);

@@ -87,6 +87,17 @@ void ServiceManager::sendCircle(const CircleData &circleData)
     mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
 }
 
+void ServiceManager::sendExplosion(const ExplosionData &explosionData)
+{
+    auto inputJsonObject = explosionData.toJson();
+    QJsonObject jsonObject;
+    jsonObject.insert("Type", "Explosion");
+    jsonObject.insert("Data", inputJsonObject);
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(jsonObject);
+    mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
+}
+
 void ServiceManager::onMessageReceived(const QString &message)
 {
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
