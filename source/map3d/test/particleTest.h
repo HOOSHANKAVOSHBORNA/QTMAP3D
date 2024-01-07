@@ -1,34 +1,34 @@
-#ifndef PARTICLETEST_H
-#define PARTICLETEST_H
+//#ifndef PARTICLETEST_H
+//#define PARTICLETEST_H
 
-#include "networkManager.h"
-#include "qobject.h"
-#include <string>
+//#include "networkManager.h"
+//#include "qobject.h"
+//#include <string>
 
-struct ExplosionData
-{
-    double latitude;
-    double longitude;
-    double duration;
-    double scale;
-    std::string command;
-};
+//struct ExplosionData
+//{
+//    double latitude;
+//    double longitude;
+//    double duration;
+//    double scale;
+//    std::string command;
+//};
 
 
-class ParticleTest : public QObject
-{
-    Q_OBJECT
-public:
-    ParticleTest(NetworkManager *networkManager);
+//class ParticleTest : public QObject
+//{
+//    Q_OBJECT
+//public:
+//    ParticleTest(NetworkManager *networkManager);
 
-private:
-    void createExplosion(ExplosionData data);
+//private:
+//    void createExplosion(ExplosionData data);
 
-private:
-    NetworkManager *mNetworkManager;
-    QVector<ExplosionData> mParticleDataList;
-    bool mParticleQueueDeclared{false};
-    int  mCount{0};
-};
+//private:
+//    NetworkManager *mNetworkManager;
+//    QVector<ExplosionData> mParticleDataList;
+//    bool mParticleQueueDeclared{false};
+//    int  mCount{0};
+//};
 
-#endif // PARTICLETEST_H
+//#endif // PARTICLETEST_H

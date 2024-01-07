@@ -44,7 +44,7 @@ bool CombatModelNode::setup()
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::onCloseMenuClicked, this, &CombatModelNode::onCloseMenuClicked);
     QObject::connect(serviceManager(), &ServiceManager::assignDataReceived, mDataManager, &AssignDataManager::assignDataReceived);
     QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::sendAssignRequested, mDataManager, &AssignDataManager::onSendAssignRequest);
-    // QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::cancelAssignRequested, mDataManager, &AssignDataManager::onSendCancelRequest);
+    QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::cancelAssignRequested, mDataManager, &AssignDataManager::onSendCancelRequest);
 
     return true;
 
