@@ -188,6 +188,8 @@ Item {
                 RowLayout {
                     id: heightSec
                     visible: rootItem.cppInterface ? rootItem.cppInterface.heightStatus : false
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                     spacing: 0
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
@@ -202,16 +204,15 @@ Item {
                         border.color: "transparent"
                         Layout.rightMargin: 15 / Style.monitorRatio
                         Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignVCenter
                         Layout.preferredHeight: valHeight / Style.monitorRatio
-                        Layout.preferredWidth: 200 / Style.monitorRatio
                         StepSpinBox {
                             id: heightValue
                             editable: true
-                            anchors.leftMargin: 5 / Style.monitorRatio
-                            anchors.rightMargin: 5 / Style.monitorRatio
+                            anchors.fill: parent
                             anchors.left: parent.left
                             anchors.right: parent.right
+                            anchors.rightMargin: 5
+                            anchors.leftMargin: 5
                             height: 30 / Style.monitorRatio
                             decimals: 2
                             from: 0
