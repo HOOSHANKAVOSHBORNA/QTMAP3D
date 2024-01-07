@@ -11,6 +11,7 @@ Item {
 
     property bool addCheck: false
     property bool removeCheck: false
+    property bool selectallitems: true
 
     readonly property color foregroundColor: "#DEE3E6"
     readonly property color fg75: Qt.rgba(foregroundColor.r, foregroundColor.g,
@@ -150,7 +151,7 @@ Item {
                         Text {
                             id: name
                             anchors.centerIn: parent
-                            text: qsTr("ATTACK")
+                            text: qsTr("Assign Req")
                             font.family: "Roboto"
                             font.pixelSize: 13 / 1.3
                             font.weight: Font.Bold
@@ -168,15 +169,22 @@ Item {
                         color:"red"
                         border.width: 2
                         border.color: "black"
-radius: 5
+                        radius: 5
                             Text {
                                 id: nameSelect
                                 anchors.centerIn: parent
-                                text: qsTr("selectAll")
+                                text: qsTr("Select All")
                                 font.family: "Roboto"
                                 font.pixelSize: 13 / 1.3
                                 font.weight: Font.Bold
                                 color: "white"
+                            }
+                            MouseArea{
+                                anchors.fill: parent
+                                onClicked: {
+                                    assignmentListModel.selectAll(selectallitems);
+                                    selectallitems = !selectallitems
+                                }
                             }
                         }
                         Rectangle{
@@ -190,11 +198,15 @@ radius: 5
                             Text {
                                 id: nameClose
                                 anchors.centerIn: parent
-                                text: qsTr("close")
+                                text: qsTr("Cancel Req")
                                 font.family: "Roboto"
                                 font.pixelSize: 13 / 1.3
                                 font.weight: Font.Bold
                                 color: "white"
+                            }
+                            MouseArea{
+                                anchors.fill: parent
+                                onClicked: assignmentListModel.onCancelButtonClicked();
                             }
                         }
 

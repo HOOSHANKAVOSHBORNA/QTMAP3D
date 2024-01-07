@@ -26,8 +26,10 @@ public:
     Q_INVOKABLE void onAddButtonChecked(bool check);
     Q_INVOKABLE void onRemoveButtonChecked(bool check);
     Q_INVOKABLE void onAttackButtonClicked();
+    Q_INVOKABLE void onCancelButtonClicked();
     Q_INVOKABLE void onMenuItemSelect(int row);
     Q_INVOKABLE void onItemHovered(int row, bool hover);
+    Q_INVOKABLE void selectAll(bool select);
     QList<Assignment*> getSelectedAssignmentList();
 
 signals:
