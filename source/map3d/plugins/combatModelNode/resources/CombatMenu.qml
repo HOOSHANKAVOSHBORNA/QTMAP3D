@@ -142,8 +142,8 @@ Item {
                         anchors.top: parent.top
                         anchors.topMargin: 2
                         anchors.left: parent.left
-                        width: parent.width
-                        height: parent.height / 3 - 3
+                        width: attackMA.containsMouse ? parent.width + 5 : parent.width
+                        height: attackMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
                         color: "#119cbf"
                         radius: 15
                         Text {
@@ -151,19 +151,22 @@ Item {
                             anchors.centerIn: parent
                             text: qsTr("Attack")
                             font.family: "Roboto"
-                            font.pixelSize: 13 / 1.3
+                            font.pixelSize: attackMA.containsMouse ? 15 / 1.3 : 13/1.3
 //                            font.weight: Font.Bold
                             color: "white"
                         }
                         MouseArea {
+                            id:attackMA
                             anchors.fill: parent
                             onClicked: assignmentListModel.onAttackButtonClicked()
+                            hoverEnabled: true
+
                         }
                     }
                     Rectangle{
                         anchors.centerIn: parent
-                        width: parent.width
-                        height: parent.height / 3 - 3
+                        width: selectMA.containsMouse ? parent.width + 5 : parent.width
+                        height: selectMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
                         color:"#0b42b0"
                         radius: 15
                         Text {
@@ -171,16 +174,23 @@ Item {
                             anchors.centerIn: parent
                             text: qsTr("Select All")
                             font.family: "Roboto"
-                            font.pixelSize: 13 / 1.3
+                            font.pixelSize: selectMA.containsMouse ? 15 / 1.3 : 13/1.3
 //                            font.weight: Font.Bold
                             color: "white"
+                        }
+                        MouseArea {
+                            id:selectMA
+                            anchors.fill: parent
+                            onClicked: {}
+                            hoverEnabled: true
+
                         }
                     }
                     Rectangle{
                         anchors.bottom: parent.bottom
                         anchors.bottomMargin: 1
-                        width: parent.width
-                        height: parent.height / 3 - 3
+                        width: closeMA.containsMouse ? parent.width + 5 : parent.width
+                        height: closeMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
                         color:"#2fde78"
                         radius: 15
                         Text {
@@ -188,8 +198,15 @@ Item {
                             anchors.centerIn: parent
                             text: qsTr("Close")
                             font.family: "Roboto"
-                            font.pixelSize: 13 / 1.3
+                            font.pixelSize: closeMA.containsMouse ? 15 / 1.3 : 13/1.3
                             color: "white"
+                        }
+                        MouseArea {
+                            id:closeMA
+                            anchors.fill: parent
+                            onClicked: {}
+                            hoverEnabled: true
+
                         }
                     }
 
