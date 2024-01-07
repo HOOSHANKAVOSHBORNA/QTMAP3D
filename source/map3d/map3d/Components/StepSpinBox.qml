@@ -21,9 +21,11 @@ Item {
                                           Style.backgroundColor.b, 0.30)
 
     RowLayout {
+        anchors.fill: parent
+
         ComboBox {
             id: stepCombobox
-
+            Layout.alignment: Qt.AlignVCenter
             Layout.preferredHeight: 20
             Layout.preferredWidth: 69
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01]
@@ -56,6 +58,7 @@ Item {
         FloatSpinBox {
             id: floatSpinBox
             stepSize: stepCombobox.currentValue
+            Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true
         }
     }
