@@ -11,7 +11,7 @@ Item {
 
     property bool addCheck: false
     property bool removeCheck: false
-    property bool selectallitems: true
+    property bool selectall: true
 
     readonly property color foregroundColor: "#DEE3E6"
     readonly property color fg75: Qt.rgba(foregroundColor.r, foregroundColor.g,
@@ -27,7 +27,7 @@ Item {
                                           backgroundColor.b, 0.8)
     RowLayout {
         id: mainRow
-//        anchors.centerIn: parent
+        //        anchors.centerIn: parent
         anchors.left: parent.left
         anchors.leftMargin: 110
         Rectangle {
@@ -136,158 +136,162 @@ Item {
                     width: 75 / 1.3 /*Style.monitorRatio*/
                     height: 75 / 1.3 /*Style.monitorRatio*/
                     color: "transparent"
-                    border.width: 2
-                    border.color: "gold"
+//                    border.width: 2
+//                    border.color: "gold"
                     Rectangle{
                         id:attack
                         anchors.top: parent.top
+                        anchors.topMargin: 2
                         anchors.left: parent.left
-                        width: parent.width
-                        height: parent.height / 3
-                        color: "red"
-                        border.width: 2
-                        border.color: "black"
-                        radius: 5
+                        width: attackMA.containsMouse ? parent.width + 5 : parent.width
+                        height: attackMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
+                        color: "#119cbf"
+                        radius: 15
                         Text {
                             id: name
                             anchors.centerIn: parent
-                            text: qsTr("Assign Req")
+                            text: qsTr("Assign")
                             font.family: "Roboto"
-                            font.pixelSize: 13 / 1.3
-                            font.weight: Font.Bold
+                            font.pixelSize: attackMA.containsMouse ? 15 / 1.3 : 13/1.3
+//                            font.weight: Font.Bold
                             color: "white"
                         }
                         MouseArea {
+                            id:attackMA
                             anchors.fill: parent
                             onClicked: assignmentListModel.onAttackButtonClicked()
+                            hoverEnabled: true
+
                         }
                     }
                     Rectangle{
-                        anchors.top: attack.bottom
-                        width: parent.width
-                        height: parent.height / 3
-                        color:"red"
-                        border.width: 2
-                        border.color: "black"
-                        radius: 5
-                            Text {
-                                id: nameSelect
-                                anchors.centerIn: parent
-                                text: qsTr("Select All")
-                                font.family: "Roboto"
-                                font.pixelSize: 13 / 1.3
-                                font.weight: Font.Bold
-                                color: "white"
-                            }
-                            MouseArea{
-                                anchors.fill: parent
-                                onClicked: {
-                                    assignmentListModel.selectAll(selectallitems);
-                                    selectallitems = !selectallitems
-                                }
-                            }
+                        anchors.centerIn: parent
+                        width: selectMA.containsMouse ? parent.width + 5 : parent.width
+                        height: selectMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
+                        color:"#0b42b0"
+                        radius: 15
+                        Text {
+                            id: nameSelect
+                            anchors.centerIn: parent
+                            text: qsTr("Select All")
+                            font.family: "Roboto"
+                            font.pixelSize: selectMA.containsMouse ? 15 / 1.3 : 13/1.3
+//                            font.weight: Font.Bold
+                            color: "white"
                         }
-                        Rectangle{
-                            anchors.bottom: parent.bottom
-                            width: parent.width
-                            height: parent.height / 3
-                            color:"red"
-                            border.width: 2
-                            border.color: "black"
-                            radius: 5
-                            Text {
-                                id: nameClose
-                                anchors.centerIn: parent
-                                text: qsTr("Cancel Req")
-                                font.family: "Roboto"
-                                font.pixelSize: 13 / 1.3
-                                font.weight: Font.Bold
-                                color: "white"
+                        MouseArea {
+                            id:selectMA
+                            anchors.fill: parent
+                            onClicked: {
+                                assignmentListModel.selectAll(selectall)
+                                selectall =! selectall
                             }
-                            MouseArea{
-                                anchors.fill: parent
-                                onClicked: assignmentListModel.onCancelButtonClicked();
-                            }
-                        }
+                            hoverEnabled: true
 
+                        }
                     }
-//                Rectangle {
-//                    id: attackholder
-//                    width: 75 / 1.3 /*Style.monitorRatio*/
-//                    height: 75 / 1.3 /*Style.monitorRatio*/
-//                    radius: width / 2
+                    Rectangle{
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 1
+                        width: closeMA.containsMouse ? parent.width + 5 : parent.width
+                        height: closeMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
+                        color:"#2fde78"
+                        radius: 15
+                        Text {
+                            id: nameClose
+                            anchors.centerIn: parent
+                            text: qsTr("Cancel")
+                            font.family: "Roboto"
+                            font.pixelSize: closeMA.containsMouse ? 15 / 1.3 : 13/1.3
+                            color: "white"
+                        }
+                        MouseArea {
+                            id:closeMA
+                            anchors.fill: parent
+                            onClicked: {assignmentListModel.onCancelButtonClicked()}
+                            hoverEnabled: true
 
-//                    //                    Layout.rightMargin: -25 / 1.3 /*Style.monitorRatio*/
-//                    gradient: Gradient {
-//                        GradientStop {
-//                            position: 0.0
-//                            color: "#537597"
-//                        }
-//                        GradientStop {
-//                            position: 1.0
-//                            color: "#003569"
-//                        }
-//                    }
+                        }
+                    }
 
-//                    Rectangle {
-//                        anchors.horizontalCenter: parent.horizontalCenter
-//                        anchors.verticalCenter: parent.verticalCenter
+                }
+                //                Rectangle {
+                //                    id: attackholder
+                //                    width: 75 / 1.3 /*Style.monitorRatio*/
+                //                    height: 75 / 1.3 /*Style.monitorRatio*/
+                //                    radius: width / 2
 
-//                        width: 65 / 1.3 /*Style.monitorRatio*/
-//                        height: 65 / 1.3 /*Style.monitorRatio*/
-//                        radius: width / 2
-//                        border {
-//                            width: 3
-//                            color: "#c8d0d5"
-//                        }
-//                        gradient: Gradient {
-//                            GradientStop {
-//                                position: 0.0
-//                                color: "#DEE3E6"
-//                            }
-//                            GradientStop {
-//                                position: 1.0
-//                                color: "#DEE3E6"
-//                            }
-//                        }
-//                        Rectangle {
-//                            property var model: assignmentListModel
-//                            readonly property color myRed: "#FF0000"
-//                            readonly property color myRed75: Qt.rgba(myRed.r,
-//                                                                     myRed.g,
-//                                                                     myRed.b,
-//                                                                     0.75)
-//                            anchors.fill: parent
-//                            gradient: Gradient {
-//                                orientation: Gradient.Horizontal
-//                                GradientStop {
-//                                    position: 0.0
-//                                    color: "#FF7C7C"
-//                                }
-//                                GradientStop {
-//                                    position: 1.0
-//                                    color: "#FF0000"
-//                                }
-//                            }
-//                            radius: parent.radius
-//                            border.width: 3
-//                            border.color: myRed75
-//                        }
-//                    }
-//                    Text {
-//                        id: name
-//                        anchors.centerIn: parent
-//                        text: qsTr("ATTACK")
-//                        font.family: "Roboto"
-//                        font.pixelSize: 13 / 1.3
-//                        font.weight: Font.Bold
-//                        color: "white"
-//                    }
-//                    MouseArea {
-//                        anchors.fill: parent
-//                        onClicked: assignmentListModel.onAttackButtonClicked()
-//                    }
-//                }
+                //                    //                    Layout.rightMargin: -25 / 1.3 /*Style.monitorRatio*/
+                //                    gradient: Gradient {
+                //                        GradientStop {
+                //                            position: 0.0
+                //                            color: "#537597"
+                //                        }
+                //                        GradientStop {
+                //                            position: 1.0
+                //                            color: "#003569"
+                //                        }
+                //                    }
+
+                //                    Rectangle {
+                //                        anchors.horizontalCenter: parent.horizontalCenter
+                //                        anchors.verticalCenter: parent.verticalCenter
+
+                //                        width: 65 / 1.3 /*Style.monitorRatio*/
+                //                        height: 65 / 1.3 /*Style.monitorRatio*/
+                //                        radius: width / 2
+                //                        border {
+                //                            width: 3
+                //                            color: "#c8d0d5"
+                //                        }
+                //                        gradient: Gradient {
+                //                            GradientStop {
+                //                                position: 0.0
+                //                                color: "#DEE3E6"
+                //                            }
+                //                            GradientStop {
+                //                                position: 1.0
+                //                                color: "#DEE3E6"
+                //                            }
+                //                        }
+                //                        Rectangle {
+                //                            property var model: assignmentListModel
+                //                            readonly property color myRed: "#FF0000"
+                //                            readonly property color myRed75: Qt.rgba(myRed.r,
+                //                                                                     myRed.g,
+                //                                                                     myRed.b,
+                //                                                                     0.75)
+                //                            anchors.fill: parent
+                //                            gradient: Gradient {
+                //                                orientation: Gradient.Horizontal
+                //                                GradientStop {
+                //                                    position: 0.0
+                //                                    color: "#FF7C7C"
+                //                                }
+                //                                GradientStop {
+                //                                    position: 1.0
+                //                                    color: "#FF0000"
+                //                                }
+                //                            }
+                //                            radius: parent.radius
+                //                            border.width: 3
+                //                            border.color: myRed75
+                //                        }
+                //                    }
+                //                    Text {
+                //                        id: name
+                //                        anchors.centerIn: parent
+                //                        text: qsTr("ATTACK")
+                //                        font.family: "Roboto"
+                //                        font.pixelSize: 13 / 1.3
+                //                        font.weight: Font.Bold
+                //                        color: "white"
+                //                    }
+                //                    MouseArea {
+                //                        anchors.fill: parent
+                //                        onClicked: assignmentListModel.onAttackButtonClicked()
+                //                    }
+                //                }
             }
         }
         // nodeholder
@@ -398,7 +402,7 @@ Item {
         color: fg75
 
         width: (rowLay.childrenRect.width  > 420 ? 500 : (rowLay.childrenRect.width  +  80))
-//                / 1.3) ? 645 / 1.3  : */rowLay.childrenRect.width  +  80
+        //                / 1.3) ? 645 / 1.3  : */rowLay.childrenRect.width  +  80
         height: 75 / 1.3 /*Style.monitorRatio*/
         z: -2
         Rectangle{
@@ -532,8 +536,8 @@ Item {
         color: "#DEE3E6"
         radius: 20
         width: (downIcon.rotation / 180) % 2 !== 0 ?  (operatorLayout.width + battleLocationIcons.width + 10 < 455 ?
-                    operatorLayout.width + battleLocationIcons.width + 10
-                  : 455) : 0
+                                                           operatorLayout.width + battleLocationIcons.width + 10
+                                                         : 455) : 0
         height: 70 / 1.3
         anchors.left: mainRow.left
         anchors.top: mainRow.bottom
@@ -605,84 +609,84 @@ Item {
             Layout.topMargin: 5 / 1.3
             ScrollBar.horizontal.interactive: true
             clip: true
-        RowLayout {
-            id: operatorLayout
-            Layout.alignment: Qt.AlignVCenter
-//            anchors.left: battleLocationIcons.right
-            Layout.maximumWidth: 450
-            Layout.topMargin: 5 / 1.3
-            spacing: 0
-            clip: true
-            Repeater {
-                id: operatorModelContainer
-                model: root.operatorListModel
+            RowLayout {
+                id: operatorLayout
+                Layout.alignment: Qt.AlignVCenter
+                //            anchors.left: battleLocationIcons.right
+                Layout.maximumWidth: 450
+                Layout.topMargin: 5 / 1.3
+                spacing: 0
+                clip: true
+                Repeater {
+                    id: operatorModelContainer
+                    model: root.operatorListModel
 
-                delegate: Rectangle {
-                    id: objects
-                    width: 81 / 1.3 /*Style.monitorRatio*/
-                    height: 60 / 1.3 /*Style.monitorRatio*/
-                    color: operatorSelect ? bg20 : "transparent"
-                    z: -2
-                    radius: 7
-                    Layout.topMargin: 5 / 1.3
-                    Layout.leftMargin: 5 / 1.3
+                    delegate: Rectangle {
+                        id: objects
+                        width: 81 / 1.3 /*Style.monitorRatio*/
+                        height: 60 / 1.3 /*Style.monitorRatio*/
+                        color: operatorSelect ? bg20 : "transparent"
+                        z: -2
+                        radius: 7
+                        Layout.topMargin: 5 / 1.3
+                        Layout.leftMargin: 5 / 1.3
 
-                    Rectangle {
-                        anchors.top: parent.top
-                        anchors.topMargin: 5
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        height: parent.height / 2
-                        width: parent.width
-                        color: "transparent"
+                        Rectangle {
+                            anchors.top: parent.top
+                            anchors.topMargin: 5
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            height: parent.height / 2
+                            width: parent.width
+                            color: "transparent"
 
-                        IconImage {
-                            id: opIco
-                            anchors.centerIn: parent
-                            source: operatorIcon
-                            width: 35 / 1.3 /*Style.monitorRatio*/
-                            height: 35 / 1.3 /*Style.monitorRatio*/
-                            color: operatorColor
-                        }
-                    }
-                    RowLayout {
-                        anchors.bottom: parent.bottom
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottomMargin: -3
-                        height: parent.height / 2
-                        width: parent.width
-                        //                        color: "transparent"
-
-                        Text {
-                            Layout.maximumWidth: 81 / 1.3
-                            Layout.alignment: Qt.AlignHCenter
-                            text: operatorName
-                            font.pixelSize: 17 / 1.3 /*Style.monitorRatio*/
-                            color: operatorSelect ? "red" : operatorColor
-                            //                            anchors.verticalCenter: parent.verticalCenter
-                            elide: Text.ElideRight
-                        }
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: {
-                            print(index)
-                            operatorListModel.select(operatorListModel.index(index, 0).row)
-                        }
-                        onEntered: {
-                            if(!operatorSelect){
-                                objects.color = bg20
+                            IconImage {
+                                id: opIco
+                                anchors.centerIn: parent
+                                source: operatorIcon
+                                width: 35 / 1.3 /*Style.monitorRatio*/
+                                height: 35 / 1.3 /*Style.monitorRatio*/
+                                color: operatorColor
                             }
                         }
-                        onExited: {
-                            if(!operatorSelect){
-                                objects.color = "transparent"
+                        RowLayout {
+                            anchors.bottom: parent.bottom
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.bottomMargin: -3
+                            height: parent.height / 2
+                            width: parent.width
+                            //                        color: "transparent"
+
+                            Text {
+                                Layout.maximumWidth: 81 / 1.3
+                                Layout.alignment: Qt.AlignHCenter
+                                text: operatorName
+                                font.pixelSize: 17 / 1.3 /*Style.monitorRatio*/
+                                color: operatorSelect ? "red" : operatorColor
+                                //                            anchors.verticalCenter: parent.verticalCenter
+                                elide: Text.ElideRight
+                            }
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            onClicked: {
+                                print(index)
+                                operatorListModel.select(operatorListModel.index(index, 0).row)
+                            }
+                            onEntered: {
+                                if(!operatorSelect){
+                                    objects.color = bg20
+                                }
+                            }
+                            onExited: {
+                                if(!operatorSelect){
+                                    objects.color = "transparent"
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         }
     }
     PropertyAnimation {
