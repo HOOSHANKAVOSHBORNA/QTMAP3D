@@ -17,7 +17,8 @@ Item {
                                           foregroundColor.b, 0.75)
     readonly property color fg50: Qt.rgba(foregroundColor.r, foregroundColor.g,
                                           foregroundColor.b, 0.50)
-
+    readonly property color fg02: Qt.rgba(foregroundColor.r, foregroundColor.g,
+                                          foregroundColor.b, 0.02)
     readonly property color backgroundColor: "#003569"
     readonly property color bg20: Qt.rgba(backgroundColor.r, backgroundColor.g,
                                           backgroundColor.b, 0.20)
@@ -25,7 +26,9 @@ Item {
                                           backgroundColor.b, 0.8)
     RowLayout {
         id: mainRow
-        anchors.centerIn: parent
+//        anchors.centerIn: parent
+        anchors.left: parent.left
+        anchors.leftMargin: 110
         Rectangle {
             id: nodeInfoHolder
             width: 300 / 1.3 /*Style.monitorRatio*/
@@ -36,23 +39,32 @@ Item {
             RowLayout {
                 anchors.left: parent.left
                 Rectangle {
+                    id:downController
                     Layout.preferredHeight: 75 / 1.3 /*Style.monitorRatio*/
                     Layout.preferredWidth: 55 / 1.3 /*Style.monitorRatio*/
                     radius: 20
-                    color: Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
-                                   nodeInfoHolder.b, .02)
+                    color: fg02
                     IconImage {
+                        id:downIcon
                         source: "qrc:/Resources/down.png"
                         height: 25 / 1.3 /*Style.monitorRatio*/
                         width: 25 / 1.3 /*Style.monitorRatio*/
                         anchors.centerIn: parent
+                    }
+                    MouseArea{
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: downController.color = bg20
+                        onExited: downController.color = fg02
+                        onClicked:{ downIcon.rotation +=180
+                            openMotion.running = true
+                        }
                     }
                 }
                 IconImage {
                     source: operatorListModel ? operatorListModel.operatorIcon : ""
                     Layout.preferredHeight: 55 / 1.3 /*Style.monitorRatio*/
                     Layout.preferredWidth: 55 / 1.3 /*Style.monitorRatio*/
-
                     Layout.leftMargin: 10 / 1.3 /*Style.monitorRatio*/
                     color: operatorListModel ? operatorListModel.operatorColor : "black"
                 }
@@ -122,79 +134,148 @@ Item {
                     id: attackholder
                     width: 75 / 1.3 /*Style.monitorRatio*/
                     height: 75 / 1.3 /*Style.monitorRatio*/
-                    radius: width / 2
-
-                    //                    Layout.rightMargin: -25 / 1.3 /*Style.monitorRatio*/
-                    gradient: Gradient {
-                        GradientStop {
-                            position: 0.0
-                            color: "#537597"
+                    color: "transparent"
+                    border.width: 2
+                    border.color: "gold"
+                    Rectangle{
+                        id:attack
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        width: parent.width
+                        height: parent.height / 3
+                        color: "red"
+                        border.width: 2
+                        border.color: "black"
+                        radius: 5
+                        Text {
+                            id: name
+                            anchors.centerIn: parent
+                            text: qsTr("ATTACK")
+                            font.family: "Roboto"
+                            font.pixelSize: 13 / 1.3
+                            font.weight: Font.Bold
+                            color: "white"
                         }
-                        GradientStop {
-                            position: 1.0
-                            color: "#003569"
-                        }
-                    }
-
-                    Rectangle {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-
-                        width: 65 / 1.3 /*Style.monitorRatio*/
-                        height: 65 / 1.3 /*Style.monitorRatio*/
-                        radius: width / 2
-                        border {
-                            width: 3
-                            color: "#c8d0d5"
-                        }
-                        gradient: Gradient {
-                            GradientStop {
-                                position: 0.0
-                                color: "#DEE3E6"
-                            }
-                            GradientStop {
-                                position: 1.0
-                                color: "#DEE3E6"
-                            }
-                        }
-                        Rectangle {
-                            property var model: assignmentListModel
-                            readonly property color myRed: "#FF0000"
-                            readonly property color myRed75: Qt.rgba(myRed.r,
-                                                                     myRed.g,
-                                                                     myRed.b,
-                                                                     0.75)
+                        MouseArea {
                             anchors.fill: parent
-                            gradient: Gradient {
-                                orientation: Gradient.Horizontal
-                                GradientStop {
-                                    position: 0.0
-                                    color: "#FF7C7C"
-                                }
-                                GradientStop {
-                                    position: 1.0
-                                    color: "#FF0000"
-                                }
-                            }
-                            radius: parent.radius
-                            border.width: 3
-                            border.color: myRed75
+                            onClicked: assignmentListModel.onAttackButtonClicked()
                         }
                     }
-                    Text {
-                        id: name
-                        anchors.centerIn: parent
-                        text: qsTr("ATTACK")
-                        font.family: "Roboto"
-                        font.pixelSize: 13 / 1.3
-                        font.weight: Font.Bold
-                        color: "white"
+                    Rectangle{
+                        anchors.top: attack.bottom
+                        width: parent.width
+                        height: parent.height / 3
+                        color:"red"
+                        border.width: 2
+                        border.color: "black"
+radius: 5
+                            Text {
+                                id: nameSelect
+                                anchors.centerIn: parent
+                                text: qsTr("selectAll")
+                                font.family: "Roboto"
+                                font.pixelSize: 13 / 1.3
+                                font.weight: Font.Bold
+                                color: "white"
+                            }
+                        }
+                        Rectangle{
+                            anchors.bottom: parent.bottom
+                            width: parent.width
+                            height: parent.height / 3
+                            color:"red"
+                            border.width: 2
+                            border.color: "black"
+                            radius: 5
+                            Text {
+                                id: nameClose
+                                anchors.centerIn: parent
+                                text: qsTr("close")
+                                font.family: "Roboto"
+                                font.pixelSize: 13 / 1.3
+                                font.weight: Font.Bold
+                                color: "white"
+                            }
+                        }
+
                     }
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: assignmentListModel.onAttackButtonClicked()
-                    }
-                }
+//                Rectangle {
+//                    id: attackholder
+//                    width: 75 / 1.3 /*Style.monitorRatio*/
+//                    height: 75 / 1.3 /*Style.monitorRatio*/
+//                    radius: width / 2
+
+//                    //                    Layout.rightMargin: -25 / 1.3 /*Style.monitorRatio*/
+//                    gradient: Gradient {
+//                        GradientStop {
+//                            position: 0.0
+//                            color: "#537597"
+//                        }
+//                        GradientStop {
+//                            position: 1.0
+//                            color: "#003569"
+//                        }
+//                    }
+
+//                    Rectangle {
+//                        anchors.horizontalCenter: parent.horizontalCenter
+//                        anchors.verticalCenter: parent.verticalCenter
+
+//                        width: 65 / 1.3 /*Style.monitorRatio*/
+//                        height: 65 / 1.3 /*Style.monitorRatio*/
+//                        radius: width / 2
+//                        border {
+//                            width: 3
+//                            color: "#c8d0d5"
+//                        }
+//                        gradient: Gradient {
+//                            GradientStop {
+//                                position: 0.0
+//                                color: "#DEE3E6"
+//                            }
+//                            GradientStop {
+//                                position: 1.0
+//                                color: "#DEE3E6"
+//                            }
+//                        }
+//                        Rectangle {
+//                            property var model: assignmentListModel
+//                            readonly property color myRed: "#FF0000"
+//                            readonly property color myRed75: Qt.rgba(myRed.r,
+//                                                                     myRed.g,
+//                                                                     myRed.b,
+//                                                                     0.75)
+//                            anchors.fill: parent
+//                            gradient: Gradient {
+//                                orientation: Gradient.Horizontal
+//                                GradientStop {
+//                                    position: 0.0
+//                                    color: "#FF7C7C"
+//                                }
+//                                GradientStop {
+//                                    position: 1.0
+//                                    color: "#FF0000"
+//                                }
+//                            }
+//                            radius: parent.radius
+//                            border.width: 3
+//                            border.color: myRed75
+//                        }
+//                    }
+//                    Text {
+//                        id: name
+//                        anchors.centerIn: parent
+//                        text: qsTr("ATTACK")
+//                        font.family: "Roboto"
+//                        font.pixelSize: 13 / 1.3
+//                        font.weight: Font.Bold
+//                        color: "white"
+//                    }
+//                    MouseArea {
+//                        anchors.fill: parent
+//                        onClicked: assignmentListModel.onAttackButtonClicked()
+//                    }
+//                }
             }
         }
         // nodeholder
@@ -203,12 +284,9 @@ Item {
             Layout.fillHeight: true
             Layout.maximumWidth: 425
             Layout.topMargin: 5 / 1.3
-//            Layout.leftMargin: 15
-//            boundsBehavior: Flickable.DragAndOvershootBounds
-            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-            ScrollBar.horizontal.interactive: false
+            ScrollBar.horizontal.interactive: true
             clip: true
-            RowLayout {
+            RowLayout{
                 id: rowLay
                 Layout.alignment: Qt.AlignVCenter
                 //                Layout.maximumWidth: 400
@@ -306,6 +384,7 @@ Item {
         anchors.leftMargin: nodeInfoHolder.width - attackholder.width / 2
         radius: 20
         color: fg75
+
         width: (rowLay.childrenRect.width  > 420 ? 500 : (rowLay.childrenRect.width  +  80))
 //                / 1.3) ? 645 / 1.3  : */rowLay.childrenRect.width  +  80
         height: 75 / 1.3 /*Style.monitorRatio*/
@@ -395,6 +474,7 @@ Item {
     }
 
     Rectangle {
+        id:closebtn
         width: 45 / 1.3 /*Style.monitorRatio*/
         height: 45 / 1.3 /*Style.monitorRatio*/
         color: fg50
@@ -421,21 +501,27 @@ Item {
         }
     }
     //////////
+
     Rectangle{
-        width: 215 / 1.3
+        width: bottomLayer .width   < 215 / 1.3  ? bottomLayer .width  : 215 / 1.3
         height: 150 / 1.3
         color: "#DEE3E6"
         anchors.left: mainRow.left
         anchors.top: mainRow.top
         z:-2
         radius: 20
+
     }
 
     ////////// bottom layer
+
     Rectangle {
+        id:bottomLayer
         color: "#DEE3E6"
         radius: 20
-        width: 600 / 1.3
+        width: (downIcon.rotation / 180) % 2 !== 0 ?  (operatorLayout.width + battleLocationIcons.width + 10 < 455 ?
+                    operatorLayout.width + battleLocationIcons.width + 10
+                  : 455) : 0
         height: 70 / 1.3
         anchors.left: mainRow.left
         anchors.top: mainRow.bottom
@@ -443,6 +529,7 @@ Item {
         clip: true
         Rectangle {
             id:battleLocationIcons
+            property bool flag: true
             anchors.top: parent.top
             anchors.left: parent.left
             height: 70 / 1.3
@@ -454,11 +541,10 @@ Item {
                 width: 39 / 1.3 /*Style.monitorRatio*/
                 height: 29 / 1.3  /*Style.monitorRatio*/
                 anchors.top: parent.top
-
                 anchors.topMargin: 7 /1.3
                 anchors.horizontalCenter: parent.horizontalCenter
                 radius: 12
-                color: mouseArea.containsMouse ? bg20 : "transparent"
+                color: mouseArea.containsMouse ? bg20 : (battleLocationIcons.flag? bg20 :"transparent")
                 IconImage {
                     anchors.centerIn: parent
                     source: "qrc:/Resources/attacker.png"
@@ -470,6 +556,7 @@ Item {
                     id:mouseArea
                     anchors.fill: parent
                     hoverEnabled: true
+                    onClicked: battleLocationIcons.flag= !battleLocationIcons.flag
 
                 }
             }
@@ -481,7 +568,7 @@ Item {
                 anchors.bottomMargin: 7 / 1.3
                 anchors.horizontalCenter: parent.horizontalCenter
                 radius: parent.radius
-                color: mouseA.containsMouse ? bg20 : "transparent"
+                color: mouseA.containsMouse ? bg20 : (battleLocationIcons.flag ? "transparent" : bg20)
 
                 IconImage {
                     anchors.centerIn: parent
@@ -494,15 +581,23 @@ Item {
                     id:mouseA
                     anchors.fill: parent
                     hoverEnabled: true
+                    onClicked: battleLocationIcons.flag= !battleLocationIcons.flag
 
                 }
             }
         }
+        ScrollView{
+            anchors.left: battleLocationIcons.right
+            width: 405
+
+            Layout.topMargin: 5 / 1.3
+            ScrollBar.horizontal.interactive: true
+            clip: true
         RowLayout {
             id: operatorLayout
             Layout.alignment: Qt.AlignVCenter
-            anchors.left: battleLocationIcons.right
-            Layout.maximumWidth: 600
+//            anchors.left: battleLocationIcons.right
+            Layout.maximumWidth: 450
             Layout.topMargin: 5 / 1.3
             spacing: 0
             clip: true
@@ -519,6 +614,7 @@ Item {
                     radius: 7
                     Layout.topMargin: 5 / 1.3
                     Layout.leftMargin: 5 / 1.3
+
                     Rectangle {
                         anchors.top: parent.top
                         anchors.topMargin: 5
@@ -556,12 +652,34 @@ Item {
                     }
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
                         onClicked: {
+                            print(index)
                             operatorListModel.select(operatorListModel.index(index, 0).row)
+                        }
+                        onEntered: {
+                            if(!operatorSelect){
+                                objects.color = bg20
+                            }
+                        }
+                        onExited: {
+                            if(!operatorSelect){
+                                objects.color = "transparent"
+                            }
                         }
                     }
                 }
             }
         }
+        }
+    }
+    PropertyAnimation {
+        id: openMotion
+        target: bottomLayer
+        properties: "width"
+        to: bottomLayer.width
+        from: 0
+        duration: 200
+        easing.type: Easing.OutQuint
     }
 }

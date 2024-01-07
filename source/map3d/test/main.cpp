@@ -5,6 +5,7 @@
 #include "flyableNodeTest.h"
 #include "movableNodeTest.h"
 #include "nodeTest.h"
+#include "particleTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,10 +17,11 @@ int main(int argc, char *argv[])
 //        networkManager.sendFlyableData("data");
 //    });
     LayerTest LayerTest(&networkManager);
-    FlyableNodeTest flyableNodeTest(&networkManager);
-    MovableNodeTest movableNodeTest(&networkManager);
-    NodeTest nodeTest(&networkManager);
+    // FlyableNodeTest flyableNodeTest(&networkManager);
+    // MovableNodeTest movableNodeTest(&networkManager);
+    // NodeTest nodeTest(&networkManager);
     AssignmentTest assignmentTest(&networkManager);
+    ParticleTest particleTest(&networkManager);
 
     return a.exec();
 }

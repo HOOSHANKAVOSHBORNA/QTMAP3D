@@ -18,7 +18,9 @@
 
 using osgMouseButton = osgGA::GUIEventAdapter::MouseButtonMask;
 using osgKeyButton = osgGA::GUIEventAdapter::KeySymbol;
+
 int Model::mCount{0};
+
 Model::Model(QObject *parent)
     : PluginInterface(parent)
 {

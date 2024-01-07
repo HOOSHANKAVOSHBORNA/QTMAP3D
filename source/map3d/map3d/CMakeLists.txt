@@ -49,6 +49,7 @@ add_executable(Map3d
         qmlNode.h qmlNode.cpp
         authenticator.h authenticator.cpp
         filterManager.h filterManager.cpp
+        layerProperty.h layerProperty.cpp
         autoScaler.h autoScaler.cpp
         splash.h splash.cpp)
 

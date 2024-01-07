@@ -1,8 +1,9 @@
-#include "property.h"
+#include <QQmlContext>
+
 #include "flyableModelNode.h"
 #include "moveableModelNode.h"
+#include "property.h"
 #include "utility.h"
-#include <QQmlContext>
 
 // ---------------------------------------------------------------------- manager
 Property::Property(MapControllerItem *mapItem)

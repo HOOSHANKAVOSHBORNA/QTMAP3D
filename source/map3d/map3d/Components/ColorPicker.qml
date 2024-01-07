@@ -475,6 +475,7 @@ Rectangle {
                         color: Style.backgroundColor
                         border.color: Style.foregroundColor
                     }
+
                     onMoved: {
                         customColorCircle.color.a = value
                     }

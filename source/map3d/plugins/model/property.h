@@ -9,6 +9,8 @@
 #include "mapControllerItem.h"
 #include "simpleModelNode.h"
 
+// class prototypes
+class Property;
 class PropertyItem;
 
 // ---------------------------------------------------------------------- manager
@@ -77,6 +79,7 @@ public:
 
     bool isFlyable() const;
     void setIsFlyable(bool newIsFlyable);
+
 signals:
     void propertyChanged();
 

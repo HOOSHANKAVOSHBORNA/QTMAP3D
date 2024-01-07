@@ -81,6 +81,18 @@ void ServiceManager::statusNodeData(QJsonObject jsonObject)
         emit statusNodeDataReceived(statusNodeData);
 }
 
+void ServiceManager::receiveExplosionData(QJsonObject jsonObject)
+{
+    ExplosionData *explosionData = new ExplosionData;
+    explosionData->latitude  = jsonObject.value("latitude").toDouble();
+    explosionData->longitude = jsonObject.value("longitude").toDouble();
+    explosionData->duration  = jsonObject.value("duration").toDouble();
+    explosionData->scale     = jsonObject.value("scale").toDouble();
+    explosionData->command   = jsonObject.value("COMMAND").toString().toStdString();
+    emit explosionDataReceived(explosionData);
+}
+
+
 void ServiceManager::receiveAssignmentData(QJsonObject jsonObject)
 {
     AssignData *assignData = new AssignData;
@@ -122,6 +134,8 @@ void ServiceManager::messageData(QString jsonData)
                 polylineData(obj);
             else if (type == "Assign")
                 receiveAssignmentData(obj);
+            else if (type == "Particle")
+                receiveExplosionData(obj);
             else if (type == "Movable")
                 movableNodeData(obj);
             else if(type == "Node")
