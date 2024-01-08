@@ -275,7 +275,11 @@ struct PolygonData: public PolyLineData
         return jsonObject;
     }
 
-    void fromJson(const QJsonObject &json) { fillColor = json["FillColor"].toString(); }
+    void fromJson(const QJsonObject &json)
+    {
+        static_cast<PolyLineData *>(this)->fromJson(json);
+        fillColor = json["FillColor"].toString();
+    }
 };
 
 struct CircleData
