@@ -37,9 +37,8 @@ struct NodeFieldData
     QVariant value;
     QString category;
     QString categoryIconUrl;
-    bool operator==(const QString& n) const{
-        return n == name;
-    }
+
+    bool operator==(const QString &n) const { return n == name; }
 
     QJsonObject toJson() const{
         QJsonObject jsonObject;
@@ -53,7 +52,10 @@ struct NodeFieldData
 
     void fromJson(const QJsonObject &json)
     {
-        // TODO
+        name = json["Name"].toString();
+        value = json["Value"].toVariant();
+        category = json["Category"].toString();
+        categoryIconUrl = json["CategoryIconUrl"].toString();
     }
 };
 
@@ -108,7 +110,27 @@ struct NodeData
 
     void fromJson(const QJsonObject &json)
     {
-        // TODO
+        id = json["Id"].toInt();
+        name = json["Name"].toString();
+        type = json["Type"].toString();
+        url2D = json[""].toString();
+
+        //        int id;
+        //        QString name;
+        //        QString type{NodeType::Fixed};
+        //        QString url2D;
+        //        QString url3D;
+        //        QString imgInfoUrl;
+        //        QString iconInfoUrl;
+        //        QString color;
+        //        bool isAttacker{false};
+        //        double latitude;
+        //        double longitude;
+        //        double altitude;
+        //        double speed{0};
+        //        QString command{Command::Add};
+        //        std::vector<int> layersId;
+        //        std::vector<NodeFieldData> fieldData;
     }
 };
 
@@ -165,7 +187,9 @@ struct AssignmentData
 
         return jsonObject;
     }
-    void fromJson(QJsonObject jsonObject){
+
+    void fromJson(QJsonObject jsonObject)
+    {
         attackerId = jsonObject.value("AttackerId").toInt();
         targetId = jsonObject.value("TargetId").toInt();
         state = jsonObject.value("Command").toString();
@@ -323,7 +347,17 @@ struct LayerData {
 
     void fromJson(const QJsonObject &json)
     {
-        // TODO
+        id = json["Id"].toInt();
+        parentId = json["ParentId"].toInt();
+        text = json["Text"].toString();
+        order = json["Order"].toInt();
+        command = json["Command"].toString();
+
+        for (const QJsonValue &child : json["Children"].toArray()) {
+            LayerData newLayerData;
+            newLayerData.fromJson(child.toObject());
+            children.push_back(newLayerData);
+        }
     }
 };
 
