@@ -5,6 +5,7 @@
 #include "qjsonobject.h"
 #include "qvectornd.h"
 #include <QJsonDocument>
+
 class NetworkManager;
 
 struct Command
@@ -21,7 +22,8 @@ struct NodeType
     static inline QString Flyable{"Flyable"};
 };
 
-struct AssignmentState{
+struct AssignmentState
+{
     static inline QString Assinged{"Assigned"};
     static inline QString Search{"Search"};
     static inline QString Lock{"Lock"};
@@ -112,24 +114,27 @@ struct NodeData
         id = json["Id"].toInt();
         name = json["Name"].toString();
         type = json["Type"].toString();
-        url2D = json[""].toString();
+        url2D = json["Url2D"].toString();
+        url3D = json["Url3D"].toString();
+        imgInfoUrl = json["ImgInfoUrl"].toString();
+        iconInfoUrl = json["IconInfoUrl"].toString();
+        color = json["Color"].toString();
+        isAttacker = json["IsAttacker"].toBool();
+        latitude = json["Latitude"].toDouble();
+        longitude = json["Longitude"].toDouble();
+        altitude = json["Altitude"].toDouble();
+        speed = json["Speed"].toDouble();
+        command = json["Command"].toString();
 
-        //        int id;
-        //        QString name;
-        //        QString type{NodeType::Fixed};
-        //        QString url2D;
-        //        QString url3D;
-        //        QString imgInfoUrl;
-        //        QString iconInfoUrl;
-        //        QString color;
-        //        bool isAttacker{false};
-        //        double latitude;
-        //        double longitude;
-        //        double altitude;
-        //        double speed{0};
-        //        QString command{Command::Add};
-        //        std::vector<int> layersId;
-        //        std::vector<NodeFieldData> fieldData;
+        for (const QJsonValue &value : json["LayersId"].toArray()) {
+            layersId.push_back(value.toInt());
+        }
+
+        for (const QJsonValue &value : json["FieldData"].toArray()) {
+            NodeFieldData newFieldData;
+            newFieldData.fromJson(value.toObject());
+            fieldData.push_back(newFieldData);
+        }
     }
 };
 
@@ -164,7 +169,19 @@ struct StatusNodeData
 
     void fromJson(const QJsonObject &json)
     {
-        // TODO
+        id = json["Id"].toInt();
+        name = json["Name"].toString();
+        longitude = json["Longitude"].toDouble();
+        latitude = json["Latitude"].toDouble();
+        altitude = json["Altitude"].toDouble();
+        command = json["Command"].toString();
+        layerId = json["LayerId"].toInt();
+
+        for (const QJsonValue &value : json["FieldData"].toArray()) {
+            NodeFieldData newFieldData;
+            newFieldData.fromJson(value.toObject());
+            fieldData.push_back(newFieldData);
+        }
     }
 };
 
@@ -231,7 +248,19 @@ struct PolyLineData
 
     void fromJson(const QJsonObject &json)
     {
-        // TODO
+        id = json["Id"].toInt();
+        name = json["Name"].toString();
+        color = json["Color"].toString();
+        width = json["Width"].toInt();
+        command = json["Command"].toString();
+        layerId = json["LayerId"].toInt();
+
+        for (const QJsonValue &value : json["Points"].toArray()) {
+            float longitude = value["Longitude"].toDouble();
+            float latitude = value["Latitude"].toDouble();
+            float altitude = value["Altitude"].toDouble();
+            points.push_back(QVector3D{longitude, latitude, altitude});
+        }
     }
 };
 
@@ -246,10 +275,7 @@ struct PolygonData: public PolyLineData
         return jsonObject;
     }
 
-    void fromJson(const QJsonObject &json)
-    {
-        // TODO
-    }
+    void fromJson(const QJsonObject &json) { fillColor = json["FillColor"].toString(); }
 };
 
 struct CircleData
@@ -285,7 +311,17 @@ struct CircleData
 
     void fromJson(const QJsonObject &json)
     {
-        // TODO
+        id = json["Id"].toInt();
+        name = json["Name"].toString();
+        color = json["Color"].toString();
+        strokeColor = json["StrokeColor"].toString();
+        strokeWidth = json["StrokeWidth"].toDouble();
+        latitude = json["Latitude"].toDouble();
+        longitude = json["Longitude"].toDouble();
+        altitude = json["Altitude"].toDouble();
+        radius = json["Radius"].toDouble();
+        command = json["Command"].toString();
+        layerId = json["LayerId"].toInt();
     }
 };
 
@@ -317,7 +353,15 @@ struct ExplosionData
 
     void fromJson(const QJsonObject &json)
     {
-        // TODO
+        id = json["Id"].toInt();
+        name = json["Name"].toString();
+        latitude = json["Latitude"].toDouble();
+        longitude = json["Longitude"].toDouble();
+        altitude = json["Altitude"].toDouble();
+        duration = json["Duration"].toDouble();
+        scale = json["Scale"].toDouble();
+        command = json["Command"].toString();
+        layerId = json["LayerId"].toInt();
     }
 };
 
