@@ -112,7 +112,7 @@ void PropertyItem::setName(const QString &newName)
 
     if (mModelNode){
         mModelNode->setName(mName.toStdString());
-        mModelNode->nodeData()->name = mName.toStdString();
+        mModelNode->nodeData()->name = mName;
     }
 
     mName = newName;
@@ -130,7 +130,7 @@ void PropertyItem::setColor(const QColor &newColor)
         return;
 
     if (mModelNode){
-        mModelNode->nodeData()->color = newColor.name(QColor::HexArgb).toStdString();
+        mModelNode->nodeData()->color = newColor.name(QColor::HexArgb);
         mModelNode->setColor(Utility::qColor2osgEarthColor(newColor));
     }
 

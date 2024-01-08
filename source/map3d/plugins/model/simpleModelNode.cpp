@@ -155,18 +155,18 @@ NodeData *SimpleModelNode::nodeData() const
 void SimpleModelNode::setNodeData(NodeData *newNodeData)
 {
     mNodeData = newNodeData;
-    updateUrl(mNodeData->url3D, mNodeData->url2D);
-    setColor(osgEarth::Color(mNodeData->color));
+//    updateUrl(mNodeData->url3D, mNodeData->url2D);
+//    setColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
         mNodeInformation->setNodeData(newNodeData);
-    if(mBookmarkItem)
-        mBookmarkItem->setInfo(QString::fromStdString(mNodeData->type),
-                               QString::fromStdString(mNodeData->name),
-                               mNodeInformation->window(),
-                               QString::fromStdString(mNodeData->imgSrc));
+//    if(mBookmarkItem)
+//        mBookmarkItem->setInfo(QString::fromStdString(mNodeData->type),
+//                               QString::fromStdString(mNodeData->name),
+//                               mNodeInformation->window(),
+//                               QString::fromStdString(mNodeData->imgSrc));
 
-    //TODO add signal for update data--------------------
-    setUserData(mNodeData);
+//    //TODO add signal for update data--------------------
+//    setUserData(mNodeData);
 }
 
 osgEarth::Color SimpleModelNode::color() const

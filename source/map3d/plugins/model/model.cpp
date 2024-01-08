@@ -41,9 +41,9 @@ bool Model::setup()
 
     mDataManager = new DataManager(mapItem(), mainWindow());
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, mDataManager, &DataManager::flyableNodeDataReceived);
-    connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::nodeDataReceived);
-    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, mDataManager, &DataManager::movableNodeDataReceived);
+//    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, mDataManager, &DataManager::flyableNodeDataReceived);
+//    connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::nodeDataReceived);
+//    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, mDataManager, &DataManager::movableNodeDataReceived);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -308,15 +308,15 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
     mNodeData->name = mBaseNodeData->name;
     mNodeData->url2D = mBaseNodeData->url2D;
     mNodeData->url3D = mBaseNodeData->url3D;
-    mNodeData->imgSrc = mBaseNodeData->imgSrc;
-    mNodeData->iconSrc = mBaseNodeData->iconSrc;
+//    mNodeData->imgSrc = mBaseNodeData->imgSrc;
+//    mNodeData->iconSrc = mBaseNodeData->iconSrc;
     mNodeData->color = mBaseNodeData->color;
     mNodeData->isAttacker = mBaseNodeData->isAttacker;
 
     mNodeData->longitude = geoPos.x();
     mNodeData->latitude = geoPos.y();
     mNodeData->altitude = geoPos.z();
-    mNodeData->name = mNodeData->name + std::to_string(mCount);
+//    mNodeData->name = mNodeData->name + std::to_string(mCount);
 
     switch (mType) {
     case Type::SIMPLE:
@@ -327,7 +327,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
             mSimpleNodeLayer->clear();
             mModelNodeLayer->addLayer(mSimpleNodeLayer);
         }
-        mNodeData->layers.push_back(mSimpleNodeLayer);
+//        mNodeData->layers.push_back(mSimpleNodeLayer);
         mCurrentModel = mDataManager->addUpdateNode(mNodeData);
         break;
     case Type::MOVEABLE:
@@ -337,7 +337,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
             mMoveableNodeLayer->clear();
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
         }
-        mNodeData->layers.push_back(mMoveableNodeLayer);
+//        mNodeData->layers.push_back(mMoveableNodeLayer);
         mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
         break;
     case Type::FLYABLE:
@@ -347,7 +347,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
             mFlyableNodelLayer->clear();
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
         }
-        mNodeData->layers.push_back(mFlyableNodelLayer);
+//        mNodeData->layers.push_back(mFlyableNodelLayer);
         mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
         break;
     default:
@@ -461,16 +461,16 @@ NodeData *Model::sampleNodeData(std::string name,
 {
     NodeData *nodeData = new NodeData();
     //    flyableNodeData->id = 100;
-    nodeData->name = name;
-    nodeData->type = name;
+//    nodeData->name = name;
+//    nodeData->type = name;
 //    nodeData->longitude = geoPos.x();
 //    nodeData->latitude = geoPos.y();
 //    nodeData->altitude = geoPos.z();
-    nodeData->url2D = url2d;
-    nodeData->url3D = url3d;
-    nodeData->imgSrc = imgSrc;
-    nodeData->iconSrc = iconSrc;
-    nodeData->color = QColor("white").name().toStdString();
+//    nodeData->url2D = url2d;
+//    nodeData->url3D = url3d;
+//    nodeData->imgSrc = imgSrc;
+//    nodeData->iconSrc = iconSrc;
+//    nodeData->color = QColor("white").name().toStdString();
     nodeData->speed = 100;
     nodeData->fieldData.push_back(NodeFieldData{"name",
                                                 "Aircraft" + QString::number(mCount),

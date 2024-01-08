@@ -36,7 +36,7 @@ void NodeInformationModel::setNodeData(NodeData *nodeData)
         // --add category if it doesn't exist ---------------------------------------------------
         if (mCategoryItemMap.find(category) == mCategoryItemMap.end()){
             QStandardItem *categoryItem = new QStandardItem(category);
-            categoryItem->setData(QVariant::fromValue(nodeFieldData.categoryIconSrc), iconImageSource);
+//            categoryItem->setData(QVariant::fromValue(nodeFieldData.categoryIconSrc), iconImageSource);
             mCategoryItemMap[category] = categoryItem;
             mRootItem->appendRow(categoryItem);
         }
@@ -89,17 +89,17 @@ NodeInformation::~NodeInformation()
 
 void NodeInformation::setNodeData(NodeData *nodeData)
 {
-    mWindow->setTitle(QString::fromStdString(nodeData->name));
+//    mWindow->setTitle(QString::fromStdString(nodeData->name));
 
-    QString iconUrl = QString::fromStdString(nodeData->iconSrc);
-    if(!iconUrl.contains("qrc"))
-        iconUrl = "file:" + iconUrl;
-    mWindow->setProperty("iconUrl", iconUrl);
+//    QString iconUrl = QString::fromStdString(nodeData->iconSrc);
+//    if(!iconUrl.contains("qrc"))
+//        iconUrl = "file:" + iconUrl;
+//    mWindow->setProperty("iconUrl", iconUrl);
 
-    QString imgUrl = QString::fromStdString(nodeData->imgSrc);
-    if(!imgUrl.contains("qrc"))
-        imgUrl = "file:" + imgUrl;
-    mWindow->setProperty("imageUrl", imgUrl);
+//    QString imgUrl = QString::fromStdString(nodeData->imgSrc);
+//    if(!imgUrl.contains("qrc"))
+//        imgUrl = "file:" + imgUrl;
+//    mWindow->setProperty("imageUrl", imgUrl);
 
     mNodeInformationModel->setNodeData(nodeData);
 }
