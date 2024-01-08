@@ -24,8 +24,8 @@ void Authenticator::signIn(const QString username, const QString password)
 
     jsonObject.insert("Data", jsonDataObject);
     jsonDoc.setObject(jsonObject);
-    mServiceManager->sendAction(jsonDoc.toJson(QJsonDocument::Indented));
-    connect(mServiceManager, &ServiceManager::signInResponseReceived, this, &Authenticator::signedIn);
+//    mServiceManager->sendAction(jsonDoc.toJson(QJsonDocument::Indented));
+//    connect(mServiceManager, &ServiceManager::signInResponseReceived, this, &Authenticator::signedIn);
 }
 
 void Authenticator::signUp(const QString username, const QString password)
@@ -41,8 +41,8 @@ void Authenticator::signUp(const QString username, const QString password)
 
     jsonObject.insert("Data", jsonDataObject);
     jsonDoc.setObject(jsonObject);
-    mServiceManager->sendAction(jsonDoc.toJson(QJsonDocument::Indented));
-    connect(mServiceManager, &ServiceManager::signUpResponseReceived, this, &Authenticator::signedUp);
+//    mServiceManager->sendAction(jsonDoc.toJson(QJsonDocument::Indented));
+//    connect(mServiceManager, &ServiceManager::signUpResponseReceived, this, &Authenticator::signedUp);
 }
 
 void Authenticator::setServiceManager(ServiceManager *newServiceManager)

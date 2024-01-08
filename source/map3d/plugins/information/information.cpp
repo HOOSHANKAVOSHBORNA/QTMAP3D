@@ -11,7 +11,7 @@ Information::Information(QObject *parent): PluginInterface(parent)
 
 bool Information::setup()
 {
-    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::statusNodeReceived);
+//    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::statusNodeReceived);
 
     mInformationLayer = new CompositeAnnotationLayer;
     mInformationLayer->setName(CATEGORY);
@@ -202,12 +202,12 @@ void Information::addUpdateStatusNode(StatusNodeData *statusnNodeData)
     }
     else{
         statusNode = mStatusNodeMap[statusnNodeData->id];
-        statusNode->nodeData()->layer->removeChild(statusNode);
+//        statusNode->nodeData()->layer->removeChild(statusNode);
     }
     statusNode->setPosition(geoPoint);
-    statusnNodeData->layer->addChild(statusNode);
+//    statusnNodeData->layer->addChild(statusNode);
 
-    statusNode->setName(statusnNodeData->name);
+//    statusNode->setName(statusnNodeData->name);
     statusNode->setNodeData(statusnNodeData);
 }
 
@@ -215,7 +215,7 @@ void Information::statusNodeReceived(StatusNodeData *statusNodeData)
 {
     if (statusNodeData->command == "REMOVE"){
         if (mStatusNodeMap.contains(statusNodeData->id)){
-            mStatusNodeMap[statusNodeData->id]->nodeData()->layer->removeChild(mStatusNodeMap[statusNodeData->id]);
+//            mStatusNodeMap[statusNodeData->id]->nodeData()->layer->removeChild(mStatusNodeMap[statusNodeData->id]);
             mStatusNodeMap[statusNodeData->id].release();
             mStatusNodeMap.remove(statusNodeData->id);
         }

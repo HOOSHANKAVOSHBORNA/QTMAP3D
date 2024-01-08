@@ -14,7 +14,7 @@ public:
     AssignDataManager(CombatManager *combatManager , Model *model, ServiceManager *service);
 
 public slots:
-    void assignDataReceived(AssignData *assignData);
+    void assignDataReceived(AssignmentData *assignData);
     void onSendAssignRequest(SimpleModelNode *attacker, SimpleModelNode *target);
     void onSendCancelRequest(SimpleModelNode *attacker, SimpleModelNode *target);
 

@@ -4,6 +4,7 @@
 #include <QObject>
 #include "qamqpclient.h"
 
+
 class NetworkManager: public QObject
 {
     Q_OBJECT

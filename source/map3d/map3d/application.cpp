@@ -121,7 +121,7 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 
 void Application::onUICreated()
 {
-    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
+//    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
     // connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
             // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
         // });
@@ -157,10 +157,12 @@ void Application::showSplash()
 void Application::authenticate()
 {
     mAuthenticator->show();
-    mServiceManager = new ServiceManager();
-    mNetworkManager = new NetworkManager(mServiceManager);
-    mAuthenticator->setServiceManager(mServiceManager);
+    mNetworkManager = new NetworkManager();
     mNetworkManager->start();
+    mServiceManager = new ServiceManager(mNetworkManager);
+
+    mAuthenticator->setServiceManager(mServiceManager);
+
 
     QTimer *timer = new QTimer();
     connect(timer, &QTimer::timeout, [this](){

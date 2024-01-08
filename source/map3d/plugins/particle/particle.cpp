@@ -19,7 +19,7 @@ bool Particle::setup()
     mParticleLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mParticleLayer);
 
-    connect(serviceManager(),&ServiceManager::explosionDataReceived,this,&Particle::onExplosionDataReceived);
+//    connect(serviceManager(),&ServiceManager::explosionDataReceived,this,&Particle::onExplosionDataReceived);
 
     ///////////////////////////add explosion/////////////////////////////////
     auto toolboxItemExplode =  new ToolboxItem{EXPLOSION, CATEGORY, "qrc:/resources/explosion.png", true};

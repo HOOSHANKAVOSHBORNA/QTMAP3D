@@ -208,5 +208,5 @@ StatusNodeData *StatusNode::nodeData() const
 void StatusNode::setNodeData(StatusNodeData *newNodeData)
 {
     mNodeData = newNodeData;
-    setFieldData(QString::fromStdString(newNodeData->name), newNodeData->fieldData);
+    setFieldData(newNodeData->name, newNodeData->fieldData);
 }

@@ -1,13 +1,12 @@
 #ifndef SERVICEMANAGER_H
 #define SERVICEMANAGER_H
 
-#include "compositeAnnotationLayer.h"
 #include "qjsonarray.h"
 #include "qjsonobject.h"
+#include "qvectornd.h"
 #include <QJsonDocument>
-#include <osgEarth/Layer>
+class NetworkManager;
 
-class MapObject;
 struct Command
 {
     static inline QString Add{"Add"};
@@ -365,53 +364,52 @@ class ServiceManager: public QObject
 {
     Q_OBJECT
 public:
-    ServiceManager(QObject *parent = nullptr);
+    ServiceManager(NetworkManager *networkManager, QObject *parent = nullptr);
 
-    void layersData(QJsonObject layers);
-    void flyableNodeData(QJsonObject jsonObject);
-    void statusNodeData(QJsonObject jsonObject);
-    void receiveExplosionData(QJsonObject jsonObject);
-    void receiveAssignmentData(QJsonObject jsonObject);
-    void sendJsonAssignData(AssignData data);
-    void messageData(QString jsonData);
-    void sendAction(const QString &action);
-    void polylineData(QJsonObject polyline);
-    void movableNodeData(QJsonObject jsonObject);
-    void signInData(QJsonObject jsonObject);
-    void signUpData(QJsonObject jsonObject);
+//    void layersData(QJsonObject layers);
+//    void flyableNodeData(QJsonObject jsonObject);
+//    void statusNodeData(QJsonObject jsonObject);
+//    void receiveExplosionData(QJsonObject jsonObject);
+//    void receiveAssignmentData(QJsonObject jsonObject);
+//    void sendJsonAssignData(AssignData data);
+//    void messageData(QString jsonData);
+//    void sendAction(const QString &action);
+//    void polylineData(QJsonObject polyline);
+//    void movableNodeData(QJsonObject jsonObject);
+//    void signInData(QJsonObject jsonObject);
+//    void signUpData(QJsonObject jsonObject);
 
 //    void addPolygon(QJsonDocument *polygon);
 //    void addSphere(QJsonDocument *sphere);
 //    void addCircle(QJsonDocument *circle);
 
-    void setMapObject(MapObject *newMapObject);
-
+//    void setMapObject(MapObject *newMapObject);
+private slots:
+    void onMessageReceived(const QString &message);
 signals:
-    void layerDataReceived(CompositeAnnotationLayer *layer);
-    void flyableNodeDataReceived(NodeData *modelNodeData);
-    void statusNodeDataReceived(StatusNodeData *statusNodeData);
-    void explosionDataReceived(ExplosionData *explosionData);
-    void assignDataReceived(AssignData *assignData);
-    void lineNodeDataReceived(PolyLineData *lineNodeData);
-    void movableNodeDataReceived(NodeData *modelNodeData);
-    void nodeDataReceived(NodeData *nodeData);
-    void circleDataReceived(CircleData *circleData);
-    void polygonDataReceived(PolygonData *polygonData);
-    void actionSent(const QString &action);
-    void signUpResponseReceived(bool status);
-    void signInResponseReceived(bool status, int role);
-    void clearMap();
-private:
-    void nodeData(QJsonObject jsonObject);
-    void circleData(QJsonObject jsonObject);
-    void polygonData(QJsonObject jsonObject);
+    void layerDataReceived(const LayerData &layerData);
+    void nodeDataReceived(const NodeData &nodeData);
+    void statusNodeDataReceived(const StatusNodeData &statusNodeData);
+    void assignmentDataReceived(const AssignmentData &assignmentData);
+    void polyLineDataReceived(const PolyLineData &polyLineData);
+    void polygonDataReceived(const PolygonData &polygonData);
+    void circleDataReceived(const CircleData &circleData);
+    void explosionDataReceived(const ExplosionData &explosionData);
 
-    void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
-    ParenticAnnotationLayer* findParenticLayer(int id);
+//    void signUpResponseReceived(bool status);
+//    void signInResponseReceived(bool status, int role);
 private:
-    MapObject *mMapObject;
-    std::map<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
-    int mRefreshTime{0};
+//    void nodeData(QJsonObject jsonObject);
+//    void circleData(QJsonObject jsonObject);
+//    void polygonData(QJsonObject jsonObject);
+
+//    void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
+//    ParenticAnnotationLayer* findParenticLayer(int id);
+private:
+    NetworkManager *mNetworkManager;
+//    MapObject *mMapObject;
+//    std::map<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
+//    int mRefreshTime{0};
 
 };
 

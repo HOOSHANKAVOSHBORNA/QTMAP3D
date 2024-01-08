@@ -19,26 +19,26 @@ FlyableModelNode *DataManager::addUpdateFlyableNode(NodeData *nodeData)
     osg::ref_ptr<FlyableModelNode> flyableNode;
 
     if(!mNodeMap.contains(nodeData->id)){
-        flyableNode = new FlyableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
+//        flyableNode = new FlyableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         flyableNode->setPosition(geoPoint);
         mNodeMap[nodeData->id] = flyableNode;
         flyableNode->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
         flyableNode = mNodeMap[nodeData->id]->asFlyableModelNode();
-        for(auto layer: flyableNode->nodeData()->layers){
-            layer->removeChild(flyableNode);
-        }
+//        for(auto layer: flyableNode->nodeData()->layers){
+//            layer->removeChild(flyableNode);
+//        }
         flyableNode->flyTo(geoPoint, nodeData->speed);
     }
 
-    flyableNode->setName(nodeData->name);
+//    flyableNode->setName(nodeData->name);
     flyableNode->setAttacker(nodeData->isAttacker);
     flyableNode->setNodeData(nodeData);
     //add to layer after set data
-    for(auto layer: nodeData->layers){
-        layer->addChild(flyableNode);
-    }
+//    for(auto layer: nodeData->layers){
+//        layer->addChild(flyableNode);
+//    }
 
     return flyableNode;
 }
@@ -49,25 +49,25 @@ SimpleModelNode *DataManager::addUpdateNode(NodeData *nodeData)
     osg::ref_ptr<SimpleModelNode> node;
 
     if(!mNodeMap.contains(nodeData->id)){
-        node = new SimpleModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
+//        node = new SimpleModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         node->setPosition(geoPoint);
         mNodeMap[nodeData->id] = node;
         node->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
         node = mNodeMap[nodeData->id];
-        for(auto layer: node->nodeData()->layers){
-            layer->removeChild(node);
-        }
+//        for(auto layer: node->nodeData()->layers){
+//            layer->removeChild(node);
+//        }
     }
-    node->setName(nodeData->name);
+//    node->setName(nodeData->name);
     node->setPosition(geoPoint);
     node->setAttacker(nodeData->isAttacker);
     node->setNodeData(nodeData);
     //add to layer after set data
-    for(auto layer: nodeData->layers){
-        layer->addChild(node);
-    }
+//    for(auto layer: nodeData->layers){
+//        layer->addChild(node);
+//    }
     return node;
 }
 
@@ -77,25 +77,25 @@ MoveableModelNode *DataManager::addUpdateMovableNode(NodeData *nodeData)
     osg::ref_ptr<MoveableModelNode> movableNode;
 
     if(!mNodeMap.contains(nodeData->id)){
-        movableNode = new MoveableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
+//        movableNode = new MoveableModelNode(mMapItem, nodeData->url3D, nodeData->url2D);
         movableNode->setPosition(geoPoint);
         mNodeMap[nodeData->id] = movableNode;
         movableNode->setBookmarkManager(mMainWindow->getBookmarkManager());
     }
     else{
         movableNode = mNodeMap[nodeData->id]->asMoveableModelNode();
-        for(auto layer: movableNode->nodeData()->layers){
-            layer->removeChild(movableNode);
-        }
+//        for(auto layer: movableNode->nodeData()->layers){
+//            layer->removeChild(movableNode);
+//        }
         movableNode->moveTo(geoPoint, nodeData->speed);
     }
-    movableNode->setName(nodeData->name);
+//    movableNode->setName(nodeData->name);
     movableNode->setNodeData(nodeData);
     movableNode->setAttacker(nodeData->isAttacker);
     //add to layer after set data
-    for(auto layer: nodeData->layers){
-        layer->addChild(movableNode);
-    }
+//    for(auto layer: nodeData->layers){
+//        layer->addChild(movableNode);
+//    }
     return movableNode;
 }
 
@@ -156,9 +156,9 @@ void DataManager::nodeDataReceived(NodeData *nodeData)
 void DataManager::removeNodeData(NodeData *nodeData)
 {
     if(mNodeMap.contains(nodeData->id)){
-        for(auto layer: mNodeMap[nodeData->id]->nodeData()->layers){
-            layer->removeChild(mNodeMap[nodeData->id]);
-        }
+//        for(auto layer: mNodeMap[nodeData->id]->nodeData()->layers){
+//            layer->removeChild(mNodeMap[nodeData->id]);
+//        }
         mNodeMap[nodeData->id].release();
         mNodeMap.remove(nodeData->id);
     }
