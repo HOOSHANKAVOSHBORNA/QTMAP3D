@@ -126,6 +126,7 @@ void Application::onUICreated()
             // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
         // });
     // connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
+    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
     mIsReady = true;
     emit ready();
 }

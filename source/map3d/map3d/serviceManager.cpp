@@ -119,14 +119,19 @@ ServiceManager::ServiceManager(NetworkManager *networkManager, QObject *parent):
 
 void ServiceManager::onMessageReceived(const QString &message)
 {
+    qDebug() << "Receive message: "<<message;
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
     QJsonObject obj;
     if (!doc.isNull()) {
         if (doc.isObject()){
             obj = doc.object();
             QString type = obj.value("Type").toString();
-//            if      (type == "Layer")
-//                layersData(obj);
+            QJsonObject data = obj.value("Data").toObject();
+            if(type == "Layer"){
+                LayerData layerData;
+                layerData.fromJson(data);
+                emit layerDataReceived(layerData);
+            }
 //            else if (type == "Flyable")
 //                flyableNodeData(obj);
 //            else if (type == "Status")
