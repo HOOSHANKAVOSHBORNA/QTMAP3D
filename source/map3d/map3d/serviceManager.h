@@ -50,6 +50,11 @@ struct NodeFieldData
 
         return jsonObject;
     }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
+    }
 };
 
 struct NodeData
@@ -100,6 +105,11 @@ struct NodeData
 
         return jsonObject;
     }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
+    }
 };
 
 struct StatusNodeData
@@ -129,6 +139,11 @@ struct StatusNodeData
         jsonObject.insert("FieldData", jsonArrayField);
 
         return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
     }
 };
 
@@ -190,6 +205,11 @@ struct PolyLineData
 
         return jsonObject;
     }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
+    }
 };
 
 struct PolygonData: public PolyLineData
@@ -201,6 +221,11 @@ struct PolygonData: public PolyLineData
         jsonObject.insert("FillColor", fillColor);
 
         return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
     }
 };
 
@@ -234,6 +259,11 @@ struct CircleData
 
         return jsonObject;
     }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
+    }
 };
 
 struct ExplosionData
@@ -261,6 +291,11 @@ struct ExplosionData
 
         return jsonObject;
     }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
+    }
 };
 
 struct LayerData {
@@ -284,6 +319,11 @@ struct LayerData {
         }
         jsonObject.insert("Children", childrenArray);
         return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        // TODO
     }
 };
 
