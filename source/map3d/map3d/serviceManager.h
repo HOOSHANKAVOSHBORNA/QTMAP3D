@@ -224,7 +224,7 @@ struct PolyLineData
     int layerId;
     std::vector<QVector3D> points;
 
-    QJsonObject toJson() const{
+    virtual QJsonObject toJson() const{
         QJsonObject jsonObject;
         jsonObject.insert("Id", id);
         jsonObject.insert("Name", name);
@@ -246,7 +246,7 @@ struct PolyLineData
         return jsonObject;
     }
 
-    void fromJson(const QJsonObject &json)
+    virtual void fromJson(const QJsonObject &json)
     {
         id = json["Id"].toInt();
         name = json["Name"].toString();
@@ -277,7 +277,7 @@ struct PolygonData: public PolyLineData
 
     void fromJson(const QJsonObject &json)
     {
-        static_cast<PolyLineData *>(this)->fromJson(json);
+        PolyLineData::fromJson(json);
         fillColor = json["FillColor"].toString();
     }
 };
@@ -413,25 +413,9 @@ class ServiceManager: public QObject
     Q_OBJECT
 public:
     ServiceManager(NetworkManager *networkManager, QObject *parent = nullptr);
-
-//    void layersData(QJsonObject layers);
-//    void flyableNodeData(QJsonObject jsonObject);
-//    void statusNodeData(QJsonObject jsonObject);
-//    void receiveExplosionData(QJsonObject jsonObject);
-//    void receiveAssignmentData(QJsonObject jsonObject);
-//    void sendJsonAssignData(AssignData data);
-//    void messageData(QString jsonData);
-//    void sendAction(const QString &action);
-//    void polylineData(QJsonObject polyline);
-//    void movableNodeData(QJsonObject jsonObject);
+    void sendAssignment(const AssignmentData &assignmentData);
 //    void signInData(QJsonObject jsonObject);
 //    void signUpData(QJsonObject jsonObject);
-
-//    void addPolygon(QJsonDocument *polygon);
-//    void addSphere(QJsonDocument *sphere);
-//    void addCircle(QJsonDocument *circle);
-
-//    void setMapObject(MapObject *newMapObject);
 private slots:
     void onMessageReceived(const QString &message);
 signals:
@@ -447,18 +431,7 @@ signals:
 //    void signUpResponseReceived(bool status);
 //    void signInResponseReceived(bool status, int role);
 private:
-//    void nodeData(QJsonObject jsonObject);
-//    void circleData(QJsonObject jsonObject);
-//    void polygonData(QJsonObject jsonObject);
-
-//    void parseLayersFromJson(QJsonObject jsonObject, CompositeAnnotationLayer *parent = nullptr);
-//    ParenticAnnotationLayer* findParenticLayer(int id);
-private:
     NetworkManager *mNetworkManager;
-//    MapObject *mMapObject;
-//    std::map<int, QPair<int, ParenticAnnotationLayer*>> mParenticLayerMap;
-//    int mRefreshTime{0};
-
 };
 
 #endif // DATAMANAGER_H

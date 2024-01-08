@@ -145,7 +145,8 @@ MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
 
 void MapObject::setServiceManager(ServiceManager *serviceManager)
 {
-    disconnect(mServiceManager, 0, 0, 0); // in case this is a reconnect
+    if(mServiceManager)
+        disconnect(mServiceManager, 0, 0, 0);
     mServiceManager = serviceManager;
     if(mServiceManager){
         connect(mServiceManager, &ServiceManager::layerDataReceived, this, &MapObject::onLayerDataReceived);
