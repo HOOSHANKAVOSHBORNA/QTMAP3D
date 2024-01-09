@@ -1,94 +1,55 @@
-//#include "assignmentTest.h"
+#include "assignmentTest.h"
 
-//#include <QColor>
-//#include <QTimer>
-//#include <QRandomGenerator>
-//#include <QJsonObject>
-//#include <QJsonArray>
+#include <QTimer>
+#include <QRandomGenerator>
+#include <QJsonObject>
 
-//AssignmentTest::AssignmentTest(NetworkManager *networkManager):
-//    mNetworkManager(networkManager)
-//{
-//    QObject::connect(mNetworkManager,&NetworkManager::assignDataReceived, this, &AssignmentTest::dataReceived);
-//    QObject::connect(mNetworkManager, &NetworkManager::dataQueueDeclared, [this]{
+AssignmentTest::AssignmentTest(ServiceManager *serviceManager):
+    mServiceManager(serviceManager)
+{
+    QObject::connect(mServiceManager,&ServiceManager::assignmentDataReceived, this, &AssignmentTest::dataReceived);
+    //--create and update assignment info------------------------
+    QTimer *timerUpdateAssign = new QTimer();
+    QObject::connect(timerUpdateAssign, &QTimer::timeout, [this](){
+        for(auto& AssignmentData: mAssignmentDataList){
+            AssignmentData.state = QString::fromStdString(mStates.at(QRandomGenerator::global()->generate() % (6)));
+            updateAssignment(AssignmentData);
+        }
+    });
+    timerUpdateAssign->start(5000);
 
-//        //--create and update assignment info------------------------
-//        QTimer *timerUpdateAssign = new QTimer();
-//        QObject::connect(timerUpdateAssign, &QTimer::timeout, [this](){
+}
+void AssignmentTest::createAssignment(AssignmentData data)
+{
+    if(QRandomGenerator::global()->generate() % (2) -1){
+        mAssignmentDataList.append(data);
+        data.command = "ADDORUPDATE";
+        data.layerId = 401;
+        mServiceManager->sendAssignment(data);
+    }
+}
 
-//            for(auto& AssignmentData: mAssignmentDataList){
-//                if(randomBool()){
-//                    if(randomBool()){
-//                        AssignmentData.state = "SEARCH";
-//                    }else{
-//                        AssignmentData.state = "FIRE";
-//                    }
-//                }else{
-//                    if(randomBool()){
-//                        AssignmentData.state = "LOCK";
-//                    }else{
-//                        AssignmentData.state = "ASSIGNED";
-//                    }
-//                }
-//                QJsonObject obj;
-//                obj.insert("Type","Assign");
-//                obj.insert("COMMAND","ADDORUPDATE");
-//                obj.insert("attackerID",AssignmentData.attackerID);
-//                obj.insert("targetID",AssignmentData.targetID);
-//                obj.insert("state", AssignmentData.state.data());
-//                QJsonDocument doc;
-//                doc.setObject(obj);
-//                mNetworkManager->sendData(doc.toJson(QJsonDocument::Indented));
-//            }
-//        });
-//        timerUpdateAssign->start(1000);
-//    });
-//}
-//void AssignmentTest::createAssignment(QJsonDocument data)
-//{
-//    if(randomBool()){
-//        mAssignmentDataList.append(data);
-//        QJsonObject obj;
-//        obj.insert("Type","Assign");
-//        obj.insert("COMMAND","ADDORUPDATE");
-//        obj.insert("attackerID",data.attackerID);
-//        obj.insert("targetID",data.targetID);
-//        obj.insert("state","ASSIGNED");
-//        QJsonDocument doc;
-//        doc.setObject(obj);
-//        mNetworkManager->sendData(doc.toJson(QJsonDocument::Indented));
-//    }
-//}
+void AssignmentTest::updateAssignment(AssignmentData data)
+{
+    data.command = "ADDORUPDATE";
+    mServiceManager->sendAssignment(data);
+}
 
-//void AssignmentTest::updateAssignment(QJsonDocument data)
-//{
+void AssignmentTest::removeAssignment(AssignmentData data)
+{
+    if(QRandomGenerator::global()->generate() % (2) -1){
+        // mAssignmentDataList.removeOne(data);
+        data.command = "REMOVE";
+        mServiceManager->sendAssignment(data);
+    }
+}
 
-//}
-
-//void AssignmentTest::removeAssignment(QJsonDocument data)
-//{
-//    if(randomBool()){
-//        // mAssignmentDataList.removeOne(data);
-//        QJsonObject obj;
-//        obj.insert("Type","Assign");
-//        obj.insert("COMMAND","REMOVE");
-//        obj.insert("attackerID",data.attackerID);
-//        obj.insert("targetID",data.targetID);
-//        QJsonDocument doc;
-//        doc.setObject(obj);
-//        mNetworkManager->sendData(doc.toJson(QJsonDocument::Indented));
-//    }
-//}
-
-//void AssignmentTest::dataReceived(QJsonObject obj)
-//{
-//    AssignmentData data;
-//    data.attackerID = obj.value("attackerID").toInt();
-//    data.targetID = obj.value("targetID").toInt();
-//    if(obj.value("COMMAND").toString() == "ASSIGNREQUEST"){
-//        createAssignment(data);
-//    }
-//    if(obj.value("COMMAND").toString() == "CANCELREQUEST"){
-//        removeAssignment(data);
-//    }
-//}
+void AssignmentTest::dataReceived(AssignmentData data)
+{
+    if(data.command == "ASSIGNREQUEST"){
+        createAssignment(data);
+    }
+    if(data.command == "CANCELREQUEST"){
+        removeAssignment(data);
+    }
+}
