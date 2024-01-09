@@ -56,21 +56,21 @@ void AssignDataManager::assignDataReceived(AssignmentData *assignData)
 
 AssignState AssignDataManager::parseState(std::string state)
 {
-    if(state == "PREASSIGN"){
+    if(state == "Preassigned"){
         return AssignState::PREASSIGN;
-    }else if(state == "ASSIGNED"){
+    }else if(state == "Assigned"){
         return AssignState::ASSIGNED;
-    }else if(state == "BUSY"){
+    }else if(state == "Busy"){
         return AssignState::BUSY;
-    }else if(state == "SEARCH"){
+    }else if(state == "Search"){
         return AssignState::SEARCH;
-    }else if(state == "LOCK"){
+    }else if(state == "Lock"){
         return AssignState::LOCK;
-    }else if(state == "FIRE"){
+    }else if(state == "Fire"){
         return AssignState::FIRE;
-    }else if(state == "SUCCEED"){
+    }else if(state == "Succeed"){
         return AssignState::SUCCEED;
-    }else if(state == "FAILED"){
+    }else if(state == "Failed"){
         return AssignState::FAILED;
     }
     return PREASSIGN;

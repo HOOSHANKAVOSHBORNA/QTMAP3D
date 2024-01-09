@@ -26,7 +26,7 @@ struct AssignmentState{
     static inline QString Search{"Search"};
     static inline QString Lock{"Lock"};
     static inline QString Fire{"Fire"};
-    static inline QString Success{"Success"};
+    static inline QString Succeed{"Succeed"};
     static inline QString Failed{"Failed"};
 };
 
@@ -66,6 +66,7 @@ struct NodeData
     double longitude;
     double altitude;
     double speed{0};
+    double heading{0};
     QString command{Command::Add};
     std::vector<int> layersId;
     std::vector<NodeFieldData> fieldData;
@@ -85,6 +86,7 @@ struct NodeData
         jsonObject.insert("Longitude", longitude);
         jsonObject.insert("Altitude", altitude);
         jsonObject.insert("Speed", speed);
+        jsonObject.insert("Heading", heading);
         jsonObject.insert("Command", command);
 
         QJsonArray jsonArrayLayer;
