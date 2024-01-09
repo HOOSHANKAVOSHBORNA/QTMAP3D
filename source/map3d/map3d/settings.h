@@ -3,16 +3,20 @@
 
 #include <QObject>
 #include <QQuickItem>
-
+#include <QSettings>
+//#include <QJsonObject>
+//#include <QJsonDocument>
+//#include <QStandardPaths>
+//#include <QDir>
 
 class Settings:public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString ip READ getIp  WRITE setIp NOTIFY settingsChanged)
-    Q_PROPERTY(QString port READ getPort  WRITE setPort NOTIFY settingsChanged)
-    Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY settingsChanged)
-    Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY settingsChanged)
+    Q_PROPERTY(QString ip READ getIp  WRITE setIp NOTIFY ipChanged)
+    Q_PROPERTY(QString port READ getPort  WRITE setPort NOTIFY portChanged)
+    Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY usernameChanged)
+    Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
 
 public:
    explicit Settings(QObject *parent = nullptr);
@@ -28,15 +32,26 @@ public:
 
     Q_INVOKABLE QString getPassword() const;
     Q_INVOKABLE void setPassword(const QString &newPassword);
+    Q_INVOKABLE void saveSettings();
+
+//    QJsonObject toJson();
+    bool writeToFile();
 
 signals:
-    void settingsChanged();
+    void ipChanged();
+    void portChanged();
+    void usernameChanged();
+    void passwordChanged();
 
 private:
     QString mIp;
     QString mPort;
     QString mUsername;
     QString mPassword;
+    QSettings* mSettings;
+//    QString appDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+//    const QString savedDir = QString("saved");
+//    const QString savedFileName = QString("settings.json");
 };
 
 class SettingsManager:public QObject

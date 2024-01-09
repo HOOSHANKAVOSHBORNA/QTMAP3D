@@ -2,46 +2,19 @@
 
 Settings::Settings(QObject *parent):QObject(parent)
 {
+    mSettings = new QSettings("MySettings","Configuration");
 
-}
+    QString data = mSettings->value("configs/ip", "").toString();
+    mIp = data;
 
-QString Settings::getPort() const
-{
-    return mPort;
-}
+    data = mSettings->value("configs/port", "").toString();
+    mPort = data;
 
-void Settings::setPort(const QString &newPort)
-{
-    if (mPort == newPort)
-        return;
-    mPort = newPort;
-    emit settingsChanged();
-}
+    data = mSettings->value("configs/username", "").toString();
+    mUsername = data;
 
-QString Settings::getUsername() const
-{
-    return mUsername;
-}
-
-void Settings::setUsername(const QString &newUsername)
-{
-    if (mUsername == newUsername)
-        return;
-    mUsername = newUsername;
-    emit settingsChanged();
-}
-
-QString Settings::getPassword() const
-{
-    return mPassword;
-}
-
-void Settings::setPassword(const QString &newPassword)
-{
-    if (mPassword == newPassword)
-        return;
-    mPassword = newPassword;
-    emit settingsChanged();
+    data = mSettings->value("configs/password", "").toString();
+    mPassword = data;
 }
 
 QString Settings::getIp() const
@@ -54,7 +27,87 @@ void Settings::setIp(const QString &newIp)
     if (mIp == newIp)
         return;
     mIp = newIp;
-    emit settingsChanged();
+    emit ipChanged();
+}
+
+QString Settings::getPort() const
+{
+    return mPort;
+}
+
+void Settings::setPort(const QString &newPort)
+{
+    if (mPort == newPort)
+        return;
+    mPort = newPort;
+    emit portChanged();
+}
+
+QString Settings::getUsername() const
+{
+    return mUsername;
+}
+
+void Settings::setUsername(const QString &newUsername)
+{
+    if (mUsername == newUsername)
+        return;
+    mUsername = newUsername;
+    emit usernameChanged();
+}
+
+QString Settings::getPassword() const
+{
+    return mPassword;
+}
+
+void Settings::setPassword(const QString &newPassword)
+{
+    if (mPassword == newPassword)
+        return;
+    mPassword = newPassword;
+    emit passwordChanged();
+}
+
+void Settings::saveSettings()
+{
+    mSettings->setValue("configs/ip", mIp);
+    mSettings->setValue("configs/port", mPort);
+    mSettings->setValue("configs/username", mUsername);
+    mSettings->setValue("configs/password", mPassword);
+}
+
+//QJsonObject Settings::toJson()
+//{
+//    QJsonObject json;
+
+//    json["ip"] = mIp;
+//    json["port"] = mPort;
+//    json["username"] = mUsername;
+//    json["password"] = mPassword;
+
+//    return json;
+//}
+
+bool Settings::writeToFile()
+{
+
+
+//    QDir dir;
+//    if (!dir.exists(appDir + "/" + savedDir)) {
+//        dir.mkpath(savedDir);
+//    }
+
+//    QFile settingsFile(appDir + "/" + savedDir + "/" + savedFileName);
+
+//    if (!settingsFile.open(QIODevice::WriteOnly)) {
+//        return false;
+//    }
+
+//    QJsonObject jsonObject = this->toJson();
+//    settingsFile.write(QJsonDocument(jsonObject).toJson());
+
+   //    return true;
 }
 
 
@@ -80,6 +133,4 @@ SettingsManager::SettingsManager(QObject *parent):QObject(parent)
 {
     mSettings = new Settings();
 }
-
-
 

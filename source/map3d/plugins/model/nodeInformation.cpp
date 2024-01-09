@@ -17,20 +17,20 @@ NodeInformationModel::~NodeInformationModel()
 
 }
 
-void NodeInformationModel::setNodeData(NodeData *nodeData)
+void NodeInformationModel::setNodeData(const NodeData &nodeData)
 {
     mNodeData = nodeData;
     // --clear category child and remove category if is not in new data ---------------
     for (auto& [categoryText, categoryItem] : mCategoryItemMap) {
         categoryItem->removeRows(0, categoryItem->rowCount());
-        auto it = std::find_if(nodeData->fieldData.begin(), nodeData->fieldData.end(), [&](const NodeFieldData& n){
+        auto it = std::find_if(nodeData.fieldData.begin(), nodeData.fieldData.end(), [&](const NodeFieldData& n){
             return n.category == categoryText;
         });
-        if (it == nodeData->fieldData.end())
+        if (it == nodeData.fieldData.end())
             mCategoryItemMap.erase(categoryText);
     }
 
-    for(NodeFieldData& nodeFieldData: nodeData->fieldData){
+    for(const NodeFieldData& nodeFieldData: nodeData.fieldData){
         QStandardItem *item = new QStandardItem;
         QString category = nodeFieldData.category;
         // --add category if it doesn't exist ---------------------------------------------------
@@ -87,16 +87,16 @@ NodeInformation::~NodeInformation()
 
 }
 
-void NodeInformation::setNodeData(NodeData *nodeData)
+void NodeInformation::setNodeData(const NodeData &nodeData)
 {
-//    mWindow->setTitle(QString::fromStdString(nodeData->name));
+//    mWindow->setTitle(QString::fromStdString(nodeData.name));
 
-//    QString iconUrl = QString::fromStdString(nodeData->iconSrc);
+//    QString iconUrl = QString::fromStdString(nodeData.iconSrc);
 //    if(!iconUrl.contains("qrc"))
 //        iconUrl = "file:" + iconUrl;
 //    mWindow->setProperty("iconUrl", iconUrl);
 
-//    QString imgUrl = QString::fromStdString(nodeData->imgSrc);
+//    QString imgUrl = QString::fromStdString(nodeData.imgSrc);
 //    if(!imgUrl.contains("qrc"))
 //        imgUrl = "file:" + imgUrl;
 //    mWindow->setProperty("imageUrl", imgUrl);

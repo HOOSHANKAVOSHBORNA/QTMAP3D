@@ -12,19 +12,17 @@ public:
     ~DataManager();
 //    void removeFlyableNodeData(NodeData *nodeData);
 //    void removeMovableNodeData(NodeData *nodeData);
-    void removeNodeData(NodeData *nodeData);
+    void removeNode(const NodeData &nodeData);
     int nodeCount();
     SimpleModelNode* getNodeAtIndex(int index);
 
-    FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
-    SimpleModelNode* addUpdateNode(NodeData *nodeData);
-    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
+//    FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
+    SimpleModelNode* addUpdateNode(const NodeData &nodeData);
+//    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
     QMap<int, osg::ref_ptr<SimpleModelNode>> *getNodeMap();
 
 public slots:
-    void flyableNodeDataReceived(NodeData *nodeData);
-    void movableNodeDataReceived(NodeData *nodeData);
-    void nodeDataReceived(NodeData *nodeData);
+    void nodeDataReceived(const NodeData &nodeData);
 
 private:
     MapItem* mMapItem;

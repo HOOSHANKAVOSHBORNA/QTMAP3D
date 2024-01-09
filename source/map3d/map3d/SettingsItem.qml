@@ -41,13 +41,14 @@ Item {
                 height: 40 / Style.monitorRatio
                 font.pointSize: 10 / Style.monitorRatio
                 color: "black"
+                text: rootItem.model.ip
                 background: Rectangle {
                     color: foregroundColor
                     radius: height / 2
                 }
-                onAccepted: {
-                   rootItem.model.setIp(text)
-                }
+//                onAccepted: {
+//                   rootItem.model.setIp(text)
+//                }
             }
         }
 
@@ -71,13 +72,14 @@ Item {
                 height: 40 / Style.monitorRatio
                 font.pointSize: 10 / Style.monitorRatio
                 color: "black"
+                text: rootItem.model.port
                 background: Rectangle {
                     color: foregroundColor
                     radius: height / 2
                 }
-                onAccepted: {
-                   rootItem.model.setPort(text)
-                }
+//                onAccepted: {
+//                   rootItem.model.setPort(text)
+//                }
             }
         }
 
@@ -101,13 +103,14 @@ Item {
                 height: 40 / Style.monitorRatio
                 font.pointSize: 10 / Style.monitorRatio
                 color: "black"
+                text: rootItem.model.username
                 background: Rectangle {
                     color: foregroundColor
                     radius: height / 2
                 }
-                onAccepted: {
-                   rootItem.model.setUsername(text)
-                }
+//                onAccepted: {
+//                   rootItem.model.setUsername(text)
+//                }
             }
         }
 
@@ -131,14 +134,43 @@ Item {
                 height: 40 / Style.monitorRatio
                 font.pointSize: 10 / Style.monitorRatio
                 color: "black"
+                text: rootItem.model.password
                 background: Rectangle {
                     color: foregroundColor
                     radius: height / 2
                 }
-                onAccepted: {
-                   rootItem.model.setPassword(text)
-                }
+//                onAccepted: {
+//                   rootItem.model.setPassword(text)
+//                }
             }
+        }
+
+        Button {
+            id: doneBtn
+            padding: 0
+            Layout.fillHeight: true
+            Layout.preferredWidth: 65 / Style.monitorRatio
+            Layout.alignment: Qt.AlignLeft
+            Layout.leftMargin: 5 / Style.monitorRatio
+
+            contentItem: Text {
+                text: "Confirm"
+                font.pixelSize: 15 / Style.monitorRatio
+                color: Style.backgroundColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            background: Rectangle {
+                radius: 10 / Style.monitorRatio
+                color: Style.foregroundColor
+            }
+           onClicked: {
+               rootItem.model.setIp(ip.text)
+               rootItem.model.setPort(port.text)
+               rootItem.model.setUsername(username.text)
+               rootItem.model.setPassword(password.text)
+               rootItem.model.saveSettings()
+           }
         }
     }
 }

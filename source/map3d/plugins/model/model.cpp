@@ -41,9 +41,7 @@ bool Model::setup()
 
     mDataManager = new DataManager(mapItem(), mainWindow());
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-//    connect(serviceManager(), &ServiceManager::flyableNodeDataReceived, mDataManager, &DataManager::flyableNodeDataReceived);
-//    connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::nodeDataReceived);
-//    connect(serviceManager(), &ServiceManager::movableNodeDataReceived, mDataManager, &DataManager::movableNodeDataReceived);
+    connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::nodeDataReceived);
 
     mModelNodeLayer = new CompositeAnnotationLayer();
     mModelNodeLayer->setName(MODEL);
@@ -94,16 +92,6 @@ void Model::makeIconNode(const QString &fileName)
 osgEarth::Annotation::PlaceNode *Model::iconNode() const
 {
     return mIconNode.get();
-}
-
-Model::State Model::state() const
-{
-    return mState;
-}
-
-void Model::setState(State newState)
-{
-    mState = newState;
 }
 
 bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -203,24 +191,29 @@ DataManager *Model::getDataManager()
 void Model::onTreeItemCheck(bool check)
 {
     if (check) {
-        mBaseNodeData = sampleNodeData("Tree",
-                                   "../data/models/tree/tree.png",
-                                   "../data/models/tree/tree.osgb",
-                                   "../data/models/airplane/airplane.png",
-                                   "qrc:/resources/tree.png");
+        mNodeData = new NodeData;
+        mNodeData->id = 0;
+        mNodeData->name = "Tree";
+        mNodeData->type = NodeType::Fixed;
+        mNodeData->category = "User";
+        mNodeData->url2D = "../data/models/tree/tree.png";
+        mNodeData->url3D = "../data/models/tree/tree.osgb";
+        mNodeData->imgInfoUrl = "qrc:/resources/tree.png";
+        mNodeData->iconInfoUrl = "qrc:/resources/tree.png";
+        mNodeData->color = QColorConstants::Green.name();
 
         makeIconNode("../data/models/tree/tree.png");
         mType = Type::SIMPLE;
-        setState(State::READY);
+        mState = State::READY;
         mapItem()->addNode(iconNode());
 
         mProperty->setModelNode(nullptr);
         mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Tree");
     } else {
-        if (state() == State::MOVING)
+        if (mState == State::MOVING)
             cancel();
 
-        setState(State::NONE);
+        mState = State::NONE;
         mapItem()->removeNode(iconNode());
         mainWindow()->getToolboxManager()->removePropertyItem();
     }
@@ -229,22 +222,22 @@ void Model::onTreeItemCheck(bool check)
 void Model::onCarItemCheck(bool check)
 {
     if (check) {
-        mBaseNodeData = sampleNodeData("Car",
-                                   "../data/models/car/car.png",
-                                   "../data/models/car/car.osgb",
-                                   "../data/models/airplane/airplane.png",
-                                   "qrc:/resources/car.png");
+//        mBaseNodeData = sampleNodeData("Car",
+//                                   "../data/models/car/car.png",
+//                                   "../data/models/car/car.osgb",
+//                                   "../data/models/airplane/airplane.png",
+//                                   "qrc:/resources/car.png");
         makeIconNode("../data/models/car/car.png");
         mType = Type::MOVEABLE;
-        setState(State::READY);
+        mState = State::READY;
         mapItem()->addNode(iconNode());
         mProperty->setModelNode(nullptr);
         mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Car");
     } else {
-        if (state() == State::MOVING)
+        if (mState == State::MOVING)
             cancel();
 
-        setState(State::NONE);
+        mState = State::NONE;
         mapItem()->removeNode(iconNode());
         mainWindow()->getToolboxManager()->removePropertyItem();
     }
@@ -253,22 +246,22 @@ void Model::onCarItemCheck(bool check)
 void Model::onAirplanItemCheck(bool check)
 {
     if (check) {
-        mBaseNodeData = sampleNodeData("Airplane",
-                                   "../data/models/airplane/airplane.png",
-                                   "../data/models/airplane/airplane.osgb",
-                                   "../data/models/airplane/airplane.png",
-                                   "qrc:/resources/airplane.png");
+//        mBaseNodeData = sampleNodeData("Airplane",
+//                                   "../data/models/airplane/airplane.png",
+//                                   "../data/models/airplane/airplane.osgb",
+//                                   "../data/models/airplane/airplane.png",
+//                                   "qrc:/resources/airplane.png");
         makeIconNode("../data/models/airplane/airplane.png");
         mType = Type::FLYABLE;
-        setState(State::READY);
+        mState = State::READY;
         mapItem()->addNode(iconNode());
         mProperty->setModelNode(nullptr);
         mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Airplane");
     } else {
-        if (state() == State::MOVING)
+        if (mState == State::MOVING)
             cancel();
 
-        setState(State::NONE);
+        mState = State::NONE;
         mapItem()->removeNode(iconNode());
         mainWindow()->getToolboxManager()->removePropertyItem();
     }
@@ -277,22 +270,22 @@ void Model::onAirplanItemCheck(bool check)
 void Model::onTankItemCheck(bool check)
 {
     if (check) {
-        mBaseNodeData = sampleNodeData("Tank",
-                                   "../data/models/tank/tank.png",
-                                   "../data/models/tank/tank.osg",
-                                   "../data/models/tank/tank.png",
-                                   "qrc:/resources/tank.png");
-        mBaseNodeData->isAttacker = true;
+//        mBaseNodeData = sampleNodeData("Tank",
+//                                   "../data/models/tank/tank.png",
+//                                   "../data/models/tank/tank.osg",
+//                                   "../data/models/tank/tank.png",
+//                                   "qrc:/resources/tank.png");
+//        mBaseNodeData->isAttacker = true;
 
         makeIconNode("../data/models/tank/tank.png");
         mType = Type::MOVEABLE;
-        setState(State::READY);
+        mState = State::READY;
         mapItem()->addNode(iconNode());
     }
     else {
-        if(state() == State::MOVING)
+        if(mState == State::MOVING)
             cancel();
-        setState(State::NONE);
+        mState = State::NONE;
         mapItem()->removeNode(iconNode());
     }
 }
@@ -304,14 +297,14 @@ void Model::onModeChanged(bool is3DView)
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos)
 {
-    mNodeData = new NodeData();
-    mNodeData->name = mBaseNodeData->name;
-    mNodeData->url2D = mBaseNodeData->url2D;
-    mNodeData->url3D = mBaseNodeData->url3D;
-//    mNodeData->imgSrc = mBaseNodeData->imgSrc;
-//    mNodeData->iconSrc = mBaseNodeData->iconSrc;
-    mNodeData->color = mBaseNodeData->color;
-    mNodeData->isAttacker = mBaseNodeData->isAttacker;
+//    mNodeData = new NodeData();
+//    mNodeData->name = mBaseNodeData->name;
+//    mNodeData->url2D = mBaseNodeData->url2D;
+//    mNodeData->url3D = mBaseNodeData->url3D;
+////    mNodeData->imgSrc = mBaseNodeData->imgSrc;
+////    mNodeData->iconSrc = mBaseNodeData->iconSrc;
+//    mNodeData->color = mBaseNodeData->color;
+//    mNodeData->isAttacker = mBaseNodeData->isAttacker;
 
     mNodeData->longitude = geoPos.x();
     mNodeData->latitude = geoPos.y();
@@ -328,7 +321,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
             mModelNodeLayer->addLayer(mSimpleNodeLayer);
         }
 //        mNodeData->layers.push_back(mSimpleNodeLayer);
-        mCurrentModel = mDataManager->addUpdateNode(mNodeData);
+//        mCurrentModel = mDataManager->addUpdateNode(mNodeData);
         break;
     case Type::MOVEABLE:
 
@@ -338,7 +331,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
             mModelNodeLayer->addLayer(mMoveableNodeLayer);
         }
 //        mNodeData->layers.push_back(mMoveableNodeLayer);
-        mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
+//        mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
         break;
     case Type::FLYABLE:
 
@@ -348,13 +341,13 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
             mModelNodeLayer->addLayer(mFlyableNodelLayer);
         }
 //        mNodeData->layers.push_back(mFlyableNodelLayer);
-        mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
+//        mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
         break;
     default:
         break;
     }
     mProperty->setModelNode(mCurrentModel);
-    setState(State::MOVING);
+    mState = State::MOVING;
     mCount++;
 }
 
@@ -364,13 +357,13 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
         if (mCurrentModel->asFlyableModelNode()) {
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
-            mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
+//            mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
             mProperty->flyTo(geoPos);
             return;
         }
 
         if (mCurrentModel->asMoveableModelNode()) {
-            mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
+//            mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
             mProperty->moveTo(geoPos);
             return;
         }
@@ -383,32 +376,32 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
 
 void Model::confirm()
 {
-    if (state() == State::MOVING) {
-        setState(State::READY);
+    if (mState == State::MOVING) {
+        mState = State::READY;
     }
 }
 
 void Model::cancel()
 {
-    if (state() == State::MOVING) {
+    if (mState == State::MOVING) {
         switch (mType) {
         case Type::SIMPLE:
-            mDataManager->removeNodeData(mNodeData);
+//            mDataManager->removeNode(mNodeData);
             mSimpleNodeLayer->removeChild(mCurrentModel);
             break;
         case Type::MOVEABLE:
-            mDataManager->removeNodeData(mNodeData);
+//            mDataManager->removeNode(mNodeData);
             mMoveableNodeLayer->removeChild(mCurrentModel);
             break;
         case Type::FLYABLE:
-            mDataManager->removeNodeData(mNodeData);
+//            mDataManager->removeNode(mNodeData);
             mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
         default:
             break;
         }
         mCurrentModel.release();
-        setState(State::READY);
+        mState = State::READY;
         mCount--;
     }
 }
@@ -452,49 +445,49 @@ SimpleModelNode *Model::pick(float x, float y)
     return simpleModelNode;
 }
 
-NodeData *Model::sampleNodeData(std::string name,
-                                std::string url2d,
-                                std::string url3d,
-                                std::string imgSrc,
-                                std::string iconSrc/*,
-                                osgEarth::GeoPoint geoPos*/)
-{
-    NodeData *nodeData = new NodeData();
-    //    flyableNodeData->id = 100;
-//    nodeData->name = name;
-//    nodeData->type = name;
-//    nodeData->longitude = geoPos.x();
-//    nodeData->latitude = geoPos.y();
-//    nodeData->altitude = geoPos.z();
-//    nodeData->url2D = url2d;
-//    nodeData->url3D = url3d;
-//    nodeData->imgSrc = imgSrc;
-//    nodeData->iconSrc = iconSrc;
-//    nodeData->color = QColor("white").name().toStdString();
-    nodeData->speed = 100;
-    nodeData->fieldData.push_back(NodeFieldData{"name",
-                                                "Aircraft" + QString::number(mCount),
-                                                "Main Information",
-                                                "qrc:/Resources/exclamation-mark.png"});
-    nodeData->fieldData.push_back(NodeFieldData{"Id",
-                                                QString::number(100 + mCount),
-                                                "Main Information",
-                                                "qrc:/Resources/exclamation-mark.png"});
-    nodeData->fieldData.push_back(NodeFieldData{"Longitude",
-                                                QString::number(nodeData->longitude),
-                                                "Location Information",
-                                                "qrc:/Resources/location.png"});
-    nodeData->fieldData.push_back(NodeFieldData{"Latitude",
-                                                QString::number(nodeData->latitude),
-                                                "Location Information",
-                                                "qrc:/Resources/location.png"});
-    nodeData->fieldData.push_back(NodeFieldData{"Altitude",
-                                                QString::number(nodeData->altitude),
-                                                "Location Information",
-                                                "qrc:/Resources/location.png"});
-    nodeData->fieldData.push_back(NodeFieldData{"speed",
-                                                QString::number(nodeData->speed),
-                                                "Location Information",
-                                                "qrc:/Resources/location.png"});
-    return nodeData;
-}
+//NodeData *Model::sampleNodeData(std::string name,
+//                                std::string url2d,
+//                                std::string url3d,
+//                                std::string imgSrc,
+//                                std::string iconSrc/*,
+//                                osgEarth::GeoPoint geoPos*/)
+//{
+//    NodeData *nodeData = new NodeData();
+//    //    flyableNodeData->id = 100;
+////    nodeData->name = name;
+////    nodeData->type = name;
+////    nodeData->longitude = geoPos.x();
+////    nodeData->latitude = geoPos.y();
+////    nodeData->altitude = geoPos.z();
+////    nodeData->url2D = url2d;
+////    nodeData->url3D = url3d;
+////    nodeData->imgSrc = imgSrc;
+////    nodeData->iconSrc = iconSrc;
+////    nodeData->color = QColor("white").name().toStdString();
+//    nodeData->speed = 100;
+//    nodeData->fieldData.push_back(NodeFieldData{"name",
+//                                                "Aircraft" + QString::number(mCount),
+//                                                "Main Information",
+//                                                "qrc:/Resources/exclamation-mark.png"});
+//    nodeData->fieldData.push_back(NodeFieldData{"Id",
+//                                                QString::number(100 + mCount),
+//                                                "Main Information",
+//                                                "qrc:/Resources/exclamation-mark.png"});
+//    nodeData->fieldData.push_back(NodeFieldData{"Longitude",
+//                                                QString::number(nodeData->longitude),
+//                                                "Location Information",
+//                                                "qrc:/Resources/location.png"});
+//    nodeData->fieldData.push_back(NodeFieldData{"Latitude",
+//                                                QString::number(nodeData->latitude),
+//                                                "Location Information",
+//                                                "qrc:/Resources/location.png"});
+//    nodeData->fieldData.push_back(NodeFieldData{"Altitude",
+//                                                QString::number(nodeData->altitude),
+//                                                "Location Information",
+//                                                "qrc:/Resources/location.png"});
+//    nodeData->fieldData.push_back(NodeFieldData{"speed",
+//                                                QString::number(nodeData->speed),
+//                                                "Location Information",
+//                                                "qrc:/Resources/location.png"});
+//    return nodeData;
+//}

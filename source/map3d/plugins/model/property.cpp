@@ -91,7 +91,7 @@ void PropertyItem::setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNod
         if(mModelNode->asMoveableModelNode()){
             setIsMovable(true);
             mModelNode->asMoveableModelNode()->setSpeed(mSpeed);
-            mModelNode->nodeData()->speed = mSpeed;
+//            mModelNode->nodeData().speed = mSpeed;
         }
         if(mModelNode->asFlyableModelNode())
             setIsFlyable(true);
@@ -112,7 +112,7 @@ void PropertyItem::setName(const QString &newName)
 
     if (mModelNode){
         mModelNode->setName(mName.toStdString());
-        mModelNode->nodeData()->name = mName;
+        mModelNode->nodeData().name = mName;
     }
 
     mName = newName;
@@ -130,7 +130,7 @@ void PropertyItem::setColor(const QColor &newColor)
         return;
 
     if (mModelNode){
-        mModelNode->nodeData()->color = newColor.name(QColor::HexArgb);
+        mModelNode->nodeData().color = newColor.name(QColor::HexArgb);
         mModelNode->setColor(Utility::qColor2osgEarthColor(newColor));
     }
 
@@ -149,9 +149,9 @@ void PropertyItem::setLocation(const QVector3D &newLocation)
         return;
 
     if (mModelNode){
-        mModelNode->nodeData()->latitude = mLocation.x();
-        mModelNode->nodeData()->longitude = mLocation.y();
-        mModelNode->nodeData()->altitude = mLocation.z();
+//        mModelNode->nodeData().latitude = mLocation.x();
+//        mModelNode->nodeData().longitude = mLocation.y();
+//        mModelNode->nodeData().altitude = mLocation.z();
         mModelNode->setPosition(Utility::qVector3DToosgEarthGeoPoint(mLocation, mMapItem->getMapSRS()));
     }
 

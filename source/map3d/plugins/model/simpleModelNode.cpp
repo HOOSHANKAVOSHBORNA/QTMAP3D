@@ -147,18 +147,18 @@ void SimpleModelNode::setAutoScale(bool newIsAutoScale)
     //    }
 }
 
-NodeData *SimpleModelNode::nodeData() const
+NodeData SimpleModelNode::nodeData() const
 {
     return mNodeData;
 }
 
-void SimpleModelNode::setNodeData(NodeData *newNodeData)
+void SimpleModelNode::setNodeData(const NodeData &nodeData)
 {
-    mNodeData = newNodeData;
+    mNodeData = nodeData;
 //    updateUrl(mNodeData->url3D, mNodeData->url2D);
 //    setColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
-        mNodeInformation->setNodeData(newNodeData);
+        mNodeInformation->setNodeData(nodeData);
 //    if(mBookmarkItem)
 //        mBookmarkItem->setInfo(QString::fromStdString(mNodeData->type),
 //                               QString::fromStdString(mNodeData->name),
