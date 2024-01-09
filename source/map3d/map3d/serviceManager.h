@@ -5,6 +5,7 @@
 #include "qjsonobject.h"
 #include "qvectornd.h"
 #include <QJsonDocument>
+#include <osg/Referenced>
 
 class NetworkManager;
 
@@ -60,11 +61,58 @@ struct NodeFieldData
     }
 };
 
-struct NodeData
+struct NodeData: public osg::Referenced
 {
+    NodeData(){
+
+    }
+    NodeData(const NodeData& nodeData) {
+        id= nodeData.id;
+        name= nodeData.name;
+        type= nodeData.type;
+        category = nodeData.category;
+        url2D= nodeData.url2D;
+        url3D= nodeData.url3D;
+        imgInfoUrl = nodeData.imgInfoUrl;
+        iconInfoUrl = nodeData.iconInfoUrl;
+        color= nodeData.color;
+        isAttacker = nodeData.isAttacker;
+        latitude = nodeData.latitude;
+        longitude = nodeData.longitude;
+        altitude = nodeData.altitude;
+        speed= nodeData.speed;
+        command= nodeData.command;
+
+        layersId = nodeData.layersId;
+        fieldData = nodeData.fieldData;
+    }
+//    NodeData(const NodeData&& nodData){
+
+//    }
+    void operator= (const NodeData& nodeData){
+        id= nodeData.id;
+        name= nodeData.name;
+        type= nodeData.type;
+        category = nodeData.category;
+        url2D= nodeData.url2D;
+        url3D= nodeData.url3D;
+        imgInfoUrl = nodeData.imgInfoUrl;
+        iconInfoUrl = nodeData.iconInfoUrl;
+        color= nodeData.color;
+        isAttacker = nodeData.isAttacker;
+        latitude = nodeData.latitude;
+        longitude = nodeData.longitude;
+        altitude = nodeData.altitude;
+        speed= nodeData.speed;
+        command= nodeData.command;
+
+        layersId = nodeData.layersId;
+        fieldData = nodeData.fieldData;
+    }
     int id;
     QString name;
     QString type{NodeType::Fixed};
+    QString category;
     QString url2D;
     QString url3D;
     QString imgInfoUrl;
@@ -79,11 +127,13 @@ struct NodeData
     std::vector<int> layersId;
     std::vector<NodeFieldData> fieldData;
 
+
     QJsonObject toJson() const{
         QJsonObject jsonObject;
         jsonObject.insert("Id", id);
         jsonObject.insert("Name", name);
         jsonObject.insert("Type", type);
+        jsonObject.insert("Category", category);
         jsonObject.insert("Url2D", url2D);
         jsonObject.insert("Url3D", url3D);
         jsonObject.insert("ImgInfoUrl", imgInfoUrl);
@@ -114,6 +164,7 @@ struct NodeData
         id = json["Id"].toInt();
         name = json["Name"].toString();
         type = json["Type"].toString();
+        category = json["Category"].toString();
         url2D = json["Url2D"].toString();
         url3D = json["Url3D"].toString();
         imgInfoUrl = json["ImgInfoUrl"].toString();
@@ -414,8 +465,8 @@ class ServiceManager: public QObject
 public:
     ServiceManager(NetworkManager *networkManager, QObject *parent = nullptr);
     void sendAssignment(const AssignmentData &assignmentData);
-//    void signInData(QJsonObject jsonObject);
-//    void signUpData(QJsonObject jsonObject);
+    //    void signInData(QJsonObject jsonObject);
+    //    void signUpData(QJsonObject jsonObject);
 private slots:
     void onMessageReceived(const QString &message);
 signals:
@@ -428,8 +479,8 @@ signals:
     void circleDataReceived(const CircleData &circleData);
     void explosionDataReceived(const ExplosionData &explosionData);
 
-//    void signUpResponseReceived(bool status);
-//    void signInResponseReceived(bool status, int role);
+    //    void signUpResponseReceived(bool status);
+    //    void signInResponseReceived(bool status, int role);
 private:
     NetworkManager *mNetworkManager;
 };

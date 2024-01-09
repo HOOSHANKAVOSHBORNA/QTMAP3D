@@ -64,7 +64,7 @@ ParenticAnnotationLayer *CombatManager::getCombatLayer()
 
 void CombatManager::assign(SimpleModelNode *attacker, SimpleModelNode *target , AssignState state)
 {
-    if(!(attacker->nodeData()->id == target->nodeData()->id) && (attacker->isAttacker())){
+    if(!(attacker->nodeData().id == target->nodeData().id) && (attacker->isAttacker())){
         Assignment *assignment{nullptr};
         assignment = getAssignment(attacker, target);
         if(!assignment){
@@ -93,7 +93,7 @@ void CombatManager::removeAttackerAssignments(SimpleModelNode *attacker)
         return;
 
     for(auto assignment: mAssignmentList)
-        if(assignment->attacker->nodeData()->id == attacker->nodeData()->id){
+        if(assignment->attacker->nodeData().id == attacker->nodeData().id){
             removeAssignment(attacker, assignment->target);
             emit dataChanged();
         }
@@ -105,7 +105,7 @@ void CombatManager::removeTargetAssignments(SimpleModelNode *target)
         return;
 
     for(auto assignment: mAssignmentList)
-        if(assignment->target->nodeData()->id == target->nodeData()->id){
+        if(assignment->target->nodeData().id == target->nodeData().id){
             removeAssignment(assignment->attacker, target);
             emit dataChanged();
         }
@@ -179,8 +179,8 @@ Assignment *CombatManager::getAssignment(SimpleModelNode *attacker, SimpleModelN
     if(!attacker || !target)
         return nullptr;
     for(auto assignment: mAssignmentList)
-        if(assignment->attacker->nodeData()->id == attacker->nodeData()->id
-            && assignment->target->nodeData()->id == target->nodeData()->id)
+        if(assignment->attacker->nodeData().id == attacker->nodeData().id
+            && assignment->target->nodeData().id == target->nodeData().id)
             return assignment;
     return nullptr;
 }
@@ -192,7 +192,7 @@ QList<Assignment *> CombatManager::getAttackerAssignments(SimpleModelNode *attac
         return assignments;
 
     for(auto assignment: mAssignmentList)
-        if(assignment->attacker->nodeData()->id == attacker->nodeData()->id)
+        if(assignment->attacker->nodeData().id == attacker->nodeData().id)
             assignments.append(assignment);
 
     return assignments;
@@ -205,7 +205,7 @@ QList<Assignment *> CombatManager::getTargetAssignments(SimpleModelNode *target)
         return assignments;
 
     for(auto assignment: mAssignmentList)
-        if(assignment->target->nodeData()->id == target->nodeData()->id)
+        if(assignment->target->nodeData().id == target->nodeData().id)
             assignments.append(assignment);
 
     return assignments;

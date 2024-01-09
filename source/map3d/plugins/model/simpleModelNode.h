@@ -63,8 +63,8 @@ public:
     bool isAutoScale() const;
     void setAutoScale(bool newIsAutoScale);
 
-    NodeData *nodeData() const;
-    void setNodeData(NodeData *newNodeData);
+    NodeData nodeData() const;
+    void setNodeData(const NodeData &nodeData);
 
     osgEarth::Color color() const;
     void setColor(osgEarth::Color color);
@@ -123,7 +123,7 @@ private:
     bool mIsAutoScale{true};
     bool mIsSelected{false};
     bool mIsMenuVisible{false};
-    NodeData* mNodeData{nullptr};
+    NodeData mNodeData;
     osgEarth::Color mColor{osgEarth::Color::White};
     osgEarth::Color mSelectColor{osg::Vec4(0.12,1,1,0.5)};
     osgEarth::Color mHighliteColor{osg::Vec4(0.8, 0.3, 0.87, 0.5)};

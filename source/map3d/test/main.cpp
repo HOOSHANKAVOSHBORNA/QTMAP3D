@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     LayerTest LayerTest(&serviceManager);
 //    FlyableNodeTest flyableNodeTest(&networkManager);
 //    MovableNodeTest movableNodeTest(&networkManager);
-//     NodeTest nodeTest(&serviceManager);
+     NodeTest nodeTest(&serviceManager);
 //    AssignmentTest assignmentTest(&networkManager);
 //    ParticleTest particleTest(&networkManager);
 

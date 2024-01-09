@@ -10,8 +10,8 @@
 #include <osgEarthAnnotation/PlaceNode>
 
 #include "dataManager.h"
-#include "flyableModelNode.h"
-#include "moveableModelNode.h"
+//#include "flyableModelNode.h"
+//#include "moveableModelNode.h"
 #include "plugininterface.h"
 #include "property.h"
 #include "simpleModelNode.h"
@@ -47,14 +47,10 @@ public:
     bool setup();
     void makeIconNode(const QString &fileName);
     osgEarth::Annotation::PlaceNode *iconNode() const;
-    Model::State state() const;
-    void setState(Model::State newState);
 
     bool mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
     bool frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
-    void updatePropertyItem(const osgEarth::GeoPoint &geoPos, State nodeState);
-    void updateNodeFromProperty();
 
     static osgEarth::Symbology::Style &getDefaultStyle();
     DataManager *getDataManager();
@@ -71,11 +67,10 @@ protected:
     void moving(osgEarth::GeoPoint &geoPos);
     void confirm();
     void cancel();
-    void createProperty(QString name);
 
 private:
     SimpleModelNode* pick(float x, float y);
-    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc);
+//    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc);
 
 private:
     Type mType;
@@ -94,10 +89,10 @@ private:
     osg::ref_ptr<SimpleModelNode> mPickModelNode {nullptr};
     osg::ref_ptr<SimpleModelNode> mHighliteModelNode {nullptr};
 
-    NodeData* mNodeData{nullptr};
-    NodeData* mBaseNodeData{nullptr};
+    osg::ref_ptr<NodeData> mNodeData{nullptr};
+//    osg::ref_ptr<NodeData> mBaseNodeData{nullptr};
     DataManager *mDataManager;
-    QQuickItem *mItem;
+//    QQuickItem *mItem;
     Property *mProperty;
 };
 

@@ -19,13 +19,13 @@ class NodeInformationModel:public QStandardItemModel
 public:
     explicit NodeInformationModel(QObject *parent = nullptr);
     ~NodeInformationModel();
-    void setNodeData(NodeData* nodeData);
+    void setNodeData(const NodeData &nodeData);
     virtual QHash<int, QByteArray> roleNames() const override;
 
 private:
     QStandardItem *mRootItem;
     std::map<QString, QStandardItem*> mCategoryItemMap;
-    NodeData *mNodeData{nullptr};
+    NodeData mNodeData;
 };
 
 class NodeInformation:public QObject
@@ -35,7 +35,7 @@ public:
     explicit NodeInformation(QQmlEngine* Engine, QQuickWindow *parent = nullptr);
     ~NodeInformation();
 
-    void setNodeData(NodeData* nodeData);
+    void setNodeData(const NodeData &nodeData);
     void show();
 
     NodeInformationModel *model() const;
