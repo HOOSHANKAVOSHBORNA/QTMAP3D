@@ -1,30 +1,29 @@
-//#ifndef ASSIGNMENTTEST_H
-//#define ASSIGNMENTTEST_H
+#ifndef ASSIGNMENTTEST_H
+#define ASSIGNMENTTEST_H
 
-//#include "networkManager.h"
-//#include <QJsonDocument>
-//#include <QJsonObject>
+#include "serviceManager.h"
+#include <QJsonDocument>
+#include <QJsonObject>
 
 
-//class AssignmentTest : public QObject
-//{
-//    Q_OBJECT
-//public:
-//    AssignmentTest(NetworkManager *networkManager);
+class AssignmentTest : public QObject
+{
+   Q_OBJECT
+public:
+   AssignmentTest(ServiceManager *serviceManager);
 
-//private:
-//    void createAssignment(QJsonDocument data);
-//    void updateAssignment(QJsonDocument data);
-//    void removeAssignment(QJsonDocument data);
+private:
+   void createAssignment(AssignmentData data);
+   void updateAssignment(AssignmentData data);
+   void removeAssignment(AssignmentData data);
 
-//public slots:
-//    void dataReceived(QJsonObject obj);
+public slots:
+   void dataReceived(AssignmentData data);
 
-//private:
-//    NetworkManager *mNetworkManager;
-//    QVector<QJsonDocument> mAssignmentDataList;
-//    QVector<std::string> mStates{"Assigned", "Search", "Lock", "Fire", "Success", "Failed"};
-//    int  mCount{0};
-//};
+private:
+   ServiceManager *mServiceManager;
+   QVector<AssignmentData> mAssignmentDataList;
+   QVector<std::string> mStates{"Assigned", "Search", "Lock", "Fire", "Succeed", "Failed"};
+};
 
-//#endif // ASSIGNMENTTEST_H
+#endif // ASSIGNMENTTEST_H

@@ -27,19 +27,19 @@ QVariant AssignmentListModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Name:
         if(mIsAttacker)
-            return  QString::fromStdString(mAssignmentList.at(index.row())->target->nodeData()->name);
+            return mAssignmentList.at(index.row())->target->nodeData()->name;
         else
-            return  QString::fromStdString(mAssignmentList.at(index.row())->attacker->nodeData()->name);
+            return  mAssignmentList.at(index.row())->attacker->nodeData()->name;
     case Icon:
         if(mIsAttacker)
-            return  QUrl(QString::fromStdString(mAssignmentList.at(index.row())->target->nodeData()->iconSrc));
+            return  QUrl(mAssignmentList.at(index.row())->target->nodeData()->iconInfoUrl);
         else
-            return  QUrl(QString::fromStdString(mAssignmentList.at(index.row())->attacker->nodeData()->iconSrc));
+            return  QUrl(mAssignmentList.at(index.row())->attacker->nodeData()->iconInfoUrl);
     case Color:
         if(mIsAttacker)
-            return  QString::fromStdString(mAssignmentList.at(index.row())->target->nodeData()->color);
+            return  mAssignmentList.at(index.row())->target->nodeData()->color;
         else
-            return  QString::fromStdString(mAssignmentList.at(index.row())->attacker->nodeData()->color);
+            return  mAssignmentList.at(index.row())->attacker->nodeData()->color;
     case State:
         return mAssignmentList.at(index.row())->state;
     case StateColor:
@@ -199,19 +199,19 @@ QVariant OperatorListModel::data(const QModelIndex &index, int role) const
     switch (role) {
     case Name:
         if(mIsAttacker)
-            return  QString::fromStdString(mAttackerList.at(index.row())->nodeData()->name);
+            return  mAttackerList.at(index.row())->nodeData()->name;
         else
-            return  QString::fromStdString(mTargetList.at(index.row())->nodeData()->name);
+            return  mTargetList.at(index.row())->nodeData()->name;
     case Icon:
         if(mIsAttacker)
-            return  QUrl(QString::fromStdString(mAttackerList.at(index.row())->nodeData()->iconSrc));
+            return  QUrl(mAttackerList.at(index.row())->nodeData()->iconInfoUrl);
         else
-            return  QUrl(QString::fromStdString(mTargetList.at(index.row())->nodeData()->iconSrc));
+            return  QUrl(mTargetList.at(index.row())->nodeData()->iconInfoUrl);
     case Color:
         if(mIsAttacker)
-            return  QString::fromStdString(mAttackerList.at(index.row())->nodeData()->color);
+            return  mAttackerList.at(index.row())->nodeData()->color;
         else
-            return  QString::fromStdString(mTargetList.at(index.row())->nodeData()->color);
+            return  mTargetList.at(index.row())->nodeData()->color;
     case  Select:
         if(mIsAttacker)
             return  mAttackerList.indexOf(mSelectedNode) == index.row();
@@ -274,9 +274,9 @@ void OperatorListModel::select(int row)
         mAssignmentListModel->setOperator(mSelectedNode, false);
     }
     endResetModel();
-    setOperatorColor(QString::fromStdString(mSelectedNode->nodeData()->color));
-    setOperatorIcon(QUrl(QString::fromStdString(mSelectedNode->nodeData()->iconSrc)));
-    setOperatorName(QString::fromStdString(mSelectedNode->nodeData()->name));
+    setOperatorColor(mSelectedNode->nodeData()->color);
+    setOperatorIcon(QUrl(mSelectedNode->nodeData()->iconInfoUrl));
+    setOperatorName(mSelectedNode->nodeData()->name);
     setOperatorIsAttacker(mSelectedNode->nodeData()->isAttacker);
 }
 

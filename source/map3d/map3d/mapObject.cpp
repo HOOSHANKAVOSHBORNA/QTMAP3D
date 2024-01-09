@@ -143,6 +143,16 @@ MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     addMapCallback(new MainMapCallback(this));
 }
 
+void MapObject::setServiceManager(ServiceManager *serviceManager)
+{
+    if(mServiceManager)
+        disconnect(mServiceManager, 0, 0, 0);
+    mServiceManager = serviceManager;
+    if(mServiceManager){
+        connect(mServiceManager, &ServiceManager::layerDataReceived, this, &MapObject::onLayerDataReceived);
+    }
+}
+
 bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
 {
     if (!layer)
@@ -192,12 +202,15 @@ CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
 
 ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
 {
-    for (auto& l: mCompositeLayers){
-        ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
-        if (p){
-            return p;
-        }
-    }
+//    for (auto& l: mCompositeLayers){
+//        ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
+//        if (p){
+//            return p;
+//        }
+//    }
+//    return nullptr;
+    if(mLayerMap.contains(userid))
+        return mLayerMap[userid];
     return nullptr;
 }
 
@@ -251,6 +264,36 @@ void MapObject::filterNodes()
     for (auto &l: mCompositeLayers) {
         l.second->filter();
     }
+}
+
+void MapObject::onLayerDataReceived(const LayerData &layerData)
+{
+    if(!layerData.children.empty()){
+        osg::ref_ptr<CompositeAnnotationLayer> compositeLayer = new CompositeAnnotationLayer(layerData.id);
+        compositeLayer->setName(layerData.text.toStdString());
+        compositeLayer->setOrder(layerData.order);
+        mLayerMap[layerData.id] = compositeLayer;
+
+        if(mLayerMap.contains(layerData.parentId)){
+            auto parentLayer = mLayerMap[layerData.parentId];
+            parentLayer->asCompositeAnnotationLayer()->addLayer(compositeLayer);
+        }
+        else
+            addLayer(compositeLayer);
+
+        for(const auto &childLaye: layerData.children)
+            onLayerDataReceived(childLaye);
+    }
+    if(layerData.children.empty() && mLayerMap.contains(layerData.parentId)){
+        osg::ref_ptr<ParenticAnnotationLayer> parenticLayer = new ParenticAnnotationLayer(layerData.id);
+        parenticLayer->setName(layerData.text.toStdString());
+        parenticLayer->setOrder(layerData.order);
+        mLayerMap[layerData.id] = parenticLayer;
+
+        auto parentLayer = mLayerMap[layerData.parentId];
+        parentLayer->asCompositeAnnotationLayer()->addLayer(parenticLayer);
+    }
+//    qDebug()<<layerData.text;
 }
 
 void MapObject::clearCompositeLayers()
