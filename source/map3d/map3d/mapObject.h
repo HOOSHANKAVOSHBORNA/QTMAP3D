@@ -5,6 +5,7 @@
 #include <QObject>
 #include <osgEarth/Map>
 #include "compositeAnnotationLayer.h"
+#include "serviceManager.h"
 
 namespace osgEarth {
 namespace Annotation {
@@ -52,6 +53,7 @@ class MapObject: public QObject, public osgEarth::Map
 public:
     MapObject(QObject *parent = nullptr);
     MapObject(const osgEarth::MapOptions& options, QObject *parent = nullptr);
+    void setServiceManager(ServiceManager *serviceManager);
     bool addLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr);
     bool removeLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr);
     void addCompositeCallback(osgEarth::Layer* layer, CompositeCallback* callback);
@@ -66,6 +68,7 @@ public:
 public slots:
     void clearCompositeLayers();
     void filterNodes();
+    void onLayerDataReceived(const LayerData &layerData);
 signals:
     void layerAdded(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
     void layerRemoved(osgEarth::Layer* layer, osgEarth::Layer* parentLayer, unsigned index);
@@ -81,8 +84,10 @@ private:
     QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
     std::map<int, osg::ref_ptr<ParenticAnnotationLayer>> mParenticLayers;
     std::map<int, osg::ref_ptr<CompositeAnnotationLayer>> mCompositeLayers;
+    QMap<int, osg::ref_ptr<ParenticAnnotationLayer>> mLayerMap;
     FilterManager *mFilterManager;
     int mRefrehsTime{0};
+    ServiceManager *mServiceManager{nullptr};
 };
 
 #endif // CUSTOMMAP_H

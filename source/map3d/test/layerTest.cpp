@@ -8,8 +8,11 @@ LayerTest::LayerTest(ServiceManager *serviceManager):
     mServiceManager(serviceManager)
 {
     createLayers();
-    for(auto& layerdata: LayerDataList)
-        mServiceManager->sendLayer(layerdata);
+    QObject::connect(mServiceManager, &ServiceManager::readyForSendData,[this](){
+        for(auto& layerdata: LayerDataList)
+            mServiceManager->sendLayer(layerdata);
+    });
+
 //    QTimer *timerUpdateMovable = new QTimer();
 //    QObject::connect(timerUpdateMovable, &QTimer::timeout, [this](){
 //        QJsonDocument layerDoc = updateLayers();

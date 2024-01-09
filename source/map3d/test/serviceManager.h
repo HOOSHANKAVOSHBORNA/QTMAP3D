@@ -305,14 +305,18 @@ public:
 
 
 //    void signInData(QJsonObject jsonObject);
-//    void signUpData(QJsonObject jsonObject);
+    //    void signUpData(QJsonObject jsonObject);
+    bool isReadyForSendData() const;
+
 private slots:
     void onMessageReceived(const QString &message);
 signals:
     void assignmentDataReceived(const AssignmentData &assignmentData);
+    void readyForSendData();
 
 private:
     NetworkManager *mNetworkManager{nullptr};
+    bool mIsReadyForSendData{false};
 
 };
 

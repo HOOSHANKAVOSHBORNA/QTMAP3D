@@ -147,6 +147,7 @@ Item {
                         height: attackMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
                         color: "#119cbf"
                         radius: 15
+
                         Text {
                             id: name
                             anchors.centerIn: parent
@@ -184,6 +185,16 @@ Item {
                             anchors.fill: parent
                             onClicked: {
                                 assignmentListModel.selectAll(selectall)
+
+                                for (var i = 0; i < modelDataContainer.count; ++i) {
+                                    var item = modelDataContainer.itemAt(i);
+                                    if (item !== null && selectall) {
+                                        item.color =  bg20
+                                    }
+                                    else
+                                        item.color =  "transparent"
+
+                                }
                                 selectall =! selectall
                             }
                             hoverEnabled: true
@@ -302,6 +313,7 @@ Item {
             Layout.topMargin: 5 / 1.3
             ScrollBar.horizontal.interactive: true
             clip: true
+Drag.active: true
             RowLayout{
                 id: rowLay
                 Layout.alignment: Qt.AlignVCenter
@@ -311,7 +323,6 @@ Item {
                 Repeater {
                     id: modelDataContainer
                     model: root.assignmentListModel
-
                     delegate: Rectangle {
                         id: node
                         width: 131 / 1.3 /*Style.monitorRatio*/
@@ -320,6 +331,7 @@ Item {
                         z: -2
                         radius: 7
                         Layout.leftMargin: 5 / 1.3
+
                         Rectangle {
                             anchors.top: parent.top
                             anchors.topMargin: 5
@@ -362,7 +374,7 @@ Item {
                                 anchors.leftMargin: 5
                                 text: objectID
                                 font.pixelSize: 17 / 1.3 /*Style.monitorRatio*/
-                                color: objectStateColor
+                                color: root.backgroundColor
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                         }

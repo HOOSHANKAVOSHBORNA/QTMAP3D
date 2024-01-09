@@ -52,7 +52,7 @@ void DrawAnnotation::addUpdateAnnotatedNode(PolyLineData *lineNodeData)
     AnnotatedNode *lineNode;
     if (!mLineMap.contains(lineNodeData->id)) {
         lineNode = new AnnotatedNode(mapItem(), AnnotatedNode::GeneralType::POLYLINETYPE);
-        lineNodeData->layer->addChild(lineNode);
+//        lineNodeData->layer->addChild(lineNode);
         mLineMap[lineNodeData->id] = lineNode;
     }
     else {
@@ -60,8 +60,8 @@ void DrawAnnotation::addUpdateAnnotatedNode(PolyLineData *lineNodeData)
         lineNode->clear();
     }
 
-    lineNode->create(&lineNodeData->points);
-    lineNode->setFillColor(osgEarth::Color(lineNodeData->color));
+//    lineNode->create(&lineNodeData->points);
+//    lineNode->setFillColor(osgEarth::Color(lineNodeData->color));
     lineNode->setWidth(lineNodeData->width);
     lineNode->setPolyLineData(lineNodeData);
 }
@@ -71,21 +71,21 @@ void DrawAnnotation::addUpdatePolygon(PolygonData *polygonNodeData)
     AnnotatedNode *polygon;
     if (!mPolygonMap.contains(polygonNodeData->id)) {
         polygon = new AnnotatedNode(mapItem(), AnnotatedNode::GeneralType::POLYGONTYPE);
-        polygonNodeData->layer->addChild(polygon);
+//        polygonNodeData->layer->addChild(polygon);
         mPolygonMap[polygonNodeData->id] = polygon;
     }
     else {
         polygon = mPolygonMap[polygonNodeData->id];
         polygon->removePoint();
     }
-    polygon->setName(polygonNodeData->name);
-    polygon->create(&polygonNodeData->points);
+//    polygon->setName(polygonNodeData->name);
+//    polygon->create(&polygonNodeData->points);
     polygon->setPolygonData(polygonNodeData);
     polygon->setStrokeWidth(polygonNodeData->width);
-    QColor color(QString::fromStdString(polygonNodeData->color));
-    polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
-    QColor fillColor(QString::fromStdString(polygonNodeData->fillColor));
-    polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
+//    QColor color(QString::fromStdString(polygonNodeData->color));
+//    polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
+//    QColor fillColor(QString::fromStdString(polygonNodeData->fillColor));
+//    polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
 }
 
 bool DrawAnnotation::setup()
@@ -96,8 +96,8 @@ bool DrawAnnotation::setup()
     mShapeLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mShapeLayer);
 
-    connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawAnnotation::AnnotatedNodeDataReceived);
-    connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawAnnotation::polygonDataReceived);
+//    connect(serviceManager(), &ServiceManager::lineNodeDataReceived, this, &DrawAnnotation::AnnotatedNodeDataReceived);
+//    connect(serviceManager(), &ServiceManager::polygonDataReceived, this, &DrawAnnotation::polygonDataReceived);
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
 
     auto toolboxItemRuler =  new ToolboxItem{RULER, M_CATEGORY, "qrc:/resources/ruler.png", true};
@@ -271,7 +271,7 @@ void DrawAnnotation::AnnotatedNodeDataReceived(PolyLineData *annotationNodeData)
 {
     if (annotationNodeData->command == "REMOVE") {
         if (mLineMap.contains(annotationNodeData->id)){
-            mLineMap[annotationNodeData->id]->polyLineData()->layer->removeChild(mLineMap[annotationNodeData->id]);
+//            mLineMap[annotationNodeData->id]->polyLineData()->layer->removeChild(mLineMap[annotationNodeData->id]);
             mLineMap[annotationNodeData->id].release();
             mLineMap.remove(annotationNodeData->id);
         }
@@ -286,7 +286,7 @@ void DrawAnnotation::polygonDataReceived(PolygonData *polygonNodeData)
 {
     if (polygonNodeData->command == "REMOVE"){
         if (mPolygonMap.contains(polygonNodeData->id)){
-            mPolygonMap[polygonNodeData->id]->polygonData()->layer->removeChild(mPolygonMap[polygonNodeData->id]);
+//            mPolygonMap[polygonNodeData->id]->polygonData()->layer->removeChild(mPolygonMap[polygonNodeData->id]);
             mPolygonMap[polygonNodeData->id].release();
             mPolygonMap.remove(polygonNodeData->id);
         }

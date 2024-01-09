@@ -2,8 +2,7 @@
 #include "qamqpexchange.h"
 #include "qamqpqueue.h"
 
-NetworkManager::NetworkManager(ServiceManager *serviceManger, QObject *parent):
-    QObject(parent), mServiceManager(serviceManger)
+NetworkManager::NetworkManager(QObject *parent): QObject(parent)
 {
     mClient.setAutoReconnect(true);
 }
@@ -11,53 +10,62 @@ NetworkManager::NetworkManager(ServiceManager *serviceManger, QObject *parent):
 void NetworkManager::start()
 {
     connect(&mClient, &QAmqpClient::connected, this, &NetworkManager::clientConnected);
+    connect(&mClient, qOverload<QAMQP::Error >(&QAmqpClient::error), this, &NetworkManager::clientError);
     mClient.connectToHost();
-
 }
 
-void NetworkManager::dataQueueDeclared()
+void NetworkManager::sendMessage(const QString &message)
 {
+    QAmqpExchange *exchange = mClient.createExchange();
+    exchange->publish(message, "Map3dClient");
+    qDebug() << "Sent message: "<<message;
+}
+
+void NetworkManager::clientConnected()
+{
+    qDebug() << "Client connected.";
+    QAmqpQueue *map3dQueue = mClient.createQueue("Map3d");
+    QAmqpQueue *map3dClientQueue = mClient.createQueue("Map3dClient");
+    disconnect(map3dQueue, 0, 0, 0); // in case this is a reconnect
+    disconnect(map3dClientQueue, 0, 0, 0);
+
+    //--data -------------------------------------------
+    connect(map3dQueue, &QAmqpQueue::declared, this, &NetworkManager::onMap3dQueueDeclare);
+    connect(map3dClientQueue, &QAmqpQueue::declared, this, &NetworkManager::onMap3dClientQueueDeclare);
+    map3dQueue->declare();
+    map3dClientQueue->declare();
+}
+
+void NetworkManager::clientError(QAMQP::Error error)
+{
+    qDebug()<<"error: "<<error<<": "<< mClient.errorString();
+}
+
+void NetworkManager::onMap3dQueueDeclare()
+{
+    qDebug()<<"Map3d queue declared.";
     QAmqpQueue *queue = qobject_cast<QAmqpQueue*>(sender());
     if (!queue)
         return;
-
-    connect(queue, &QAmqpQueue::messageReceived, this, &NetworkManager::dataMessageReceived);
+    connect(queue, &QAmqpQueue::messageReceived, this, &NetworkManager::onMessageReceived);
     queue->consume(QAmqpQueue::coNoAck);
-    qDebug() << "Waiting for messages.";
+    qDebug() << "Waiting for messages from Map3d queue.";
 }
 
-void NetworkManager::dataMessageReceived()
+void NetworkManager::onMap3dClientQueueDeclare()
+{
+    qDebug() << "Map3dClient queue declared.";
+    emit map3dClientQueueDeclared();
+}
+
+void NetworkManager::onMessageReceived()
 {
     QAmqpQueue *queue = qobject_cast<QAmqpQueue*>(sender());
     if (!queue)
         return;
 
     QAmqpMessage message = queue->dequeue();
-    qDebug() << "message: " << message.payload();
-    mServiceManager->messageData(message.payload());
-}
+    QString messageString = message.payload();
 
-void NetworkManager::clientConnected()
-{
-    qDebug() << "Client connected.";
-    QAmqpQueue *dataQueue = mClient.createQueue("data");
-    QAmqpQueue *actionQueue = mClient.createQueue("action");
-    disconnect(dataQueue, 0, 0, 0); // in case this is a reconnect
-    disconnect(actionQueue, 0, 0, 0);
-    connect(dataQueue, &QAmqpQueue::declared, this, &NetworkManager::dataQueueDeclared);
-    connect(actionQueue, &QAmqpQueue::declared, this, &NetworkManager::sendDataQueueDeclared);
-    dataQueue->declare();
-    actionQueue->declared();
-}
-
-void NetworkManager::sendDataQueueDeclared()
-{
-    connect(mServiceManager, &ServiceManager::actionSent, this, &NetworkManager::sendData);
-}
-
-void NetworkManager::sendData(const QString &action)
-{
-    QAmqpExchange *exchange = mClient.createExchange();
-    exchange->publish(action, "action");
-    qDebug() << "Sent action: "<<action;
+    emit messageReceived(messageString);
 }
