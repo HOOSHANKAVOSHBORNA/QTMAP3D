@@ -54,14 +54,14 @@ AnnotatedNode::~AnnotatedNode()
 
 }
 
-void AnnotatedNode::create(std::vector<osg::Vec3d> *points)
+void AnnotatedNode::create(const std::vector<osg::Vec3d>& points)
 {
     if (mType == GeneralType::POLYLINETYPE){
-        auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_LINESTRING, points);
+        auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_LINESTRING, &points);
         getFeature()->setGeometry(geometry);
     }
     else{
-         auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_POLYGON, points);
+         auto geometry= osgEarth::Features::Geometry::create(osgEarth::Features::Geometry::TYPE_POLYGON, &points);
         getFeature()->setGeometry(geometry);
     }
     dirty();
@@ -546,22 +546,22 @@ void AnnotatedNode::setStrokeWidth(float width)
     }
 }
 
-PolyLineData *AnnotatedNode::polyLineData() const
+PolyLineData AnnotatedNode::polyLineData() const
 {
     return mPolyLineData;
 }
 
-void AnnotatedNode::setPolyLineData(PolyLineData *newPolyLineData)
+void AnnotatedNode::setPolyLineData(const PolyLineData &newPolyLineData)
 {
     mPolyLineData = newPolyLineData;
 }
 
-PolygonData *AnnotatedNode::polygonData() const
+PolygonData AnnotatedNode::polygonData() const
 {
     return mPolygonData;
 }
 
-void AnnotatedNode::setPolygonData(PolygonData *newPolygonData)
+void AnnotatedNode::setPolygonData(const PolygonData& newPolygonData)
 {
     mPolygonData = newPolygonData;
 }

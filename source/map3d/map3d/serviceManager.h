@@ -6,6 +6,7 @@
 #include "qvectornd.h"
 #include <QJsonDocument>
 #include <osg/Referenced>
+#include <osg/Vec3d>
 
 class NetworkManager;
 
@@ -273,7 +274,7 @@ struct PolyLineData
     int width;
     QString command{Command::Add};
     int layerId;
-    std::vector<QVector3D> points;
+    std::vector<osg::Vec3d> points;
 
     virtual QJsonObject toJson() const{
         QJsonObject jsonObject;
@@ -310,7 +311,7 @@ struct PolyLineData
             float longitude = value["Longitude"].toDouble();
             float latitude = value["Latitude"].toDouble();
             float altitude = value["Altitude"].toDouble();
-            points.push_back(QVector3D{longitude, latitude, altitude});
+            points.push_back(osg::Vec3d{longitude, latitude, altitude});
         }
     }
 };

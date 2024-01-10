@@ -56,6 +56,7 @@ struct NodeData
     int id;
     QString name;
     QString type{NodeType::Fixed};
+    QString category;
     QString url2D;
     QString url3D;
     QString imgInfoUrl;
@@ -76,6 +77,7 @@ struct NodeData
         jsonObject.insert("Id", id);
         jsonObject.insert("Name", name);
         jsonObject.insert("Type", type);
+        jsonObject.insert("Category", category);
         jsonObject.insert("Url2D", url2D);
         jsonObject.insert("Url3D", url3D);
         jsonObject.insert("ImgInfoUrl", imgInfoUrl);

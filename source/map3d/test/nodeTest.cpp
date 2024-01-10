@@ -187,25 +187,25 @@ void NodeTest::createInfo()
     QVector3D point1;
     point1.setX(longitude - step);
     point1.setY(latitude - step);
-    point1.setX(altitude);
+    point1.setZ(altitude);
     polygonData.points.push_back(point1);
 
     QVector3D point2;
     point2.setX(longitude + step);
     point2.setY(latitude - step);
-    point2.setX(altitude);
+    point2.setZ(altitude);
     polygonData.points.push_back(point2);
 
     QVector3D point3;
     point3.setX(longitude + step);
     point3.setY(latitude + step);
-    point3.setX(altitude);
+    point3.setZ(altitude);
     polygonData.points.push_back(point3);
 
     QVector3D point4;
     point4.setX(longitude - step);
     point4.setY(latitude + step);
-    point4.setX(altitude);
+    point4.setZ(altitude);
     polygonData.points.push_back(point4);
 
     nodInfo.polygonData = polygonData;
