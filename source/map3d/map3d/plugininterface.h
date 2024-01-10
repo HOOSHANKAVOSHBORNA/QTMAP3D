@@ -67,6 +67,9 @@ public:
     virtual bool mouseMoveEvent       (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
     virtual bool wheelEvent           (const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) {return false;}
 
+    int layerId();
+    int nodeId();
+
 private:
     static inline MapControllerItem *mMapItem;
     static inline QQmlEngine *mQmlEngine;
@@ -77,6 +80,8 @@ private:
     static inline BookmarkManager *mBookmarkManager;
     static inline QMap<QString, PluginInterface*> mPluginsMap;
     QString mName;
+    int mLayerId{1};
+    int mNodeId{1};
 
 };
 
