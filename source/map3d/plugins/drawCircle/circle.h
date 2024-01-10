@@ -21,13 +21,13 @@ public:
     osgEarth::Color getStrokeColor();
     float getStrokeWidth();
 
-    CircleData *circleData() const;
-    void setCircleData(CircleData *newCircleData);
+    CircleData circleData() const;
+    void setCircleData(const CircleData &newCircleData);
 
 private:
     osgEarth::Symbology::Style circleStyle;
     MapItem* mMapItem{nullptr};
-    CircleData* mCircleData{nullptr};
+    CircleData mCircleData;
 };
 
 #endif // Circle_H

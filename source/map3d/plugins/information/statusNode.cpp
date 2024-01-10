@@ -200,13 +200,13 @@ void StatusNode::compile(const std::vector<NodeFieldData>& data)
     setText(text);
 }
 
-StatusNodeData *StatusNode::nodeData() const
+StatusNodeData StatusNode::nodeData() const
 {
     return mNodeData;
 }
 
-void StatusNode::setNodeData(StatusNodeData *newNodeData)
+void StatusNode::setNodeData(const StatusNodeData &newNodeData)
 {
     mNodeData = newNodeData;
-    setFieldData(newNodeData->name, newNodeData->fieldData);
+    setFieldData(newNodeData.name, newNodeData.fieldData);
 }

@@ -11,7 +11,7 @@ Information::Information(QObject *parent): PluginInterface(parent)
 
 bool Information::setup()
 {
-//    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::statusNodeReceived);
+   connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::statusNodeReceived);
 
     mInformationLayer = new CompositeAnnotationLayer;
     mInformationLayer->setName(CATEGORY);
@@ -191,35 +191,40 @@ void Information::cancel(){
     }
 }
 
-void Information::addUpdateStatusNode(StatusNodeData *statusnNodeData)
+void Information::addUpdateStatusNode(const StatusNodeData &statusnNodeData)
 {
-    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), statusnNodeData->longitude, statusnNodeData->latitude, statusnNodeData->altitude);
+    auto layer = mapItem()->getMapObject()->getLayerByUserId(statusnNodeData.layerId);
+    if (!layer)
+        return;
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), statusnNodeData.longitude, statusnNodeData.latitude, statusnNodeData.altitude);
     osg::ref_ptr<StatusNode> statusNode;
 
-    if(!mStatusNodeMap.contains(statusnNodeData->id)){
+    if(!mStatusNodeMap.contains(statusnNodeData.id)){
         statusNode = new StatusNode(mapItem());
-        mStatusNodeMap[statusnNodeData->id] = statusNode;
+        mStatusNodeMap[statusnNodeData.id] = statusNode;
     }
     else{
-        statusNode = mStatusNodeMap[statusnNodeData->id];
-//        statusNode->nodeData()->layer->removeChild(statusNode);
+        statusNode = mStatusNodeMap[statusnNodeData.id];
+        layer->removeChild(statusNode);
     }
     statusNode->setPosition(geoPoint);
-//    statusnNodeData->layer->addChild(statusNode);
 
-//    statusNode->setName(statusnNodeData->name);
+    statusNode->setName(statusnNodeData.name.toStdString());
     statusNode->setNodeData(statusnNodeData);
+    layer->addChild(statusNode);
 }
 
-void Information::statusNodeReceived(StatusNodeData *statusNodeData)
+void Information::statusNodeReceived(const StatusNodeData &statusNodeData)
 {
-    if (statusNodeData->command == "REMOVE"){
-        if (mStatusNodeMap.contains(statusNodeData->id)){
-//            mStatusNodeMap[statusNodeData->id]->nodeData()->layer->removeChild(mStatusNodeMap[statusNodeData->id]);
-            mStatusNodeMap[statusNodeData->id].release();
-            mStatusNodeMap.remove(statusNodeData->id);
+    if (statusNodeData.command == Command::Remove){
+        if (mStatusNodeMap.contains(statusNodeData.id)){
+            auto layer = mapItem()->getMapObject()->getLayerByUserId(statusNodeData.layerId);
+            if (layer)
+                layer->removeChild(mStatusNodeMap[statusNodeData.id]);
+            mStatusNodeMap[statusNodeData.id].release();
+            mStatusNodeMap.remove(statusNodeData.id);
         }
-    } else if (statusNodeData->command == "UPDATE"){
+    } else if (statusNodeData.command == Command::Update){
         addUpdateStatusNode(statusNodeData);
     } else {
         addUpdateStatusNode(statusNodeData);

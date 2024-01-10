@@ -29,5 +29,5 @@ void AssignLine::update()
 
     points.push_back(attackPos);
     points.push_back(targetPos);
-    create(&points);
+    create(points);
 }

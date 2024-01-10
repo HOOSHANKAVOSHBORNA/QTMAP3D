@@ -23,7 +23,7 @@ public:
     AnnotatedNode(MapItem *mapItem, GeneralType type);
     ~AnnotatedNode();
 
-    void create(std::vector<osg::Vec3d> *points);
+    void create(const std::vector<osg::Vec3d> &points);
     void addPoint(osgEarth::GeoPoint point);
     osgEarth::GeoPoint getPoint(int index);
     void removePoint();
@@ -70,11 +70,11 @@ public:
     bool getShowAltitude() const;
     void setShowAltitude(bool showAltitude);
 
-    PolyLineData *polyLineData() const;
-    void setPolyLineData(PolyLineData *newPolyLineData);
+    PolyLineData polyLineData() const;
+    void setPolyLineData(const PolyLineData &newPolyLineData);
 
-    PolygonData *polygonData() const;
-    void setPolygonData(PolygonData *newPolygonData);
+    PolygonData polygonData() const;
+    void setPolygonData(const PolygonData &newPolygonData);
 
     float strokeWidth() const;
     void setStrokeWidth(float width);
@@ -123,8 +123,8 @@ private:
     //    static constexpr int LABEL_IMAGE_HEIGHT = 27;
     int mCount{0};
     GeneralType mType;
-    PolyLineData *mPolyLineData{nullptr};
-    PolygonData *mPolygonData{nullptr};
+    PolyLineData mPolyLineData;
+    PolygonData mPolygonData;
 };
 
 #endif // ANNOTATEDNODE_H
