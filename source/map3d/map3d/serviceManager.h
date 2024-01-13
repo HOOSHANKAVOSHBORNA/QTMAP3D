@@ -49,6 +49,9 @@ struct Command
     bool operator== (const Cmd& c)const{
         return c == command;
     }
+    void operator= (const Cmd& c){
+        command = c;
+    }
 };
 
 struct NodeType
@@ -91,16 +94,72 @@ struct NodeType
     bool operator== (const Type& t)const{
         return t == type;
     }
+    void operator= (const Type& t){
+        type = t;
+    }
 };
 
 struct AssignmentState
 {
-    static inline QString Assinged{"Assigned"};
-    static inline QString Search{"Search"};
-    static inline QString Lock{"Lock"};
-    static inline QString Fire{"Fire"};
-    static inline QString Success{"Success"};
-    static inline QString Failed{"Failed"};
+    enum State{
+        Assigned,
+        Search,
+        Lock,
+        Fire,
+        Success,
+        Failed
+    };
+    AssignmentState(){this->state =  Assigned;}
+    AssignmentState(State state){this->state =  state;}
+    AssignmentState(QString str){ fromString(str);}
+    State state;
+    QString toString() const{
+        switch (state) {
+        case Assigned:
+            return "Assigned";
+            break;
+        case Search:
+            return "Search";
+            break;
+        case Lock:
+            return "Lock";
+            break;
+        case Fire:
+            return "Fire";
+            break;
+        case Success:
+            return "Success";
+            break;
+        case Failed:
+            return "Failed";
+            break;
+        default:
+            return "Assigned";
+            break;
+        }
+    }
+    void fromString(const QString& str){
+        if(str == "Assigned")
+            state = Assigned;
+        else if(str == "Search")
+            state = Search;
+        else if (str == "Lock")
+            state = Lock;
+        else if (str == "Fire")
+            state = Fire;
+        else if (str == "Success")
+            state = Success;
+        else if (str == "Failed")
+            state = Failed;
+        else
+            state = Assigned;
+    }
+    bool operator== (const State& s)const{
+        return s == state;
+    }
+    void operator= (const State& s){
+        state = s;
+    }
 };
 
 struct NodeFieldData
@@ -247,11 +306,13 @@ struct NodeData: public osg::Referenced
         speed = json["Speed"].toDouble();
         command = json["Command"].toString();
 
-        for (const QJsonValue &value : json["LayersId"].toArray()) {
+        auto layers = json["LayersId"].toArray();
+        for (const QJsonValue &value : layers) {
             layersId.push_back(value.toInt());
         }
 
-        for (const QJsonValue &value : json["FieldData"].toArray()) {
+        auto fieldDataList = json["FieldData"].toArray();
+        for (const QJsonValue &value : fieldDataList) {
             NodeFieldData newFieldData;
             newFieldData.fromJson(value.toObject());
             fieldData.push_back(newFieldData);
@@ -298,7 +359,8 @@ struct StatusNodeData
         command = json["Command"].toString();
         layerId = json["LayerId"].toInt();
 
-        for (const QJsonValue &value : json["FieldData"].toArray()) {
+        auto fieldDataList = json["FieldData"].toArray();
+        for (const QJsonValue &value : fieldDataList) {
             NodeFieldData newFieldData;
             newFieldData.fromJson(value.toObject());
             fieldData.push_back(newFieldData);
@@ -311,7 +373,7 @@ struct AssignmentData
     int attackerId;
     int targetId;
     Command command{Command::Add};
-    QString state{AssignmentState::Assinged};
+    AssignmentState state{AssignmentState::Assigned};
     int layerId;
 
     QJsonObject toJson() const{
@@ -319,7 +381,7 @@ struct AssignmentData
         jsonObject.insert("AttackerId", attackerId);
         jsonObject.insert("TargetId", targetId);
         jsonObject.insert("Command", command.toString());
-        jsonObject.insert("State", state);
+        jsonObject.insert("State", state.toString());
         jsonObject.insert("LayerId", layerId);
 
         return jsonObject;
@@ -376,7 +438,8 @@ struct PolyLineData
         command = json["Command"].toString();
         layerId = json["LayerId"].toInt();
 
-        for (const QJsonValue &value : json["Points"].toArray()) {
+        auto pointsArray = json["Points"].toArray();
+        for (const QJsonValue &value : pointsArray) {
             float longitude = value["Longitude"].toDouble();
             float latitude = value["Latitude"].toDouble();
             float altitude = value["Altitude"].toDouble();
@@ -524,7 +587,8 @@ struct LayerData {
         isComposite = json["IsComposite"].toBool();
         command = json["Command"].toString();
 
-        for (const QJsonValue &child : json["Children"].toArray()) {
+        auto chArray = json["Children"].toArray();
+        for (const QJsonValue &child : chArray) {
             LayerData newLayerData;
             newLayerData.fromJson(child.toObject());
             children.push_back(newLayerData);
