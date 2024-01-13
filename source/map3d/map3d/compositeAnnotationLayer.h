@@ -109,6 +109,7 @@ public:
     virtual CompositeAnnotationLayer* asCompositeAnnotationLayer() override { return this; }
 
     std::vector<osg::ref_ptr<ParenticAnnotationLayer> > childildren() const;
+    bool hasChild() const;
 
 private:
     osg::ref_ptr<osg::Group> mRoot;

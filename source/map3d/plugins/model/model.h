@@ -35,11 +35,6 @@ public:
         CANCEL,
         CONFIRM
     };
-    enum class Type{
-        SIMPLE,
-        MOVEABLE,
-        FLYABLE
-    };
 
 public:
     explicit Model(QObject *parent = nullptr);
@@ -73,7 +68,7 @@ private:
 //    NodeData* sampleNodeData(std::string name, std::string url2d, std::string url3d, std::string imgSrc, std::string iconSrc);
 
 private:
-    Type mType;
+    NodeType mType;
     static int mCount;
     bool mIs3D;
     State mState{State::NONE};
