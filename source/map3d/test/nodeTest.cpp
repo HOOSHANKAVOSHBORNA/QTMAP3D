@@ -58,12 +58,14 @@ NodeTest::NodeTest(ServiceManager *serviceManager):
 
 void NodeTest::createInfo()
 {
+    QVector<QString> colors{"yellow", "red", "blue", "green"};
+    QVector<QString> types{NodeType::Fixed, NodeType::Movable, NodeType::Flyable};
     if(mCount >= mMaxNumber)
         return;
     //---------------------------------------------------------
     QString name = "Node" + QString::number(mCount);
     int id = 30000 + mCount++;
-    QColor color("yellow");
+    QColor color(colors[QRandomGenerator::global()->generate() % 4]);
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
     double altitude =0;/* (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));*/
@@ -72,12 +74,30 @@ void NodeTest::createInfo()
     NodeData nodData;
     nodData.id = id;
     nodData.name = name;
-    nodData.type = NodeType::Fixed;
+    nodData.type = types[QRandomGenerator::global()->generate() % 3];
+    nodData.category = nodData.type == NodeType::Fixed ? "Station" :
+                           nodData.type == NodeType::Movable ? "Car": "Aircraft";
     nodData.command = Command::Add;
-    nodData.iconInfoUrl = "../data/models/station/station.png";
-    nodData.imgInfoUrl = "qrc:/Resources/system.jpg";
-    nodData.url2D = "../data/models/station/station.png";
-    nodData.url3D = "../data/models/station/station.osgb";
+    nodData.iconInfoUrl = nodData.type == NodeType::Fixed ? "../data/models/station/station.png"
+                                                          : nodData.type == NodeType::Movable
+                                                          ? "../data/models/car/car.png"
+                                                          : "qrc:/Resources/aircraft.png";
+
+    nodData.imgInfoUrl = nodData.type == NodeType::Fixed ? "qrc:/Resources/system.jpg"
+                                                         : nodData.type == NodeType::Movable
+                                                         ? "qrc:/Resources/station.jpg"
+                                                         : "qrc:/Resources/airplane1.jpg";
+
+    nodData.url2D = nodData.type == NodeType::Fixed ? "../data/models/station/station.png"
+                                                    : nodData.type == NodeType::Movable
+                                                    ? "../data/models/car/car.png"
+                                                    : "../data/models/airplane/airplane.png";
+
+    nodData.url3D = nodData.type == NodeType::Fixed ? "../data/models/station/station.osgb"
+                                                    : nodData.type == NodeType::Movable
+                                                    ? "../data/models/car/car.osgb"
+                                                    : "../data/models/airplane/airplane.osgb";
+
     nodData.color = color.name();
     nodData.isAttacker = false;
     nodData.latitude = latitude;

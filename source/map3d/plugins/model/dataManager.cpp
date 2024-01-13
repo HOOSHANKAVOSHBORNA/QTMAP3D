@@ -80,6 +80,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 //    node->setPosition(geoPoint);
     node->setAttacker(nodeData.isAttacker);
     node->setNodeData(nodeData);
+    node->setColor(nodeData.color.toStdString());
     //add to layer after set data
     for(int layerId: node->nodeData().layersId){
         auto layer = mMapItem->getMapObject()->getLayerByUserId(layerId);
