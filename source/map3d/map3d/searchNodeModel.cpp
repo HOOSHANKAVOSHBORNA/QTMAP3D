@@ -34,7 +34,7 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
         return mNodes1[index.row()]->data->id ;
         break;
     case type_:
-        return QVariant::fromValue<QString>(mNodes1[index.row()]->data->type);
+        return QVariant::fromValue<QString>(mNodes1[index.row()]->data->type.toString());
     default:
         return QVariant::fromValue<QString>(QString(""));
         break;
@@ -45,7 +45,7 @@ QVariant SearchNodeModel::data(const QModelIndex &index, int role) const
 void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
     NodeData *nodeData = dynamic_cast<NodeData*>(node->getUserData());
     if (nodeData) {
-        QString typeToAdd = nodeData->type;
+        QString typeToAdd = nodeData->type.toString();
         auto typeExists = std::find(mTypeListModel->mTypes.begin(), mTypeListModel->mTypes.end(), typeToAdd);
         if (typeExists == mTypeListModel->mTypes.end()) {
             mTypeListModel->append(typeToAdd);
