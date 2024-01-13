@@ -150,9 +150,11 @@ void DataManager::nodeDataReceived(const NodeData &nodeData)
 void DataManager::removeNode(const NodeData &nodeData)
 {
     if(mNodeMap.contains(nodeData.id)){
-//        for(auto layer: mNodeMap[nodeData->id]->nodeData()->layers){
-//            layer->removeChild(mNodeMap[nodeData->id]);
-//        }
+        for(int layerId: nodeData.layersId){
+            auto layer = mMapItem->getMapObject()->getLayerByUserId(layerId);
+            if(layer)
+                layer->removeChild(mNodeMap[nodeData.id]);
+        }
         mNodeMap[nodeData.id].release();
         mNodeMap.remove(nodeData.id);
     }

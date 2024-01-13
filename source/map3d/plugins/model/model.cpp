@@ -43,11 +43,7 @@ bool Model::setup()
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
     connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::nodeDataReceived);
 
-    mModelNodeLayer = new CompositeAnnotationLayer();
-    mModelNodeLayer->setName(MODEL);
-    mapItem()->getMapObject()->addLayer(mModelNodeLayer);
-
-
+    //--toolbox item---------------------------------------------------------------------
     auto treeToolboxItem =  new ToolboxItem{TREE, MODEL, "qrc:/resources/tree.png", true};
     QObject::connect(treeToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTreeItemCheck);
     toolbox()->addItem(treeToolboxItem);
@@ -63,15 +59,40 @@ bool Model::setup()
     auto tankToolboxItem =  new ToolboxItem{"Tank", MODEL, "qrc:/resources/tank.png", true};
     QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTankItemCheck);
     toolbox()->addItem(tankToolboxItem);
+    //--layer data---------------------------------------------------------------------------
+    mLayerData.id = layerId();
+    mLayerData.text = "Model Node";
+    mLayerData.parentId = -1;
+    mLayerData.order = 1000;
+    mLayerData.isComposite = true;
+    mLayerData.command = Command::Add;
 
-    mSimpleNodeLayer = new ParenticAnnotationLayer();
-    mSimpleNodeLayer->setName("Fixed");
+    LayerData layerDataFixed;
+    layerDataFixed.id = layerId();
+    layerDataFixed.text = "Fixed";
+    layerDataFixed.parentId = mLayerData.id;
+    layerDataFixed.order = 1;
+    layerDataFixed.isComposite = false;
+    layerDataFixed.command = Command::Remove;
+    mLayerData.children.push_back(layerDataFixed);
 
-    mMoveableNodeLayer = new ParenticAnnotationLayer();
-    mMoveableNodeLayer->setName("Moving");
+    LayerData layerDataMovable;
+    layerDataMovable.id = layerId();
+    layerDataMovable.text = "Movable";
+    layerDataMovable.parentId = mLayerData.id;
+    layerDataMovable.order = 1;
+    layerDataFixed.isComposite = false;
+    layerDataMovable.command = Command::Remove;
+    mLayerData.children.push_back(layerDataMovable);
 
-    mFlyableNodelLayer = new ParenticAnnotationLayer();
-    mFlyableNodelLayer->setName("Flying");
+    LayerData layerDataFlyable;
+    layerDataFlyable.id = layerId();
+    layerDataFlyable.text = "Flyable";
+    layerDataFlyable.parentId = mLayerData.id;
+    layerDataFlyable.order = 1;
+    layerDataFixed.isComposite = false;
+    layerDataFlyable.command = Command::Remove;
+    mLayerData.children.push_back(layerDataFlyable);
 
     // property item setup
     mProperty = new Property(mapItem());
@@ -191,16 +212,17 @@ DataManager *Model::getDataManager()
 void Model::onTreeItemCheck(bool check)
 {
     if (check) {
-        mNodeData = new NodeData;
-        mNodeData->id = 0;
-        mNodeData->name = "Tree";
-        mNodeData->type = NodeType::Fixed;
-        mNodeData->category = "User";
-        mNodeData->url2D = "../data/models/tree/tree.png";
-        mNodeData->url3D = "../data/models/tree/tree.osgb";
-        mNodeData->imgInfoUrl = "qrc:/resources/tree.png";
-        mNodeData->iconInfoUrl = "qrc:/resources/tree.png";
-        mNodeData->color = QColorConstants::Green.name();
+        mNodeData.id = 0;
+        mNodeData.name = "Tree";
+        mNodeData.type = NodeType::Fixed;
+        mNodeData.category = "User";
+        mNodeData.url2D = "../data/models/tree/tree.png";
+        mNodeData.url3D = "../data/models/tree/tree.osgb";
+        mNodeData.imgInfoUrl = "qrc:/resources/tree.png";
+        mNodeData.iconInfoUrl = "qrc:/resources/tree.png";
+        mNodeData.color = QColorConstants::Green.name();
+        mNodeData.command = Command::Add;
+        mNodeData.layersId.push_back(mLayerData.children[0].id);
 
         makeIconNode("../data/models/tree/tree.png");
         mType = Type::SIMPLE;
@@ -297,55 +319,50 @@ void Model::onModeChanged(bool is3DView)
 
 void Model::initModel(const osgEarth::GeoPoint &geoPos)
 {
-//    mNodeData = new NodeData();
-//    mNodeData->name = mBaseNodeData->name;
-//    mNodeData->url2D = mBaseNodeData->url2D;
-//    mNodeData->url3D = mBaseNodeData->url3D;
-////    mNodeData->imgSrc = mBaseNodeData->imgSrc;
-////    mNodeData->iconSrc = mBaseNodeData->iconSrc;
-//    mNodeData->color = mBaseNodeData->color;
-//    mNodeData->isAttacker = mBaseNodeData->isAttacker;
+    mNodeData.id = nodeId();
+    mNodeData.name = mNodeData.name + QString::number(mNodeData.id);
+    mNodeData.longitude = geoPos.x();
+    mNodeData.latitude = geoPos.y();
+    mNodeData.altitude = geoPos.z();
 
-    mNodeData->longitude = geoPos.x();
-    mNodeData->latitude = geoPos.y();
-    mNodeData->altitude = geoPos.z();
-//    mNodeData->name = mNodeData->name + std::to_string(mCount);
-
+    mLayerData.command = Command::Add;
     switch (mType) {
     case Type::SIMPLE:
 
-        mNodeData->id = 100 + mCount;
+        mLayerData.children[0].command = Command::Add;
 
-        if (!mModelNodeLayer->containsLayer(mSimpleNodeLayer)) {
-            mSimpleNodeLayer->clear();
-            mModelNodeLayer->addLayer(mSimpleNodeLayer);
-        }
-//        mNodeData->layers.push_back(mSimpleNodeLayer);
-//        mCurrentModel = mDataManager->addUpdateNode(mNodeData);
+//        if (!mModelNodeLayer->containsLayer(mSimpleNodeLayer)) {
+//            mSimpleNodeLayer->clear();
+//            mModelNodeLayer->addLayer(mSimpleNodeLayer);
+//        }
+//        mNodeData.layers.push_back(mSimpleNodeLayer);
         break;
     case Type::MOVEABLE:
-
-        mNodeData->id = 200 + mCount;
-        if (!mModelNodeLayer->containsLayer(mMoveableNodeLayer)) {
-            mMoveableNodeLayer->clear();
-            mModelNodeLayer->addLayer(mMoveableNodeLayer);
-        }
-//        mNodeData->layers.push_back(mMoveableNodeLayer);
+           mLayerData.children[1].command = Command::Add;
+//        mNodeData.id = 200 + mCount;
+//        if (!mModelNodeLayer->containsLayer(mMoveableNodeLayer)) {
+//            mMoveableNodeLayer->clear();
+//            mModelNodeLayer->addLayer(mMoveableNodeLayer);
+//        }
+//        mNodeData.layers.push_back(mMoveableNodeLayer);
 //        mCurrentModel = mDataManager->addUpdateMovableNode(mNodeData);
         break;
     case Type::FLYABLE:
-
-        mNodeData->id = 300 + mCount;
-        if (!mModelNodeLayer->containsLayer(mFlyableNodelLayer)) {
-            mFlyableNodelLayer->clear();
-            mModelNodeLayer->addLayer(mFlyableNodelLayer);
-        }
-//        mNodeData->layers.push_back(mFlyableNodelLayer);
+        mLayerData.children[2].command = Command::Add;
+//        mNodeData.id = 300 + mCount;
+//        if (!mModelNodeLayer->containsLayer(mFlyableNodelLayer)) {
+//            mFlyableNodelLayer->clear();
+//            mModelNodeLayer->addLayer(mFlyableNodelLayer);
+//        }
+//        mNodeData.layers.push_back(mFlyableNodelLayer);
 //        mCurrentModel = mDataManager->addUpdateFlyableNode(mNodeData);
         break;
     default:
         break;
     }
+
+    mapItem()->getMapObject()->onLayerDataReceived(mLayerData);
+    mCurrentModel = mDataManager->addUpdateNode(mNodeData);
     mProperty->setModelNode(mCurrentModel);
     mState = State::MOVING;
     mCount++;
@@ -354,23 +371,23 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
 void Model::moving(osgEarth::GeoPoint &geoPos)
 {
     if (mCurrentModel) {
-        if (mCurrentModel->asFlyableModelNode()) {
-            double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
-            geoPos.z() += randomHeight;
-//            mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
-            mProperty->flyTo(geoPos);
-            return;
-        }
+        //        if (mCurrentModel->asFlyableModelNode()) {
+        //            double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
+        //            geoPos.z() += randomHeight;
+        ////            mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
+        //            mProperty->flyTo(geoPos);
+        //            return;
+        //        }
 
-        if (mCurrentModel->asMoveableModelNode()) {
-//            mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
-            mProperty->moveTo(geoPos);
-            return;
-        }
+        //        if (mCurrentModel->asMoveableModelNode()) {
+        ////            mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
+        //            mProperty->moveTo(geoPos);
+        //            return;
+        //        }
 
         mCurrentModel->setPosition(geoPos);
-        mProperty->setPosition(geoPos);
-        qDebug() << "position changed";
+//        mProperty->setPosition(geoPos);
+//        qDebug() << "position changed";
     }
 }
 
@@ -387,19 +404,20 @@ void Model::cancel()
         switch (mType) {
         case Type::SIMPLE:
 //            mDataManager->removeNode(mNodeData);
-            mSimpleNodeLayer->removeChild(mCurrentModel);
+//            mSimpleNodeLayer->removeChild(mCurrentModel);
             break;
         case Type::MOVEABLE:
 //            mDataManager->removeNode(mNodeData);
-            mMoveableNodeLayer->removeChild(mCurrentModel);
+//            mMoveableNodeLayer->removeChild(mCurrentModel);
             break;
         case Type::FLYABLE:
 //            mDataManager->removeNode(mNodeData);
-            mFlyableNodelLayer->removeChild(mCurrentModel);
+//            mFlyableNodelLayer->removeChild(mCurrentModel);
             break;
         default:
             break;
         }
+        mDataManager->removeNode(mNodeData);
         mCurrentModel.release();
         mState = State::READY;
         mCount--;

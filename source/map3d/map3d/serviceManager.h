@@ -426,6 +426,7 @@ struct LayerData {
     int parentId;
     QString text;
     int order;
+    bool isComposite{false};
     QString command{Command::Add};
     std::vector<LayerData> children;
 
@@ -435,6 +436,7 @@ struct LayerData {
         jsonObject.insert("ParentId", parentId);
         jsonObject.insert("Text", text);
         jsonObject.insert("Order", order);
+        jsonObject.insert("IsComposite", isComposite);
         jsonObject.insert("Command", command);
         QJsonArray childrenArray;
         for(const LayerData& child: children){
@@ -450,6 +452,7 @@ struct LayerData {
         parentId = json["ParentId"].toInt();
         text = json["Text"].toString();
         order = json["Order"].toInt();
+        isComposite = json["IsComposite"].toBool();
         command = json["Command"].toString();
 
         for (const QJsonValue &child : json["Children"].toArray()) {

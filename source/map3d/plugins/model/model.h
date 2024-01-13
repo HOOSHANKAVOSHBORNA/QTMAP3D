@@ -80,16 +80,20 @@ private:
     int mBulletID;
 
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
-    osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mSimpleNodeLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
-    osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
+//    osg::ref_ptr<CompositeAnnotationLayer> mModelNodeLayer{nullptr};
+//    osg::ref_ptr<ParenticAnnotationLayer> mSimpleNodeLayer{nullptr};
+//    osg::ref_ptr<ParenticAnnotationLayer> mMoveableNodeLayer{nullptr};
+//    osg::ref_ptr<ParenticAnnotationLayer> mFlyableNodelLayer{nullptr};
+//    osg::ref_ptr<ParenticAnnotationLayer> mStatusNodelLayer{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     osg::ref_ptr<SimpleModelNode> mPickModelNode {nullptr};
     osg::ref_ptr<SimpleModelNode> mHighliteModelNode {nullptr};
 
-    osg::ref_ptr<NodeData> mNodeData{nullptr};
+    NodeData mNodeData;
+    LayerData mLayerData;
+//    LayerData mLayerDataFixed;
+//    LayerData mLayerDataMovable;
+//    LayerData mLayerDataFlyable;
 //    osg::ref_ptr<NodeData> mBaseNodeData{nullptr};
     DataManager *mDataManager;
 //    QQuickItem *mItem;

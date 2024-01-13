@@ -87,6 +87,16 @@ PluginInterface *PluginInterface::getPlugin(QString name)
     return nullptr;
 }
 
+int PluginInterface::layerId()
+{
+    return mLayerId++;
+}
+
+int PluginInterface::nodeId()
+{
+    return mNodeId++;
+}
+
 BookmarkManager *PluginInterface::bookmarkManager() const
 {
     return mBookmarkManager;

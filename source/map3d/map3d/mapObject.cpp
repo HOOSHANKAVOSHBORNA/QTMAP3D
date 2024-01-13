@@ -202,13 +202,13 @@ CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
 
 ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
 {
-//    for (auto& l: mCompositeLayers){
-//        ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
-//        if (p){
-//            return p;
-//        }
-//    }
-//    return nullptr;
+    //    for (auto& l: mCompositeLayers){
+    //        ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
+    //        if (p){
+    //            return p;
+    //        }
+    //    }
+    //    return nullptr;
     if(mLayerMap.contains(userid))
         return mLayerMap[userid];
     return nullptr;
@@ -268,32 +268,135 @@ void MapObject::filterNodes()
 
 void MapObject::onLayerDataReceived(const LayerData &layerData)
 {
-    if(!layerData.children.empty()){
-        osg::ref_ptr<CompositeAnnotationLayer> compositeLayer = new CompositeAnnotationLayer(layerData.id);
-        compositeLayer->setName(layerData.text.toStdString());
-        compositeLayer->setOrder(layerData.order);
-        mLayerMap[layerData.id] = compositeLayer;
+    if(layerData.command == Command::Add){
+        if(mLayerMap.contains(layerData.id)){
+            auto layer = mLayerMap[layerData.id];
+            if(layer->getNumParents() == 0 && layerData.parentId == -1){
+                updateLayerData(layerData);
+                return;
+            }
+            else if(layer->getNumParents() > 0)
+                for(int i = 0; i < layer->getNumParents(); ++i)
+                    if(layerData.parentId == layer->getParentAtIndex(i)->userId()){
+                        updateLayerData(layerData);
+                        return;
+                    }
+        }
+        addLayerData(layerData);
+    }
+    else if(layerData.command == Command::Update)
+        updateLayerData(layerData);
+    else if(layerData.command == Command::Remove)
+        removeLayerData(layerData);
+}
 
-        if(mLayerMap.contains(layerData.parentId)){
-            auto parentLayer = mLayerMap[layerData.parentId];
-            parentLayer->asCompositeAnnotationLayer()->addLayer(compositeLayer);
+void MapObject::addLayerData(const LayerData &layerData)
+{
+    //--parentic layer--------------------------------------
+    if(!layerData.isComposite){
+        osg::ref_ptr<ParenticAnnotationLayer> parenticLayer;
+        if(mLayerMap.contains(layerData.id))
+            parenticLayer = mLayerMap[layerData.id];
+        else{
+            parenticLayer = new ParenticAnnotationLayer(layerData.id);
+            parenticLayer->setName(layerData.text.toStdString());
+            parenticLayer->setOrder(layerData.order);
+        }
+
+        if(layerData.parentId == -1){
+            addLayer(parenticLayer);
+            mLayerMap[layerData.id] = parenticLayer;
+        }
+        else if(mLayerMap.contains(layerData.parentId)){
+            auto parentLayer = mLayerMap[layerData.parentId]->asCompositeAnnotationLayer();
+            if(parentLayer){
+                parentLayer->addLayer(parenticLayer);
+                mLayerMap[layerData.id] = parenticLayer;
+            }
+            else
+                qDebug()<<"Parent is not composit layer: "<<layerData.id<<":"<<layerData.text;
         }
         else
-            addLayer(compositeLayer);
-
-        for(const auto &childLaye: layerData.children)
-            onLayerDataReceived(childLaye);
+            qDebug()<<"Parent not found: "<<layerData.id<<":"<<layerData.text;
     }
-    if(layerData.children.empty() && mLayerMap.contains(layerData.parentId)){
-        osg::ref_ptr<ParenticAnnotationLayer> parenticLayer = new ParenticAnnotationLayer(layerData.id);
-        parenticLayer->setName(layerData.text.toStdString());
-        parenticLayer->setOrder(layerData.order);
-        mLayerMap[layerData.id] = parenticLayer;
+    //composit layer-----------------------------------------
+    else{
+        osg::ref_ptr<CompositeAnnotationLayer> compositLayer;
+        if(mLayerMap.contains(layerData.id)){
+            compositLayer = mLayerMap[layerData.id]->asCompositeAnnotationLayer();
+            if(!compositLayer){
+                qDebug()<<"Layer is not composit layer: "<<layerData.id<<":"<<layerData.text;
+                return;
+            }
+        }
+        else{
+            compositLayer = new CompositeAnnotationLayer(layerData.id);
+            compositLayer->setName(layerData.text.toStdString());
+            compositLayer->setOrder(layerData.order);
+        }
 
-        auto parentLayer = mLayerMap[layerData.parentId];
-        parentLayer->asCompositeAnnotationLayer()->addLayer(parenticLayer);
+        if(layerData.parentId == -1){
+            addLayer(compositLayer);
+            mLayerMap[layerData.id] = compositLayer;
+            //check in layer data receive
+            for(const LayerData& layerData: layerData.children)
+                onLayerDataReceived(layerData);
+        }
+        else if(mLayerMap.contains(layerData.parentId)){
+            auto parentLayer = mLayerMap[layerData.parentId]->asCompositeAnnotationLayer();
+            if(parentLayer){
+                parentLayer->addLayer(compositLayer);
+                mLayerMap[layerData.id] = compositLayer;
+                for(const LayerData& layerData: layerData.children)
+                    onLayerDataReceived(layerData);
+            }
+            else
+                qDebug()<<"Parent is not composit layer: "<<layerData.id<<":"<<layerData.text;
+        }
+        else
+            qDebug()<<"Parent not found: "<<layerData.id<<":"<<layerData.text;
     }
-//    qDebug()<<layerData.text;
+}
+
+void MapObject::updateLayerData(const LayerData &layerData)
+{
+    if(mLayerMap.contains(layerData.id)){
+        auto layer = mLayerMap[layerData.id];
+        layer->setName(layerData.text.toStdString());
+        layer->setOrder(layerData.order);
+
+        for(const LayerData& layerData: layerData.children)
+            onLayerDataReceived(layerData);
+
+    }
+}
+
+void MapObject::removeLayerData(const LayerData &layerData)
+{
+    if(mLayerMap.contains(layerData.id)){
+        auto layer = mLayerMap[layerData.id];
+        if(layerData.parentId == -1){
+            removeLayer(layer);
+            for(const LayerData& layerData: layerData.children)
+                removeLayerData(layerData);
+            mLayerMap.remove(layerData.id);
+        }
+        else if(mLayerMap.contains(layerData.parentId)){
+            auto parentLayer = mLayerMap[layerData.parentId]->asCompositeAnnotationLayer();
+            if(parentLayer){
+                parentLayer->removeLayer(layer);
+                for(const LayerData& layerData: layerData.children)
+                    removeLayerData(layerData);
+                if(layer->getNumParents() == 0)
+                    mLayerMap.remove(layerData.id);
+            }
+            else
+                qDebug()<<"Parent is not composit layer: "<<layerData.id<<":"<<layerData.text;
+        }
+        else
+            qDebug()<<"Parent not found: "<<layerData.id<<":"<<layerData.text;
+
+    }
 }
 
 void MapObject::clearCompositeLayers()
