@@ -10,6 +10,7 @@ struct NodeInfo
     StatusNodeData statusNodeData;
     CircleData circleData;
     PolygonData polygonData;
+    PolyLineData polyLineData;
 };
 
 class NodeTest
