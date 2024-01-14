@@ -18,8 +18,8 @@ public:
     StatusNode(MapItem* mapControler);
     ~StatusNode() override;
     void setFieldData(QString title, const std::vector<NodeFieldData> &data);
-    StatusNodeData *nodeData() const;
-    void setNodeData(StatusNodeData *newNodeData);
+    StatusNodeData nodeData() const;
+    void setNodeData(const StatusNodeData &newNodeData);
 
 private:
     void compile(const std::vector<NodeFieldData> &data);
@@ -27,7 +27,7 @@ private:
     QString mTitle;
     QImage *mTitleImage{nullptr};
     MapItem *mMapItem;
-    StatusNodeData *mNodeData;
+    StatusNodeData mNodeData;
     QFont mFont;
 };
 

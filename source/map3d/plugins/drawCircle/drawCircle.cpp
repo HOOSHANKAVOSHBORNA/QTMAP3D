@@ -17,7 +17,7 @@ DrawCircle::DrawCircle(QObject *parent): DrawShape(parent)
 
 bool DrawCircle::setup()
 {
-//    connect(serviceManager(), &ServiceManager::circleDataReceived, this, &DrawCircle::circleDataReceived);
+    connect(serviceManager(), &ServiceManager::circleDataReceived, this, &DrawCircle::circleDataReceived);
     auto toolboxItem =  new ToolboxItem{CIRCLE, CATEGORY, "qrc:/resources/circle.png", true};
     QObject::connect(toolboxItem, &ToolboxItem::itemChecked, this, &DrawCircle::onCircleItemCheck);
     toolbox()->addItem(toolboxItem);
@@ -54,15 +54,18 @@ void DrawCircle::onCircleItemCheck(bool check)
     }
 }
 
-void DrawCircle::circleDataReceived(CircleData *circleData)
+void DrawCircle::circleDataReceived(const CircleData& circleData)
 {
-    if (circleData->command == "REMOVE"){
-        if (mCircleMap.contains(circleData->id)){
-//            mCircleMap[circleData->id]->circleData()->layer->removeChild(mCircleMap[circleData->id]);
-            mCircleMap[circleData->id].release();
-            mCircleMap.remove(circleData->id);
+    if (circleData.command == Command::Remove){
+        if (mCircleMap.contains(circleData.id)){
+            auto layer = mapItem()->getMapObject()->getLayerByUserId(circleData.layerId);
+            if (layer)
+                layer->removeChild(mCircleMap[circleData.id]);
+            //            mCircleMap[circleData->id]->circleData()->layer->removeChild(mCircleMap[circleData->id]);
+            mCircleMap[circleData.id].release();
+            mCircleMap.remove(circleData.id);
         }
-    } else if (circleData->command == "UPDATE") {
+    } else if (circleData.command == Command::Update) {
         addUpdateCircle(circleData);
     }
     else {
@@ -70,26 +73,29 @@ void DrawCircle::circleDataReceived(CircleData *circleData)
     }
 }
 
-void DrawCircle::addUpdateCircle(CircleData *circleData)
+void DrawCircle::addUpdateCircle(const CircleData &circleData)
 {
-    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), circleData->longitude, circleData->latitude, circleData->altitude);
+    auto layer = mapItem()->getMapObject()->getLayerByUserId(circleData.layerId);
+    if (!layer)
+        return;
+    osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), circleData.longitude, circleData.latitude, circleData.altitude);
     Circle *circle;
-    if(mCircleMap.contains(circleData->id)){
-        circle = mCircleMap[circleData->id];
+    if(mCircleMap.contains(circleData.id)){
+        circle = mCircleMap[circleData.id];
     }
     else {
         circle = new Circle;
-        mCircleMap[circleData->id] = circle;
-//        circleData->layer->addChild(circle);
+        mCircleMap[circleData.id] = circle;
     }
-//    circle->setName(circleData->name);
+    circle->setName(circleData.name.toStdString());
     circle->setPosition(geoPoint);
-    circle->setRadius(circleData->radius);
-//    QColor color(QString::fromStdString(circleData->color));
-//    circle->setFillColor(Utility::qColor2osgEarthColor(color));
+    circle->setRadius(circleData.radius);
+    QColor color(circleData.color);
+    circle->setFillColor(Utility::qColor2osgEarthColor(color));
     circle->setHeight(1);
     circle->setCircleData(circleData);
-//    circle->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
+    circle->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
+    layer->addChild(circle);
 }
 
 void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)

@@ -41,7 +41,8 @@ public:
 public:
     explicit DrawAnnotation(QObject *parent = nullptr);
     ~DrawAnnotation()override;
-    void addUpdateAnnotatedNode(PolyLineData *lineNodeData);
+    void addUpdatePolyLine(const PolyLineData &lineNodeData);
+    void addUpdatePolygon(const PolygonData &polygonNodeData);
     virtual bool setup() override;
     void makeIconNode(const QString &fileName);
     osgEarth::Annotation::PlaceNode *iconNode() const;
@@ -59,10 +60,9 @@ private slots:
     void onHeightItemCheck(bool check);
     void onSlopeItemCheck(bool check);
     void onLineItemCheck(bool check);
-    void AnnotatedNodeDataReceived(PolyLineData *lineNodeData);
+    void polyLineDataReceived(const PolyLineData &lineNodeData);
     /*********polygon*********/
-    void addUpdatePolygon(PolygonData *polygonNodeData);
-    void polygonDataReceived(PolygonData *polygonNodeData);
+    void polygonDataReceived(const PolygonData &polygonNodeData);
     void onPolygonItemCheck (bool check);
 
 protected:
@@ -86,7 +86,7 @@ private:
     bool mIsLine;
     osg::ref_ptr<AnnotatedNode> mAnnotation{nullptr};
 //    MeasureHeight *mMeasureHeight{nullptr};
-    AnnotationProperty *mAnnotationProperty = nullptr;
+    AnnotationProperty *mPolyLineProperty = nullptr;
     AnnotationProperty *mPolygonProperty{nullptr};
     CompositeAnnotationLayer *measureLayer();
     osg::ref_ptr<ParenticAnnotationLayer> mLineLayer;

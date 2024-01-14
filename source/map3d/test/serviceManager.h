@@ -56,6 +56,7 @@ struct NodeData
     int id;
     QString name;
     QString type{NodeType::Fixed};
+    QString category;
     QString url2D;
     QString url3D;
     QString imgInfoUrl;
@@ -76,6 +77,7 @@ struct NodeData
         jsonObject.insert("Id", id);
         jsonObject.insert("Name", name);
         jsonObject.insert("Type", type);
+        jsonObject.insert("Category", category);
         jsonObject.insert("Url2D", url2D);
         jsonObject.insert("Url3D", url3D);
         jsonObject.insert("ImgInfoUrl", imgInfoUrl);
@@ -270,6 +272,7 @@ struct LayerData {
     QString text;
     int order;
     QString command{Command::Add};
+    bool isComposite{false};
     std::vector<LayerData> children;
 
     QJsonObject toJson() const{
@@ -279,6 +282,7 @@ struct LayerData {
         jsonObject.insert("Text", text);
         jsonObject.insert("Order", order);
         jsonObject.insert("Command", command);
+        jsonObject.insert("IsComposite", isComposite);
         QJsonArray childrenArray;
         for(const LayerData& child: children){
             childrenArray.push_back(child.toJson());

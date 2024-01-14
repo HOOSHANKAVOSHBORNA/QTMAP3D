@@ -38,12 +38,12 @@ public:
     Information(QObject *parent = nullptr);
     bool setup() override;
     bool mousePressEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa) override;
-    void addUpdateStatusNode(StatusNodeData *statusnNodeData);
+    void addUpdateStatusNode(const StatusNodeData &statusnNodeData);
 
 public slots:
     void onMapPinItemCheck(bool check);
     void onStatusItemCheck(bool check);
-    void statusNodeReceived(StatusNodeData *statusNodeData);
+    void statusNodeReceived(const StatusNodeData &statusNodeData);
 
 protected:
     void initModel(const osgEarth::GeoPoint &geoPos);

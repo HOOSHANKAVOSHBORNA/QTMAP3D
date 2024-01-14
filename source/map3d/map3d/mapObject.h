@@ -79,7 +79,10 @@ signals:
     void nodeToLayerAdded(osg::Node *node, osgEarth::Layer *layer);
     void nodeFromLayerRemoved(osg::Node *node, osgEarth::Layer *layer);
 //    void parentLayerChanged(osgEarth::Layer *layer, osgEarth::Layer *oldParentLayer, osgEarth::Layer *newParentLayer);
-
+private:
+    void addLayerData(const LayerData &layerData);
+    void updateLayerData(const LayerData &layerData);
+    void removeLayerData(const LayerData &layerData);
 private:
     QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
     std::map<int, osg::ref_ptr<ParenticAnnotationLayer>> mParenticLayers;
