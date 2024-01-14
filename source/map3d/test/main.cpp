@@ -15,15 +15,15 @@ int main(int argc, char *argv[])
     NetworkManager networkManager;
     networkManager.start();
     ServiceManager serviceManager(&networkManager);
-//    QObject::connect(&networkManager, &NetworkManager::flyableQueueDeclared,[&networkManager]{
-//        networkManager.sendFlyableData("data");
-//    });
+    //    QObject::connect(&networkManager, &NetworkManager::flyableQueueDeclared,[&networkManager]{
+    //        networkManager.sendFlyableData("data");
+    //    });
     LayerTest LayerTest(&serviceManager);
-//    FlyableNodeTest flyableNodeTest(&networkManager);
-//    MovableNodeTest movableNodeTest(&networkManager);
-     NodeTest nodeTest(&serviceManager);
-//    AssignmentTest assignmentTest(&networkManager);
-   ParticleTest particleTest(&serviceManager);
+    //    FlyableNodeTest flyableNodeTest(&networkManager);
+    //    MovableNodeTest movableNodeTest(&networkManager);
+    // NodeTest nodeTest(&serviceManager);
+    AssignmentTest assignmentTest(&serviceManager);
+    // ParticleTest particleTest(&serviceManager);
 
     return a.exec();
 }

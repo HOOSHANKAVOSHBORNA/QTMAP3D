@@ -391,8 +391,8 @@ struct AssignmentData
     {
         attackerId = jsonObject.value("AttackerId").toInt();
         targetId = jsonObject.value("TargetId").toInt();
-        state = jsonObject.value("Command").toString();
-        command = jsonObject.value("State").toString();
+        command = jsonObject.value("Command").toString();
+        state = jsonObject.value("State").toString();
         layerId = jsonObject.value("LayerId").toInt();
     }
 };

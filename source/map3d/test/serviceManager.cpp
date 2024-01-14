@@ -110,10 +110,12 @@ void ServiceManager::onMessageReceived(const QString &message)
         if (doc.isObject()){
             obj = doc.object();
             QString type = obj.value("Type").toString();
+            QJsonObject data = obj.value("Data").toObject();
             if (type == "Assignment"){
                 AssignmentData assignmentData;
-                assignmentData.fromJson(obj);
+                assignmentData.fromJson(data);
                 emit assignmentDataReceived(assignmentData);
+                qDebug() << "message received" << data;
             }
             else
                 qDebug() << "type of data is unknown";

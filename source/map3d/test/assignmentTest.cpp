@@ -12,26 +12,31 @@ AssignmentTest::AssignmentTest(ServiceManager *serviceManager):
     QTimer *timerUpdateAssign = new QTimer();
     QObject::connect(timerUpdateAssign, &QTimer::timeout, [this](){
         for(auto& AssignmentData: mAssignmentDataList){
-            AssignmentData.state = QString::fromStdString(mStates.at(QRandomGenerator::global()->generate() % (6)));
-            updateAssignment(AssignmentData);
+            if(QRandomGenerator::global()->generate() % (2) -1){
+                // if(mStates.indexOf(AssignmentData.state) >= 5){mAssignmentDataList.removeOne(AssignmentData);}
+                // AssignmentData.state = QString::fromStdString(mStates.at(mStates.indexOf(AssignmentData.state) + 1));
+                AssignmentData.state = QString::fromStdString(mStates.at(QRandomGenerator::global()->generate() % 6));
+                updateAssignment(AssignmentData);
+            }
         }
     });
-    timerUpdateAssign->start(5000);
+    timerUpdateAssign->start(4000);
 
 }
 void AssignmentTest::createAssignment(AssignmentData data)
 {
     if(QRandomGenerator::global()->generate() % (2) -1){
         mAssignmentDataList.append(data);
-        data.command = "ADDORUPDATE";
+        data.command = Command::Add;
         data.layerId = 401;
+        data.state = "Assigned";
         mServiceManager->sendAssignment(data);
     }
 }
 
 void AssignmentTest::updateAssignment(AssignmentData data)
 {
-    data.command = "ADDORUPDATE";
+    data.command = Command::Update;
     mServiceManager->sendAssignment(data);
 }
 
@@ -39,17 +44,17 @@ void AssignmentTest::removeAssignment(AssignmentData data)
 {
     if(QRandomGenerator::global()->generate() % (2) -1){
         // mAssignmentDataList.removeOne(data);
-        data.command = "REMOVE";
+        data.command = Command::Remove;
         mServiceManager->sendAssignment(data);
     }
 }
 
-void AssignmentTest::dataReceived(AssignmentData data)
+void AssignmentTest::dataReceived(AssignmentData assignmentData)
 {
-    if(data.command == "ASSIGNREQUEST"){
-        createAssignment(data);
+    if(assignmentData.command == Command::Add){
+        createAssignment(assignmentData);
     }
-    if(data.command == "CANCELREQUEST"){
-        removeAssignment(data);
+    if(assignmentData.command == Command::Remove){
+        removeAssignment(assignmentData);
     }
 }
