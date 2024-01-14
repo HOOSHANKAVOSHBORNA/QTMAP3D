@@ -596,16 +596,95 @@ struct LayerData {
     }
 };
 
+struct Response
+{
+    struct Status
+    {
+        QString Success{"Success"};
+        QString Failed{"Failed"};
+    };
+
+    QString status;
+    QString message;
+    QJsonObject toJson() const{
+        QJsonObject jsonObject;
+        jsonObject.insert("Status", status);
+        jsonObject.insert("Message", message);
+        return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        status = json["Status"].toString();
+        message = json["Message"].toString();
+    }
+};
+
+struct UserData
+{
+    struct UserCommand
+    {
+        QString Login{"Login"};
+        QString Logout{"Logout"};
+        QString Update{"Update"};
+    };
+    QString name;
+    QString userName;
+    QString password;
+    QString confirmPasword;
+    QString token;
+    Response response;
+    QString command;
+    std::vector<QString> roles;
+
+    QJsonObject toJson() const{
+        QJsonObject jsonObject;
+        jsonObject.insert("Name", name);
+        jsonObject.insert("UserName", userName);
+        jsonObject.insert("Password", password);
+        jsonObject.insert("ConfirmPasword", confirmPasword);
+        jsonObject.insert("Token", token);
+        jsonObject.insert("Response", response.toJson());
+        jsonObject.insert("Command", command);
+        QJsonArray roleArray;
+        for(const auto& role: roles){
+            roleArray.push_back(role);
+        }
+        jsonObject.insert("Roles", roleArray);
+        return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        name = json["Name"].toString();
+        userName = json["UserName"].toString();
+        password = json["Password"].toString();
+        confirmPasword = json["ConfirmPasword"].toString();
+        token = json["Token"].toString();
+        Response res;
+        res.fromJson(json["Response"].toObject());
+        response = res;
+        command = json["Command"].toString();
+
+        auto roleArray = json["Roles"].toArray();
+        for (const QJsonValue &role : roleArray) {
+            roles.push_back(role.toString());
+        }
+    }
+
+};
+
 class ServiceManager: public QObject
 {
     Q_OBJECT
 public:
     ServiceManager(NetworkManager *networkManager, QObject *parent = nullptr);
     void sendAssignment(const AssignmentData &assignmentData);
-    //    void signInData(QJsonObject jsonObject);
-    //    void signUpData(QJsonObject jsonObject);
+    void sendUser(const UserData &UserData);
+
 private slots:
     void onMessageReceived(const QString &message);
+
 signals:
     void layerDataReceived(const LayerData &layerData);
     void nodeDataReceived(const NodeData &nodeData);
@@ -615,9 +694,8 @@ signals:
     void polygonDataReceived(const PolygonData &polygonData);
     void circleDataReceived(const CircleData &circleData);
     void explosionDataReceived(const ExplosionData &explosionData);
+    void userDataReceived(const UserData &UserData);
 
-    //    void signUpResponseReceived(bool status);
-    //    void signInResponseReceived(bool status, int role);
 private:
     NetworkManager *mNetworkManager;
 };

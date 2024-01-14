@@ -102,6 +102,17 @@ void ServiceManager::sendExplosion(const ExplosionData &explosionData)
     mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
 }
 
+void ServiceManager::sendUser(const UserData &userData)
+{
+    auto inputJsonObject = userData.toJson();
+    QJsonObject jsonObject;
+    jsonObject.insert("Type", "User");
+    jsonObject.insert("Data", inputJsonObject);
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(jsonObject);
+    mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
+}
+
 void ServiceManager::onMessageReceived(const QString &message)
 {
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
@@ -114,6 +125,11 @@ void ServiceManager::onMessageReceived(const QString &message)
                 AssignmentData assignmentData;
                 assignmentData.fromJson(obj);
                 emit assignmentDataReceived(assignmentData);
+            }
+            else if (type == "User"){
+                UserData userData;
+                userData.fromJson(obj);
+                emit userDataReceived(userData);
             }
             else
                 qDebug() << "type of data is unknown";
