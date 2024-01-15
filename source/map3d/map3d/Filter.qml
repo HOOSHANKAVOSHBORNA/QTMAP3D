@@ -96,13 +96,15 @@ Rectangle {
         spacing: 15
         anchors.top: searchRow.bottom
         anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 15 / rootObj.monitorRatio
         RowLayout {
 
             Label {
                 width: 36 / rootObj.monitorRatio
                 height: 18 / rootObj.monitorRatio
                 text: "Color"
-                Layout.leftMargin: 15 / rootObj.monitorRatio
+//                Layout.leftMargin: 15 / rootObj.monitorRatio
                 font.pixelSize: 15 / rootObj.monitorRatio
                 font.family: rootObj.fontFamily
                 color: rootObj.foregroundColor
