@@ -21,6 +21,17 @@ void ServiceManager::sendAssignment(const AssignmentData &assignmentData)
     mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
 }
 
+void ServiceManager::sendUser(const UserData &UserData)
+{
+    auto inputJsonObject = UserData.toJson();
+    QJsonObject jsonObject;
+    jsonObject.insert("Type", "User");
+    jsonObject.insert("Data", inputJsonObject);
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(jsonObject);
+    mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
+}
+
 void ServiceManager::onMessageReceived(const QString &message)
 {
     qDebug() << "Receive message: "<<message;
@@ -71,25 +82,13 @@ void ServiceManager::onMessageReceived(const QString &message)
                 explosionData.fromJson(data);
                 emit explosionDataReceived(explosionData);
             }
-//            else if(type == "SignUp")
-//                signUpData(obj);
-//            else if(type == "SignIn")
-//                signInData(obj);
-//            else
-//                qDebug() << "type of data is unknown";
+            else if(type == "User"){
+                UserData userData;
+                userData.fromJson(data);
+                emit userDataReceived(userData);
+            }
+            else
+                qDebug() << "type of data is unknown";
         }
     }
 }
-
-//void ServiceManager::signInData(QJsonObject jsonObject)
-//{
-//    bool status = jsonObject.value("COMMAND").toBool();
-//    int role = jsonObject.value("ROLE").toInt(1);
-//    emit signInResponseReceived(status, role);
-//}
-
-//void ServiceManager::signUpData(QJsonObject jsonObject)
-//{
-//    bool status = jsonObject.value("COMMAND").toBool();
-//    emit signUpResponseReceived(status);
-//}
