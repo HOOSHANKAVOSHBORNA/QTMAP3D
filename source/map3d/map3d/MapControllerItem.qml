@@ -99,7 +99,7 @@ MapController {
         id: searcbar
         x: parent.width - itemPositionFactor * (width + itemMargin)
         anchors.top: parent.top
-        anchors.topMargin: itemMargin
+        anchors.topMargin: itemMargin + 3
         //        model: map.searchNodeProxyModel()
         model: SearchNodeManagerInstance.searchNodeProxyModel()
         //        model: map.searchNodeManager().searchNodeProxyModel()
