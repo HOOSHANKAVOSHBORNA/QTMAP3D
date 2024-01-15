@@ -11,46 +11,46 @@ AssignDataManager::AssignDataManager(CombatManager *combatManager, Model *model,
 
 void AssignDataManager::onSendAssignRequest(SimpleModelNode *attacker, SimpleModelNode *target)
 {
-//    AssignData data;
-//    data.attackerID = attacker->nodeData()->id;
-//    data.targetID = target->nodeData()->id;
-//    data.command = "ASSIGNREQUEST";
+   AssignmentData data;
+   data.attackerId = attacker->nodeData().id;
+   data.targetId = target->nodeData().id;
+   data.command = Command::Add;
 
-//    mService->sendJsonAssignData(data);
+   mService->sendAssignment(data);
 }
 
 void AssignDataManager::onSendCancelRequest(SimpleModelNode *attacker, SimpleModelNode *target)
 {
-//    AssignData data;
-//    data.attackerID = attacker->nodeData()->id;
-//    data.targetID = target->nodeData()->id;
-//    data.command = "CANCELREQUEST";
+   AssignmentData data;
+   data.attackerId = attacker->nodeData().id;
+   data.targetId = target->nodeData().id;
+   data.command = Command::Remove;
 
-//    mService->sendJsonAssignData(data);
+   mService->sendAssignment(data);
 }
 
 
-void AssignDataManager::assignDataReceived(AssignmentData *assignData)
+void AssignDataManager::assignDataReceived(const AssignmentData &assignData)
 {
-//    QMap<int,osg::ref_ptr<SimpleModelNode>> *dataMap = mModel->getDataManager()->getNodeMap();
-//    SimpleModelNode *attackerNode = dataMap->find(assignData->attackerID).value();
-//    SimpleModelNode *targetNode = dataMap->find(assignData->targetID).value();
+   QMap<int,osg::ref_ptr<SimpleModelNode>> *dataMap = mModel->getDataManager()->getNodeMap();
+   SimpleModelNode *attackerNode = dataMap->find(assignData.attackerId).value();
+   SimpleModelNode *targetNode = dataMap->find(assignData.targetId).value();
 
 
-//    AssignState state = parseState(assignData->state);
+   AssignState state = parseState(assignData.state.toString().toStdString());
 
-//    if(assignData->command == "ADDORUPDATE")
-//        if(attackerNode && targetNode)
-//            mCombatManagaer->assign(attackerNode,targetNode,state);
+   if(assignData.command == Command::Add || assignData.command == Command::Update)
+       if(attackerNode && targetNode)
+           mCombatManagaer->assign(attackerNode,targetNode,state);
 
-//    if(assignData->command == "REMOVE")
-//        removeAssignment(attackerNode,targetNode);
+   if(assignData.command == Command::Remove)
+       removeAssignment(attackerNode,targetNode);
 
-//    if(assignData->command == "REMOVEATTACKER")
-//        removeAllAssignmentForAttacker(attackerNode);
+   // if(assignData->command == "REMOVEATTACKER")
+   //     removeAllAssignmentForAttacker(attackerNode);
 
-//    if(assignData->command == "REMOVETARGET")
-//        removeAllAssignmentForTarget(targetNode);
+   // if(assignData->command == "REMOVETARGET")
+   //     removeAllAssignmentForTarget(targetNode);
 
 }
 

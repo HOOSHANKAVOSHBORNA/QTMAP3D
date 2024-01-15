@@ -18,7 +18,7 @@ private:
    void removeAssignment(AssignmentData data);
 
 public slots:
-   void dataReceived(AssignmentData data);
+   void dataReceived(AssignmentData assignmentData);
 
 private:
    ServiceManager *mServiceManager;

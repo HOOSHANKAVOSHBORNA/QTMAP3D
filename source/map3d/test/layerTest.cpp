@@ -28,6 +28,7 @@ void LayerTest::createLayers()
     flyableLayer.id = 100;
     flyableLayer.parentId = -1;
     flyableLayer.text  = "Flyable";
+    flyableLayer.isComposite = true;
     flyableLayer.order = 1;
     flyableLayer.command = Command::Add;
     {
@@ -35,6 +36,7 @@ void LayerTest::createLayers()
         flyableLayer1.id = 101;
         flyableLayer1.parentId = 100;
         flyableLayer1.text  = "Flyable";
+        flyableLayer1.isComposite = true;
         flyableLayer1.order = 1;
         flyableLayer1.command = Command::Add;
         {
@@ -67,7 +69,7 @@ void LayerTest::createLayers()
         LayerData routeLayer;
         routeLayer.id = 105;
         routeLayer.parentId = 100;
-        routeLayer.text  = "Route";
+        routeLayer.isComposite = true;
         routeLayer.order = 2;
         routeLayer.command = Command::Add;
         flyableLayer.children.push_back(routeLayer);
@@ -86,6 +88,7 @@ void LayerTest::createLayers()
     movableLayer.id = 200;
     movableLayer.parentId = -1;
     movableLayer.text  = "Movable";
+    movableLayer.isComposite = true;
     movableLayer.order = 2;
     movableLayer.command = Command::Add;
     {
@@ -93,6 +96,7 @@ void LayerTest::createLayers()
         movableLayer1.id = 201;
         movableLayer1.parentId = 200;
         movableLayer1.text  = "Movable";
+        movableLayer1.isComposite = true;
         movableLayer1.order = 1;
         movableLayer1.command = Command::Add;
         {
@@ -144,6 +148,7 @@ void LayerTest::createLayers()
     nodeLayer.id = 300;
     nodeLayer.parentId = -1;
     nodeLayer.text  = "Node";
+    nodeLayer.isComposite = true;
     nodeLayer.order = 3;
     nodeLayer.command = Command::Add;
     {
@@ -151,6 +156,7 @@ void LayerTest::createLayers()
         nodeLayer1.id = 301;
         nodeLayer1.parentId = 300;
         nodeLayer1.text  = "Node";
+        nodeLayer1.isComposite = true;
         nodeLayer1.order = 1;
         nodeLayer1.command = Command::Add;
         {
@@ -202,6 +208,7 @@ void LayerTest::createLayers()
     combatLayer.id = 400;
     combatLayer.parentId = -1;
     combatLayer.text  = "Combat";
+    combatLayer.isComposite = true;
     combatLayer.order = 4;
     combatLayer.command = Command::Add;
     {

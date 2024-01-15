@@ -380,6 +380,11 @@ std::vector<osg::ref_ptr<ParenticAnnotationLayer> > CompositeAnnotationLayer::ch
     return mChildildren;
 }
 
+bool CompositeAnnotationLayer::hasChild() const
+{
+    return getNumLayers() > 0;
+}
+
 //int CompositeAnnotationLayer::getNumChildren() const
 //{
 //    return mChildildren.size();

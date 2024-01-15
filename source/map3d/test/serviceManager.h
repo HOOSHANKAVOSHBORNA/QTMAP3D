@@ -156,8 +156,8 @@ struct AssignmentData
     void fromJson(QJsonObject jsonObject){
         attackerId = jsonObject.value("AttackerId").toInt();
         targetId = jsonObject.value("TargetId").toInt();
-        state = jsonObject.value("Command").toString();
-        command = jsonObject.value("State").toString();
+        command = jsonObject.value("Command").toString();
+        state = jsonObject.value("State").toString();
         layerId = jsonObject.value("LayerId").toInt();
     }
 };
@@ -272,6 +272,7 @@ struct LayerData {
     QString text;
     int order;
     QString command{Command::Add};
+    bool isComposite{false};
     std::vector<LayerData> children;
 
     QJsonObject toJson() const{
@@ -281,6 +282,7 @@ struct LayerData {
         jsonObject.insert("Text", text);
         jsonObject.insert("Order", order);
         jsonObject.insert("Command", command);
+        jsonObject.insert("IsComposite", isComposite);
         QJsonArray childrenArray;
         for(const LayerData& child: children){
             childrenArray.push_back(child.toJson());
@@ -288,6 +290,84 @@ struct LayerData {
         jsonObject.insert("Children", childrenArray);
         return jsonObject;
     }
+};
+
+struct Response
+{
+    struct Status
+    {
+        QString Success{"Success"};
+        QString Failed{"Failed"};
+    };
+
+    QString status;
+    QString message;
+    QJsonObject toJson() const{
+        QJsonObject jsonObject;
+        jsonObject.insert("Status", status);
+        jsonObject.insert("Message", message);
+        return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        status = json["Status"].toString();
+        message = json["Message"].toString();
+    }
+};
+
+struct UserData
+{
+    struct UserCommand
+    {
+        QString Login{"Login"};
+        QString Logout{"Logout"};
+        QString Update{"Update"};
+    };
+    QString name;
+    QString userName;
+    QString password;
+    QString confirmPasword;
+    QString token;
+    Response response;
+    QString command;
+    std::vector<QString> roles;
+
+    QJsonObject toJson() const{
+        QJsonObject jsonObject;
+        jsonObject.insert("Name", name);
+        jsonObject.insert("UserName", userName);
+        jsonObject.insert("Password", password);
+        jsonObject.insert("ConfirmPasword", confirmPasword);
+        jsonObject.insert("Token", token);
+        jsonObject.insert("Response", response.toJson());
+        jsonObject.insert("Command", command);
+        QJsonArray roleArray;
+        for(const auto& role: roles){
+            roleArray.push_back(role);
+        }
+        jsonObject.insert("Roles", roleArray);
+        return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        name = json["Name"].toString();
+        userName = json["UserName"].toString();
+        password = json["Password"].toString();
+        confirmPasword = json["ConfirmPasword"].toString();
+        token = json["Token"].toString();
+        Response res;
+        res.fromJson(json["Response"].toObject());
+        response = res;
+        command = json["Command"].toString();
+
+        auto roleArray = json["Roles"].toArray();
+        for (const QJsonValue &role : roleArray) {
+            roles.push_back(role.toString());
+        }
+    }
+
 };
 
 class ServiceManager: public QObject
@@ -304,16 +384,16 @@ public:
     void sendPolygon(const PolygonData &polygonData);
     void sendCircle(const CircleData &circleData);
     void sendExplosion(const ExplosionData &explosionData);
+    void sendUser(const UserData &userData);
 
-
-//    void signInData(QJsonObject jsonObject);
-    //    void signUpData(QJsonObject jsonObject);
     bool isReadyForSendData() const;
 
 private slots:
     void onMessageReceived(const QString &message);
+
 signals:
     void assignmentDataReceived(const AssignmentData &assignmentData);
+    void userDataReceived(const UserData &userData);
     void readyForSendData();
 
 private:
