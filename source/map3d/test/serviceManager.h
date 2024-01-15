@@ -160,6 +160,7 @@ struct AssignmentData
         state = jsonObject.value("State").toString();
         layerId = jsonObject.value("LayerId").toInt();
     }
+    friend bool operator==(const AssignmentData& data1,const AssignmentData& data2){return (data1.attackerId == data2.attackerId)&&(data1.targetId == data2.targetId);}
 };
 
 struct PolyLineData

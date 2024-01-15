@@ -23,7 +23,9 @@ public slots:
 private:
    ServiceManager *mServiceManager;
    QVector<AssignmentData> mAssignmentDataList;
-   QVector<std::string> mStates{"Assigned", "Search", "Lock", "Fire", "Succeed", "Failed"};
+   QVector<NodeData> mBulletDataList;
+   QVector<QString> mStates{"Assigned", "Search", "Lock", "Fire", "Succeed", "Failed"};
+   int mCount{1000};
 };
 
 #endif // ASSIGNMENTTEST_H
