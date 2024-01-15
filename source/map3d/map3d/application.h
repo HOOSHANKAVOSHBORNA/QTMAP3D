@@ -5,9 +5,8 @@
 #include <QUrl>
 #include <list>
 
-#include "authenticator.h"
+#include "userManager.h"
 #include "pluginmanager.h"
-#include "defenseDataManager.h"
 #include "networkManager.h"
 #include "splash.h"
 
@@ -32,8 +31,6 @@ public:
     inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
     inline PluginManager *pluginManager() const { return mPluginManager; }
 
-    inline DefenseDataManager *defenseDataManager() const{ return mDefenseDataManager; }
-
     ServiceManager *serviceManager() const;
     enum UserRoles{
         SimpleUser = 1,
@@ -43,13 +40,10 @@ public:
 
 signals:
     void ready();
-    void defenseDataManagerInitialized(DefenseDataManager *defenseDataManager);
 
 private:
     static void initializeSurfaceFormat();
     void initializeQmlEngine();
-    void initializeDefenseDataManager();
-    void authenticate();
 
 private slots:
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
@@ -61,10 +55,9 @@ private:
     ListWindow *mListWindow = nullptr;
 
     PluginManager *mPluginManager = nullptr;
-    DefenseDataManager *mDefenseDataManager{nullptr};
     ServiceManager *mServiceManager{nullptr};
 
-    Authenticator *mAuthenticator{nullptr};
+    UserManager *mUserManager{nullptr};
     Splash *mSplash{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 
