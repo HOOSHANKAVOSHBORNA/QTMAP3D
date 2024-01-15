@@ -1,7 +1,6 @@
 # PolyLineData
 
-- [Example1](#example)
-- [See basic needed types here](#json-basic-types)
+- [Example1](#example1)
 
 # PolyLineData types
 
@@ -33,8 +32,7 @@
 
 # PolygonData
 
-- [Example1](#example)
-- [See basic needed types here](#json-basic-types)
+- [Example2](#example2)
 
 # PolygonData types
 

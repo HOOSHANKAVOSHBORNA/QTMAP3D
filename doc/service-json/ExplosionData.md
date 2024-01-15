@@ -1,7 +1,6 @@
 # ExplosionData
 
 - [Example](#example)
-- [See basic needed types here](#json-basic-types)
 
 # ExplosionData types
 

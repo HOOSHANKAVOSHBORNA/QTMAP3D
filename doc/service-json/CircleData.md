@@ -1,7 +1,6 @@
 # CircleData
 
 - [Example](#example)
-- [See basic needed types here](#json-basic-types)
 
 # CircleData types
 

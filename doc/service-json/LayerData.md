@@ -1,7 +1,6 @@
 # LayerData
 
 - [Example](#example)
-- [See basic needed types here](#json-basic-types)
 
 # LayerData types
 
@@ -11,7 +10,7 @@
 * order
 * command
 * isComposite
-* children
+* [children](#layerdata)
 
 # Example
 
