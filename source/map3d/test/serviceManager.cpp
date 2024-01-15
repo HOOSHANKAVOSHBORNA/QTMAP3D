@@ -130,7 +130,7 @@ void ServiceManager::onMessageReceived(const QString &message)
             }
             else if (type == "User"){
                 UserData userData;
-                userData.fromJson(obj);
+                userData.fromJson(data);
                 emit userDataReceived(userData);
             }
             else
