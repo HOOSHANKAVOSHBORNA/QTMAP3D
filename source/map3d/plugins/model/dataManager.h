@@ -21,6 +21,9 @@ public:
 //    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
     QMap<int, osg::ref_ptr<SimpleModelNode>> *getNodeMap();
 
+signals:
+    void nodeDataManagerChanged();
+
 public slots:
     SimpleModelNode* onNodeDataReceived(const NodeData &nodeData);
 

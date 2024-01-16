@@ -519,5 +519,18 @@
         <file>Resources/inform.png</file>
         <file>Resources/bullet.png</file>
         <file>Resources/splash.gif</file>
+        <file>Resources/aircraft-icon.jpg</file>
+        <file>Resources/battle-icon.jpg</file>
+        <file>Resources/close-icon.jpg</file>
+        <file>Resources/delete-icon.jpg</file>
+        <file>Resources/down-icon.jpg</file>
+        <file>Resources/left-icon.jpg</file>
+        <file>Resources/more-icon.jpg</file>
+        <file>Resources/target-icon.jpg</file>
+        <file>Resources/track-icon.jpg</file>
+        <file>Resources/up-icon.jpg</file>
+        <file>Resources/goto-icon.jpg</file>
+        <file>Resources/search-icon.jpg</file>
+        <file>Resources/right-icon.jpg</file>
     </qresource>
 </RCC>

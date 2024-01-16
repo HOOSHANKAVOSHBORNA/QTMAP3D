@@ -74,6 +74,9 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         if(layer)
             layer->addChild(node);
     }
+
+    emit nodeDataManagerChanged();
+
     return node;
 }
 
