@@ -15,19 +15,15 @@ LoginPage::LoginPage(QWindow *parent):
 void LoginPage::signIn(const QString username, const QString password)
 {
     qDebug()<<"signIn";
-//    QJsonDocument jsonDoc;
-//    QJsonObject jsonObject;
-//    jsonObject.insert("Type", "SignIn");
-//    QJsonObject jsonDataObject;
+    UserData userData;
+    userData.userName = username;
+    userData.password = password;
+    userData.command = UserData::UserCommand::Login;
+    mServiceManager->sendUser(userData);
+
 //    QByteArray pswNsalt (password.toStdString().c_str()) ;
 //    pswNsalt = QCryptographicHash::hash(pswNsalt, QCryptographicHash::Md5).toHex();
-//    jsonDataObject.insert("Username", username);
-//    jsonDataObject.insert("Password", pswNsalt.data());
 
-//    jsonObject.insert("Data", jsonDataObject);
-//    jsonDoc.setObject(jsonObject);
-//    mServiceManager->sendAction(jsonDoc.toJson(QJsonDocument::Indented));
-    //    connect(mServiceManager, &ServiceManager::signInResponseReceived, this, &Authenticator::signedIn);
     hide();
     emit signedIn();
 }
@@ -37,26 +33,22 @@ void LoginPage::closeEvent(QCloseEvent *)
     QCoreApplication::exit(-1);
 }
 
-//void LoginPage::signUp(const QString username, const QString password)
-//{
-//    QJsonDocument jsonDoc;
-//    QJsonObject jsonObject;
-//    jsonObject.insert("Type", "SignUp");
-//    QJsonObject jsonDataObject;
-//    QByteArray pswNsalt (password.toStdString().c_str()) ;
-//    pswNsalt = QCryptographicHash::hash(pswNsalt, QCryptographicHash::Md5).toHex();
-//    jsonDataObject.insert("Username", username);
-//    jsonDataObject.insert("Password", pswNsalt.data());
-
-//    jsonObject.insert("Data", jsonDataObject);
-//    jsonDoc.setObject(jsonObject);
-////    mServiceManager->sendAction(jsonDoc.toJson(QJsonDocument::Indented));
-////    connect(mServiceManager, &ServiceManager::signUpResponseReceived, this, &Authenticator::signedUp);
-//}
+void LoginPage::onUserDataReceived(const UserData &userData)
+{
+    qDebug()<<userData.response.message;
+    if(userData.response.status == Response::Status::Success){
+        mLoginUserData = userData;
+        hide();
+        emit signedIn();
+    }
+}
 
 void LoginPage::setServiceManager(ServiceManager *newServiceManager)
 {
+    if(mServiceManager)
+        disconnect(mServiceManager, nullptr, this, nullptr);
     mServiceManager = newServiceManager;
+    connect(mServiceManager, &ServiceManager::userDataReceived, this, &LoginPage::onUserDataReceived);
 }
 
 UserManager::UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qmlEngine, QObject *parent)

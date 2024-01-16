@@ -20,13 +20,16 @@ public slots:
 
 signals:
     void signedIn();
-//    void signedUp(bool status);
+
 protected:
     void closeEvent(QCloseEvent *) override;
+private:
+    void onUserDataReceived(const UserData &userData);
 private:
     QQmlEngine* mQmlEngine{nullptr};
 
     ServiceManager* mServiceManager{nullptr};
+    UserData mLoginUserData;
 
 };
 
