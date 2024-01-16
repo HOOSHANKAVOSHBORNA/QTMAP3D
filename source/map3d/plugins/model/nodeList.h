@@ -20,13 +20,29 @@ class NodeListModel;
 class NodeListModel : public QAbstractTableModel
 {
     Q_OBJECT
+
+public:
+    enum EColumn {
+        Color = 0,
+        Icon,
+        Name,
+        Type,
+        Latitude,
+        Longitude,
+        Altitude,
+        Speed,
+        Battle,
+        Target,
+        More
+    };
+
 public:
     explicit NodeListModel(DataManager *dataManager);
 
     int rowCount(const QModelIndex & = QModelIndex()) const override;
     int columnCount(const QModelIndex & = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-    //    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void selectionRow(int rowCount, int idxRow);
@@ -35,7 +51,7 @@ public:
     void resetTable();
 
     // TODO: write select attacker and show targets
-    //    QVector<NodeData> *DataAttacker = new QVector<NodeData>;
+    QVector<NodeData> *DataAttacker = new QVector<NodeData>;
     //    Q_INVOKABLE void attacker(QString name);
     //    Q_INVOKABLE void setChangeModel(QString checkModel);
 
@@ -43,6 +59,18 @@ private:
     DataManager *mDataManager;
     QItemSelectionModel *selectionModel;
     QString modelType;
+
+    QMap<EColumn, QString> columnToName = {{Color, "Color"},
+                                           {Icon, "Icon"},
+                                           {Name, "Name"},
+                                           {Type, "Type"},
+                                           {Latitude, "Latitude"},
+                                           {Longitude, "Longitude"},
+                                           {Altitude, "Altitude"},
+                                           {Speed, "Speed"},
+                                           {Battle, "Battle"},
+                                           {Target, "Target"},
+                                           {More, "More"}};
 };
 
 //--------------------------------------NodeProxyModel-------------------------------------

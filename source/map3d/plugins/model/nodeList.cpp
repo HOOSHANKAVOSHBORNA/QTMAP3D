@@ -393,63 +393,148 @@ int NodeListModel::columnCount(const QModelIndex &) const
     //        return DataAttacker->at(0).FieldData.size();
 
     // TODO
-    return 10;
+    return 11;
 }
 
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
 {
     NodeData nodeData = mDataManager->getNodeAtIndex(index.row())->nodeData();
-    if (role == Qt::BackgroundRole) {
-        // color of first column
-        if (index.column() == 0) {
-            //            if (modelType == "attackerModel") {
-            //                return QColor(
-            //                    DataAttacker->at(index.row()).FieldData.at(index.column()).value.toString());
-            //            }
-            //            return QColor(Data.at(index.row()).FieldData.at(index.column()).value.toString());
-            return QColor(nodeData.color);
-        }
-        //        if (index.row())   //change background only for cell(1,2)
-        //        {
-        QColor Background("#DEE3E6"); //#bac4f5 //#DEE3E6
-        return Background;
-    }
 
-    if (role == Qt::DecorationRole && index.column() == 1 || index.column() == 15
-        || index.column() == 16 || index.column() == 17) {
-        //        if (modelType == "attackerModel") {
-        //            return DataAttacker->at(index.row()).FieldData.at(index.column()).value.toString();
-        //        }
-        //        return Data.at(index.row()).FieldData.at(index.column()).value.toString();
-        return nodeData.iconInfoUrl;
-    }
+    //    id= nodeData.id;
+    //    name= nodeData.name;
+    //    type= nodeData.type;
+    //    category = nodeData.category;
+    //    url2D= nodeData.url2D;
+    //    url3D= nodeData.url3D;
+    //    imgInfoUrl = nodeData.imgInfoUrl;
+    //    iconInfoUrl = nodeData.iconInfoUrl;
+    //    color= nodeData.color;
+    //    isAttacker = nodeData.isAttacker;
+    //    latitude = nodeData.latitude;
+    //    longitude = nodeData.longitude;
+    //    altitude = nodeData.altitude;
+    //    speed= nodeData.speed;
+    //    command= nodeData.command;
 
+    // string or int roles
     if (role == Qt::DisplayRole) {
-        //        for (int i = 0; i < Data.size(); i++) {
-        //            if(index.column() == i){
-        //                return Data.at(index.row()).FieldData.at(index.column()).value;}
-        //        }
-
-        //        if (modelType == "attackerModel") {
-        //            //qDebug() << "change Model!!!!!";
-        //            return DataAttacker->at(index.row()).FieldData.at(index.column()).value;
-        //        }
-        //        return Data.at(index.row()).FieldData.at(index.column()).value;
-        return nodeData.name;
-    } else {
-        return QVariant("defualt");
+        switch (index.column()) {
+        case NodeListModel::EColumn::Name:
+            return nodeData.name;
+        case NodeListModel::EColumn::Type:
+            return nodeData.type.toString();
+        case NodeListModel::EColumn::Latitude:
+            return QString::number(nodeData.latitude, 'l', 2);
+        case NodeListModel::EColumn::Longitude:
+            return QString::number(nodeData.longitude, 'l', 2);
+        case NodeListModel::EColumn::Altitude:
+            return QString::number(nodeData.altitude, 'l', 2);
+        case NodeListModel::EColumn::Speed:
+            return QString::number(nodeData.speed, 'l', 2);
+        default:
+            return QVariant("defualt");
+        }
     }
+
+    // color roles
+    if (role == Qt::BackgroundRole) {
+        switch (index.column()) {
+        case NodeListModel::EColumn::Color:
+            return QColor(nodeData.color);
+        default:
+            return QColor("#DEE3E6");
+        }
+    }
+
+    // image roles
+    if (role == Qt::DecorationRole) {
+        switch (index.column()) {
+        case NodeListModel::EColumn::Icon:
+            return nodeData.iconInfoUrl;
+        case NodeListModel::EColumn::Battle:
+            return "qrc:/Resources/battle-icon.jpg";
+        case NodeListModel::EColumn::Target:
+            return "qrc:/Resources/target-icon.jpg";
+        case NodeListModel::EColumn::More:
+            return "qrc:/Resources/more-icon.jpg";
+        default:
+            return QVariant("qrc:/Resources/hand.png");
+        }
+    }
+    //    if (role == Qt::BackgroundRole) {
+    //        // color of first column
+    //        if (index.column() == 0) {
+    //            //            if (modelType == "attackerModel") {
+    //            //                return QColor(
+    //            //                    DataAttacker->at(index.row()).FieldData.at(index.column()).value.toString());
+    //            //            }
+    //            //            return QColor(Data.at(index.row()).FieldData.at(index.column()).value.toString());
+    //            return QColor(nodeData.color);
+    //        }
+    //        //        if (index.row())   //change background only for cell(1,2)
+    //        //        {
+    //        QColor Background("#DEE3E6"); //#bac4f5 //#DEE3E6
+    //        return Background;
+    //    }
+
+    //    if (role == Qt::DecorationRole && index.column() == 1 || index.column() == 15
+    //        || index.column() == 16 || index.column() == 17) {
+    //        //        if (modelType == "attackerModel") {
+    //        //            return DataAttacker->at(index.row()).FieldData.at(index.column()).value.toString();
+    //        //        }
+    //        //        return Data.at(index.row()).FieldData.at(index.column()).value.toString();
+    //        return nodeData.iconInfoUrl;
+    //    }
+
+    //    if (role == Qt::DisplayRole) {
+    //        //        for (int i = 0; i < Data.size(); i++) {
+    //        //            if(index.column() == i){
+    //        //                return Data.at(index.row()).FieldData.at(index.column()).value;}
+    //        //        }
+
+    //        //        if (modelType == "attackerModel") {
+    //        //            //qDebug() << "change Model!!!!!";
+    //        //            return DataAttacker->at(index.row()).FieldData.at(index.column()).value;
+    //        //        }
+    //        //        return Data.at(index.row()).FieldData.at(index.column()).value;
+    //        return nodeData.name;
+    //    } else {
+    //        return QVariant("defualt");
+    //    }
 }
 
-//QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int role) const
-//{
-//    if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
-//        return Data.at(0).FieldData.at(section).name;
-//    //    else if (role == Qt::DisplayRole && orientation == Qt::Vertical)
-//    //        return section + 1;
-//    else
-//        return QVariant("defualt");
-//}
+QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+        switch (section) {
+        case NodeListModel::EColumn::Color:
+            return columnToName[NodeListModel::EColumn::Color];
+        case NodeListModel::EColumn::Icon:
+            return columnToName[NodeListModel::EColumn::Icon];
+        case NodeListModel::EColumn::Name:
+            return columnToName[NodeListModel::EColumn::Name];
+        case NodeListModel::EColumn::Type:
+            return columnToName[NodeListModel::EColumn::Type];
+        case NodeListModel::EColumn::Latitude:
+            return columnToName[NodeListModel::EColumn::Latitude];
+        case NodeListModel::EColumn::Longitude:
+            return columnToName[NodeListModel::EColumn::Longitude];
+        case NodeListModel::EColumn::Altitude:
+            return columnToName[NodeListModel::EColumn::Altitude];
+        case NodeListModel::EColumn::Speed:
+            return columnToName[NodeListModel::EColumn::Speed];
+        case NodeListModel::EColumn::Battle:
+            return columnToName[NodeListModel::EColumn::Battle];
+        case NodeListModel::EColumn::Target:
+            return columnToName[NodeListModel::EColumn::Target];
+        case NodeListModel::EColumn::More:
+            return columnToName[NodeListModel::EColumn::More];
+        default:
+            return QVariant("defualt");
+        }
+    } else
+        return QVariant("defualt");
+}
 
 void NodeListModel::selectionRow(int Row, int Column)
 {

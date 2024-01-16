@@ -41,9 +41,9 @@ Item {
         return !isNaN(s - parseFloat(s))
     }
 
-    DebugInAnchor {
-        text: 'I am added bro'
-    }
+    //    DebugInAnchor {
+    //        text: 'I am added bro'
+    //    }
 
     // TODO: remove this
     anchors.fill: parent
@@ -1439,54 +1439,54 @@ Item {
         }
     }
 
-    //    HorizontalHeaderView {
-    //        anchors.left: rootItem.left
-    //        anchors.leftMargin: 20
-    //        anchors.bottom: rootItem.top
-    //        syncView: tableview
-    //        clip: true
-    //        delegate: Rectangle {
-    //            id: rectHorizontalHeaderView
+    HorizontalHeaderView {
+        anchors.left: rootItem.left
+        anchors.leftMargin: 20
+        anchors.bottom: scrollViewTable.top
+        syncView: tableview
+        clip: true
+        delegate: Rectangle {
+            id: rectHorizontalHeaderView
 
-    //            implicitHeight: 30
-    //            implicitWidth: 50 //parent.width
-    //            color: "transparent" //"#DEE3E6"
+            implicitHeight: 30
+            implicitWidth: 50 //parent.width
+            color: "transparent" //"#DEE3E6"
 
-    //            Rectangle {
-    //                width: parent.width
-    //                height: 2
-    //                color: Style.foregroundColor
-    //                anchors.bottom: parent.bottom
-    //            }
+            Rectangle {
+                width: parent.width
+                height: 2
+                color: Style.foregroundColor
+                anchors.bottom: parent.bottom
+            }
 
-    //            Text {
-    //                text: display
-    //                color: Style.foregroundColor
-    //                font.family: Style.fontFamily
-    //                font.pointSize: 17 / Style.monitorRatio
-    //                //anchors.centerIn: parent
-    //                anchors.left: model.column === 2 ? parent.left : undefined
-    //                anchors.centerIn: model.column === 2 ? undefined : parent
-    //                anchors.verticalCenter: parent.verticalCenter
-    //                anchors.leftMargin: model.column === 2 ? -tableview.columnZero
-    //                                                         - tableview.columnIcons : 0
+            Text {
+                text: display
+                color: Style.foregroundColor
+                font.family: Style.fontFamily
+                font.pointSize: 17 / Style.monitorRatio
+                //anchors.centerIn: parent
+                anchors.left: model.column === 2 ? parent.left : undefined
+                anchors.centerIn: model.column === 2 ? undefined : parent
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.leftMargin: model.column === 2 ? -tableview.columnZero
+                                                         - tableview.columnIcons : 0
 
-    //                visible: model.column !== 0 && model.column
-    //                         !== 1 && model.column !== tableModel.columnCount()
-    //                         - 1 && model.column !== tableModel.columnCount()
-    //                         - 2 && model.column !== tableModel.columnCount() - 3
-    //            }
-    //            MouseArea {
-    //                anchors.fill: parent
-    //                onClicked: {
-    //                    //                            console.log(model.index)
-    //                    console.log(model.index) //model : data displayRole in c++
-    //                    tableModel.sortTable(
-    //                                model.index) // model : data index in c++
-    //                }
-    //            }
-    //        }
-    //    }
+                visible: model.column !== 0 && model.column
+                         !== 1 && model.column !== tableModel.columnCount()
+                         - 1 && model.column !== tableModel.columnCount()
+                         - 2 && model.column !== tableModel.columnCount() - 3
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    //                            console.log(model.index)
+                    console.log(model.index) //model : data displayRole in c++
+                    tableModel.sortTable(
+                                model.index) // model : data index in c++
+                }
+            }
+        }
+    }
     ScrollView {
         id: scrollViewTable
         anchors.left: rootItem.left
@@ -1550,28 +1550,14 @@ Item {
                     color: (column === tableview.checkAttackIconColumn
                             && row === tableview.checkAttackIconRow) ? "#01AED6" : "transparent"
                     //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "qrc:/Resources/airplane.png" //"qrc:/Resources/airplane.png" //decorate
-                    source: {
-                        //                        if (model.column === 1) {
-                        //                            return decorate
-                        //                        } else if (model.column === tableModel.columnCount(
-                        //                                       ) - 1) {
-                        //                            return 'qrc:/qrc:/Resources/more-icon.jpg'
-                        //                        } else if (model.column === tableModel.columnCount(
-                        //                                       ) - 2) {
-                        //                            return "qrc:/Resources/target-icon.jpg"
-                        //                        } else if (model.column === tableModel.columnCount(
-                        //                                       ) - 3) {
-                        //                            return "qrc:/Resources/battle-icon.jpg"
-                        //                        } else {
-                        return "qrc:/Resources/aircraft.png"
-                        //                        }
-                    }
-                    width: 30
-                    height: 30
-                    //visible: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17
                     visible: model.column === 1 || model.column === tableModel.columnCount()
                              - 1 || model.column === tableModel.columnCount()
                              - 2 || model.column === tableModel.columnCount() - 3
+                    source: decorate
+
+                    width: 30
+                    height: 30
+                    //visible: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17
                 }
 
                 Text {
