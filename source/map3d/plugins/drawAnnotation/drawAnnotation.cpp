@@ -46,52 +46,6 @@ DrawAnnotation::~DrawAnnotation()
     mIconNode.release();
 }
 
-void DrawAnnotation::addUpdatePolyLine(const PolyLineData &lineNodeData)
-{
-    auto layer = mapItem()->getMapObject()->getLayerByUserId(lineNodeData.layerId);
-    if (!layer)
-        return;
-    AnnotatedNode *lineNode;
-    if (!mLineMap.contains(lineNodeData.id)) {
-        lineNode = new AnnotatedNode(mapItem(), AnnotatedNode::GeneralType::POLYLINETYPE);
-        mLineMap[lineNodeData.id] = lineNode;
-    }
-    else {
-        lineNode = mLineMap[lineNodeData.id];
-        lineNode->clear();
-        layer->removeChild(lineNode);
-    }
-
-    lineNode->create(lineNodeData.points);
-    lineNode->setFillColor(osgEarth::Color(lineNodeData.color.toStdString()));
-    lineNode->setWidth(lineNodeData.width);
-    lineNode->setPolyLineData(lineNodeData);
-    layer->addChild(lineNode);
-}
-
-void DrawAnnotation::addUpdatePolygon(const PolygonData& polygonNodeData)
-{
-    auto layer = mapItem()->getMapObject()->getLayerByUserId(polygonNodeData.layerId);
-    if (!layer)
-        return;
-    AnnotatedNode *polygon;
-    if (!mPolygonMap.contains(polygonNodeData.id)) {
-        polygon = new AnnotatedNode(mapItem(), AnnotatedNode::GeneralType::POLYGONTYPE);
-        mPolygonMap[polygonNodeData.id] = polygon;
-    }
-    else {
-        polygon = mPolygonMap[polygonNodeData.id];
-    }
-    polygon->setName(polygonNodeData.name.toStdString());
-    polygon->create(polygonNodeData.points);
-    polygon->setPolygonData(polygonNodeData);
-    polygon->setStrokeWidth(polygonNodeData.width);
-    QColor color(QString::fromStdString(polygonNodeData.color.toStdString()));
-    polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
-    QColor fillColor(QString::fromStdString(polygonNodeData.fillColor.toStdString()));
-    polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
-    layer->addChild(polygon);
-}
 
 bool DrawAnnotation::setup()
 {
@@ -141,6 +95,54 @@ bool DrawAnnotation::setup()
     mSlopeLayer->setName(SLOPE);
 
     return true;
+}
+
+void DrawAnnotation::addUpdatePolyLine(const PolyLineData &lineNodeData)
+{
+    osg::ref_ptr<AnnotatedNode> lineNode;
+    if (!mLineMap.contains(lineNodeData.id)) {
+        lineNode = new AnnotatedNode(mapItem(), AnnotatedNode::GeneralType::POLYLINETYPE);
+        mLineMap[lineNodeData.id] = lineNode;
+    }
+    else {
+        lineNode = mLineMap[lineNodeData.id];
+        auto layer = mapItem()->getMapObject()->getLayerByUserId(lineNode->polyLineData().layerId);
+        if (layer)
+            layer->removeChild(lineNode);
+    }
+    lineNode->create(lineNodeData.points);
+    lineNode->setFillColor(osgEarth::Color(lineNodeData.color.toStdString()));
+    lineNode->setWidth(lineNodeData.width);
+    lineNode->setPolyLineData(lineNodeData);
+    auto layer = mapItem()->getMapObject()->getLayerByUserId(lineNodeData.layerId);
+    if (layer)
+        layer->addChild(lineNode);
+}
+
+void DrawAnnotation::addUpdatePolygon(const PolygonData& polygonNodeData)
+{
+    osg::ref_ptr<AnnotatedNode> polygon;
+    if (!mPolygonMap.contains(polygonNodeData.id)) {
+        polygon = new AnnotatedNode(mapItem(), AnnotatedNode::GeneralType::POLYGONTYPE);
+        mPolygonMap[polygonNodeData.id] = polygon;
+    }
+    else {
+        polygon = mPolygonMap[polygonNodeData.id];
+        auto layer = mapItem()->getMapObject()->getLayerByUserId(polygon->polygonData().layerId);
+        if (layer)
+            layer->removeChild(polygon);
+    }
+    polygon->setName(polygonNodeData.name.toStdString());
+    polygon->create(polygonNodeData.points);
+    polygon->setPolygonData(polygonNodeData);
+    polygon->setStrokeWidth(polygonNodeData.width);
+    QColor color(QString::fromStdString(polygonNodeData.color.toStdString()));
+    polygon->setStrokeColor(Utility::qColor2osgEarthColor(color));
+    QColor fillColor(QString::fromStdString(polygonNodeData.fillColor.toStdString()));
+    polygon->setFillColor(Utility::qColor2osgEarthColor(fillColor));
+    auto layer = mapItem()->getMapObject()->getLayerByUserId(polygonNodeData.layerId);
+    if (layer)
+        layer->addChild(polygon);
 }
 
 void DrawAnnotation::makeIconNode(const QString &fileName)

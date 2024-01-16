@@ -160,6 +160,7 @@ struct AssignmentData
         state = jsonObject.value("State").toString();
         layerId = jsonObject.value("LayerId").toInt();
     }
+    friend bool operator==(const AssignmentData& data1,const AssignmentData& data2){return (data1.attackerId == data2.attackerId)&&(data1.targetId == data2.targetId);}
 };
 
 struct PolyLineData
@@ -296,8 +297,8 @@ struct Response
 {
     struct Status
     {
-        QString Success{"Success"};
-        QString Failed{"Failed"};
+        static inline const QString Success{"Success"};
+        static inline const QString Failed{"Failed"};
     };
 
     QString status;
@@ -320,14 +321,15 @@ struct UserData
 {
     struct UserCommand
     {
-        QString Login{"Login"};
-        QString Logout{"Logout"};
-        QString Update{"Update"};
+        static inline const QString Login{"Login"};
+        static inline const QString Logout{"Logout"};
+        static inline const QString Update{"Update"};
     };
     QString name;
     QString userName;
     QString password;
-    QString confirmPasword;
+    QString newPassword;
+    QString confirmPassword;
     QString token;
     Response response;
     QString command;
@@ -338,7 +340,8 @@ struct UserData
         jsonObject.insert("Name", name);
         jsonObject.insert("UserName", userName);
         jsonObject.insert("Password", password);
-        jsonObject.insert("ConfirmPasword", confirmPasword);
+        jsonObject.insert("NewPassword", newPassword);
+        jsonObject.insert("ConfirmPassword", confirmPassword);
         jsonObject.insert("Token", token);
         jsonObject.insert("Response", response.toJson());
         jsonObject.insert("Command", command);
@@ -355,7 +358,8 @@ struct UserData
         name = json["Name"].toString();
         userName = json["UserName"].toString();
         password = json["Password"].toString();
-        confirmPasword = json["ConfirmPasword"].toString();
+        newPassword = json["NewPassword"].toString();
+        confirmPassword = json["ConfirmPassword"].toString();
         token = json["Token"].toString();
         Response res;
         res.fromJson(json["Response"].toObject());

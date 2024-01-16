@@ -23,6 +23,7 @@ add_executable(test
   movableNodeTest.h movableNodeTest.cpp
   assignmentTest.h assignmentTest.cpp
   particleTest.h particleTest.cpp
+  userTest.cpp userTest.h
 )
 target_link_libraries(test Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Gui)
 
