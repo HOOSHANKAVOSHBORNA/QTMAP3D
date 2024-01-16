@@ -19,7 +19,7 @@ bool Particle::setup()
     mParticleLayer->setName(CATEGORY);
     mapItem()->getMapObject()->addLayer(mParticleLayer);
 
-//    connect(serviceManager(),&ServiceManager::explosionDataReceived,this,&Particle::onExplosionDataReceived);
+   connect(serviceManager(),&ServiceManager::explosionDataReceived,this,&Particle::onExplosionDataReceived);
 
     ///////////////////////////add explosion/////////////////////////////////
     auto toolboxItemExplode =  new ToolboxItem{EXPLOSION, CATEGORY, "qrc:/resources/explosion.png", true};
@@ -185,11 +185,11 @@ void Particle::onFogClicked(bool check)
     }
 }
 
-void Particle::onExplosionDataReceived(ExplosionData *explosionData)
+void Particle::onExplosionDataReceived(const ExplosionData &explosionData)
 {
-    mExplosion = new Explosion(mapItem(),explosionData->duration);
-    mExplosion->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(),explosionData->longitude, explosionData->latitude));
-    mExplosion->setScaleRatio(explosionData->scale);
+    mExplosion = new Explosion(mapItem(),explosionData.duration);
+    mExplosion->setPosition(osgEarth::GeoPoint(mapItem()->getMapSRS(),explosionData.longitude, explosionData.latitude));
+    mExplosion->setScaleRatio(explosionData.scale);
     mParticleLayer->addChild(mExplosion);
 }
 

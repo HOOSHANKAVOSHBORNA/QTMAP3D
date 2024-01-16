@@ -9,16 +9,20 @@
 }
 ```
 
+## Commands
+
+* Add
+* Update
+* Remove
+
 ## Types
 
-- [X] [Circle](./circle-type.md)
-- [X] [Flyable](./flyable-type.md)
-- [X] [Layer](./layer-type.md)
-- [X] [Line](./line-type.md)
-- [X] [Movable](./movable-type.md)
-- [X] [Node](./node-type.md)
-- [X] [Polygon](./polygon-type.md)
-- [X] [Status](./status-type.md)
+- [X] [Circle](./CircleData.md)
+- [X] [Layer](./LayerData.md)
+- [X] [Node](./NodeData.md)
+- [X] [Polygon](./PolyLineData.md)
+- [X] [Explosion](./ExplosionData.md)
+- [X] [AssignmentState](./assignment.md)
 
 ## How to write new doc for service json
 
@@ -30,7 +34,6 @@
 # __Type_Name__ 
 
 - [Example](#example)
-- [See basic needed types here](#json-basic-types)
 
 __write_main_json_here__
 

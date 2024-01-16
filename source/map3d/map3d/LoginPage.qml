@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Crystal
 
-Authenticator {
+LoginPage {
     width: 800
     height: 600
     minimumHeight: 600
@@ -11,10 +11,6 @@ Authenticator {
     title: qsTr("SignIn/SignUp")
 
     onSignedIn: (status)=>{
-
-    }
-
-    onSignedUp: (status)=> {
 
     }
 
@@ -95,65 +91,16 @@ Authenticator {
             spacing: 20
 
             Button {
-                id: control
-                width: 350
-                height: 60
-
-                implicitWidth: Math.max(
-                                   buttonBackground ? buttonBackground.implicitWidth : 0,
-                                   textItem.implicitWidth + leftPadding + rightPadding)
-                implicitHeight: Math.max(
-                                    buttonBackground ? buttonBackground.implicitHeight : 0,
-                                    textItem.implicitHeight + topPadding + bottomPadding)
-                leftPadding: 4
-                rightPadding: 4
-
-                text: "SignUp"
-                hoverEnabled: true
-                enabled: true
-
-                onClicked: {
-                    signUp(usernameInput.text, passwordInput.text);
-                }
-
-                background: buttonBackground3
-                Rectangle {
-                    id: buttonBackground3
-                    color: "#000000"
-                    implicitWidth: 100
-                    implicitHeight: 40
-                    opacity: control.pressed ? 1 : control.hovered ? 0.6 : 0.3
-                    radius: 50
-                    border.color: "#41cd52"
-                }
-
-                contentItem: textItem
-                Text {
-                    id: textItem
-                    width: 500
-                    height: 100
-                    text: control.text
-                    font.pixelSize: 34
-
-                    opacity: enabled ? 1.0 : 0.3
-                    color: "#41cd52"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.family: "Titillium Web ExtraLight"
-                }
-            }
-
-            Button {
                 id: signn
                 width: 350
                 height: 60
 
                 implicitWidth: Math.max(
                                    buttonBackground ? buttonBackground.implicitWidth : 0,
-                                   textItem.implicitWidth + leftPadding + rightPadding)
+                                   textItem2.implicitWidth + leftPadding + rightPadding)
                 implicitHeight: Math.max(
                                     buttonBackground ? buttonBackground.implicitHeight : 0,
-                                    textItem.implicitHeight + topPadding + bottomPadding)
+                                    textItem2.implicitHeight + topPadding + bottomPadding)
                 leftPadding: 4
                 rightPadding: 4
 

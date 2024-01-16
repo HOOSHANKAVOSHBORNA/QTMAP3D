@@ -21,7 +21,7 @@ ParticleTest::ParticleTest(ServiceManager *serviceManager):
         eData.altitude = 0;
         eData.duration = duration;
         eData.scale = scale;
-        eData.command = "ADD";
+        eData.command = Command::Add;
         createExplosion(eData);
         mCount++;
     });

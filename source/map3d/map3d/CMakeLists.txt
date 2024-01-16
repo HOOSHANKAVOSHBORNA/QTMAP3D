@@ -47,7 +47,7 @@ add_executable(Map3d
         statusBar.h
         locationManager.h locationManager.cpp
         qmlNode.h qmlNode.cpp
-        authenticator.h authenticator.cpp
+        userManager.cpp userManager.h
         filterManager.h filterManager.cpp
         layerProperty.h layerProperty.cpp
         autoScaler.h autoScaler.cpp
