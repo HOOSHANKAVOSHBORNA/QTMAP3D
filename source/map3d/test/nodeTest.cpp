@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <QJsonArray>
 
+QVector<QString> categories{"airplane", "drone", "fighter", "hellicopter", "missile"};
+
 NodeTest::NodeTest(ServiceManager *serviceManager):
     mServiceManager(serviceManager)
 {
@@ -14,6 +16,7 @@ NodeTest::NodeTest(ServiceManager *serviceManager):
     QObject::connect(timerUpdate, &QTimer::timeout, [this](){
         createInfo();
         updateInfo();
+        removeInfo();
         for(auto& nodeInfo: mNodeInfoList){
             mServiceManager->sendNode(nodeInfo.nodeData);
             mServiceManager->sendStatusNode(nodeInfo.statusNodeData);
@@ -23,38 +26,6 @@ NodeTest::NodeTest(ServiceManager *serviceManager):
         }
     });
     timerUpdate->start(500);
-
-    QTimer *timerRemove = new QTimer();
-    QObject::connect(timerRemove, &QTimer::timeout, [this](){
-        if (mNodeInfoList.size() > 0){
-            // QJsonObject jsonObject = mNodeDataList[0].nodeDoc.object();
-            // QJsonObject jsonStatusObject = mNodeDataList[0].statusDoc.object();
-            // QJsonObject jsonCircleObject = mNodeDataList[0].circleDoc.object();
-            // QJsonObject jsonPolygonObject = mNodeDataList[0].polygonDoc.object();
-
-            // jsonObject.remove("COMMAND");
-            // jsonObject.insert("COMMAND", "REMOVE");
-            // jsonStatusObject.remove("COMMAND");
-            // jsonStatusObject.insert("COMMAND", "REMOVE");
-            // jsonCircleObject.remove("COMMAND");
-            // jsonCircleObject.insert("COMMAND", "REMOVE");
-            // jsonPolygonObject.remove("COMMAND");
-            // jsonPolygonObject.insert("COMMAND", "REMOVE");
-
-            // mNodeDataList.pop_front();
-
-            // QJsonDocument jsonDoc(jsonObject);
-            // QJsonDocument jsonStatusDoc(jsonStatusObject);
-            // QJsonDocument jsonCircleDoc(jsonCircleObject);
-            // QJsonDocument jsonPolygonDoc(jsonPolygonObject);
-
-            // mNetworkManager->sendData(jsonDoc.toJson(QJsonDocument::Compact));
-            // mNetworkManager->sendData(jsonStatusDoc.toJson(QJsonDocument::Compact));
-            // mNetworkManager->sendData(jsonCircleDoc.toJson(QJsonDocument::Compact));
-            // mNetworkManager->sendData(jsonPolygonDoc.toJson(QJsonDocument::Compact));
-        }
-    });
-    timerRemove->start(7000);
 }
 
 void NodeTest::createInfo()
@@ -65,7 +36,7 @@ void NodeTest::createInfo()
     QVector<QString> colors{"yellow", "red", "blue", "green"};
     QVector<QString> types{NodeType::Fixed, NodeType::Movable, NodeType::Flyable};
     QString name = "Node" + QString::number(mCount);
-    int id = 30000 + mCount++;
+    int id = 30000 + mCount;
     QColor color(colors[QRandomGenerator::global()->generate() % 4]);
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
@@ -79,6 +50,9 @@ void NodeTest::createInfo()
     nodData.category = nodData.type == NodeType::Fixed ? "Station" :
                            nodData.type == NodeType::Movable ? "Car": "Aircraft";
     nodData.command = Command::Add;
+    nodData.category = (nodData.type == NodeType::Flyable) ?
+                           categories[QRandomGenerator::global()->generate() % 5] :
+                           (nodData.type == NodeType::Fixed) ? "Station" : "Car";
     nodData.iconInfoUrl = nodData.type == NodeType::Fixed ? "../data/models/station/station.png"
                           : nodData.type == NodeType::Movable
                               ? "../data/models/car/car.png"
@@ -97,8 +71,11 @@ void NodeTest::createInfo()
     nodData.url3D = nodData.type == NodeType::Fixed ? "../data/models/station/station.osgb"
                     : nodData.type == NodeType::Movable
                         ? "../data/models/car/car.osgb"
-                        : "../data/models/airplane/airplane.osgb";
-
+                        : nodData.category == "airplane" ? "../data/models/airplane/airplane.osgb"
+                        : nodData.category == "drone" ? "../data/models/drone/drone.osgb"
+                        : nodData.category == "fighter" ? "../data/models/fighter/fighter.osgb"
+                        : nodData.category == "hellicopter" ? "../data/models/hellicopter/hellicopter.osgb"
+                                                     : "../data/models/missile/missile.osgb";
     nodData.color = color.name();
     nodData.isAttacker = false;
     nodData.latitude = latitude;
@@ -107,9 +84,13 @@ void NodeTest::createInfo()
 
     double rand = (QRandomGenerator::global()->generate() % (2));
     if(rand < 1)
-        nodData.layersId.push_back(302);
+        nodData.layersId.push_back(nodData.type == NodeType::Fixed ? 302:
+                                   nodData.type == NodeType::Movable ? 202:
+                                   102);
     else
-        nodData.layersId.push_back(303);
+        nodData.layersId.push_back(nodData.type == NodeType::Fixed ? 303:
+                                       nodData.type == NodeType::Movable ? 202:
+                                       103);
 
     NodeFieldData nameField;
     nameField.name = "Name";
@@ -157,7 +138,8 @@ void NodeTest::createInfo()
     statusNodeData.longitude = longitude;
     statusNodeData.altitude = altitude;
     statusNodeData.command = Command::Add;
-    statusNodeData.layerId = 305;
+    statusNodeData.layerId = nodData.type == NodeType::Fixed ? 306 :
+        nodData.type == NodeType::Movable ? 206 : 106 ;
 
     NodeFieldData info1Field;
     info1Field.name = "Info1";
@@ -247,7 +229,7 @@ void NodeTest::createInfo()
         polyLineData.color = colorPolyLine.name(QColor::HexArgb);
         polyLineData.width = 7;
         polyLineData.command = Command::Add;
-        polyLineData.layerId = 306;
+        polyLineData.layerId = nodData.type == NodeType::Flyable ? 105 : 205;
 
         double step = 10.0/10000.0;
 
@@ -261,12 +243,15 @@ void NodeTest::createInfo()
     }
 
     mNodeInfoList.append(nodInfo);
+    mCount++;
 }
 
 void NodeTest::updateInfo()
 {
     for(auto& nodeInfo: mNodeInfoList)
     {
+        if (nodeInfo.nodeData.type == NodeType::Fixed || nodeInfo.nodeData.command == Command::Remove)
+            continue;
         int rn = (0 + (QRandomGenerator::global()->generate() % 10000));
         if(rn < 1)
             nodeInfo.nodeData.heading = (0 + (QRandomGenerator::global()->generate() % 361));
@@ -276,9 +261,20 @@ void NodeTest::updateInfo()
         double pi = 3.14159265359;
         double teta = (90 - nodeInfo.nodeData.heading)* (pi / 180);
         double step = 10.0/10000.0;
+        nodeInfo.nodeData.category = (nodeInfo.nodeData.type == NodeType::Flyable) ?
+                                         categories[QRandomGenerator::global()->generate() % 5] : nodeInfo.nodeData.category;
+        nodeInfo.nodeData.url3D = nodeInfo.nodeData.type == NodeType::Fixed ? "../data/models/station/station.osgb"
+                        : nodeInfo.nodeData.type == NodeType::Movable
+                            ? "../data/models/car/car.osgb"
+                            : nodeInfo.nodeData.category == "airplane" ? "../data/models/airplane/airplane.osgb"
+                              : nodeInfo.nodeData.category == "drone" ? "../data/models/drone/drone.osgb"
+                              : nodeInfo.nodeData.category == "fighter" ? "../data/models/fighter/fighter.osgb"
+                              : nodeInfo.nodeData.category == "hellicopter" ? "../data/models/hellicopter/hellicopter.osgb"
+                                                                  : "../data/models/missile/missile.osgb";
         nodeInfo.nodeData.longitude += step * std::cos(teta);
         nodeInfo.nodeData.latitude += step * std::sin(teta);
-        nodeInfo.nodeData.altitude = 2000;
+        nodeInfo.nodeData.altitude = nodeInfo.nodeData.type == NodeType::Flyable ? 2000 : 0;
+        nodeInfo.nodeData.command = Command::Update;
         // double altitude = nodeInfo.nodeData.altitude;
         // rn = (0 + (QRandomGenerator::global()->generate() % 2));
         // nodeInfo.nodeData.altitude += (nodeInfo.nodeData.type != NodeType::Flyable) ? 0 : ((rn > 0) * 2 - 1) * 5;
@@ -291,16 +287,33 @@ void NodeTest::updateInfo()
         nodeInfo.statusNodeData.longitude = nodeInfo.nodeData.longitude;
         nodeInfo.statusNodeData.latitude = nodeInfo.nodeData.latitude;
         nodeInfo.statusNodeData.altitude = nodeInfo.nodeData.altitude;
+        nodeInfo.statusNodeData.command = Command::Update;
 
         //--route node------------------------------------------------
 
         QVector3D point;
         point.setX(nodeInfo.nodeData.longitude);
         point.setY(nodeInfo.nodeData.latitude);
-        point.setX(nodeInfo.nodeData.altitude);
+        point.setZ(nodeInfo.nodeData.altitude);
         nodeInfo.polyLineData.points.push_back(point);
+        nodeInfo.polyLineData.command = Command::Update;
 
         if (nodeInfo.polyLineData.points.size() > 100)
-            nodeInfo.polyLineData.points.pop_back();
+            nodeInfo.polyLineData.points.erase(nodeInfo.polyLineData.points.begin());
     }
+}
+
+void NodeTest::removeInfo()
+{
+    if (mDeleteNode % mRemoveRatio == 0 && mDeleteNode < 10 * mRemoveRatio) {
+        auto& nodeInfo = mNodeInfoList[mDeleteNode/mRemoveRatio];
+        nodeInfo.nodeData.command = Command::Remove;
+        nodeInfo.statusNodeData.command = Command::Remove;
+        if (nodeInfo.nodeData.type == NodeType::Fixed) {
+            nodeInfo.circleData.command = Command::Remove;
+            nodeInfo.polygonData.command = Command::Remove;
+        } else
+            nodeInfo.polyLineData.command = Command::Remove;
+    }
+    mDeleteNode++;
 }

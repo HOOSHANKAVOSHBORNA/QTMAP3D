@@ -12,7 +12,6 @@
 # AssignmentData
 
 - [Example](#example)
-- [See basic needed types here](#json-basic-types)
 
 * AttackerId
 * TargetId
