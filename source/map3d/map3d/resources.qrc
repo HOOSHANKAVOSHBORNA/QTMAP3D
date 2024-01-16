@@ -519,5 +519,6 @@
         <file>Resources/inform.png</file>
         <file>Resources/bullet.png</file>
         <file>Resources/splash.gif</file>
+        <file>Resources/draw.png</file>
     </qresource>
 </RCC>
