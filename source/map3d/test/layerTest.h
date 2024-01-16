@@ -10,7 +10,7 @@ public:
 
 private:
     void createLayers();
-    QJsonDocument updateLayers();
+    void updateLayers();
 
 private:
     ServiceManager *mServiceManager;

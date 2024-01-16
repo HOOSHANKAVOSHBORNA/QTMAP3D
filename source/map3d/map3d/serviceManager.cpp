@@ -34,7 +34,7 @@ void ServiceManager::sendUser(const UserData &UserData)
 
 void ServiceManager::onMessageReceived(const QString &message)
 {
-    qDebug() << "Receive message: "<<message;
+//    qDebug() << "Receive message: "<<message;
     QJsonDocument doc = QJsonDocument::fromJson(message.toUtf8());
     QJsonObject obj;
     if (!doc.isNull()) {

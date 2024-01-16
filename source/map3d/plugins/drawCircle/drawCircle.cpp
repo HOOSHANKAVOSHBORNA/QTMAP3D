@@ -62,8 +62,9 @@ void DrawCircle::circleDataReceived(const CircleData& circleData)
             if (layer)
                 layer->removeChild(mCircleMap[circleData.id]);
             //            mCircleMap[circleData->id]->circleData()->layer->removeChild(mCircleMap[circleData->id]);
-            mCircleMap[circleData.id].release();
-            mCircleMap.remove(circleData.id);
+            // mCircleMap[circleData.id]
+            int id = circleData.id;
+            mCircleMap.remove(id);
         }
     } else if (circleData.command == Command::Update) {
         addUpdateCircle(circleData);
@@ -75,13 +76,13 @@ void DrawCircle::circleDataReceived(const CircleData& circleData)
 
 void DrawCircle::addUpdateCircle(const CircleData &circleData)
 {
-    auto layer = mapItem()->getMapObject()->getLayerByUserId(circleData.layerId);
-    if (!layer)
-        return;
     osgEarth::GeoPoint geoPoint(mapItem()->getMapObject()->getSRS(), circleData.longitude, circleData.latitude, circleData.altitude);
-    Circle *circle;
+    osg::ref_ptr<Circle> circle;
     if(mCircleMap.contains(circleData.id)){
         circle = mCircleMap[circleData.id];
+        auto layer = mapItem()->getMapObject()->getLayerByUserId(circle->circleData().layerId);
+        if(layer)
+            layer->removeChild(circle);
     }
     else {
         circle = new Circle;
@@ -95,7 +96,9 @@ void DrawCircle::addUpdateCircle(const CircleData &circleData)
     circle->setHeight(1);
     circle->setCircleData(circleData);
     circle->setClamp(osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN);
-    layer->addChild(circle);
+    auto layer = mapItem()->getMapObject()->getLayerByUserId(circleData.layerId);
+    if (layer)
+        layer->addChild(circle);
 }
 
 void DrawCircle::initDraw(const osgEarth::GeoPoint &geoPos)

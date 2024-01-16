@@ -32,10 +32,6 @@ public:
     inline PluginManager *pluginManager() const { return mPluginManager; }
 
     ServiceManager *serviceManager() const;
-    enum UserRoles{
-        SimpleUser = 1,
-        AdminUser
-    };
     void showSplash();
 
 signals:
@@ -62,7 +58,6 @@ private:
     NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};
-    UserRoles mRole{SimpleUser};
 };
 
 #endif // Application_H

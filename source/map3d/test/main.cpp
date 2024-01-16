@@ -7,6 +7,7 @@
 #include "nodeTest.h"
 #include "serviceManager.h"
 #include "particleTest.h"
+#include "userTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     //    QObject::connect(&networkManager, &NetworkManager::flyableQueueDeclared,[&networkManager]{
     //        networkManager.sendFlyableData("data");
     //    });
+    UserTest userTest(&serviceManager);
     LayerTest LayerTest(&serviceManager);
     //    FlyableNodeTest flyableNodeTest(&networkManager);
     //    MovableNodeTest movableNodeTest(&networkManager);

@@ -18,7 +18,7 @@ void NetworkManager::sendMessage(const QString &message)
 {
     QAmqpExchange *exchange = mClient.createExchange();
     exchange->publish(message, "Map3dClient");
-    qDebug() << "Sent message: "<<message;
+//    qDebug() << "Sent message: "<<message;
 }
 
 void NetworkManager::clientConnected()
