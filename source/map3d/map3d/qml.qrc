@@ -45,5 +45,6 @@
         <file>Components/DebugInAnchor.qml</file>
         <file>Components/DebugInLayout.qml</file>
         <file>SettingsItem.qml</file>
+        <file>ProfileItem.qml</file>
     </qresource>
 </RCC>

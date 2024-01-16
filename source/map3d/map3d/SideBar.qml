@@ -282,6 +282,13 @@ Rectangle {
         signal toggleItem(var index, var checked)
         //        onToggleItem:function(index, checked){ print(checked)}
         ListElement {
+            name: "Profile"
+            iconSource: "qrc:/Resources/Qarch.png"
+            checked: false
+            isWindow: false
+        }
+
+        ListElement {
             name: "Toolbox"
             iconSource: "qrc:/Resources/toolbox.png"
             checked: false

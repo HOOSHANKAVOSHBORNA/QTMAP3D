@@ -91,3 +91,65 @@ void UserManager::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         mLoginPage->show();
     }
 }
+
+QString Profile::getName() const
+{
+    return mName;
+}
+
+void Profile::setName(const QString &newName)
+{
+    if (mName == newName)
+        return;
+    mName = newName;
+    emit nameChanged();
+}
+
+QString Profile::getUsername() const
+{
+    return mUsername;
+}
+
+void Profile::setUsername(const QString &newUsername)
+{
+    if (mUsername == newUsername)
+        return;
+    mUsername = newUsername;
+    emit usernameChanged();
+}
+
+QString Profile::getPassword() const
+{
+    return mPassword;
+}
+
+void Profile::setPassword(const QString &newPassword)
+{
+    if (mPassword == newPassword)
+        return;
+    mPassword = newPassword;
+    emit passwordChanged();
+}
+
+ProfileManager *ProfileManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    if(mInstance == nullptr){ mInstance = new ProfileManager(); }
+    return mInstance;
+}
+
+ProfileManager::~ProfileManager()
+{
+    delete mProfile;
+}
+
+Profile *ProfileManager::getProfile()
+{
+    return mProfile;
+}
+
+ProfileManager::ProfileManager(QObject *parent)
+{
+    mProfile = new Profile();
+}
