@@ -40,16 +40,6 @@ void PluginInterface::setMainWindow(MainWindow *mainWindow)
     mBookmarkManager = mainWindow->getBookmarkManager();
 }
 
-DefenseDataManager *PluginInterface::defenseDataManager() const
-{
-    return mDefenseDataManager;
-}
-
-void PluginInterface::setDefenseDataManager(DefenseDataManager *defenseDataManager)
-{
-    mDefenseDataManager = defenseDataManager;
-}
-
 QString PluginInterface::name() const
 {
     return mName;
