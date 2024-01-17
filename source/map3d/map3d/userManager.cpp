@@ -123,6 +123,19 @@ void Profile::setPassword(const QString &newPassword)
     emit passwordChanged();
 }
 
+bool Profile::validateChanges(QString name, QString username, QString password)
+{
+    if(password == mPassword){
+        mName = name;
+        mUsername = username;
+        mPassword = password;
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 ProfileManager *ProfileManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);

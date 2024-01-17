@@ -71,6 +71,8 @@ public:
    Q_INVOKABLE QString getPassword() const;
    Q_INVOKABLE void setPassword(const QString &newPassword);
 
+   Q_INVOKABLE bool validateChanges(QString name, QString username, QString password);
+
 signals:
     void nameChanged();
 

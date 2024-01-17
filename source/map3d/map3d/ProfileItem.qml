@@ -8,29 +8,35 @@ Item {
     id:rootItem
 
     property var model
-    readonly property color foregroundColor: Qt.rgba(Style.foregroundColor.r,
+
+    readonly property color foregroundColorRect: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.20)
 
-    readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
-                                                     Style.backgroundColor.g,
-                                                     Style.backgroundColor.b,
-                                                     0.30)
+    readonly property color foregroundColorText: Qt.rgba(Style.foregroundColor.r,
+                                                     Style.foregroundColor.g,
+                                                     Style.foregroundColor.b,
+                                                     0.75)
 
     ColumnLayout{
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: 10 / Style.monitorRatio
+        anchors.rightMargin: 15 / Style.monitorRatio
+        anchors.leftMargin: 15 / Style.monitorRatio
+        spacing: 0
 
         Text{
             id:nameText
-            font.pixelSize: 25 / Style.monitorRatio
+            text: "Username"
+            font.pixelSize: 20 / Style.monitorRatio
             color: Style.foregroundColor
+            Layout.topMargin: 46 / Style.monitorRatio
         }
 
         RowLayout{
             Layout.fillWidth: true
+            Layout.topMargin: 36 / Style.monitorRatio
             IconImage{
                 Layout.preferredWidth: 20 / Style.monitorRatio
                 Layout.preferredHeight: 20 / Style.monitorRatio
@@ -38,107 +44,110 @@ Item {
             }
             Text{
                 text: "Edit Profile"
-                font.pixelSize: 20 / Style.monitorRatio
+                font.pixelSize: 15 / Style.monitorRatio
                 Layout.fillWidth: true
                 color: Style.foregroundColor
             }
         }
         Text{
             text:"Name"
-            font.pixelSize: 17 / Style.monitorRatio
+            Layout.topMargin: 16 / Style.monitorRatio
+            font.pixelSize: 13 / Style.monitorRatio
             color: Style.foregroundColor
         }
 
         TextField {
             id: name
             Layout.preferredWidth: 270 / Style.monitorRatio
+            Layout.topMargin: 5 / Style.monitorRatio
             Layout.fillWidth: true
-            Layout.rightMargin: 15 / Style.monitorRatio
             height: 30 / Style.monitorRatio
             font.pointSize: 15 / Style.monitorRatio
-            color: Style.foregroundColor
+            color: foregroundColorText
             background: Rectangle {
-                color: foregroundColor
-                radius: height / 2
+                color: foregroundColorRect
+                radius: 15 / Style.monitorRatio
             }
         }
 
         Text{
             text:"Username"
-            font.pixelSize: 17 / Style.monitorRatio
+            Layout.topMargin: 10 / Style.monitorRatio
+            font.pixelSize: 13 / Style.monitorRatio
             color: Style.foregroundColor
         }
 
         TextField {
             id:username
             Layout.preferredWidth: 270 / Style.monitorRatio
+            Layout.topMargin: 5 / Style.monitorRatio
             Layout.fillWidth: true
-            Layout.rightMargin: 15 / Style.monitorRatio
             height: 30 / Style.monitorRatio
             font.pointSize: 15 / Style.monitorRatio
-            color: Style.foregroundColor
+            color: foregroundColorText
             background: Rectangle {
-                color: foregroundColor
-                radius: height / 2
+                color: foregroundColorRect
+                radius: 15 / Style.monitorRatio
             }
         }
 
         Text{
             text:"Password"
-            font.pixelSize: 17 / Style.monitorRatio
+            font.pixelSize: 13 / Style.monitorRatio
+            Layout.topMargin: 10 / Style.monitorRatio
             color: Style.foregroundColor
         }
 
         TextField {
             id:password
             Layout.preferredWidth: 270 / Style.monitorRatio
+            Layout.topMargin: 5 / Style.monitorRatio
             Layout.fillWidth: true
-            Layout.rightMargin: 15 / Style.monitorRatio
             height: 30 / Style.monitorRatio
             font.pointSize: 15 / Style.monitorRatio
-            color: Style.foregroundColor
+            color: foregroundColorText
             placeholderText: "Current Password"
-            placeholderTextColor : Style.foregroundColor
+            placeholderTextColor :foregroundColorText
             background: Rectangle {
-                color: foregroundColor
-                radius: height / 2
+                color: foregroundColorRect
+                radius: 15 / Style.monitorRatio
             }
         }
 
         TextField {
             Layout.preferredWidth: 270 / Style.monitorRatio
             Layout.fillWidth: true
-            Layout.rightMargin: 15 / Style.monitorRatio
+            Layout.topMargin: 10 / Style.monitorRatio
             height: 30 / Style.monitorRatio
             font.pointSize: 15 / Style.monitorRatio
-            color: Style.foregroundColor
+            color: foregroundColorText
             placeholderText:  "New Password"
-            placeholderTextColor : Style.foregroundColor
+            placeholderTextColor:foregroundColorText
             background: Rectangle {
-                color: foregroundColor
-                radius: height / 2
+                color: foregroundColorRect
+                radius: 15 / Style.monitorRatio
             }
         }
 
         TextField {
             Layout.preferredWidth: 270 / Style.monitorRatio
             Layout.fillWidth: true
-            Layout.rightMargin: 15 / Style.monitorRatio
+            Layout.topMargin: 10 / Style.monitorRatio
             height: 30 / Style.monitorRatio
             font.pointSize: 15 / Style.monitorRatio
-            color: Style.foregroundColor
+            color: foregroundColorText
             placeholderText: "Confirm Password"
-            placeholderTextColor : Style.foregroundColor
+            placeholderTextColor:foregroundColorText
             background: Rectangle {
-                color: foregroundColor
-                radius: height / 2
+                color: foregroundColorRect
+                radius: 15 / Style.monitorRatio
             }
         }
 
         Button{
             Layout.preferredHeight: 30 / Style.monitorRatio
             Layout.preferredWidth: 270 / Style.monitorRatio
-            Layout.rightMargin: 15 / Style.monitorRatio
+            Layout.topMargin: 20 / Style.monitorRatio
             Layout.fillWidth: true
 
             background: Rectangle{
@@ -146,19 +155,31 @@ Item {
                 color: Qt.rgba(Style.foregroundColor.r,
                                Style.foregroundColor.g,
                                Style.foregroundColor.b,
-                               0.60)
+                               0.80)
 
-                radius: height / 2
+                radius: 15 / Style.monitorRatio
 
                 Text{
                     anchors.centerIn: parent
                     text: "Save changes"
                     font.pixelSize: 15 / Style.monitorRatio
-                    color: Style.foregroundColor
+                    color: Style.backgroundColor
                     }
             }
 
            onClicked: {
+
+//              if( rootItem.model.validateChanges(name.text,username.text,password.text) ) {
+//                     nameText.text = name.text
+//                     rootItem.model.setName(name.text)
+//                     rootItem.model.setUsername(username.text)
+//                     rootItem.model.setPassword(password.text)
+//              }
+
+//              else {
+
+//              }
+
                rootItem.model.setName(name.text)
                rootItem.model.setUsername(username.text)
                rootItem.model.setPassword(password.text)
@@ -169,12 +190,14 @@ Item {
         Button{
             Layout.preferredHeight: 30 / Style.monitorRatio
             Layout.preferredWidth: 270 / Style.monitorRatio
-            Layout.rightMargin: 15 / Style.monitorRatio
+            Layout.topMargin: 5 / Style.monitorRatio
             Layout.fillWidth: true
 
             background: Rectangle{
-                color: Style.backgroundColor
-                radius: height / 2
+                color: "transparent"
+                border.width: 2 / Style.monitorRatio
+                border.color: Style.foregroundColor
+                radius: 15 / Style.monitorRatio
 
                 IconImage{
                     width: 20 / Style.monitorRatio
