@@ -180,11 +180,26 @@ Item {
             Layout.fillWidth: true
             currentIndex: tabBar.currentIndex
             visible: visibleCount ? true: false
+
+//---------------------------------------------------------
+            DockWindow {
+                id: profileItem
+                windowTitle: sideModel.get(0).name
+                isWindow: sideModel.get(0).isWindow
+                containerItem: ProfileItem {
+                    id: profile
+                    model:ProfileManagerInstance.getProfile()
+                }
+
+                onWindowClose: {
+                    sideModel.get(0).isWindow = false
+                }
+            }
 //---------------------------------------------------------
             DockWindow {
                 id: toolBoxDocItem
-                windowTitle: sideModel.get(0).name
-                isWindow: sideModel.get(0).isWindow
+                windowTitle: sideModel.get(1).name
+                isWindow: sideModel.get(1).isWindow
                 containerItem: ToolboxManagerItem {
                     id: toolbox
                     listModel: ToolboxManagerInstance.toolboxProxyModel()
@@ -197,13 +212,13 @@ Item {
 //            Binding {
 //                target: toolBoxDocItem
 //                property: "isWindow"
-//                value: sideModel.get(0).isWindow
+//                value: sideModel.get(1).isWindow
 //            }
 //---------------------------------------------------------
             DockWindow {
                 id: layerDocItem
-                windowTitle: sideModel.get(1).name
-//                isWindow: sideModel.get(1).isWindow
+                windowTitle: sideModel.get(2).name
+//                isWindow: sideModel.get(2).isWindow
                 containerItem: LayerManagerItem {
                     id: layers
                     layerModel: LayerManagerInstance.layerModel()
@@ -216,35 +231,16 @@ Item {
 //            Binding {
 //                target: layerDocItem
 //                property: "isWindow"
-//                value: sideModel.get(1).isWindow
-//            }
-//----------------------------------------------------------------
-            DockWindow {
-                id: bookmarkDocItem
-                windowTitle: sideModel.get(2).name
-//                isWindow: sideModel.get(2).isWindow
-                containerItem: BookmarkItem {
-                    id: bookmark
-                    model: BookmarkInstance.getBookmarkProxyModel()
-                }
-
-                onWindowClose: {
-                    sideModel.get(2).isWindow = false
-                }
-            }
-//            Binding {
-//                target: bookmarkDocItem
-//                property: "isWindow"
 //                value: sideModel.get(2).isWindow
 //            }
 //----------------------------------------------------------------
             DockWindow {
-                id: locationDocItem
+                id: bookmarkDocItem
                 windowTitle: sideModel.get(3).name
 //                isWindow: sideModel.get(3).isWindow
-                containerItem: LocationManagerItem {
-                    id: locationManager
-                    listModel: LocatoinManagerInstance.locationProxyModel()
+                containerItem: BookmarkItem {
+                    id: bookmark
+                    model: BookmarkInstance.getBookmarkProxyModel()
                 }
 
                 onWindowClose: {
@@ -252,15 +248,34 @@ Item {
                 }
             }
 //            Binding {
-//                target: locationDocItem
+//                target: bookmarkDocItem
 //                property: "isWindow"
 //                value: sideModel.get(3).isWindow
+//            }
+//----------------------------------------------------------------
+            DockWindow {
+                id: locationDocItem
+                windowTitle: sideModel.get(4).name
+//                isWindow: sideModel.get(4).isWindow
+                containerItem: LocationManagerItem {
+                    id: locationManager
+                    listModel: LocatoinManagerInstance.locationProxyModel()
+                }
+
+                onWindowClose: {
+                    sideModel.get(4).isWindow = false
+                }
+            }
+//            Binding {
+//                target: locationDocItem
+//                property: "isWindow"
+//                value: sideModel.get(4).isWindow
 //            }
 
  //-----------------------------------------------------
             DockWindow{
                 id:settingsDocItem
-                windowTitle: sideModel.get(4).name
+                windowTitle: sideModel.get(5).name
 
                 containerItem: SettingsItem{
                     id:settingsItem
@@ -268,7 +283,7 @@ Item {
                 }
 
                 onWindowClose: {
-                   sideModel.get(4).isWindow = false
+                   sideModel.get(5).isWindow = false
                 }
             }
 

@@ -36,9 +36,13 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
     geoPoint.transformInPlace(mMapItem->getMapObject()->getSRS());
     osg::ref_ptr<SimpleModelNode> node;
 
-    if(!mNodeMap.contains(nodeData.id)){
+    if (!mNodeMap.contains(nodeData.id)) {
+        // TODO
+        // mUniqueNames
+        // mUniqueColors
+        // mUniqueFields = [name, icon, color, ...]
 
-        if(nodeData.type == NodeType::Movable)
+        if (nodeData.type == NodeType::Movable)
             node = new MoveableModelNode(mMapItem, nodeData.url3D.toStdString(), nodeData.url2D.toStdString());
         else if(nodeData.type == NodeType::Flyable)
             node = new FlyableModelNode(mMapItem, nodeData.url3D.toStdString(), nodeData.url2D.toStdString());
@@ -48,8 +52,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         node->setPosition(geoPoint);
         mNodeMap[nodeData.id] = node;
         node->setBookmarkManager(mMainWindow->getBookmarkManager());
-    }
-    else{
+    } else {
         node = mNodeMap[nodeData.id];
         for(int layerId: node->nodeData().layersId){
             auto layer = mMapItem->getMapObject()->getLayerByUserId(layerId);

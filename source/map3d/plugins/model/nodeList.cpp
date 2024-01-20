@@ -393,13 +393,22 @@ int NodeListModel::columnCount(const QModelIndex &) const
     //        return DataAttacker->at(0).FieldData.size();
 
     // TODO
-    return 11;
+    return 11 /* + nodeData.fieldData.size()*/;
 }
 
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
 {
     NodeData nodeData = mDataManager->getNodeAtIndex(index.row())->nodeData();
+    qDebug() << nodeData.fieldData.size();
+    //qDebug() << nodeData.category;
+    for (int i = 0; i < nodeData.fieldData.size(); ++i) {
+        if (nodeData.fieldData.size()) {
+            //            qDebug() << "fieldData" << i << nodeData.fieldData.at(i).name << ", "
+            //                     << nodeData.fieldData.at(i).value << ", " << nodeData.fieldData.at(i).category;
+        }
+    }
 
+    //qDebug() << "fieldData.size(): " << nodeData.fieldData.size();
     //    id= nodeData.id;
     //    name= nodeData.name;
     //    type= nodeData.type;
@@ -434,6 +443,19 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         default:
             return QVariant("defualt");
         }
+        qDebug() << nodeData.fieldData.size();
+        for (int i = 0; i < nodeData.fieldData.size(); ++i) {
+            if (index.column() == i + 11) {
+                qDebug() << nodeData.fieldData.at(i).value.toString();
+                return nodeData.fieldData.at(i).value.toString();
+            }
+        }
+
+        //        if (index.column() >= columnToName.size()) {
+        //            return QString("default");
+        //        } else {
+        //            return nodeData.fieldData.at(index.column()).value;
+        //        }
     }
 
     // color roles
@@ -559,8 +581,8 @@ QItemSelectionModel *NodeListModel::selectModel()
 
 void NodeListModel::resetTable()
 {
-    qDebug() << "debug"
-             << "lolo";
+    //    qDebug() << "debug"
+    //             << "lolo";
     beginResetModel();
     endResetModel();
 }

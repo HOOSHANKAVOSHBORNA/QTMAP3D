@@ -15,8 +15,8 @@ CListWindow {
     Rectangle {
         color: Style.backgroundColor
         anchors.fill: parent
-        radius: 20
 
+        //        radius: 20
         ColumnLayout {
             anchors.fill: parent
             anchors.leftMargin: 25
@@ -38,28 +38,6 @@ CListWindow {
                     font.pixelSize: 23
                     font.weight: 500
                     color: Style.foregroundColor
-                }
-
-                Button {
-                    Layout.preferredWidth: 25
-                    Layout.preferredHeight: width
-                    padding: 0
-
-                    background: Rectangle {
-                        color: 'transparent'
-                    }
-
-                    display: AbstractButton.IconOnly
-
-                    icon {
-                        width: 25
-                        height: 25
-                        source: 'qrc:/Resources/add-place-close.png'
-                    }
-
-                    onClicked: {
-                        rootItem.close()
-                    }
                 }
             }
 

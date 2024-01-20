@@ -35,8 +35,6 @@ Item {
                                           Style.backgroundColor.g,
                                           Style.backgroundColor.b, 0.75)
 
-    readonly property real fontPointSize: 17 / Style.monitorRatio
-
     function isNumeric(s) {
         return !isNaN(s - parseFloat(s))
     }
@@ -252,7 +250,7 @@ Item {
     //                        }
     //                    }
     //                    Item {
-    //                        width: 115 / 1.3
+    //                        width: 115 / Style.monitorRatio
     //                        Layout.fillHeight: true
     //                        clip: true
 
@@ -533,7 +531,7 @@ Item {
     //                        radius: 8
     //                        RowLayout {
     //                            anchors.left: parent.left
-    //                            anchors.leftMargin: 25 / 1.3
+    //                            anchors.leftMargin: 25 / Style.monitorRatio
     //                            anchors.centerIn: parent
     //                            spacing: 5
     //                            ComboBox {
@@ -804,7 +802,7 @@ Item {
     //                        radius: 8
     //                        RowLayout {
     //                            //anchors.left: parent.left
-    //                            //anchors.leftMargin: 25/ 1.3
+    //                            //anchors.leftMargin: 25/ Style.monitorRatio
     //                            anchors.centerIn: parent
 
     //                            spacing: 5
@@ -1071,7 +1069,7 @@ Item {
     //            RowLayout {
     //                width: rootItem.widthStyle
     //                id: flowRow
-    //                height: 50 / 1.3
+    //                height: 50 / Style.monitorRatio
     //                visible: false
     //                anchors.top: mainRow.bottom
     //                anchors.topMargin: 20
@@ -1079,7 +1077,7 @@ Item {
     //                Flow {
     //                    id: felo
     //                    spacing: 5 / Style.monitorRatio
-    //                    height: 40 / 1.3
+    //                    height: 40 / Style.monitorRatio
     //                    Layout.bottomMargin: 20
     //                    Layout.fillWidth: true
     //                    clip: true
@@ -1093,7 +1091,7 @@ Item {
     //                            property bool checked: true
     //                            property bool selected: false
     //                            id: typeHolder
-    //                            implicitHeight: 26 / 1.3
+    //                            implicitHeight: 26 / Style.monitorRatio
     //                            implicitWidth: shortCut.implicitWidth
     //                            color: checked ? "transparent" : Qt.rgba(
     //                                                 Style.foregroundColor.r,
@@ -1188,15 +1186,15 @@ Item {
     //                                    Layout.alignment: Qt.AlignLeft
     //                                    text: model.name ? model.name : 0
     //                                    font.family: "Roboto"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    color: shortCut.colorHandler /*typeHolder.checked ? Style.foregroundColor : Style.hoverColor*/
-    //                                    Layout.leftMargin: 15 / 1.3
-    //                                    Layout.topMargin: 2 / 1.3
-    //                                    Layout.bottomMargin: 2 / 1.3
+    //                                    Layout.leftMargin: 15 / Style.monitorRatio
+    //                                    Layout.topMargin: 2 / Style.monitorRatio
+    //                                    Layout.bottomMargin: 2 / Style.monitorRatio
     //                                }
     //                                Label {
     //                                    text: ":"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    font.family: "Roboto"
     //                                    color: shortCut.colorHandler
     //                                    visible: model.compVal ? false : true
@@ -1207,7 +1205,7 @@ Item {
     //                                    Layout.alignment: Qt.AlignLeft
     //                                    text: model.value1 ? model.value1 : 0
     //                                    font.family: "Roboto"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    color: shortCut.colorHandler /*typeHolder.checked ? Style.foregroundColor : Style.hoverColor*/
     //                                    visible: model.value2 || model.value4
     //                                             || model.color ? false : true
@@ -1217,14 +1215,14 @@ Item {
     //                                    Layout.alignment: Qt.AlignLeft
     //                                    text: model.value2 ? model.value2 : 0
     //                                    font.family: "Roboto"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    color: shortCut.colorHandler /*typeHolder.checked ? Style.foregroundColor : Style.hoverColor*/
     //                                    visible: model.value3
     //                                             && model.value2 ? true : false
     //                                }
     //                                Label {
     //                                    text: "To"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    font.family: "Roboto"
     //                                    color: shortCut.colorHandler
     //                                    visible: model.value2 ? true : false
@@ -1234,7 +1232,7 @@ Item {
     //                                    Layout.alignment: Qt.AlignLeft
     //                                    text: model.value3 ? model.value3 : 0
     //                                    font.family: "Roboto"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    color: shortCut.colorHandler /*typeHolder.checked ? Style.foregroundColor : Style.hoverColor*/
     //                                    visible: model.value3
     //                                             && model.value2 ? true : false
@@ -1244,7 +1242,7 @@ Item {
     //                                    Layout.alignment: Qt.AlignLeft
     //                                    text: model.compVal ? model.compVal : 0
     //                                    font.family: "Roboto"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    color: shortCut.colorHandler /*typeHolder.checked ? Style.foregroundColor : Style.hoverColor*/
     //                                    visible: model.compVal ? true : false
     //                                }
@@ -1253,7 +1251,7 @@ Item {
     //                                    Layout.alignment: Qt.AlignLeft
     //                                    text: model.value4 ? model.value4 : 0
     //                                    font.family: "Roboto"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    color: shortCut.colorHandler /*typeHolder.checked ? Style.foregroundColor : Style.hoverColor*/
     //                                    visible: model.value4 ? true : false
     //                                }
@@ -1262,7 +1260,7 @@ Item {
     //                                    Layout.alignment: Qt.AlignLeft
     //                                    text: model.color ? model.color : 0
     //                                    font.family: "Roboto"
-    //                                    font.pixelSize: 17 / 1.3
+    //                                    font.pixelSize: 17 / Style.monitorRatio
     //                                    color: shortCut.colorHandler /*typeHolder.checked ? Style.foregroundColor : Style.hoverColor*/
     //                                    visible: model.color ? true : false
     //                                }
@@ -1272,8 +1270,8 @@ Item {
     //                                    Layout.preferredHeight: 20 / Style.monitorRatio
     //                                    Layout.preferredWidth: 20 / Style.monitorRatio
     //                                    color: shortCut.colorHandler
-    //                                    Layout.leftMargin: 15 / 1.3
-    //                                    Layout.rightMargin: 15 / 1.3
+    //                                    Layout.leftMargin: 15 / Style.monitorRatio
+    //                                    Layout.rightMargin: 15 / Style.monitorRatio
     //                                    MouseArea {
     //                                        anchors.fill: parent
     //                                        cursorShape: Qt.PointingHandCursor
@@ -1357,7 +1355,7 @@ Item {
         anchors.top: rootItem.top
         anchors.topMargin: 30
         anchors.left: rootItem.left
-        //anchors.leftMargin: 20
+        //        anchors.leftMargin: 20
         anchors.right: rootItem.right
         //anchors.rightMargin: 20
         //Layout.fillHeight: true
@@ -1367,7 +1365,10 @@ Item {
         TabBar {
             id: tabBar
             width: parent.width
+            anchors.left: parent.left
             anchors.leftMargin: 20
+            anchors.right: parent.right
+            anchors.rightMargin: 20
             currentIndex: 0
             Component.onCompleted: {
 
@@ -1375,11 +1376,6 @@ Item {
                 //console.log(tabMain.modelData)
             }
 
-            readonly property color foregroundColor: "#003569"
-            readonly property color disableColor: Qt.rgba(foregroundColor.r,
-                                                          foregroundColor.g,
-                                                          foregroundColor.b,
-                                                          0.5)
             Repeater {
                 id: repeater
                 model: /*tableModel ? tableModel.getTabBarName() : undefined*/ [1, 2, 3]
@@ -1418,7 +1414,7 @@ Item {
                             width: parent.width
                             height: 2
                             color: tabBar.currentIndex
-                                   === model.index ? tabBar.foregroundColor : tabBar.disableColor
+                                   === model.index ? Style.foregroundColor : Style.disableColor
                             anchors.bottom: parent.bottom
                         }
                     }
@@ -1430,9 +1426,9 @@ Item {
                         anchors.bottomMargin: 5
                         text: tabMain.text
                         font.family: "Roboto"
-                        font.pointSize: 17 / 1.3
+                        font.pointSize: 17 / Style.monitorRatio
                         color: tabBar.currentIndex
-                               === model.index ? tabBar.foregroundColor : tabBar.disableColor
+                               === model.index ? Style.foregroundColor : Style.disableColor
                     }
                 }
             }
@@ -1548,7 +1544,7 @@ Item {
                     id: icons
                     anchors.centerIn: parent
                     color: (column === tableview.checkAttackIconColumn
-                            && row === tableview.checkAttackIconRow) ? "#01AED6" : "transparent"
+                            && row === tableview.checkAttackIconRow) ? "#01AED6" : "#003569"
                     //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "qrc:/Resources/airplane.png" //"qrc:/Resources/airplane.png" //decorate
                     visible: model.column === 1 || model.column === tableModel.columnCount()
                              - 1 || model.column === tableModel.columnCount()
@@ -1595,9 +1591,9 @@ Item {
                         //console.log("column count : ", rowCount)
                         //console.log("column filter count: ", tableModel.columnCount())
                         //model.column === 11
-                        if (display === "qrc:/Resources/more-icon.jpg") {
+                        if (decorate === "qrc:/Resources/more-icon.jpg") {
                             menuTable.popup()
-                        } else if (display === "qrc:/Resources/battle-icon.jpg"
+                        } else if (decorate === "qrc:/Resources/battle-icon.jpg"
                                    && model.row === 0
                                    && tableview.checkAttackIconRow !== -1) {
                             console.log("chnage model")
@@ -1606,7 +1602,7 @@ Item {
                             tableview.checkAttackIconColumn = -1
                             //tableview.selectedRow = model.row
                             //tableModel.selectionRow(tableview.selectedRow, 18)
-                        } else if (display === "qrc:/Resources/battle-icon.jpg") {
+                        } else if (decorate === "qrc:/Resources/battle-icon.jpg") {
                             //console.log(tableview.itemAtIndex(0,2))
                             tableModel.attacker(tableModel.data(tableview.index(
                                                                     model.row,
@@ -1624,7 +1620,7 @@ Item {
                             //tableModel.selectionRow(row, 0)
                         }
 
-                        if (display === "qrc:/Resources/target-icon.jpg") {
+                        if (decorate === "qrc:/Resources/target-icon.jpg") {
                             console.log(tableModel.data(tableview.index(
                                                             model.row, 2)))
                             tableview.index(0, 11)
@@ -1649,72 +1645,57 @@ Item {
             } //rectDelegate.implicitWidth
             Menu {
                 id: menuTable
-                width: 80
-
+                padding: 5
                 Repeater {
-                    id: repeaterTableMenu
-                    model: ["Go to", "Track"]
-                    MenuItem {
-                        text: modelData
+                    model: ["Go To", "Track"]
 
-                        background: Rectangle {
-                            id: rectBackTableMenu
-                            width: 80 //menuTable.width
-                            color: Style.backgroundColor
-                            border.width: .3
-                            border.color: "black"
-                            //radius: 20
-                            Rectangle {
-                                //shadow
-                                property real offset: Math.min(
-                                                          parent.width * 0.03,
-                                                          parent.height * 0.03)
-                                color: "black"
-                                width: parent.width
-                                height: parent.height
-                                z: -1
-                                opacity: 0.06
-                                radius: parent.radius + 2
-                                anchors.left: parent.left
-                                anchors.leftMargin: -offset
-                                anchors.top: parent.top
-                                anchors.topMargin: offset
-                            }
-                        }
-                        contentItem: Rectangle {
-                            color: "transparent"
-                            Image {
-                                id: imgMenuTable
+                    MenuItem {
+                        id: menuItem
+                        //implicitWidth: 89
+                        //implicitHeight: 24
+                        text: modelData
+                        contentItem: RowLayout {
+                            anchors.fill: parent
+                            spacing: 2
+                            IconImage {
+                                Layout.preferredHeight: 20
+                                Layout.preferredWidth: 20
+                                //color: "yellow"
+                                //Layout.leftMargin: 15 / rootItem.monitorRatio
+                                //Layout.rightMargin: 15 / rootItem.monitorRatio
                                 source: model.index === 0 ? "qrc:/Resources/goto-icon.jpg" : "qrc:/Resources/track-icon.jpg"
-                                //anchors.centerIn: parent
-                                width: 20
-                                height: 20
                             }
                             Text {
-                                text: modelData
-                                anchors.left: imgMenuTable.right
-                                //width: 50
-                                color: Style.foregroundColor
+                                //padding: 5
+                                //leftPadding: menuItem.indicator.width
+                                //rightPadding: menuItem.arrow.width
+                                text: modelData //menuItem.text
+                                //font: menuItem.font
+                                //opacity: enabled ? 1.0 : 0.3
+                                color: Style.foregroundColor //menuItem.highlighted ? "#ffffff" : "#21be2b"
+                                //horizontalAlignment: Text.AlignLeft
                                 font.family: Style.fontFamily
                                 font.pixelSize: 17 / Style.monitorRatio
+                                verticalAlignment: Text.AlignVCenter
+                                //elide: Text.ElideRight
                             }
                         }
 
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onEntered: {
-                                rectBackTableMenu.color = rootItem.fg20
-                            }
-                            onExited: {
-                                rectBackTableMenu.color = Style.backgroundColor
-                            }
-                            onClicked: {
-                                //console.log(model.column, model.index)
-                                menuTable.close()
-                            }
+                        background: Rectangle {
+                            implicitWidth: 89
+                            implicitHeight: 24
+                            color: menuItem.highlighted ? rootItem.fg20 : "transparent"
+                            radius: 10
                         }
                     }
+                }
+
+                background: Rectangle {
+                    implicitWidth: 92
+                    implicitHeight: 24
+                    color: Style.backgroundColor
+                    border.color: rootItem.fg20
+                    radius: 10
                 }
             }
         }

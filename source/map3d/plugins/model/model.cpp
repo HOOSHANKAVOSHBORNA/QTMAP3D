@@ -356,6 +356,43 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
     mNodeData.latitude = geoPos.y();
     mNodeData.altitude = geoPos.z();
     mNodeData.command = Command::Add;
+    mNodeData.fieldData.clear();
+
+    NodeFieldData nameField;
+    nameField.name = "Name";
+    nameField.value = mNodeData.name;
+    nameField.category = "Main Information";
+    mNodeData.fieldData.push_back(nameField);
+
+    NodeFieldData idField;
+    idField.name = "Id";
+    idField.value = mNodeData.id;
+    idField.category = "Main Information";
+    mNodeData.fieldData.push_back(idField);
+
+    NodeFieldData colorField;
+    colorField.name = "Color";
+    colorField.value = mNodeData.color;
+    colorField.category = "Main Information";
+    mNodeData.fieldData.push_back(colorField);
+
+    NodeFieldData latField;
+    latField.name = "Latitude";
+    latField.value = mNodeData.latitude;
+    latField.category = "Location Information";
+    mNodeData.fieldData.push_back(latField);
+
+    NodeFieldData longField;
+    longField.name = "Longitude";
+    longField.value = mNodeData.longitude;
+    longField.category = "Location Information";
+    mNodeData.fieldData.push_back(longField);
+
+    NodeFieldData altField;
+    altField.name = "Altitude";
+    altField.value = mNodeData.altitude;
+    altField.category = "Location Information";
+    mNodeData.fieldData.push_back(altField);
 
     mLayerData.command = Command::Add;
     mLayerData.children[mType.type].command = Command::Add;

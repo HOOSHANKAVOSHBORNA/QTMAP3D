@@ -519,6 +519,7 @@
         <file>Resources/inform.png</file>
         <file>Resources/bullet.png</file>
         <file>Resources/splash.gif</file>
+<<<<<<< HEAD
         <file>Resources/aircraft-icon.jpg</file>
         <file>Resources/battle-icon.jpg</file>
         <file>Resources/close-icon.jpg</file>
@@ -532,5 +533,8 @@
         <file>Resources/goto-icon.jpg</file>
         <file>Resources/search-icon.jpg</file>
         <file>Resources/right-icon.jpg</file>
+=======
+        <file>Resources/draw.png</file>
+>>>>>>> a936530a81c1fc781eabe40438973363344aeb17
     </qresource>
 </RCC>
