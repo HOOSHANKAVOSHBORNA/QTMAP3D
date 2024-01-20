@@ -124,8 +124,8 @@ void PluginManager::setup()
     //----------------------------------
     PluginInterface::setPluginsMap(mPluginsMap);
     //--------------------------------
-    DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
-    PluginInterface::setDefenseDataManager(defenseDataManager);
+//    DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
+//    PluginInterface::setDefenseDataManager(defenseDataManager);
 
     ServiceManager *serviceManager = Application::instance()->serviceManager();
     PluginInterface::setServiceManager(serviceManager);

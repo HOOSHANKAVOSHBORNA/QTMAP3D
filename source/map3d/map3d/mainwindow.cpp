@@ -22,7 +22,7 @@
 #include "settings.h"
 #include "qmlNode.h"
 #include "filterManager.h"
-
+#include "userManager.h"
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterType<MapControllerItem>("Crystal",1,0,"MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
 
-
+    qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ProfileManagerInstance", ProfileManager::createSingletonInstance);
     qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxManagerInstance", ToolboxManager::createSingletonInstance);
     qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);

@@ -21,7 +21,6 @@ class MapItem;
 class MainWindow;
 class ListWindow;
 class QQuickItem;
-class DefenseDataManager;
 class BookmarkManager;
 namespace osgViewer {
     class Viewer;
@@ -41,9 +40,6 @@ public:
     QQmlEngine *qmlEngine() const;
     Toolbox *toolbox() const;
     BookmarkManager *bookmarkManager() const;
-
-    DefenseDataManager *defenseDataManager() const;
-    static void setDefenseDataManager(DefenseDataManager* defenseDataManager);
 
     virtual bool setup() {return false;}
 
@@ -73,7 +69,6 @@ public:
 private:
     static inline MapControllerItem *mMapItem;
     static inline QQmlEngine *mQmlEngine;
-    static inline DefenseDataManager *mDefenseDataManager;
     static inline MainWindow *mMainWindow;
     static inline Toolbox *mToolbox;
     static inline ServiceManager *mServiceManager;

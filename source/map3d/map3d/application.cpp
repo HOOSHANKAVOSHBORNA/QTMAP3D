@@ -37,13 +37,18 @@ void Application::initialize()
 {
     qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
-    qmlRegisterType<Authenticator>("Crystal", 1, 0, "Authenticator");
     qmlRegisterType<Splash>("Crystal", 1, 0, "CSplash");
-
+    //--qml--------------------------------------------------
     initializeQmlEngine();
-    initializeDefenseDataManager();
-
-    mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
+    //--network----------------------------------------------
+    mNetworkManager = new NetworkManager();
+    mNetworkManager->start();
+    mServiceManager = new ServiceManager(mNetworkManager);
+    //--user manger------------------------------------------
+    mUserManager = new UserManager(mServiceManager, mQmlEngine);
+    connect(mUserManager, &UserManager::signedIn,[this]{
+        mQmlEngine->load(QStringLiteral("qrc:///SplashWindow.qml"));
+    });
 }
 
 void Application::show()
@@ -78,12 +83,6 @@ void Application::initializeQmlEngine()
     });
 }
 
-void Application::initializeDefenseDataManager()
-{
-    //TODO set parent
-    mDefenseDataManager = new DefenseDataManager;
-}
-
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
     if(!obj){
@@ -92,29 +91,24 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
         return;
     }
 
-    qDebug()<<"Load: "<< objUrl.toString();
-
-    Authenticator *authenticator = qobject_cast<Authenticator*>(obj);
     MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
     ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
     Splash *splash = qobject_cast<Splash*>(obj);
 
-    if (authenticator){
-        mAuthenticator = authenticator;
-        authenticate();
-    }
     if (splash) {
+        qDebug()<<"Load: "<< objUrl.toString();
         mSplash = splash;
         showSplash();
     }
     if (mainWnd) {
+        qDebug()<<"Load: "<< objUrl.toString();
         mMainWindow = mainWnd;
         mMainWindow->initComponent();
     }
 
     if (listWnd) {
+        qDebug()<<"Load: "<< objUrl.toString();
         mListWindow = listWnd;
-
         mMainWindow->setListWindow(mListWindow);
     }
 }
@@ -152,33 +146,4 @@ void Application::showSplash()
         mSplash->hide();
         onUICreated();
     });
-}
-
-
-void Application::authenticate()
-{
-    mAuthenticator->show();
-    mNetworkManager = new NetworkManager();
-    mNetworkManager->start();
-    mServiceManager = new ServiceManager(mNetworkManager);
-
-    mAuthenticator->setServiceManager(mServiceManager);
-
-
-    QTimer *timer = new QTimer();
-    connect(timer, &QTimer::timeout, [this](){
-        mAuthenticator->hide();
-        // splash.finish(mMainWindow);
-        mQmlEngine->load(QStringLiteral("qrc:///SplashWindow.qml"));
-    });
-    timer->setSingleShot(true);
-    timer->start(0);
-    // connect(mServiceManager, &ServiceManager::signInResponseReceived, [&](bool status, int role){
-    //     if (status && !mMainWindow) {
-    // mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
-    // mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
-    // mAuthenticator->hide();
-    //         mRole = static_cast<UserRoles>(role);
-    //     }
-    // });
 }

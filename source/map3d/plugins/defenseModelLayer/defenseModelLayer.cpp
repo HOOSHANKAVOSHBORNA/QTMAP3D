@@ -210,7 +210,7 @@ bool DefenseModelLayer::setup()
     QObject::connect(toolboxItemKill, &ToolboxItem::itemClicked, this, &DefenseModelLayer::onKillItemClick);
     toolbox()->addItem(toolboxItemKill);
     //-----------------------------------------------------
-    mDataManager = new DataManager(defenseDataManager(), this);
+//    mDataManager = new DataManager(DefenseDataManager(), this);
     connect(mapItem(), &MapItem::mapCleared, this, &DefenseModelLayer::onMapClear);
     //-----------------------------------------------------
     initLayers();
@@ -458,12 +458,12 @@ void DefenseModelLayer::onMapClear()
 bool DefenseModelLayer::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     //    findSceneModels(mapItem()->getViewer());
-    for(auto data: mDataManager->aircraftDataManager()->getAircraftsData())
-        if(data->modelNode.valid())
-            data->modelNode->frameEvent(ea, aa);
-    for(auto data: mDataManager->systemDataManager()->getSystemsData())
-        if(data->systemModelNode.valid())
-            data->systemModelNode->frameEvent(ea, aa);
+//    for(auto data: mDataManager->aircraftDataManager()->getAircraftsData())
+//        if(data->modelNode.valid())
+//            data->modelNode->frameEvent(ea, aa);
+//    for(auto data: mDataManager->systemDataManager()->getSystemsData())
+//        if(data->systemModelNode.valid())
+//            data->systemModelNode->frameEvent(ea, aa);
     return false;
 }
 
