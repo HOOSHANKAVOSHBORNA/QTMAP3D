@@ -67,7 +67,6 @@ Item{
                         {
                             filterRect.height  =  0
                             flag = false
-                            print("1")
 
                         }
 
