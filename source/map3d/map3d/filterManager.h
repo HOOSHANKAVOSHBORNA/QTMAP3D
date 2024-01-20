@@ -9,17 +9,31 @@
 struct NodeData;
 
 struct Tag {
-    bool equalCheck;
+    enum Comparision{
+        Equal,
+        NotEqual,
+        Greater,
+        Less,
+        GreaterEqual,
+        LessEqual
+    };
+    enum LogicalOperator{
+        And,
+        Or
+//        Not
+    };
+
+    QString field;
     QVariant value;
 
-    QString comparision;
-    QPair<double, double> values;
+    Comparision comparision;
+    LogicalOperator logicalOperator;
 
     bool operator==(const Tag& t) const {
-        if (equalCheck == t.equalCheck) {
-            return value == t.value;
-        }
-        return (t.comparision == comparision) && ((t.value == value) || (t.values == values));
+//        if (equalCheck == t.equalCheck) {
+//            return value == t.value;
+//        }
+        return (t.comparision == comparision) && ((t.value == value) /*|| (t.value2 == value2)*/);
     }
 
 };
