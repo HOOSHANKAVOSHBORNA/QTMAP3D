@@ -25,6 +25,8 @@ Item {
                                           backgroundColor.b, 0.20)
     readonly property color bg60: Qt.rgba(backgroundColor.r, backgroundColor.g,
                                           backgroundColor.b, 0.8)
+
+
     RowLayout {
         id: mainRow
         //        anchors.centerIn: parent
@@ -133,11 +135,12 @@ Item {
                 }
                 Rectangle {
                     id: attackholder
+//                    Layout.leftMargin: -15
                     width: 75 / 1.3 /*Style.monitorRatio*/
                     height: 75 / 1.3 /*Style.monitorRatio*/
                     color: "transparent"
-//                    border.width: 2
-//                    border.color: "gold"
+                    //                    border.width: 2
+                    //                    border.color: "gold"
                     Rectangle{
                         id:attack
                         anchors.top: parent.top
@@ -154,7 +157,7 @@ Item {
                             text: qsTr("Assign")
                             font.family: "Roboto"
                             font.pixelSize: attackMA.containsMouse ? 15 / 1.3 : 13/1.3
-//                            font.weight: Font.Bold
+                            //                            font.weight: Font.Bold
                             color: "white"
                         }
                         MouseArea {
@@ -177,7 +180,7 @@ Item {
                             text: qsTr("Select All")
                             font.family: "Roboto"
                             font.pixelSize: selectMA.containsMouse ? 15 / 1.3 : 13/1.3
-//                            font.weight: Font.Bold
+                            //                            font.weight: Font.Bold
                             color: "white"
                         }
                         MouseArea {
@@ -224,102 +227,41 @@ Item {
 
                         }
                     }
-
                 }
-                //                Rectangle {
-                //                    id: attackholder
-                //                    width: 75 / 1.3 /*Style.monitorRatio*/
-                //                    height: 75 / 1.3 /*Style.monitorRatio*/
-                //                    radius: width / 2
-
-                //                    //                    Layout.rightMargin: -25 / 1.3 /*Style.monitorRatio*/
-                //                    gradient: Gradient {
-                //                        GradientStop {
-                //                            position: 0.0
-                //                            color: "#537597"
-                //                        }
-                //                        GradientStop {
-                //                            position: 1.0
-                //                            color: "#003569"
-                //                        }
-                //                    }
-
-                //                    Rectangle {
-                //                        anchors.horizontalCenter: parent.horizontalCenter
-                //                        anchors.verticalCenter: parent.verticalCenter
-
-                //                        width: 65 / 1.3 /*Style.monitorRatio*/
-                //                        height: 65 / 1.3 /*Style.monitorRatio*/
-                //                        radius: width / 2
-                //                        border {
-                //                            width: 3
-                //                            color: "#c8d0d5"
-                //                        }
-                //                        gradient: Gradient {
-                //                            GradientStop {
-                //                                position: 0.0
-                //                                color: "#DEE3E6"
-                //                            }
-                //                            GradientStop {
-                //                                position: 1.0
-                //                                color: "#DEE3E6"
-                //                            }
-                //                        }
-                //                        Rectangle {
-                //                            property var model: assignmentListModel
-                //                            readonly property color myRed: "#FF0000"
-                //                            readonly property color myRed75: Qt.rgba(myRed.r,
-                //                                                                     myRed.g,
-                //                                                                     myRed.b,
-                //                                                                     0.75)
-                //                            anchors.fill: parent
-                //                            gradient: Gradient {
-                //                                orientation: Gradient.Horizontal
-                //                                GradientStop {
-                //                                    position: 0.0
-                //                                    color: "#FF7C7C"
-                //                                }
-                //                                GradientStop {
-                //                                    position: 1.0
-                //                                    color: "#FF0000"
-                //                                }
-                //                            }
-                //                            radius: parent.radius
-                //                            border.width: 3
-                //                            border.color: myRed75
-                //                        }
-                //                    }
-                //                    Text {
-                //                        id: name
-                //                        anchors.centerIn: parent
-                //                        text: qsTr("ATTACK")
-                //                        font.family: "Roboto"
-                //                        font.pixelSize: 13 / 1.3
-                //                        font.weight: Font.Bold
-                //                        color: "white"
-                //                    }
-                //                    MouseArea {
-                //                        anchors.fill: parent
-                //                        onClicked: assignmentListModel.onAttackButtonClicked()
-                //                    }
-                //                }
             }
         }
-        // nodeholder
-        ScrollView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.maximumWidth: 425
-            Layout.topMargin: 5 / 1.3
-            ScrollBar.horizontal.interactive: true
+
+        Flickable {
+            id: flickable
+            width: rowLay.width > 425 ?425 : rowLay.width  ; height: rowLay.height
+            Layout.leftMargin: 8
+            Layout.bottomMargin: nodeInfoHolder.height - 5 / 1.3
+            contentWidth: rowLay.width; contentHeight:  rowLay.height
+            flickableDirection : Flickable.HorizontalFlick
+            boundsMovement: Flickable.StopAtBounds
             clip: true
-Drag.active: true
+            boundsBehavior: Flickable.DragOverBounds
+
             RowLayout{
                 id: rowLay
                 Layout.alignment: Qt.AlignVCenter
-                //                Layout.maximumWidth: 400
+                //                Layout.leftMargin:
+                Layout.maximumWidth: 425
                 spacing: 0
                 clip: true
+                onWidthChanged: {
+                    if(width > 420){
+                        rightMotionOpen.running = true
+                        leftMotionOpen.running = true
+                        marginMotionOp.running = true
+                    }
+                    else{
+                        rightMotionClose.running = true
+                        leftMotionClose.running = true
+                        marginMotionCl.running = true
+                    }
+                }
+
                 Repeater {
                     id: modelDataContainer
                     model: root.assignmentListModel
@@ -402,6 +344,8 @@ Drag.active: true
                 }
             }
         }
+        //        }
+        //        }
     }
     /////   nodeholderbackground
     Rectangle {
@@ -413,17 +357,90 @@ Drag.active: true
         radius: 20
         color: fg75
 
-        width: (rowLay.childrenRect.width  > 420 ? 500 : (rowLay.childrenRect.width  +  80))
+        width: (rowLay.childrenRect.width  > 420 ? 524 : (rowLay.childrenRect.width  +  90))
         //                / 1.3) ? 645 / 1.3  : */rowLay.childrenRect.width  +  80
         height: 75 / 1.3 /*Style.monitorRatio*/
         z: -2
         Rectangle{
+            id:right
+            anchors.right: parent.right
+            anchors.rightMargin: 0
+            height: 75 / 1.3 /*Style.monitorRatio*/
+            width: 55 / 1.3 /*Style.monitorRatio*/
+            color: Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)
+            radius: 20
+            //            border.width: 1
+            //            border.color: "white"
+            IconImage {
+                id:rightIcon
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.leftMargin: -5
+                source: "qrc:/Resources/down"
+                height: 30 / 1.3 /*Style.monitorRatio*/
+                width: 30 / 1.3 /*Style.monitorRatio*/
+
+                rotation: 90
+                MouseArea{
+                    anchors.fill: parent
+                    hoverEnabled: true
+//                    propagateComposedEvents: true
+                    onClicked:{
+                        flickable.contentX -= 131 / 1.3
+
+                    }
+                    onEntered: rightIcon.width = rightIcon.width * 1.3
+                    onExited: rightIcon.width = 30 / 1.3
+                }
+            }
+        }
+        Rectangle{
+
+            id:left
+            height: 75 / 1.3 /*Style.monitorRatio*/
+            width: /*55 / 1.3 /*Style.monitorRatio*/ 0
+            color: Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)
+            radius: 20
+
+            IconImage {
+                id:leftIcon
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: -5
+                //                anchors.verticalCenter: parent.verticalCenter
+                //                anchors.horizontalCenter: parent.horizontalCenter
+                source: "qrc:/Resources/down"
+                height: 30 / 1.3 /*Style.monitorRatio*/
+                width: 30 / 1.3 /*Style.monitorRatio*/
+
+                rotation: -90
+                MouseArea{
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    propagateComposedEvents: true
+                    onClicked:{
+                                  print(flickable.contentX)
+                                  flickable.contentX += 131 / 1.3
+
+                              }
+                    onEntered: leftIcon.width = leftIcon.width * 1.3
+                    onExited: leftIcon.width = 30 / 1.3
+                }
+            }
+
+
+        }
+
+        Rectangle{
             height: 75 / 1.3 /*Style.monitorRatio*/
             width: 55 / 1.3 /*Style.monitorRatio*/
             radius: 20
-            color:Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
-                          nodeInfoHolder.b, .03)
+            color:/*Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
+                          nodeInfoHolder.b, .03)*/"#DEE3E6"
             anchors.right: parent.right
+//            z:3
+
+
             Rectangle {
                 id:addbtn
                 anchors.top:parent.top
@@ -441,12 +458,16 @@ Drag.active: true
                     height: 25 / 1.3 /*Style.monitorRatio*/
                     width: 25 / 1.3 /*Style.monitorRatio*/
 
+
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled:true
+//                        hoverEnabled:true
                         onEntered: addbtn.color = root.bg20
                         onExited: {if(!addCheck)
-                                addbtn.color = "transparent"}
+                                addbtn.color = "transparent"
+                                print(addCheck)
+                        }
+                        z:3
                         onClicked: {
                             print(nodesBackground.width )
                             addCheck = !addCheck
@@ -481,15 +502,17 @@ Drag.active: true
                         anchors.fill: parent
                         hoverEnabled:true
                         onEntered: deletebtn.color = root.bg20
+                        propagateComposedEvents: true
                         onExited: {if(!removeCheck)
-                                deletebtn.color = "transparent"}
-                        onClicked: {
+                                deletebtn.color = "transparent"
+                        print(removeCheck)}
+                        onClicked:(mouse)=> {
                             removeCheck = !removeCheck
                             addCheck = false
                             assignmentListModel.onRemoveButtonChecked(removeCheck)
                             if(removeCheck){
                                 addbtn.color = "transparent"
-                            }
+                                      }
 
 
                         }
@@ -497,6 +520,41 @@ Drag.active: true
                 }
             }
 
+        }
+        PropertyAnimation {
+            id: rightMotionOpen
+            target: right
+            properties: "anchors.rightMargin"
+            to: 13
+            from: 0
+            duration: 200
+            easing.type: Easing.OutQuint
+        }
+        PropertyAnimation {
+            id: rightMotionClose
+            target: right
+            properties: "anchors.rightMargin"
+            to: 0
+            duration: 200
+            easing.type: Easing.OutQuint
+        }
+
+        PropertyAnimation {
+            id: leftMotionOpen
+            target: left
+            properties: "width"
+            to: 55 / 1.3
+            from: 0
+            duration: 200
+            easing.type: Easing.OutQuint
+        }
+        PropertyAnimation {
+            id: leftMotionClose
+            target: left
+            properties: "width"
+            to: 0
+            duration: 200
+            easing.type: Easing.OutQuint
         }
 
     }
@@ -682,7 +740,6 @@ Drag.active: true
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
-                                print(index)
                                 operatorListModel.select(operatorListModel.index(index, 0).row)
                             }
                             onEntered: {
@@ -707,6 +764,23 @@ Drag.active: true
         properties: "width"
         to: bottomLayer.width
         from: 0
+        duration: 200
+        easing.type: Easing.OutQuint
+    }
+
+    PropertyAnimation {
+        id: marginMotionOp
+        target: attackholder
+        properties: "Layout.leftMargin"
+        to: -15
+        duration: 200
+        easing.type: Easing.OutQuint
+    }
+    PropertyAnimation {
+        id: marginMotionCl
+        target: attackholder
+        properties: "Layout.leftMargin"
+        to:0
         duration: 200
         easing.type: Easing.OutQuint
     }
