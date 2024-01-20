@@ -230,21 +230,9 @@ Item {
                 }
             }
         }
-        // nodeholder
-//        Rectangle{
-//            width: 400
-//            height: 30
-//            color: "red"
-//            z:-8
-//        }
 
         Flickable {
             id: flickable
-//            Layout.maximumWidth: 425
-            //            Layout.fillWidth: true
-//                        Layout.fillHeight: true
-            //            Layout.maximumWidth: 425
-            //boundsBehavior: Flickable.StopAtBounds
             width: rowLay.width > 425 ?425 : rowLay.width  ; height: rowLay.height
             Layout.leftMargin: 8
             Layout.bottomMargin: nodeInfoHolder.height - 5 / 1.3
@@ -265,12 +253,12 @@ Item {
                     if(width > 420){
                         rightMotionOpen.running = true
                         leftMotionOpen.running = true
-                        attackholder.Layout.leftMargin = - 15
+                        marginMotionOp.running = true
                     }
                     else{
                         rightMotionClose.running = true
                         leftMotionClose.running = true
-                        attackholder.Layout.leftMargin = 0
+                        marginMotionCl.running = true
                     }
                 }
 
@@ -776,6 +764,23 @@ Item {
         properties: "width"
         to: bottomLayer.width
         from: 0
+        duration: 200
+        easing.type: Easing.OutQuint
+    }
+
+    PropertyAnimation {
+        id: marginMotionOp
+        target: attackholder
+        properties: "Layout.leftMargin"
+        to: -15
+        duration: 200
+        easing.type: Easing.OutQuint
+    }
+    PropertyAnimation {
+        id: marginMotionCl
+        target: attackholder
+        properties: "Layout.leftMargin"
+        to:0
         duration: 200
         easing.type: Easing.OutQuint
     }
