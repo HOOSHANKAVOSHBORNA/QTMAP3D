@@ -38,7 +38,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
     if (!mNodeMap.contains(nodeData.id)) {
         // TODO
-        // mUniqueNames
+        // mUniqueColumnNames
         // mUniqueColors
         // mUniqueFields = [name, icon, color, ...]
 

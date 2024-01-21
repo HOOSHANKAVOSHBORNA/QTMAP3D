@@ -21,12 +21,10 @@ int main(int argc, char *argv[])
     //    });
     UserTest userTest(&serviceManager);
     LayerTest LayerTest(&serviceManager);
-<<<<<<< HEAD
+
     //    FlyableNodeTest flyableNodeTest(&networkManager);
     //    MovableNodeTest movableNodeTest(&networkManager);
-=======
 
->>>>>>> a936530a81c1fc781eabe40438973363344aeb17
     NodeTest nodeTest(&serviceManager);
     AssignmentTest assignmentTest(&serviceManager);
     // ParticleTest particleTest(&serviceManager);

@@ -1546,9 +1546,10 @@ Item {
                     color: (column === tableview.checkAttackIconColumn
                             && row === tableview.checkAttackIconRow) ? "#01AED6" : "#003569"
                     //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "qrc:/Resources/airplane.png" //"qrc:/Resources/airplane.png" //decorate
-                    visible: model.column === 1 || model.column === tableModel.columnCount()
-                             - 1 || model.column === tableModel.columnCount()
-                             - 2 || model.column === tableModel.columnCount() - 3
+                    visible: model.column === 1
+                    //                    visible: model.column === 1 || model.column === tableModel.columnCount()
+                    //                             - 1 || model.column === tableModel.columnCount()
+                    //                             - 2 || model.column === tableModel.columnCount() - 3
                     source: decorate
 
                     width: 30
@@ -1566,10 +1567,11 @@ Item {
                     anchors.left: model.column === 2 ? parent.left : undefined
                     anchors.centerIn: model.column === 2 ? undefined : parent
                     anchors.verticalCenter: parent.verticalCenter
-                    visible: model.column !== 0 && model.column
-                             !== 1 && model.column !== tableModel.columnCount()
-                             - 3 && model.column !== tableModel.columnCount()
-                             - 2 && model.column !== tableModel.columnCount() - 1
+                    visible: model.column !== 0 & model.column !== 1
+                    //                    visible: model.column !== 0 && model.column
+                    //                             !== 1 && model.column !== tableModel.columnCount()
+                    //                             - 3 && model.column !== tableModel.columnCount()
+                    //                             - 2 && model.column !== tableModel.columnCount() - 1
                 }
                 Rectangle {
                     width: parent.width

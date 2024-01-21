@@ -393,20 +393,27 @@ int NodeListModel::columnCount(const QModelIndex &) const
     //        return DataAttacker->at(0).FieldData.size();
 
     // TODO
-    return 11 /* + nodeData.fieldData.size()*/;
+    NodeData nodeData = mDataManager->getNodeAtIndex(0)->nodeData();
+    //qDebug() << "size : " << nodeData.fieldData.size();
+    return 8 + nodeData.fieldData.size(); /* + nodeData.fieldData.size()*/
 }
 
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
 {
     NodeData nodeData = mDataManager->getNodeAtIndex(index.row())->nodeData();
-    qDebug() << nodeData.fieldData.size();
-    //qDebug() << nodeData.category;
-    for (int i = 0; i < nodeData.fieldData.size(); ++i) {
-        if (nodeData.fieldData.size()) {
-            //            qDebug() << "fieldData" << i << nodeData.fieldData.at(i).name << ", "
-            //                     << nodeData.fieldData.at(i).value << ", " << nodeData.fieldData.at(i).category;
-        }
-    }
+    //Attack = nodeData.fieldData.size() + EColumn::Battle + 1;
+    //EColumn::Attack = static_cast<EColumn>(nodeData.fieldData.size() + EColumn::Battle + 1);
+    //qDebug() << "enum" << myEnum << EColumn::Attack;
+    //qDebug() << nodeData.fieldData.size();
+    //qDebug() << nodeData.fieldData.at(1).value.toString();
+
+    //    qDebug() << nodeData.category;
+    //    for (int i = 0; i < nodeData.fieldData.size(); ++i) {
+    //        if (nodeData.fieldData.size()) {
+    //            qDebug() << "fieldData" << i << nodeData.fieldData.at(i).name << ", "
+    //                     << nodeData.fieldData.at(i).value << ", " << nodeData.fieldData.at(i).category;
+    //        }
+    //    }
 
     //qDebug() << "fieldData.size(): " << nodeData.fieldData.size();
     //    id= nodeData.id;
@@ -429,7 +436,7 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
         case NodeListModel::EColumn::Name:
-            return nodeData.name;
+            return nodeData.name; //nodeData.name;
         case NodeListModel::EColumn::Type:
             return nodeData.type.toString();
         case NodeListModel::EColumn::Latitude:
@@ -440,22 +447,16 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
             return QString::number(nodeData.altitude, 'l', 2);
         case NodeListModel::EColumn::Speed:
             return QString::number(nodeData.speed, 'l', 2);
-        default:
-            return QVariant("defualt");
+            //        default:
+            //            return QVariant("defualt");
         }
-        qDebug() << nodeData.fieldData.size();
-        for (int i = 0; i < nodeData.fieldData.size(); ++i) {
-            if (index.column() == i + 11) {
-                qDebug() << nodeData.fieldData.at(i).value.toString();
-                return nodeData.fieldData.at(i).value.toString();
-            }
+        if (index.column() > 7) {
+            //qDebug() << "num column: " << index.column();
+            return nodeData.fieldData.at(index.column() - NodeListModel::EColumn::Battle).value;
+            //return nodeData.fieldData.at(0).value;
+            //index.column() - NodeListModel::EColumn::Battle)
         }
-
-        //        if (index.column() >= columnToName.size()) {
-        //            return QString("default");
-        //        } else {
-        //            return nodeData.fieldData.at(index.column()).value;
-        //        }
+        return "def";
     }
 
     // color roles
@@ -473,12 +474,18 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         switch (index.column()) {
         case NodeListModel::EColumn::Icon:
             return nodeData.iconInfoUrl;
-        case NodeListModel::EColumn::Battle:
-            return "qrc:/Resources/battle-icon.jpg";
-        case NodeListModel::EColumn::Target:
-            return "qrc:/Resources/target-icon.jpg";
-        case NodeListModel::EColumn::More:
-            return "qrc:/Resources/more-icon.jpg";
+            //        case myEnum:
+            //            return "qrc:/Resources/battle-icon.jpg";
+            //        case NodeListModel::EColumn::Speed + 6 + 2:
+            //            return "qrc:/Resources/target-icon.jpg";
+            //        case NodeListModel::EColumn::Speed + 6 + 3:
+            //            return "qrc:/Resources/more-icon.jpg";
+            //        case NodeListModel::EColumn::Battle:
+            //            return "qrc:/Resources/battle-icon.jpg";
+            //        case NodeListModel::EColumn::Target:
+            //            return "qrc:/Resources/target-icon.jpg";
+            //        case NodeListModel::EColumn::More:
+            //            return "qrc:/Resources/more-icon.jpg";
         default:
             return QVariant("qrc:/Resources/hand.png");
         }

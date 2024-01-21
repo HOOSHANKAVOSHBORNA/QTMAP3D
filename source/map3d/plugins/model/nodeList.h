@@ -35,6 +35,7 @@ public:
         Target,
         More
     };
+    int Attack;
 
 public:
     explicit NodeListModel(DataManager *dataManager);
