@@ -68,6 +68,7 @@ Rectangle {
                 height: 24 / /*Style.monitorRatio*/ 1.3
                 color: rootObj.fg75
             }
+            visible: false
 
             TextField {
                 id: searchTextField
