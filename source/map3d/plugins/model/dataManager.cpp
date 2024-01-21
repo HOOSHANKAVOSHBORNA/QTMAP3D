@@ -38,30 +38,52 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
     if (!mNodeMap.contains(nodeData.id)) {
         // TODO
-        // mUniqueColumnNames
+        // mUniqueNodeNames
         // mUniqueColors
-        // mUniqueFields = [name, icon, color, ...]
+        // mUniqueCategory
+
+        // adding new unique column name
+        for (int i = 0; i < nodeData.fieldData.size(); ++i) {
+            QString name = nodeData.fieldData.at(i).name;
+            bool found = false;
+            for (int j = 0; j < mUniqueAddedColumnNames.size(); ++j) {
+                if (name == mUniqueAddedColumnNames.at(j)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                mUniqueAddedColumnNames.append(name);
+            }
+        }
 
         if (nodeData.type == NodeType::Movable)
-            node = new MoveableModelNode(mMapItem, nodeData.url3D.toStdString(), nodeData.url2D.toStdString());
-        else if(nodeData.type == NodeType::Flyable)
-            node = new FlyableModelNode(mMapItem, nodeData.url3D.toStdString(), nodeData.url2D.toStdString());
+            node = new MoveableModelNode(mMapItem,
+                                         nodeData.url3D.toStdString(),
+                                         nodeData.url2D.toStdString());
+        else if (nodeData.type == NodeType::Flyable)
+            node = new FlyableModelNode(mMapItem,
+                                        nodeData.url3D.toStdString(),
+                                        nodeData.url2D.toStdString());
         else
-            node = new SimpleModelNode(mMapItem, nodeData.url3D.toStdString(), nodeData.url2D.toStdString());
+            node = new SimpleModelNode(mMapItem,
+                                       nodeData.url3D.toStdString(),
+                                       nodeData.url2D.toStdString());
 
         node->setPosition(geoPoint);
         mNodeMap[nodeData.id] = node;
         node->setBookmarkManager(mMainWindow->getBookmarkManager());
     } else {
         node = mNodeMap[nodeData.id];
-        for(int layerId: node->nodeData().layersId){
+        for (int layerId : node->nodeData().layersId) {
             auto layer = mMapItem->getMapObject()->getLayerByUserId(layerId);
-            if(layer)
+            if (layer)
                 layer->removeChild(node);
         }
-        if(nodeData.type == NodeType::Movable)
+        if (nodeData.type == NodeType::Movable)
             node->asMoveableModelNode()->moveTo(geoPoint, nodeData.speed);
-        else if(nodeData.type == NodeType::Flyable)
+        else if (nodeData.type == NodeType::Flyable)
             node->asFlyableModelNode()->flyTo(geoPoint, nodeData.speed);
         else
             node->setPosition(geoPoint);
@@ -94,6 +116,16 @@ void DataManager::removeNode(const NodeData &nodeData)
         mNodeMap[nodeData.id].release();
         mNodeMap.remove(nodeData.id);
     }
+}
+
+QVector<QString> DataManager::uniqueAddedColumnNames() const
+{
+    return mUniqueAddedColumnNames;
+}
+
+void DataManager::setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames)
+{
+    mUniqueAddedColumnNames = newUniqueColumnNames;
 }
 
 int DataManager::nodeCount()

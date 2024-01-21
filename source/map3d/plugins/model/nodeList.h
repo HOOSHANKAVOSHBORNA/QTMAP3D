@@ -22,22 +22,6 @@ class NodeListModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    enum EColumn {
-        Color = 0,
-        Icon,
-        Name,
-        Type,
-        Latitude,
-        Longitude,
-        Altitude,
-        Speed,
-        Battle,
-        Target,
-        More
-    };
-    int Attack;
-
-public:
     explicit NodeListModel(DataManager *dataManager);
 
     int rowCount(const QModelIndex & = QModelIndex()) const override;
@@ -61,17 +45,19 @@ private:
     QItemSelectionModel *selectionModel;
     QString modelType;
 
-    QMap<EColumn, QString> columnToName = {{Color, "Color"},
-                                           {Icon, "Icon"},
-                                           {Name, "Name"},
-                                           {Type, "Type"},
-                                           {Latitude, "Latitude"},
-                                           {Longitude, "Longitude"},
-                                           {Altitude, "Altitude"},
-                                           {Speed, "Speed"},
-                                           {Battle, "Battle"},
-                                           {Target, "Target"},
-                                           {More, "More"}};
+    QVector<QString> mFixedColumnNames = {"Color", "Icon", "Name", "Type"};
+
+    //    QMap<EColumn, QString> columnToName = {{Color, "Color"},
+    //                                           {Icon, "Icon"},
+    //                                           {Name, "Name"},
+    //                                           {Type, "Type"},
+    //                                           {Latitude, "Latitude"},
+    //                                           {Longitude, "Longitude"},
+    //                                           {Altitude, "Altitude"},
+    //                                           {Speed, "Speed"},
+    //                                           {Battle, "Battle"},
+    //                                           {Target, "Target"},
+    //                                           {More, "More"}};
 };
 
 //--------------------------------------NodeProxyModel-------------------------------------

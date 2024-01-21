@@ -1456,7 +1456,7 @@ Item {
             }
 
             Text {
-                text: display
+                text: model.display
                 color: Style.foregroundColor
                 font.family: Style.fontFamily
                 font.pointSize: 17 / Style.monitorRatio
@@ -1467,10 +1467,10 @@ Item {
                 anchors.leftMargin: model.column === 2 ? -tableview.columnZero
                                                          - tableview.columnIcons : 0
 
-                visible: model.column !== 0 && model.column
-                         !== 1 && model.column !== tableModel.columnCount()
-                         - 1 && model.column !== tableModel.columnCount()
-                         - 2 && model.column !== tableModel.columnCount() - 3
+                visible: model.column !== 0
+                         && model.column !== 1 /*&& model.column !== tableModel.columnCount()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         - 1 && model.column !== tableModel.columnCount()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       - 2 && model.column !== tableModel.columnCount() - 3*/
             }
             MouseArea {
                 anchors.fill: parent
@@ -1528,12 +1528,33 @@ Item {
             //                //model: tableModel
             //            }
             delegate: Rectangle {
-                id: rectDelegate
+                id: tableDelegate
+
+                property string delegateType: {
+                    if (model.column === 0) {
+                        return 'color'
+                    } else if (model.column === 1) {
+                        return 'image'
+                    } else {
+                        return 'text'
+                    }
+                }
 
                 //implicitWidth: 120 //rootItem.width / tableModel.columnCount() //120 //rootItem.height / 3
                 implicitHeight: 32
                 radius: model.column === 0 ? 10 : 0
-                color: selected ? tableview.attackRowColor : background
+                color: {
+                    // TODO: show display color by name or type of column not index of column
+                    if (selected) {
+                        return tableview.attackRowColor
+                    } else if (tableDelegate.delegateType === 'color') {
+                        return model.display
+                    } else {
+                        return "#DEE3E6"
+                    }
+                }
+
+                clip: true
 
                 //anchors.right: column === tableModel.columnCount()-1 ? parent.right : undefined
                 required property bool selected
@@ -1542,23 +1563,42 @@ Item {
                 property int columnCnt: tableModel.columnCount()
                 IconImage {
                     id: icons
+
                     anchors.centerIn: parent
+                    visible: tableDelegate.delegateType === 'image'
+                    source: {
+                        // TODO: show icon image by name or type of column not index of column
+                        if (tableDelegate.delegateType === 'image') {
+                            return model.display
+                        } else {
+                            return "qrc:/Resources/hand.png"
+                        }
+                    }
+
                     color: (column === tableview.checkAttackIconColumn
                             && row === tableview.checkAttackIconRow) ? "#01AED6" : "#003569"
+
                     //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "qrc:/Resources/airplane.png" //"qrc:/Resources/airplane.png" //decorate
-                    visible: model.column === 1
+
                     //                    visible: model.column === 1 || model.column === tableModel.columnCount()
                     //                             - 1 || model.column === tableModel.columnCount()
                     //                             - 2 || model.column === tableModel.columnCount() - 3
-                    source: decorate
-
                     width: 30
                     height: 30
                     //visible: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17
                 }
 
                 Text {
-                    text: display /* === undefined ? 'blank' : display*/
+                    visible: tableDelegate.delegateType === 'text'
+                    text: {
+                        if (tableDelegate.delegateType === 'text') {
+                            return model.display
+                        } else {
+                            return 'this is not text'
+                        }
+                    }
+                    elide: Text.ElideRight
+                    //                    width: parent.width - 3
                     font.pointSize: 17 / Style.monitorRatio
                     font.family: Style.fontFamily
                     color: Style.foregroundColor
@@ -1567,7 +1607,7 @@ Item {
                     anchors.left: model.column === 2 ? parent.left : undefined
                     anchors.centerIn: model.column === 2 ? undefined : parent
                     anchors.verticalCenter: parent.verticalCenter
-                    visible: model.column !== 0 & model.column !== 1
+
                     //                    visible: model.column !== 0 && model.column
                     //                             !== 1 && model.column !== tableModel.columnCount()
                     //                             - 3 && model.column !== tableModel.columnCount()
@@ -1593,7 +1633,9 @@ Item {
                         //console.log("column count : ", rowCount)
                         //console.log("column filter count: ", tableModel.columnCount())
                         //model.column === 11
-                        if (decorate === "qrc:/Resources/more-icon.jpg") {
+
+
+                        /*if (decorate === "qrc:/Resources/more-icon.jpg") {
                             menuTable.popup()
                         } else if (decorate === "qrc:/Resources/battle-icon.jpg"
                                    && model.row === 0
@@ -1629,7 +1671,7 @@ Item {
 
                             //console.log(move)
                             //tableModel.moveAttackerToFirst(model.row)
-                        }
+                        }*/
                     }
                 }
             }
@@ -1639,12 +1681,12 @@ Item {
                                                                ) - 2)
                 //console.log(rootItem.width / tableModel.columnCount())
                 return column === 0 ? tableview.columnZero : (column === 1
-                                                              || column === tableModel.columnCount(
+                                                              /*|| column === tableModel.columnCount(
                                                                   ) - 2
                                                               || column === tableModel.columnCount(
-                                                                  ) - 3 ? tableview.columnIcons : columnProviderSize)
+                                                                  ) - 3*/  ? tableview.columnIcons : columnProviderSize)
                 //return tableview.width / tableModel.columnCount();
-            } //rectDelegate.implicitWidth
+            } //tableDelegate.implicitWidth
             Menu {
                 id: menuTable
                 padding: 5

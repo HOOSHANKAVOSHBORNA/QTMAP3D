@@ -388,14 +388,7 @@ int NodeListModel::rowCount(const QModelIndex &) const
 
 int NodeListModel::columnCount(const QModelIndex &) const
 {
-    //qDebug()<<Data.at(0).FieldData.size();
-    //    if (modelType == "attackerModel")
-    //        return DataAttacker->at(0).FieldData.size();
-
-    // TODO
-    NodeData nodeData = mDataManager->getNodeAtIndex(0)->nodeData();
-    //qDebug() << "size : " << nodeData.fieldData.size();
-    return 8 + nodeData.fieldData.size(); /* + nodeData.fieldData.size()*/
+    return mFixedColumnNames.size() + mDataManager->uniqueAddedColumnNames().size();
 }
 
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
@@ -416,153 +409,81 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
     //    }
 
     //qDebug() << "fieldData.size(): " << nodeData.fieldData.size();
-    //    id= nodeData.id;
-    //    name= nodeData.name;
-    //    type= nodeData.type;
-    //    category = nodeData.category;
-    //    url2D= nodeData.url2D;
-    //    url3D= nodeData.url3D;
-    //    imgInfoUrl = nodeData.imgInfoUrl;
-    //    iconInfoUrl = nodeData.iconInfoUrl;
-    //    color= nodeData.color;
-    //    isAttacker = nodeData.isAttacker;
-    //    latitude = nodeData.latitude;
-    //    longitude = nodeData.longitude;
-    //    altitude = nodeData.altitude;
-    //    speed= nodeData.speed;
-    //    command= nodeData.command;
 
-    // string or int roles
-    if (role == Qt::DisplayRole) {
-        switch (index.column()) {
-        case NodeListModel::EColumn::Name:
-            return nodeData.name; //nodeData.name;
-        case NodeListModel::EColumn::Type:
+    QString columnName;
+
+    if (index.column() < mFixedColumnNames.size()) {
+        columnName = mFixedColumnNames.at(index.column());
+        if (columnName == "Name") {
+            return nodeData.name;
+        } else if (columnName == "Color") {
+            return nodeData.color;
+        } else if (columnName == "Type") {
             return nodeData.type.toString();
-        case NodeListModel::EColumn::Latitude:
-            return QString::number(nodeData.latitude, 'l', 2);
-        case NodeListModel::EColumn::Longitude:
-            return QString::number(nodeData.longitude, 'l', 2);
-        case NodeListModel::EColumn::Altitude:
-            return QString::number(nodeData.altitude, 'l', 2);
-        case NodeListModel::EColumn::Speed:
-            return QString::number(nodeData.speed, 'l', 2);
-            //        default:
-            //            return QVariant("defualt");
-        }
-        if (index.column() > 7) {
-            //qDebug() << "num column: " << index.column();
-            return nodeData.fieldData.at(index.column() - NodeListModel::EColumn::Battle).value;
-            //return nodeData.fieldData.at(0).value;
-            //index.column() - NodeListModel::EColumn::Battle)
-        }
-        return "def";
-    }
-
-    // color roles
-    if (role == Qt::BackgroundRole) {
-        switch (index.column()) {
-        case NodeListModel::EColumn::Color:
-            return QColor(nodeData.color);
-        default:
-            return QColor("#DEE3E6");
-        }
-    }
-
-    // image roles
-    if (role == Qt::DecorationRole) {
-        switch (index.column()) {
-        case NodeListModel::EColumn::Icon:
+        } else if (columnName == "Icon") {
             return nodeData.iconInfoUrl;
-            //        case myEnum:
-            //            return "qrc:/Resources/battle-icon.jpg";
-            //        case NodeListModel::EColumn::Speed + 6 + 2:
-            //            return "qrc:/Resources/target-icon.jpg";
-            //        case NodeListModel::EColumn::Speed + 6 + 3:
-            //            return "qrc:/Resources/more-icon.jpg";
-            //        case NodeListModel::EColumn::Battle:
-            //            return "qrc:/Resources/battle-icon.jpg";
-            //        case NodeListModel::EColumn::Target:
-            //            return "qrc:/Resources/target-icon.jpg";
-            //        case NodeListModel::EColumn::More:
-            //            return "qrc:/Resources/more-icon.jpg";
-        default:
-            return QVariant("qrc:/Resources/hand.png");
+        } else {
+            return "Defualt";
+        }
+    } else {
+        columnName = mDataManager->uniqueAddedColumnNames().at(index.column()
+                                                               - mFixedColumnNames.size());
+
+        int foundIndex = -1;
+        for (int i = 0; i < nodeData.fieldData.size(); ++i) {
+            if (nodeData.fieldData.at(i).name == columnName) {
+                foundIndex = i;
+                break;
+            }
+        }
+
+        if (foundIndex == -1) {
+            return "Not Set";
+        } else {
+            return nodeData.fieldData.at(foundIndex).value;
         }
     }
+
+    //    // color roles
     //    if (role == Qt::BackgroundRole) {
-    //        // color of first column
-    //        if (index.column() == 0) {
-    //            //            if (modelType == "attackerModel") {
-    //            //                return QColor(
-    //            //                    DataAttacker->at(index.row()).FieldData.at(index.column()).value.toString());
-    //            //            }
-    //            //            return QColor(Data.at(index.row()).FieldData.at(index.column()).value.toString());
+    //        switch (index.column()) {
+    //        case NodeListModel::EColumn::Color:
     //            return QColor(nodeData.color);
+    //        default:
+    //            return QColor("#DEE3E6");
     //        }
-    //        //        if (index.row())   //change background only for cell(1,2)
-    //        //        {
-    //        QColor Background("#DEE3E6"); //#bac4f5 //#DEE3E6
-    //        return Background;
     //    }
 
-    //    if (role == Qt::DecorationRole && index.column() == 1 || index.column() == 15
-    //        || index.column() == 16 || index.column() == 17) {
-    //        //        if (modelType == "attackerModel") {
-    //        //            return DataAttacker->at(index.row()).FieldData.at(index.column()).value.toString();
-    //        //        }
-    //        //        return Data.at(index.row()).FieldData.at(index.column()).value.toString();
-    //        return nodeData.iconInfoUrl;
-    //    }
-
-    //    if (role == Qt::DisplayRole) {
-    //        //        for (int i = 0; i < Data.size(); i++) {
-    //        //            if(index.column() == i){
-    //        //                return Data.at(index.row()).FieldData.at(index.column()).value;}
-    //        //        }
-
-    //        //        if (modelType == "attackerModel") {
-    //        //            //qDebug() << "change Model!!!!!";
-    //        //            return DataAttacker->at(index.row()).FieldData.at(index.column()).value;
-    //        //        }
-    //        //        return Data.at(index.row()).FieldData.at(index.column()).value;
-    //        return nodeData.name;
-    //    } else {
-    //        return QVariant("defualt");
+    //    // image roles
+    //    if (role == Qt::DecorationRole) {
+    //        switch (index.column()) {
+    //        case NodeListModel::EColumn::Icon:
+    //            return nodeData.iconInfoUrl;
+    //            //        case myEnum:
+    //            //            return "qrc:/Resources/battle-icon.jpg";
+    //            //        case NodeListModel::EColumn::Speed + 6 + 2:
+    //            //            return "qrc:/Resources/target-icon.jpg";
+    //            //        case NodeListModel::EColumn::Speed + 6 + 3:
+    //            //            return "qrc:/Resources/more-icon.jpg";
+    //            //        case NodeListModel::EColumn::Battle:
+    //            //            return "qrc:/Resources/battle-icon.jpg";
+    //            //        case NodeListModel::EColumn::Target:
+    //            //            return "qrc:/Resources/target-icon.jpg";
+    //            //        case NodeListModel::EColumn::More:
+    //            //            return "qrc:/Resources/more-icon.jpg";
+    //        default:
+    //            return QVariant("qrc:/Resources/hand.png");
+    //        }
     //    }
 }
 
 QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
-        switch (section) {
-        case NodeListModel::EColumn::Color:
-            return columnToName[NodeListModel::EColumn::Color];
-        case NodeListModel::EColumn::Icon:
-            return columnToName[NodeListModel::EColumn::Icon];
-        case NodeListModel::EColumn::Name:
-            return columnToName[NodeListModel::EColumn::Name];
-        case NodeListModel::EColumn::Type:
-            return columnToName[NodeListModel::EColumn::Type];
-        case NodeListModel::EColumn::Latitude:
-            return columnToName[NodeListModel::EColumn::Latitude];
-        case NodeListModel::EColumn::Longitude:
-            return columnToName[NodeListModel::EColumn::Longitude];
-        case NodeListModel::EColumn::Altitude:
-            return columnToName[NodeListModel::EColumn::Altitude];
-        case NodeListModel::EColumn::Speed:
-            return columnToName[NodeListModel::EColumn::Speed];
-        case NodeListModel::EColumn::Battle:
-            return columnToName[NodeListModel::EColumn::Battle];
-        case NodeListModel::EColumn::Target:
-            return columnToName[NodeListModel::EColumn::Target];
-        case NodeListModel::EColumn::More:
-            return columnToName[NodeListModel::EColumn::More];
-        default:
-            return QVariant("defualt");
-        }
-    } else
-        return QVariant("defualt");
+    if (section < mFixedColumnNames.size()) {
+        return mFixedColumnNames.at(section);
+    } else {
+        return mDataManager->uniqueAddedColumnNames().at(section - mFixedColumnNames.size());
+    }
 }
 
 void NodeListModel::selectionRow(int Row, int Column)

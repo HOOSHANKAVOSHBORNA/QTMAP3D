@@ -21,6 +21,9 @@ public:
 //    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
     QMap<int, osg::ref_ptr<SimpleModelNode>> *getNodeMap();
 
+    QVector<QString> uniqueAddedColumnNames() const;
+    void setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames);
+
 signals:
     void nodeDataManagerChanged();
 
@@ -37,6 +40,7 @@ private:
 //    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
 //    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+    QVector<QString> mUniqueAddedColumnNames;
     NodeData* mNodeData;
     MainWindow *mMainWindow;
 };
