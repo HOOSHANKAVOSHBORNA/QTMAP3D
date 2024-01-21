@@ -16,6 +16,32 @@ class NodeProxyModel;
 class NodeList;
 class NodeListModel;
 
+// ---------------------------------------- Tiny Models
+class CategoryTabbarModel : public QAbstractListModel
+{
+    Q_OBJECT
+    Q_PROPERTY(
+        QVector<QString> *tabNames READ tabNames WRITE setTabNames NOTIFY tabNamesChanged FINAL)
+
+public:
+    explicit CategoryTabbarModel(QVector<QString> *newTabNames);
+
+    virtual int rowCount(const QModelIndex &parent) const override;
+    virtual QVariant data(const QModelIndex &index, int role) const override;
+
+    void setTabNames(QVector<QString> *newTabNames);
+    QVector<QString> *tabNames() const;
+
+public slots:
+    void onTabResetModel();
+
+signals:
+    void tabNamesChanged();
+
+private:
+    QVector<QString> *mTabNames;
+};
+
 //-----------------------------------------NodeListModel------------------------------------
 class NodeListModel : public QAbstractTableModel
 {
@@ -40,6 +66,9 @@ public:
     //    Q_INVOKABLE void attacker(QString name);
     //    Q_INVOKABLE void setChangeModel(QString checkModel);
 
+    DataManager *dataManager() const;
+    void setDataManager(DataManager *newDataManager);
+
 private:
     DataManager *mDataManager;
     QItemSelectionModel *selectionModel;
@@ -63,6 +92,8 @@ private:
 //--------------------------------------NodeProxyModel-------------------------------------
 class NodeProxyModel : public QSortFilterProxyModel
 {
+    Q_PROPERTY(CategoryTabbarModel *tabbarModel READ tabbarModel WRITE setTabbarModel NOTIFY
+                   tabbarModelChanged FINAL)
     struct FilterTag
     {
         QString name;
@@ -112,7 +143,6 @@ public:
     //QStringList comboItemList() const;
     //void setComboItemList(const QStringList &newComboItemList);
 
-    //    Q_INVOKABLE QList<QString> getTabBarName();
     Q_INVOKABLE QStringList filterCombo(QString text, QString nameFilter);
 
     // dynamic_cast to NodeListModel
@@ -122,10 +152,18 @@ public:
     //    Q_INVOKABLE void setChangeModel(QString checkModel);
     //    Q_INVOKABLE QList<QString> getFilterData();
 
+    Q_INVOKABLE CategoryTabbarModel *tabbarModel() const;
+    void setTabbarModel(CategoryTabbarModel *newTabbarModel);
+
 signals:
     //void comboItemChanged();
 
     //void comboItemListChanged();
+
+    void tabbarModelChanged();
+
+public slots:
+    void modelChanged();
 
 protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
@@ -150,6 +188,7 @@ private:
     QVector<QString> colorList;
     QVector<QString> tabList;
     QVector<QString> FilterDataList;
+    CategoryTabbarModel *mTabbarModel;
 
     QVector<QString> comboSearch;
     //QStringList m_comboItem;

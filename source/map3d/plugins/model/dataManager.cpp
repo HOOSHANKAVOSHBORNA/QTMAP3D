@@ -37,10 +37,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
     osg::ref_ptr<SimpleModelNode> node;
 
     if (!mNodeMap.contains(nodeData.id)) {
-        // TODO
-        // mUniqueNodeNames
-        // mUniqueColors
-        // mUniqueCategory
+        // TODO: setup filter needed data mUniqueColorss
 
         // adding new unique column name
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
@@ -56,6 +53,27 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
             if (!found) {
                 mUniqueAddedColumnNames.append(name);
             }
+        }
+
+        // adding new uniuqe category name
+        for (int i = 0; i < nodeData.fieldData.size(); ++i) {
+            QString category = nodeData.fieldData.at(i).category;
+            bool found = false;
+            for (int j = 0; j < mUniqueCategoryNames.size(); ++j) {
+                if (category == mUniqueCategoryNames.at(j)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                mUniqueCategoryNames.append(category);
+            }
+        }
+
+        qDebug() << "debug: " << mUniqueCategoryNames.size();
+        for (int i = 0; i < mUniqueCategoryNames.size(); ++i) {
+            qDebug() << "debug: " << mUniqueCategoryNames.at(i);
         }
 
         if (nodeData.type == NodeType::Movable)
@@ -116,6 +134,21 @@ void DataManager::removeNode(const NodeData &nodeData)
         mNodeMap[nodeData.id].release();
         mNodeMap.remove(nodeData.id);
     }
+}
+
+QVector<QString> DataManager::uniqueCategoryNames()
+{
+    return mUniqueCategoryNames;
+}
+
+QVector<QString> *DataManager::getUniqueCategoryNames()
+{
+    return &mUniqueCategoryNames;
+}
+
+void DataManager::setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames)
+{
+    mUniqueCategoryNames = newUniqueCategoryNames;
 }
 
 QVector<QString> DataManager::uniqueAddedColumnNames() const

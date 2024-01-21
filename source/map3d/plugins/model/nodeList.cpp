@@ -11,9 +11,19 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
 {
     mMapItem = mapItem;
     mDataManager = dataManager;
+
     NodeListModel *nodeModel = new NodeListModel(dataManager);
+
     mProxyModel = new NodeProxyModel;
     mProxyModel->setSourceModel(nodeModel);
+
+    CategoryTabbarModel *tabbarModel = new CategoryTabbarModel(
+        dataManager->getUniqueCategoryNames());
+    connect(mDataManager,
+            &DataManager::nodeDataManagerChanged,
+            tabbarModel,
+            &CategoryTabbarModel::onTabResetModel);
+    mProxyModel->setTabbarModel(tabbarModel);
     createQml();
 }
 
@@ -242,6 +252,16 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
     //    }
     //qDebug()<<"cx";
     return true;
+}
+
+CategoryTabbarModel *NodeProxyModel::tabbarModel() const
+{
+    return mTabbarModel;
+}
+
+void NodeProxyModel::setTabbarModel(CategoryTabbarModel *newTabbarModel)
+{
+    mTabbarModel = newTabbarModel;
 }
 
 void NodeProxyModel::nodeTypeFilter(QString type)
@@ -515,6 +535,16 @@ void NodeListModel::resetTable()
     endResetModel();
 }
 
+DataManager *NodeListModel::dataManager() const
+{
+    return mDataManager;
+}
+
+void NodeListModel::setDataManager(DataManager *newDataManager)
+{
+    mDataManager = newDataManager;
+}
+
 QHash<int, QByteArray> NodeListModel::roleNames() const
 {
     return {
@@ -559,3 +589,40 @@ QHash<int, QByteArray> NodeListModel::roleNames() const
 //    qDebug() << "Set Model: " << modelType;
 //    endResetModel();
 //}
+
+CategoryTabbarModel::CategoryTabbarModel(QVector<QString> *newTabNames)
+{
+    mTabNames = newTabNames;
+
+    // TEST
+    //    mTabNames->append("akbar");
+    //    mTabNames->append("Abbas");
+    // ENDTEST
+}
+
+int CategoryTabbarModel::rowCount(const QModelIndex &parent) const
+{
+    return mTabNames->size();
+}
+
+QVariant CategoryTabbarModel::data(const QModelIndex &index, int role) const
+{
+    return mTabNames->at(index.row());
+}
+
+void CategoryTabbarModel::setTabNames(QVector<QString> *newTabNames)
+{
+    mTabNames = newTabNames;
+}
+
+QVector<QString> *CategoryTabbarModel::tabNames() const
+{
+    return mTabNames;
+}
+
+void CategoryTabbarModel::onTabResetModel()
+{
+    beginResetModel();
+
+    endResetModel();
+}

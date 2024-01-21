@@ -24,6 +24,10 @@ public:
     QVector<QString> uniqueAddedColumnNames() const;
     void setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames);
 
+    QVector<QString> uniqueCategoryNames();
+    void setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames);
+    QVector<QString> *getUniqueCategoryNames();
+
 signals:
     void nodeDataManagerChanged();
 
@@ -41,6 +45,7 @@ private:
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
 //    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
     QVector<QString> mUniqueAddedColumnNames;
+    QVector<QString> mUniqueCategoryNames;
     NodeData* mNodeData;
     MainWindow *mMainWindow;
 };
