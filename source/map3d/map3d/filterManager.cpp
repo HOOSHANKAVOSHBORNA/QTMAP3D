@@ -98,11 +98,11 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData)
 
 void FilterManager::addFilterTag(QString key, QString value)
 {
-    if (mFilterTags.contains(key)) {
-        mFilterTags[key].push_back(Tag{true, value});
-    } else {
-        mFilterTags[key] = QVector<Tag>{Tag{true, value}};
-    }
+//    if (mFilterTags.contains(key)) {
+//        mFilterTags[key].push_back(Tag{true, value});
+//    } else {
+//        mFilterTags[key] = QVector<Tag>{Tag{true, value}};
+//    }
     emit filterTagsEdited();
 }
 
@@ -128,10 +128,10 @@ void FilterManager::addFilterTag(QString key, double value1, double value2, QStr
 
 void FilterManager::removeFilterTag(QString key, QString value)
 {
-    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{true, value});
-    if (it != mFilterTags[key].end()) {
-        mFilterTags[key].erase(it);
-    }
+//    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{true, value});
+//    if (it != mFilterTags[key].end()) {
+//        mFilterTags[key].erase(it);
+//    }
     emit filterTagsEdited();
 }
 
