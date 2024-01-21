@@ -121,6 +121,19 @@ void NodeProxyModel::sortTable(int column)
 
 bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const
 {
+    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
+    QString currentColumnName = sourceModel()->headerData(sourceColumn, Qt::Horizontal).toString();
+    QString currentColumnCategory = dataManager->columnToCategory().value(currentColumnName,
+                                                                          "NotFound");
+
+    qDebug() << "debug  " << currentColumnName << ", " << currentColumnCategory;
+    // TODO: don't use from Main Information
+    if (currentColumnCategory == "Fixed" || currentColumnCategory == "Main Information") {
+        return true;
+    }
+
+    return m_filterColumn == currentColumnCategory;
+
     return true;
     if (m_filterColumn == tabList.at(0)) { //Main
         //        qDebug()<<sourceModel()->headerData(sourceColumn,Qt::Horizontal);

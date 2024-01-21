@@ -28,6 +28,9 @@ public:
     void setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames);
     QVector<QString> *getUniqueCategoryNames();
 
+    QMap<QString, QString> columnToCategory() const;
+    void setColumnToCategory(const QMap<QString, QString> &newColumnToCategory);
+
 signals:
     void nodeDataManagerChanged();
 
@@ -46,6 +49,10 @@ private:
 //    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
     QVector<QString> mUniqueAddedColumnNames;
     QVector<QString> mUniqueCategoryNames;
+    QMap<QString, QString> mColumnToCategory = {{"Color", "Fixed"},
+                                                {"Icon", "Fixed"},
+                                                {"Name", "Fixed"},
+                                                {"Type", "Fixed"}};
     NodeData* mNodeData;
     MainWindow *mMainWindow;
 };

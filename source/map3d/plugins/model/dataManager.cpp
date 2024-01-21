@@ -39,22 +39,6 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
     if (!mNodeMap.contains(nodeData.id)) {
         // TODO: setup filter needed data mUniqueColorss
 
-        // adding new unique column name
-        for (int i = 0; i < nodeData.fieldData.size(); ++i) {
-            QString name = nodeData.fieldData.at(i).name;
-            bool found = false;
-            for (int j = 0; j < mUniqueAddedColumnNames.size(); ++j) {
-                if (name == mUniqueAddedColumnNames.at(j)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                mUniqueAddedColumnNames.append(name);
-            }
-        }
-
         // adding new uniuqe category name
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
             QString category = nodeData.fieldData.at(i).category;
@@ -68,6 +52,23 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
             if (!found) {
                 mUniqueCategoryNames.append(category);
+            }
+        }
+
+        // adding new unique column name
+        for (int i = 0; i < nodeData.fieldData.size(); ++i) {
+            QString name = nodeData.fieldData.at(i).name;
+            bool found = false;
+            for (int j = 0; j < mUniqueAddedColumnNames.size(); ++j) {
+                if (name == mUniqueAddedColumnNames.at(j)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                mUniqueAddedColumnNames.append(name);
+                mColumnToCategory.insert(name, nodeData.fieldData.at(i).category);
             }
         }
 
@@ -134,6 +135,16 @@ void DataManager::removeNode(const NodeData &nodeData)
         mNodeMap[nodeData.id].release();
         mNodeMap.remove(nodeData.id);
     }
+}
+
+QMap<QString, QString> DataManager::columnToCategory() const
+{
+    return mColumnToCategory;
+}
+
+void DataManager::setColumnToCategory(const QMap<QString, QString> &newColumnToCategory)
+{
+    mColumnToCategory = newColumnToCategory;
 }
 
 QVector<QString> DataManager::uniqueCategoryNames()
