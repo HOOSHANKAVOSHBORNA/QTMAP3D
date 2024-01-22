@@ -642,8 +642,9 @@ Item {
                     id:mouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: battleLocationIcons.flag= !battleLocationIcons.flag
-
+                    onClicked: {battleLocationIcons.flag= !battleLocationIcons.flag
+                                operatorListModel.operatorToggle(true)
+                    }
                 }
             }
 
@@ -667,7 +668,9 @@ Item {
                     id:mouseA
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: battleLocationIcons.flag= !battleLocationIcons.flag
+                    onClicked: {battleLocationIcons.flag= !battleLocationIcons.flag
+                    operatorListModel.operatorToggle(false)
+                }
 
                 }
             }
