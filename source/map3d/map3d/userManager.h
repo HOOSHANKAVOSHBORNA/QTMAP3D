@@ -16,7 +16,6 @@ public:
 
 public slots:
     void signIn(const QString username, const QString password);
-//    void signUp(const QString username, const QString password);
 
 signals:
     void signedIn();
@@ -39,61 +38,30 @@ class Profile:public QObject
 
     Q_PROPERTY(QString name READ getName  WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY usernameChanged)
-    //    Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
 
 public:
 
-    //    enum UserValidate{
-    //        USERCHANGE_OK , USERCHANGE_NOT_OK
-    //    };
-    //    Q_ENUM(UserValidate)
 
-    //    enum PasswordValidate{
-    //        PASSWORDCHANGE_OK , NO_PASSWORDCHANGE , FALSE_OLD_PASSWORD
-    //    };
-    //    Q_ENUM(PasswordValidate)
+    explicit Profile(ServiceManager *serviceManager, QObject *parent = nullptr);
 
-    explicit Profile(QObject *parent = nullptr);
+    QString getName() const;
+    void setName(const QString &newName);
+    QString getUsername() const;
+    void setUsername(const QString &newUsername);
+    Q_INVOKABLE void logOut();
 
-    Q_INVOKABLE QString getName() const;
-    Q_INVOKABLE void setName(const QString &newName);
-    Q_INVOKABLE QString getUsername() const;
-    Q_INVOKABLE void setUsername(const QString &newUsername);
-    //   Q_INVOKABLE QString getPassword() const;
-    //   Q_INVOKABLE void setPassword(const QString &newPassword);
-
-    //   Q_INVOKABLE UserValidate validateUserChanges(QString name, QString username, QString password);
-    //   Q_INVOKABLE PasswordValidate validatePasswordChanges(QString password, QString newPassword, QString confirmPassword);
 
 signals:
     void nameChanged();
     void usernameChanged();
-    //    void passwordChanged();
 
 private:
-    QString mName{"Jamal"};
-    QString mUsername{"Khashoghchi"};
-    //    QString mPassword{"password"};
-    //    QString mNewPassword{""};
-    //    QString mConfirmPassword{""};
+    ServiceManager* mServiceManager{nullptr};
+    QString mName{"Alireza Nabati"};
+    QString mUsername{"Alirez98"};
 };
 
-class ProfileManager:public QObject
-{
-    Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
 
-public:
-    static ProfileManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
-    ~ProfileManager();
-    Q_INVOKABLE Profile *getProfile();
-protected:
-    ProfileManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
-private:
-    static inline ProfileManager* mInstance{nullptr};
-    Profile *mProfile;
-};
 
 
 class UserManager: public QObject
@@ -102,7 +70,6 @@ class UserManager: public QObject
 
 public:
     UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
-//    Q_INVOKABLE Profile *getProfile();
 
 signals:
     void signedIn();
@@ -114,7 +81,7 @@ private:
     ServiceManager *mServiceManager{nullptr};
     QQmlApplicationEngine *mQmlEngine{nullptr};
     LoginPage *mLoginPage{nullptr};
- //   Profile *mProfile;
+    Profile *mProfile;
 };
 
 
