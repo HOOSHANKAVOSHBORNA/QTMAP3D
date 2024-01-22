@@ -520,5 +520,7 @@
         <file>Resources/bullet.png</file>
         <file>Resources/splash.gif</file>
         <file>Resources/draw.png</file>
+        <file>Resources/user.png</file>
+        <file>Resources/circular-logout.png</file>
     </qresource>
 </RCC>

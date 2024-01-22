@@ -83,7 +83,7 @@ Item {
                 IconImage{
                     width: 20 / Style.monitorRatio
                     height: 20 / Style.monitorRatio
-                    source: "qrc:/Resources/logout.png"
+                    source: "qrc:/Resources/circular-logout.png"
                     anchors.right: logout.left
                     anchors.bottom: logout.bottom
                 }
