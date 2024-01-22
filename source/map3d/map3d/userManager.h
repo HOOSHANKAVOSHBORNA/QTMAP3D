@@ -33,57 +33,49 @@ private:
 
 };
 
-class UserManager: public QObject
-{
-    Q_OBJECT
-
-public:
-    UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
-
-signals:
-    void signedIn();
-
-private:
-    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
-
-private:
-    ServiceManager *mServiceManager{nullptr};
-    QQmlApplicationEngine *mQmlEngine{nullptr};
-    LoginPage *mLoginPage{nullptr};
-
-};
-
 class Profile:public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QString name READ getName  WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY usernameChanged)
-    Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
+    //    Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
 
 public:
-    explicit Profile(QObject *parent = nullptr){}
 
-   Q_INVOKABLE QString getName() const;
-   Q_INVOKABLE void setName(const QString &newName);
-   Q_INVOKABLE QString getUsername() const;
-   Q_INVOKABLE void setUsername(const QString &newUsername);
-   Q_INVOKABLE QString getPassword() const;
-   Q_INVOKABLE void setPassword(const QString &newPassword);
+    //    enum UserValidate{
+    //        USERCHANGE_OK , USERCHANGE_NOT_OK
+    //    };
+    //    Q_ENUM(UserValidate)
 
-   Q_INVOKABLE bool validateChanges(QString name, QString username, QString password);
+    //    enum PasswordValidate{
+    //        PASSWORDCHANGE_OK , NO_PASSWORDCHANGE , FALSE_OLD_PASSWORD
+    //    };
+    //    Q_ENUM(PasswordValidate)
+
+    explicit Profile(QObject *parent = nullptr);
+
+    Q_INVOKABLE QString getName() const;
+    Q_INVOKABLE void setName(const QString &newName);
+    Q_INVOKABLE QString getUsername() const;
+    Q_INVOKABLE void setUsername(const QString &newUsername);
+    //   Q_INVOKABLE QString getPassword() const;
+    //   Q_INVOKABLE void setPassword(const QString &newPassword);
+
+    //   Q_INVOKABLE UserValidate validateUserChanges(QString name, QString username, QString password);
+    //   Q_INVOKABLE PasswordValidate validatePasswordChanges(QString password, QString newPassword, QString confirmPassword);
 
 signals:
     void nameChanged();
-
     void usernameChanged();
-
-    void passwordChanged();
+    //    void passwordChanged();
 
 private:
-    QString mName;
-    QString mUsername;
-    QString mPassword;
+    QString mName{"Jamal"};
+    QString mUsername{"Khashoghchi"};
+    //    QString mPassword{"password"};
+    //    QString mNewPassword{""};
+    //    QString mConfirmPassword{""};
 };
 
 class ProfileManager:public QObject
@@ -102,5 +94,29 @@ private:
     static inline ProfileManager* mInstance{nullptr};
     Profile *mProfile;
 };
+
+
+class UserManager: public QObject
+{
+    Q_OBJECT
+
+public:
+    UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
+//    Q_INVOKABLE Profile *getProfile();
+
+signals:
+    void signedIn();
+
+private:
+    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
+
+private:
+    ServiceManager *mServiceManager{nullptr};
+    QQmlApplicationEngine *mQmlEngine{nullptr};
+    LoginPage *mLoginPage{nullptr};
+ //   Profile *mProfile;
+};
+
+
 
 #endif // USERMANAGER_H
