@@ -48,7 +48,7 @@ Rectangle {
     RowLayout {
         id: searchRow
         anchors.top: parent.top
-        anchors.topMargin: 32 / /*Style.monitorRatio*/ 1.3
+        anchors.topMargin: 36 / /*Style.monitorRatio*/ 1.3
         anchors.left: parent.left
         anchors.leftMargin: 15 / /*Style.monitorRatio*/ 1.3
         Rectangle {
