@@ -48,14 +48,14 @@ Rectangle {
     RowLayout {
         id: searchRow
         anchors.top: parent.top
-        anchors.topMargin: 20 / /*Style.monitorRatio*/ 1.3
+        anchors.topMargin: 32 / /*Style.monitorRatio*/ 1.3
         anchors.left: parent.left
         anchors.leftMargin: 15 / /*Style.monitorRatio*/ 1.3
         Rectangle {
             id: searchBar
             Layout.minimumWidth: 300 / /*Style.monitorRatio*/ 1.3
             width: parent.width / /*Style.monitorRatio*/ 1.3
-            height: 28 / /*Style.monitorRatio*/ 1.3
+            height: 32 / /*Style.monitorRatio*/ 1.3
             radius: 15
             color: rootObj.fg20
             IconImage {
@@ -537,7 +537,6 @@ Rectangle {
                                     longest = stringList[i]
                                 }
                             }
-
                             return longest
                         }
                         Text {
