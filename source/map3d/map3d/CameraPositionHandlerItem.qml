@@ -17,7 +17,54 @@ Item {
         color:Style.backgroundColor
         radius: width/2
         anchors.centerIn: parent
+        IconImage {
+            id: bottomIconImage
+            anchors.bottom:  parent.bottom
+            anchors.horizontalCenter:  parent.horizontalCenter
+            source: "qrc:/Resources/down"
+            width:  10 /Style.monitorRatio
+            height: 10 /Style.monitorRatio
 
+        }
+        IconImage {
+            id: topIconImage
+            anchors.top:  parent.top
+            anchors.horizontalCenter:  parent.horizontalCenter
+            source: "qrc:/Resources/down"
+            width:  10 /Style.monitorRatio
+            height: 10 /Style.monitorRatio
+            rotation: -180
+
+        }
+        IconImage {
+            id: leftIconImage
+            anchors.left:  parent.left
+            anchors.verticalCenter:  parent.verticalCenter
+            source: "qrc:/Resources/down"
+            width:  10 /Style.monitorRatio
+            height: 10 /Style.monitorRatio
+            rotation: 90
+
+        }
+        IconImage {
+            id: rightIconImage
+            anchors.right:  parent.right
+            anchors.verticalCenter:  parent.verticalCenter
+            source: "qrc:/Resources/down"
+            width:  10 /Style.monitorRatio
+            height: 10 /Style.monitorRatio
+            rotation: -90
+
+        }
+Rectangle{
+    width: 62/Style.monitorRatio
+    height: 62/Style.monitorRatio
+    color:"transparent"
+    radius: width/2
+    anchors.centerIn: parent
+    border.color: Qt.rgba(Style.foregroundColor.r,Style.foregroundColor.g,Style.foregroundColor.b,0.25)
+
+}
         Rectangle{
             id: middleHole
             width:draggableCircle.width
@@ -50,9 +97,9 @@ Item {
             }
             Component.onCompleted: function (){
                 dragArea.drag.minimumX = radiusDiff -Math.max(Math.sqrt(radiusDiff *radiusDiff -Math.pow(radiusDiff -draggableCircle.y,2)), radiusDiff )
-                dragArea.drag.maximumX = Math.min(Math.sqrt(radiusDiff*radiusDiff-Math.pow(radiusDiff -draggableCircle.y,2)))+radiusDiff
+                dragArea.drag.maximumX = /*Math.min(*/Math.sqrt(radiusDiff*radiusDiff-Math.pow(radiusDiff -draggableCircle.y,2)/*)*/)+radiusDiff
                 dragArea.drag.minimumY = radiusDiff -Math.max(Math.sqrt(radiusDiff*radiusDiff-Math.pow((radiusDiff -draggableCircle.x), 2)))
-                dragArea.drag.maximumY = Math.min(Math.sqrt(radiusDiff*radiusDiff-Math.pow((radiusDiff -draggableCircle.x), 2)))+radiusDiff
+                dragArea.drag.maximumY = /*Math.min(*/Math.sqrt(radiusDiff*radiusDiff-Math.pow((radiusDiff -draggableCircle.x), 2)/*)*/)+radiusDiff
             }
             MouseArea {
                 id: dragArea
