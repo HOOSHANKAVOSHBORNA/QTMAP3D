@@ -1,6 +1,6 @@
 #include "userManager.h"
 //#include "qcryptographichash.h"
-
+#include <QQmlContext>
 #include <QApplication>
 #include <QQmlComponent>
 #include <QQuickWindow>
@@ -61,14 +61,9 @@ UserManager::UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qm
                      this, &UserManager::onQmlObjectCreated,
                      Qt::DirectConnection);
     mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
-
-//    mProfile = new Profile();
+    mProfile = new Profile(serviceManger);
+    qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
 }
-
-//Profile *UserManager::getProfile()
-//{
-//  return mProfile;
-//}
 
 void UserManager::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
@@ -91,7 +86,8 @@ void UserManager::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
     }
 }
 
-Profile::Profile(QObject *parent)
+Profile::Profile(ServiceManager *serviceManager, QObject *parent)
+    : QObject(parent) , mServiceManager{serviceManager}
 {
 
 }
@@ -122,70 +118,15 @@ void Profile::setUsername(const QString &newUsername)
     emit usernameChanged();
 }
 
-//QString Profile::getPassword() const
-//{
-//    return mPassword;
-//}
-
-//void Profile::setPassword(const QString &newPassword)
-//{
-//    if (mPassword == newPassword)
-//        return;
-//    mPassword = newPassword;
-//    emit passwordChanged();
-//}
-
-//Profile::UserValidate Profile::validateUserChanges(QString name, QString username, QString password)
-//{
-//        if(password == mPassword){
-//            setName(name);
-//            setUsername(username);
-//            //return true;
-//            return USERCHANGE_OK;
-//        }
-//        else{
-//           // return false;
-//            return USERCHANGE_NOT_OK;
-//        }
-//}
-
-
-//Profile::PasswordValidate Profile::validatePasswordChanges(QString password, QString newPassword, QString confirmPassword)
-//{
-//    if(password == mPassword && newPassword == confirmPassword && newPassword !="" ){
-//        setPassword(newPassword);
-//       // return true;
-//        return  PASSWORDCHANGE_OK;
-//    }
-//    else if( newPassword == "" && confirmPassword == ""){
-//       // return true;
-//        return NO_PASSWORDCHANGE;
-//    }
-//    else{
-//       // return false;
-//        return FALSE_OLD_PASSWORD;
-//    }
-//}
-
-ProfileManager *ProfileManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+void Profile::logOut()
 {
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new ProfileManager(); }
-    return mInstance;
+  UserData userData;
+
+  userData.name = mName;
+  userData.userName = mUsername;
+  userData.command = UserData::UserCommand::Logout;
+
+
+  mServiceManager->sendUser(userData);
 }
 
-ProfileManager::~ProfileManager()
-{
-    delete mProfile;
-}
-
-Profile *ProfileManager::getProfile()
-{
-    return mProfile;
-}
-
-ProfileManager::ProfileManager(QObject *parent)
-{
-    mProfile = new Profile();
-}

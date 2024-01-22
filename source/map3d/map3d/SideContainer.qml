@@ -191,8 +191,7 @@ Item {
 
                 containerItem: ProfileItem {
                     id: profile
-                    model:ProfileManagerInstance.getProfile()
-                  //  model: userInfo.getProfile()
+                    model: UserInfo
                 }
 
                 onWindowClose: {
