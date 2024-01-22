@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import Crystal
 
+
 LoginPage {
     width: 800
     height: 600

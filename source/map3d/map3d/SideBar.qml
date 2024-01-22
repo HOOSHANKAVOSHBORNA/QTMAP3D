@@ -283,7 +283,7 @@ Rectangle {
         //        onToggleItem:function(index, checked){ print(checked)}
         ListElement {
             name: "Profile"
-            iconSource: "qrc:/Resources/Qarch.png"
+            iconSource: "qrc:/Resources/user.png"
             checked: false
             isWindow: false
         }
