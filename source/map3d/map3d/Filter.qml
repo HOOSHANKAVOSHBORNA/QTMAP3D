@@ -2,9 +2,10 @@ import QtQuick.Layouts
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
+import Crystal 1.0
 
 Rectangle {
-    id: rootObj
+    id: rootObj    
     property var filterManager
     //    required property var colorModel
     //    required property var columnModel
