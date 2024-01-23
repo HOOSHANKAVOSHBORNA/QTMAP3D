@@ -6,22 +6,28 @@
 #include <QQuickWindow>
 
 class QQmlEngine;
-class LoginPage : public QQuickWindow
+class LoginPage : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool windowHidden READ windowHidden WRITE setWindowHidden NOTIFY windowHiddenChanged)
+
 public:
-    LoginPage(QWindow *parent = nullptr);
+    LoginPage(ServiceManager *serviceManager, QObject *parent = nullptr);
 
     void setServiceManager(ServiceManager *newServiceManager);
 
-public slots:
-    void signIn(const QString username, const QString password);
+   Q_INVOKABLE void signIn(const QString username, const QString password);
 
-signals:
+
+   bool windowHidden() const;
+   void setWindowHidden(bool newWindowHidden);
+
+   signals:
     void signedIn();
+    void windowHiddenChanged();
 
-protected:
-    void closeEvent(QCloseEvent *) override;
+   protected:
+   Q_INVOKABLE  void onWindowClosed();
 private:
     void onUserDataReceived(const UserData &userData);
 private:
@@ -30,6 +36,7 @@ private:
     ServiceManager* mServiceManager{nullptr};
     UserData mLoginUserData;
 
+    bool mWindowHidden{false};
 };
 
 class Profile:public QObject
@@ -69,13 +76,11 @@ class UserManager: public QObject
     Q_OBJECT
 
 public:
-    UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
+    UserManager(ServiceManager *serviceManager,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
 
 signals:
     void signedIn();
 
-private:
-    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
 
 private:
     ServiceManager *mServiceManager{nullptr};
