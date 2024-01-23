@@ -189,20 +189,43 @@ Item{
             visible: parent.height > 300
         }
     }
-//    Rectangle{anchors.fill: nodeShowListScroller;z:0}
+    Rectangle{
+        id:back
+    z:0
+    width: parent.width-3
+    color: Style.backgroundColor
+//    height: parent.height
+    anchors.bottom: nodeShowListScroller.bottom
+    anchors.top: nodeShowListScroller.top
+    visible: filterRect.height > 300
+    radius:20
+    Rectangle{
+        anchors.centerIn: parent
+        z:-1
+        radius: 20
+        color: Qt.rgba(Style.foregroundColor.r,Style.foregroundColor.g,Style.foregroundColor.b,0.03)
+        width: parent.width +2
+        height: parent.height + 3
+
+    }
+    }
+//    MultiEffect {
+//        source: back
+//        enabled: true
+//        anchors.fill: back
+//        shadowColor: "black"
+//        shadowEnabled: true
+//        shadowBlur: 1
+//        shadowHorizontalOffset: 2.5
+//        shadowVerticalOffset:1.5
+//        shadowOpacity:1
+//        shadowScale: 0.98
+//        visible: filterRect.height > 300
+
+//    }
     ScrollView{
         z:1
         id:nodeShowListScroller
-        //        Rectangle{
-        ////            anchors.top: dropDown.bottom
-        //            anchors.left: parent.left
-        //            anchors.right: parent.right
-        //            anchors.bottom: parent.bottom
-        //            height: 10
-        //            width: 20
-        //            z:0
-        //            color:"red"
-        //        }
         anchors.bottom: filterRect.bottom
         anchors.bottomMargin: 5
         anchors.left: parent.left

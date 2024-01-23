@@ -63,6 +63,7 @@ UserManager::UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qm
     mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
     mProfile = new Profile(serviceManger);
     qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
+//    qmlEngine->rootContext()->setContextProperty("LoginPage", mLoginPage);
 }
 
 void UserManager::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
