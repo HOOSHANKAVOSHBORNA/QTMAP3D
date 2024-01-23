@@ -243,6 +243,7 @@ Rectangle {
                         }
                         indicator: Rectangle {}
                         contentItem: Text {
+                            id:txtContentItem1
                             text: control.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
@@ -252,6 +253,50 @@ Rectangle {
                         }
                         background: Rectangle {
                             color: "transparent"
+                        }
+                        popup: Popup {
+                            id: popupCombo1
+                            y: control.height - 1
+                            width: 100
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+                            enter: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 0.0
+                                    to: 1.0
+                                }
+                            }
+
+                            exit: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 1.0
+                                    to: 0.0
+                                }
+                            }
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: control.delegateModel //comboFilter1.popup.visible ? comboFilter1.delegateModel : null
+                                currentIndex: control.highlightedIndex
+                                //visible: false
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                border.color: rootObj.foregroundColor
+                                radius: 2
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    txtContentItem1.text = control.textAt(
+                                                control.highlightedIndex)
+                                    popupCombo1.close()
+                                }
+                            }
                         }
                     }
                     Label {
@@ -337,6 +382,7 @@ Rectangle {
                         }
                         indicator: Rectangle {}
                         contentItem: Text {
+                            id:txtContentItem3
                             text: control3.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
@@ -346,6 +392,50 @@ Rectangle {
                         }
                         background: Rectangle {
                             color: "transparent"
+                        }
+                        popup: Popup {
+                            id: popupCombo3
+                            y: control3.height - 1
+                            width: 100
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+                            enter: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 0.0
+                                    to: 1.0
+                                }
+                            }
+
+                            exit: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 1.0
+                                    to: 0.0
+                                }
+                            }
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: control3.delegateModel //comboFilter1.popup.visible ? comboFilter1.delegateModel : null
+                                currentIndex: control3.highlightedIndex
+                                //visible: false
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                border.color: rootObj.foregroundColor
+                                radius: 2
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    txtContentItem3.text = control3.textAt(
+                                                control3.highlightedIndex)
+                                    popupCombo3.close()
+                                }
+                            }
                         }
                     }
                     // -----------------------------------------------
@@ -596,6 +686,7 @@ Rectangle {
                         }
                         indicator: Rectangle {}
                         contentItem: Text {
+                            id:txtContentItem2
                             text: control2.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
@@ -605,6 +696,50 @@ Rectangle {
                         }
                         background: Rectangle {
                             color: "transparent"
+                        }
+                        popup: Popup {
+                            id: popupCombo2
+                            y: control2.height - 1
+                            width: 100
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+                            enter: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 0.0
+                                    to: 1.0
+                                }
+                            }
+
+                            exit: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 1.0
+                                    to: 0.0
+                                }
+                            }
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: control2.delegateModel //comboFilter1.popup.visible ? comboFilter1.delegateModel : null
+                                currentIndex: control2.highlightedIndex
+                                //visible: false
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                border.color: rootObj.foregroundColor
+                                radius: 2
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    txtContentItem2.text = control2.textAt(
+                                                control2.highlightedIndex)
+                                    popupCombo2.close()
+                                }
+                            }
                         }
                     }
                     Label {
