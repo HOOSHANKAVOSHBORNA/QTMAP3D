@@ -148,7 +148,7 @@ Rectangle {
                                 anchors.fill: parent
                                 onClicked: {
                                     filterManager.addFilterTag("color",
-                                                               modelData)
+                                                               modelData, TagComparision.Equal, TagLogicalOperator.And)
                                     tagsModel.append({
                                                          "name": "color",
                                                          "color": modelData,
@@ -275,7 +275,7 @@ Rectangle {
                             radius: 15
                         }
                         onAccepted: {
-                            filterManager.addFilterTag(control.currentText, descriptionField.text)
+                            filterManager.addFilterTag(control.currentText, descriptionField.text, TagComparision.Equal, TagLogicalOperator.And)
                             tagsModel.append({
                                                  "name": control.currentText,
                                                  "value1": descriptionField.text,
@@ -533,7 +533,7 @@ Rectangle {
                             if (rootObj.isNumeric(numbfield3.text)) {
                                 filterManager.addFilterTag(
                                             control3.currentText,
-                                            parseFloat(numbfield3.text),
+                                            parseFloat(numbfield3.text),TagComparision.Equal, TagLogicalOperator.And,
                                             comparison.currentText)
                                 tagsModel.append({
                                                      "name": control3.currentText,
