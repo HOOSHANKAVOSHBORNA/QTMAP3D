@@ -218,27 +218,7 @@ Rectangle {
                         Layout.maximumWidth: 50
                         model: filterManager.stringFilterFields // /* columnModel*/ ["test","test2"]
 
-                        function findLongestString(stringList) {
-                            var longest = ""
 
-                            for (var i = 0; i < stringList.length; i++) {
-                                if (stringList[i].length > longest.length) {
-                                    longest = stringList[i]
-                                }
-                            }
-
-                            return longest
-                        }
-                        Text {
-                            id: maximumText
-                            text: "Longest String: " + control.findLongestString(
-                                      control.model)
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                control.txtWidth = maximumText.width
-                            }
-                            visible: false
-                        }
                         delegate: ItemDelegate {
                             id: itemDelegate
                             implicitWidth: control.txtWidth
@@ -337,26 +317,6 @@ Rectangle {
                         Layout.maximumWidth: 50
                         model: filterManager.numFilterFields ///* compareModel*/ ["test","test2"]
 
-                        function findLongestString(stringList) {
-                            var longest = ""
-
-                            for (var i = 0; i < stringList.length; i++) {
-                                if (stringList[i].length > longest.length) {
-                                    longest = stringList[i]
-                                }
-                            }
-                            return longest
-                        }
-                        Text {
-                            id: maximumText3
-                            text: "Longest String: " + control3.findLongestString(
-                                      control3.model)
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                control3.txtWidth = maximumText3.width
-                            }
-                            visible: false
-                        }
                         delegate: ItemDelegate {
                             implicitWidth: control3.txtWidth
                             background: Rectangle {
@@ -387,67 +347,81 @@ Rectangle {
                             color: "transparent"
                         }
                     }
+                    // -----------------------------------------------
                     Item {
                         width: 26 / rootObj.monitorRatio
                         height: 26 / rootObj.monitorRatio
+                        //                            anchors.centerIn: filterString11
+                        //Layout.verticalCenter: filterString11.verticalCenter
                         Rectangle {
-                            id: comparisonHold
+                            id: comparison
                             anchors.fill: parent
                             radius: width / 2
                             color: rootObj.backgroundColor
-
-                            ComboBox {
-                                id: comparison
+                            Label {
+                                id: lblComparision
                                 anchors.centerIn: parent
-                                anchors.fill: parent
-                                model: /* myProxyModel.comboItem*/ ["=", "<=", ">=", "<", ">"]
+                                text: "="
+                                font.pixelSize: 20 / rootObj.monitorRatio
+                                font.family: rootObj.fontFamily
+                                color: rootObj.foregroundColor
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        comparisonMenu.popup()
+                                    }
+                                }
+                                Menu {
+                                    id: comparisonMenu
+                                    width: 30
 
-                                function findLongestString(stringList) {
-                                    var longest = ""
+                                    Repeater {
+                                        id: repeaterMenu
+                                        model: ["<", "<=", "=", ">=", ">"]
+                                        MenuItem {
+                                            text: modelData
 
-                                    for (var i = 0; i < stringList.length; i++) {
-                                        if (stringList[i].length > longest.length) {
-                                            longest = stringList[i]
+                                            background: Rectangle {
+                                                width: 30
+                                                color: rootObj.backgroundColor
+                                                border.width: .3
+                                                border.color: "black"
+                                            }
+                                            contentItem: Text {
+                                                text: modelData
+                                                //width: 50
+                                                color: "#003569"
+                                                font.family: "Roboto"
+                                                font.pixelSize: 14 / rootObj.monitorRatio
+                                            }
+                                            onClicked: {
+                                                lblComparision.text = modelData
+                                            }
                                         }
                                     }
-                                    return longest
-                                }
-                                delegate: ItemDelegate {
-                                    implicitWidth: 26 / /*Style.monitorRatio*/ 1.3
-                                    background: Rectangle {
-                                        width: 26 / /*Style.monitorRatio*/ 1.3
-                                        color: rootObj.backgroundColor
-                                        border.width: .3
-                                        border.color: "black"
+
+                                    enter: Transition {
+                                        NumberAnimation {
+                                            property: "opacity"
+                                            from: 0.0
+                                            to: 1.0
+                                        }
                                     }
 
-                                    contentItem: Text {
-                                        text: comparison.textRole ? (Array.isArray(
-                                                                         comparison.model) ? modelData[comparison.textRole] : model[comparison.textRole]) : modelData
-                                        color: rootObj.foregroundColor
-                                        font.family: rootObj.fontFamily
-                                        font.pixelSize: 14 / rootObj.monitorRatio
+                                    exit: Transition {
+                                        NumberAnimation {
+                                            property: "opacity"
+                                            from: 1.0
+                                            to: 0.0
+                                        }
                                     }
-                                }
-                                indicator: Rectangle {}
-                                contentItem: Text {
-                                    text: comparison.displayText
-                                    font.family: rootObj.fontFamily
-                                    font.pixelSize: 14 / rootObj.monitorRatio
-                                    color: rootObj.fg30
-                                    verticalAlignment: Text.AlignVCenter
-                                    horizontalAlignment: Text.AlignHCenter
-                                    elide: Text.ElideRight
-                                }
-                                background: Rectangle {
-                                    color: "transparent"
                                 }
                             }
                         }
                         MultiEffect {
-                            source: comparisonHold
+                            source: comparison
                             enabled: true
-                            anchors.fill: comparisonHold
+                            anchors.fill: comparison
                             shadowColor: "black"
                             shadowEnabled: true
                             shadowBlur: 1
@@ -457,6 +431,78 @@ Rectangle {
                             shadowScale: 0.6
                         }
                     }
+
+                    //---------------------------------------------------
+//                    Item {
+//                        width: 26 / rootObj.monitorRatio
+//                        height: 26 / rootObj.monitorRatio
+//                        Rectangle {
+//                            id: comparisonHold
+//                            anchors.fill: parent
+//                            radius: width / 2
+//                            color: rootObj.backgroundColor
+
+//                            ComboBox {
+//                                id: comparison
+//                                anchors.centerIn: parent
+//                                anchors.fill: parent
+//                                model: /* myProxyModel.comboItem*/ ["=", "<=", ">=", "<", ">"]
+
+//                                function findLongestString(stringList) {
+//                                    var longest = ""
+
+//                                    for (var i = 0; i < stringList.length; i++) {
+//                                        if (stringList[i].length > longest.length) {
+//                                            longest = stringList[i]
+//                                        }
+//                                    }
+//                                    return longest
+//                                }
+//                                delegate: ItemDelegate {
+//                                    implicitWidth: 26 / /*Style.monitorRatio*/ 1.3
+//                                    background: Rectangle {
+//                                        width: 26 / /*Style.monitorRatio*/ 1.3
+//                                        color: rootObj.backgroundColor
+//                                        border.width: .3
+//                                        border.color: "black"
+//                                    }
+
+//                                    contentItem: Text {
+//                                        text: comparison.textRole ? (Array.isArray(
+//                                                                         comparison.model) ? modelData[comparison.textRole] : model[comparison.textRole]) : modelData
+//                                        color: rootObj.foregroundColor
+//                                        font.family: rootObj.fontFamily
+//                                        font.pixelSize: 14 / rootObj.monitorRatio
+//                                    }
+//                                }
+//                                indicator: Rectangle {}
+//                                contentItem: Text {
+//                                    text: comparison.displayText
+//                                    font.family: rootObj.fontFamily
+//                                    font.pixelSize: 14 / rootObj.monitorRatio
+//                                    color: rootObj.fg30
+//                                    verticalAlignment: Text.AlignVCenter
+//                                    horizontalAlignment: Text.AlignHCenter
+//                                    elide: Text.ElideRight
+//                                }
+//                                background: Rectangle {
+//                                    color: "transparent"
+//                                }
+//                            }
+//                        }
+//                        MultiEffect {
+//                            source: comparisonHold
+//                            enabled: true
+//                            anchors.fill: comparisonHold
+//                            shadowColor: "black"
+//                            shadowEnabled: true
+//                            shadowBlur: 1
+//                            shadowHorizontalOffset: 0.5
+//                            shadowVerticalOffset: 0
+//                            shadowOpacity: 1
+//                            shadowScale: 0.6
+//                        }
+//                    }
                     TextField {
                         id: numbfield3
                         implicitWidth: 60 / rootObj.monitorRatio
@@ -529,26 +575,7 @@ Rectangle {
                         Layout.maximumWidth: 50
                         model: filterManager.numFilterFields /* rangeModel*/
                         /*["test","test2"]*/
-                        function findLongestString(stringList) {
-                            var longest = ""
 
-                            for (var i = 0; i < stringList.length; i++) {
-                                if (stringList[i].length > longest.length) {
-                                    longest = stringList[i]
-                                }
-                            }
-                            return longest
-                        }
-                        Text {
-                            id: maximumText1
-                            text: "Longest String: " + control.findLongestString(
-                                      control.model)
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                control2.txtWidth = maximumText1.width
-                            }
-                            visible: false
-                        }
                         delegate: ItemDelegate {
                             implicitWidth: control2.txtWidth
                             background: Rectangle {
