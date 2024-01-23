@@ -160,12 +160,13 @@ bool MapObject::addLayer(osgEarth::Layer *layer, osgEarth::Layer *parentLayer)
     CompositeAnnotationLayer* compositeLayer = dynamic_cast<CompositeAnnotationLayer*>(layer);
     if (compositeLayer){
         if(compositeLayer->userId() >= 0)
-            mCompositeLayers[compositeLayer->userId()] = compositeLayer;
+            mLayerMap[compositeLayer->userId()] = compositeLayer;
 
         auto compositCallback = new CompositeCallback(this);
         mCompositeCallbacks[layer] = compositCallback;
         compositeLayer->addCallback(compositCallback);
 
+        compositeLayer->setFilterManager(mFilterManager);
     }
     osgEarth::Map::addLayer(layer);
     return true;
@@ -202,13 +203,6 @@ CompositeCallback *MapObject::getCompositeCallback(osgEarth::Layer *layer)
 
 ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
 {
-    //    for (auto& l: mCompositeLayers){
-    //        ParenticAnnotationLayer *p = l.second->asCompositeAnnotationLayer()->getHierarchicalLayerByUserId(userid);
-    //        if (p){
-    //            return p;
-    //        }
-    //    }
-    //    return nullptr;
     if(mLayerMap.contains(userid))
         return mLayerMap[userid];
     return nullptr;
@@ -217,52 +211,24 @@ ParenticAnnotationLayer *MapObject::getLayerByUserId(int userid)
 void MapObject::setFilterManager(FilterManager *newFilterManager)
 {
     mFilterManager = newFilterManager;
-    for (auto &l: mCompositeLayers) {
-        l.second->setFilterManager(newFilterManager);
+    for (auto &l: mLayerMap) {
+        l->setFilterManager(newFilterManager);
     }
     connect(mFilterManager, &FilterManager::filterTagsEdited, this, &MapObject::filterNodes);
-}
-
-void MapObject::addLayerFromServeice(ParenticAnnotationLayer *layer)
-{
-    if (layer->asCompositeAnnotationLayer() && layer->asCompositeAnnotationLayer()->getNumParents() == 0) {
-        mCompositeLayers[layer->userId()] = layer->asCompositeAnnotationLayer();
-        addLayer(layer);
-    }
-    else if (!layer->asCompositeAnnotationLayer()) {
-        mParenticLayers[layer->userId()] = layer;
-    }
-    layer->setRefreshTime(mRefrehsTime);
 }
 
 ParenticAnnotationLayer *MapObject::getServiceLayerBiId(int id)
 {
     ParenticAnnotationLayer *p{nullptr};
-    if (mParenticLayers.find(id) != mParenticLayers.end())
-        p = mParenticLayers[id];
+    if (mLayerMap.find(id) != mLayerMap.end())
+        p = mLayerMap[id];
     return p;
-}
-
-void MapObject::clearOldParenticLayers()
-{
-    for (auto it = mParenticLayers.cbegin(); it != mParenticLayers.end();){
-        if (it->second->refreshTime() != mRefrehsTime)
-            it = mParenticLayers.erase(it);
-        else
-            it++;
-    }
-    // for (auto &i : mParenticLayers) {
-    //     if (mParenticLayers[i.first]->refreshTime() != mRefrehsTime) {
-    //         // delete mParenticLayers[i.first];
-    //         mParenticLayers.erase(i.first);
-    //     }
-    // }
 }
 
 void MapObject::filterNodes()
 {
-    for (auto &l: mCompositeLayers) {
-        l.second->filter();
+    for (auto &l: mLayerMap) {
+        l->filter();
     }
 }
 
@@ -399,10 +365,3 @@ void MapObject::removeLayerData(const LayerData &layerData)
     }
 }
 
-void MapObject::clearCompositeLayers()
-{
-    for (auto &i : mCompositeLayers){
-        removeLayer(i.second);
-    }
-    ++mRefrehsTime;
-}
