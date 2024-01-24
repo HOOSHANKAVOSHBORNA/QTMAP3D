@@ -3,17 +3,23 @@ import QtQuick.Controls
 import Crystal
 
 
-LoginPage {
+ApplicationWindow {
+    id:signUpWindow
     width: 800
     height: 600
     minimumHeight: 600
     minimumWidth: 800
-    visible: true
+    visible: !loginPage.windowHidden
+
     title: qsTr("SignIn/SignUp")
 
-    onSignedIn: (status)=>{
+//    onSignedIn: (status)=>{
 
-    }
+//    }
+
+onClosing:{
+ loginPage.onWindowClosed()
+}
 
     Rectangle {
         id: rectangle
@@ -121,7 +127,8 @@ LoginPage {
                 }
 
                 onClicked: {
-                    signIn(usernameInput.text, passwordInput.text)
+                 loginPage.signIn(usernameInput.text, passwordInput.text)
+
                 }
 
                 contentItem: textItem2

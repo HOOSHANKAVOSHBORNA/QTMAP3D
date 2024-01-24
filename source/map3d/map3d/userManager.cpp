@@ -6,8 +6,8 @@
 #include <QQuickWindow>
 #include <QJsonObject>
 
-LoginPage::LoginPage(QWindow *parent):
-    QQuickWindow(parent)
+LoginPage::LoginPage(ServiceManager* serviceManager, QObject *parent):
+    QObject(parent), mServiceManager{serviceManager}
 {
 
 }
@@ -24,11 +24,11 @@ void LoginPage::signIn(const QString username, const QString password)
 //    QByteArray pswNsalt (password.toStdString().c_str()) ;
 //    pswNsalt = QCryptographicHash::hash(pswNsalt, QCryptographicHash::Md5).toHex();
 
-    hide();
+    setWindowHidden(true);
     emit signedIn();
 }
 
-void LoginPage::closeEvent(QCloseEvent *)
+void LoginPage::onWindowClosed()
 {
     QCoreApplication::exit(-1);
 }
@@ -38,7 +38,7 @@ void LoginPage::onUserDataReceived(const UserData &userData)
     qDebug()<<userData.response.message;
     if(userData.response.status == Response::Status::Success){
         mLoginUserData = userData;
-        hide();
+        setWindowHidden(true);
         emit signedIn();
     }
 }
@@ -51,41 +51,19 @@ void LoginPage::setServiceManager(ServiceManager *newServiceManager)
     connect(mServiceManager, &ServiceManager::userDataReceived, this, &LoginPage::onUserDataReceived);
 }
 
-UserManager::UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qmlEngine, QObject *parent)
+UserManager::UserManager(ServiceManager *serviceManager, QQmlApplicationEngine *qmlEngine, QObject *parent)
     : QObject(parent),
-    mServiceManager(serviceManger),
+    mServiceManager(serviceManager),
     mQmlEngine(qmlEngine)
 {
-    qmlRegisterType<LoginPage>("Crystal", 1, 0, "LoginPage");
-    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
-                     this, &UserManager::onQmlObjectCreated,
-                     Qt::DirectConnection);
-    mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
-    mProfile = new Profile(serviceManger);
+    mProfile = new Profile(serviceManager);
     qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
-//    qmlEngine->rootContext()->setContextProperty("LoginPage", mLoginPage);
+    mLoginPage = new LoginPage(serviceManager);
+    qmlEngine->rootContext()->setContextProperty("loginPage", mLoginPage);
+    connect(mLoginPage, &LoginPage::signedIn, this, &UserManager::signedIn);
+    mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
 }
 
-void UserManager::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
-{
-    if(!obj){
-        qDebug()<<"Can not create: "<< objUrl.toString();
-        QCoreApplication::exit(-1);
-        return;
-    }
-
-
-    LoginPage *loginPage = qobject_cast<LoginPage*>(obj);
-
-    if (loginPage){
-        qDebug()<<"Load: "<< objUrl.toString();
-        mLoginPage = loginPage;
-
-        connect(mLoginPage, &LoginPage::signedIn, this, &UserManager::signedIn);
-        mLoginPage->setServiceManager(mServiceManager);
-        mLoginPage->show();
-    }
-}
 
 Profile::Profile(ServiceManager *serviceManager, QObject *parent)
     : QObject(parent) , mServiceManager{serviceManager}
@@ -131,3 +109,17 @@ void Profile::logOut()
   mServiceManager->sendUser(userData);
 }
 
+
+
+bool LoginPage::windowHidden() const
+{
+  return mWindowHidden;
+}
+
+void LoginPage::setWindowHidden(bool newWindowHidden)
+{
+  if (mWindowHidden == newWindowHidden)
+        return;
+  mWindowHidden = newWindowHidden;
+  emit windowHiddenChanged();
+}
