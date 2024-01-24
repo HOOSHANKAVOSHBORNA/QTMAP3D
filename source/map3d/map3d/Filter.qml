@@ -596,30 +596,30 @@ Rectangle {
                             easing.type: Easing.OutQuint
 
                         }
+                        function comparetor(txt){
+                            if  (txt === "!=")
+                                return Tag.NotEqual
+                            else if (txt === ">")
+                                return Tag.Greater
+                            else if (txt === "<")
+                                return Tag.Less
+                            else if (txt === ">=")
+                                return Tag.GreaterEqual
+                            else if (txt === "<=")
+                                return Tag.LessEqual
+                            else
+                                return Tag.Equal
+
+
+                        }
                         onAccepted: {
-                            function comparetor(txt){
-                                if  (txt === "!=")
-                                    return TagComparision.NotEqual
-                                else if (txt === ">")
-                                    return TagComparision.Greater
-                                else if (txt === "<")
-                                    return TagComparision.Less
-                                else if (txt === ">=")
-                                    return TagComparision.GreaterEqual
-                                else if (txt === "<=")
-                                    return TagComparision.LessEqual
-                                else
-                                    return TagComparision.Equal
 
-
-                            }
 
                             if (rootObj.isNumeric(numbfield3.text)) {
-                                print(lblComparision.text)
                                 filterManager.addFilterTag(
                                             control3.currentText,
-                                            parseFloat(numbfield3.text),comparetor(lblComparision.text),
-                                            checkB1.checked ? TagLogicalOperator.And : TagLogicalOperator.Or)
+                                            parseFloat(numbfield3.text),numbfield3.comparetor(lblComparision.text),
+                                            checkB1.checked ? Tag.And : Tag.Or)
                                 tagsModel.append({
                                                      "name": control3.currentText,
                                                      "value4": numbfield3.text,

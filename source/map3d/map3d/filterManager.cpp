@@ -3,7 +3,7 @@
 #include "serviceManager.h"
 FilterManager::FilterManager(QObject *parent) : QObject(parent)
 {
-    qmlRegisterType<Tag::LogicalOperator>("Crystal", 1, 0, "TagLogicalOperator");
+    qmlRegisterType<Tag>("Crystal", 1, 0, "Tag");
     qmlRegisterType<Tag::Comparision>("Crystal", 1, 0, "TagComparision");
 }
 
@@ -68,17 +68,17 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData, Tag *tag)
     return false;
 }
 
-QVector<QString> FilterManager::numFilterFields() const
+const QVector<QString> &FilterManager::numFilterFields() const
 {
     return mFilterFieldsNum;
 }
 
-QVector<QString> FilterManager::colorFilterFields() const
+const QVector<QString> &FilterManager::colorFilterFields() const
 {
     return mFilterFieldsColor;
 }
 
-QVector<QString> FilterManager::stringFilterFields() const
+const QVector<QString> &FilterManager::stringFilterFields() const
 {
     return mFilterFieldsStr;
 }

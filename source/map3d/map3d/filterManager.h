@@ -28,7 +28,7 @@ public:
     Q_ENUM(LogicalOperator)
     Q_ENUM(Comparision)
 
-    Tag(QString field, QVariant value, Comparision comp, LogicalOperator op = And, QObject* parent = nullptr):
+    Tag(QString field, QVariant value, Comparision comp = Greater, LogicalOperator op = And, QObject* parent = nullptr):
         QObject(parent),
         field(field),
         value(value),
@@ -64,9 +64,9 @@ public:
     Q_INVOKABLE void addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
     Q_INVOKABLE void removeFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
 
-    QVector<QString> stringFilterFields() const;
-    QVector<QString> colorFilterFields() const;
-    QVector<QString> numFilterFields() const;
+    const QVector<QString> &stringFilterFields() const;
+    const QVector<QString> &colorFilterFields() const;
+    const QVector<QString> &numFilterFields() const;
 
 signals:
     void filterFieldsChanged();
