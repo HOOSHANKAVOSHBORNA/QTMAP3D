@@ -615,15 +615,15 @@ Rectangle {
                             }
 
                             if (rootObj.isNumeric(numbfield3.text)) {
+                                print(lblComparision.text)
                                 filterManager.addFilterTag(
                                             control3.currentText,
                                             parseFloat(numbfield3.text),comparetor(lblComparision.text),
-                                            checkB1.checked ? TagLogicalOperator.And : TagLogicalOperator.Or,
-                                            comparison.currentText)
+                                            checkB1.checked ? TagLogicalOperator.And : TagLogicalOperator.Or)
                                 tagsModel.append({
                                                      "name": control3.currentText,
                                                      "value4": numbfield3.text,
-                                                     "compVal": comparison.currentText,
+                                                     "compVal": lblComparision.text,
                                                      "logical": checkB1.checked ? true : false
                                                  })
                             } else {
