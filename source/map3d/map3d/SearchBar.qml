@@ -209,20 +209,7 @@ Item{
 
     }
     }
-//    MultiEffect {
-//        source: back
-//        enabled: true
-//        anchors.fill: back
-//        shadowColor: "black"
-//        shadowEnabled: true
-//        shadowBlur: 1
-//        shadowHorizontalOffset: 2.5
-//        shadowVerticalOffset:1.5
-//        shadowOpacity:1
-//        shadowScale: 0.98
-//        visible: filterRect.height > 300
 
-//    }
     ScrollView{
         z:1
         id:nodeShowListScroller
