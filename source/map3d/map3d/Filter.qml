@@ -4,13 +4,10 @@ import QtQuick.Controls
 import QtQuick.Effects
 import Crystal 1.0
 
+
 Rectangle {
     id: rootObj    
     property var filterManager
-    //    required property var colorModel
-    //    required property var columnModel
-    //    required property var rangeModel
-    //    required property var compareModel
     readonly property color backgroundColor: "#DEE3E6"
     readonly property color foregroundColor: "#003569"
     readonly property color fg20: Qt.rgba(rootObj.foregroundColor.r,
@@ -53,6 +50,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: 15 / /*Style.monitorRatio*/ 1.3
         Rectangle {
+            visible: false
             id: searchBar
             Layout.minimumWidth: 300 / /*Style.monitorRatio*/ 1.3
             width: parent.width / /*Style.monitorRatio*/ 1.3
@@ -69,7 +67,7 @@ Rectangle {
                 height: 24 / /*Style.monitorRatio*/ 1.3
                 color: rootObj.fg75
             }
-            visible: false
+
 
             TextField {
                 id: searchTextField
@@ -197,7 +195,7 @@ Rectangle {
                                 anchors.fill: parent
                                 onClicked: {
                                     filterManager.addFilterTag("color",
-                                                               modelData, TagComparision.Equal, checkB1.checked ? TagLogicalOperator.And:TagLogicalOperator.Or)
+                                                               modelData, Tag.Equal, checkB1.checked ? Tag.And:Tag.Or)
                                     tagsModel.append({
                                                          "name": "color",
                                                          "color": modelData,
@@ -263,7 +261,7 @@ Rectangle {
                     anchors.right: parent.right
                     spacing: 5
                     ComboBox {
-                        id: control
+                        id: nameCombo
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
@@ -272,17 +270,17 @@ Rectangle {
 
                         delegate: ItemDelegate {
                             id: itemDelegate
-                            implicitWidth: control.txtWidth
+                            implicitWidth: nameCombo.txtWidth
                             background: Rectangle {
-                                width: control.txtWidth
+                                width: nameCombo.txtWidth
                                 color: rootObj.backgroundColor
                                 border.width: .3
                                 border.color: "black"
                             }
 
                             contentItem: Text {
-                                text: control.textRole ? (Array.isArray(
-                                                              control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
+                                text: nameCombo.textRole ? (Array.isArray(
+                                                              nameCombo.model) ? modelData[nameCombo.textRole] : model[nameCombo.textRole]) : modelData
                                 color: rootObj.foregroundColor
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / rootObj.monitorRatio
@@ -291,7 +289,7 @@ Rectangle {
                         indicator: Rectangle {}
                         contentItem: Text {
                             id:txtContentItem1
-                            text: control.displayText
+                            text: nameCombo.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
                             color: rootObj.fg30
@@ -303,7 +301,7 @@ Rectangle {
                         }
                         popup: Popup {
                             id: popupCombo1
-                            y: control.height - 1
+                            y: nameCombo.height - 1
                             width: 100
                             implicitHeight: contentItem.implicitHeight
                             padding: 1
@@ -326,8 +324,8 @@ Rectangle {
                             contentItem: ListView {
                                 clip: true
                                 implicitHeight: contentHeight
-                                model: control.delegateModel
-                                currentIndex: control.highlightedIndex
+                                model: nameCombo.delegateModel
+                                currentIndex: nameCombo.highlightedIndex
                                 ScrollIndicator.vertical: ScrollIndicator {}
                             }
 
@@ -338,8 +336,8 @@ Rectangle {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    txtContentItem1.text = control.textAt(
-                                                control.highlightedIndex)
+                                    txtContentItem1.text = nameCombo.textAt(
+                                                nameCombo.highlightedIndex)
                                     popupCombo1.close()
                                 }
                             }
@@ -366,9 +364,9 @@ Rectangle {
                             radius: 15
                         }
                         onAccepted: {
-                            filterManager.addFilterTag(control.currentText, descriptionField.text, TagComparision.Equal, checkB1.checked ? TagLogicalOperator.And : TagLogicalOperator.Or)
+                            filterManager.addFilterTag(nameCombo.currentText, descriptionField.text, Tag.Equal, checkB1.checked ? Tag.And : Tag.Or)
                             tagsModel.append({
-                                                 "name": control.currentText,
+                                                 "name": nameCombo.currentText,
                                                  "value1": descriptionField.text,
                                                  "value2": "",
                                                  "value3": "",
@@ -404,24 +402,24 @@ Rectangle {
                     anchors.topMargin: -3
                     spacing: 5
                     ComboBox {
-                        id: control3
+                        id: longLatAltCombo
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
                         model: filterManager.numFilterFields ///* compareModel*/ ["test","test2"]
 
                         delegate: ItemDelegate {
-                            implicitWidth: control3.txtWidth
+                            implicitWidth: longLatAltCombo.txtWidth
                             background: Rectangle {
-                                width: control3.txtWidth
+                                width: longLatAltCombo.txtWidth
                                 color: rootObj.backgroundColor
                                 border.width: .3
                                 border.color: "black"
                             }
 
                             contentItem: Text {
-                                text: control3.textRole ? (Array.isArray(
-                                                               control3.model) ? modelData[control3.textRole] : model[control3.textRole]) : modelData
+                                text: longLatAltCombo.textRole ? (Array.isArray(
+                                                               longLatAltCombo.model) ? modelData[longLatAltCombo.textRole] : model[longLatAltCombo.textRole]) : modelData
                                 color: rootObj.foregroundColor
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / rootObj.monitorRatio
@@ -430,7 +428,7 @@ Rectangle {
                         indicator: Rectangle {}
                         contentItem: Text {
                             id:txtContentItem3
-                            text: control3.displayText
+                            text: longLatAltCombo.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
                             color: rootObj.fg30
@@ -442,7 +440,7 @@ Rectangle {
                         }
                         popup: Popup {
                             id: popupCombo3
-                            y: control3.height - 1
+                            y: longLatAltCombo.height - 1
                             width: 100
                             implicitHeight: contentItem.implicitHeight
                             padding: 1
@@ -465,8 +463,8 @@ Rectangle {
                             contentItem: ListView {
                                 clip: true
                                 implicitHeight: contentHeight
-                                model: control3.delegateModel
-                                currentIndex: control3.highlightedIndex
+                                model: longLatAltCombo.delegateModel
+                                currentIndex: longLatAltCombo.highlightedIndex
                                 //visible: false
                                 ScrollIndicator.vertical: ScrollIndicator {}
                             }
@@ -478,8 +476,8 @@ Rectangle {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    txtContentItem3.text = control3.textAt(
-                                                control3.highlightedIndex)
+                                    txtContentItem3.text = longLatAltCombo.textAt(
+                                                longLatAltCombo.highlightedIndex)
                                     popupCombo3.close()
                                 }
                             }
@@ -617,11 +615,11 @@ Rectangle {
 
                             if (rootObj.isNumeric(numbfield3.text)) {
                                 filterManager.addFilterTag(
-                                            control3.currentText,
+                                            longLatAltCombo.currentText,
                                             parseFloat(numbfield3.text),numbfield3.comparetor(lblComparision.text),
                                             checkB1.checked ? Tag.And : Tag.Or)
                                 tagsModel.append({
-                                                     "name": control3.currentText,
+                                                     "name": longLatAltCombo.currentText,
                                                      "value4": numbfield3.text,
                                                      "compVal": lblComparision.text,
                                                      "logical": checkB1.checked ? true : false
@@ -657,7 +655,7 @@ Rectangle {
                     anchors.centerIn: parent
                     spacing: 5
                     ComboBox {
-                        id: control2
+                        id: nameCombo2
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
@@ -665,17 +663,17 @@ Rectangle {
                         /*["test","test2"]*/
 
                         delegate: ItemDelegate {
-                            implicitWidth: control2.txtWidth
+                            implicitWidth: nameCombo2.txtWidth
                             background: Rectangle {
-                                width: control2.txtWidth
+                                width: nameCombo2.txtWidth
                                 color: rootObj.backgroundColor
                                 border.width: .3
                                 border.color: "black"
                             }
 
                             contentItem: Text {
-                                text: control2.textRole ? (Array.isArray(
-                                                               control2.model) ? modelData[control2.textRole] : model[control2.textRole]) : modelData
+                                text: nameCombo2.textRole ? (Array.isArray(
+                                                               nameCombo2.model) ? modelData[nameCombo2.textRole] : model[nameCombo2.textRole]) : modelData
                                 color: rootObj.foregroundColor
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / rootObj.monitorRatio
@@ -684,7 +682,7 @@ Rectangle {
                         indicator: Rectangle {}
                         contentItem: Text {
                             id:txtContentItem2
-                            text: control2.displayText
+                            text: nameCombo2.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
                             color: rootObj.fg30
@@ -696,7 +694,7 @@ Rectangle {
                         }
                         popup: Popup {
                             id: popupCombo2
-                            y: control2.height - 1
+                            y: nameCombo2.height - 1
                             width: 100
                             implicitHeight: contentItem.implicitHeight
                             padding: 1
@@ -719,8 +717,8 @@ Rectangle {
                             contentItem: ListView {
                                 clip: true
                                 implicitHeight: contentHeight
-                                model: control2.delegateModel //comboFilter1.popup.visible ? comboFilter1.delegateModel : null
-                                currentIndex: control2.highlightedIndex
+                                model: nameCombo2.delegateModel //comboFilter1.popup.visible ? comboFilter1.delegateModel : null
+                                currentIndex: nameCombo2.highlightedIndex
                                 //visible: false
                                 ScrollIndicator.vertical: ScrollIndicator {}
                             }
@@ -732,8 +730,8 @@ Rectangle {
                             MouseArea {
                                 anchors.fill: parent
                                 onClicked: {
-                                    txtContentItem2.text = control2.textAt(
-                                                control2.highlightedIndex)
+                                    txtContentItem2.text = nameCombo2.textAt(
+                                                nameCombo2.highlightedIndex)
                                     popupCombo2.close()
                                 }
                             }
@@ -777,11 +775,11 @@ Rectangle {
                                     && rootObj.isNumeric(numField.text)) {
 
                                 filterManager.addFilterTag(
-                                            control2.currentText,
+                                            nameCombo2.currentText,
                                             parseFloat(numField.text),
                                             parseFloat(numField2.text), "<=>")
                                 tagsModel.append({
-                                                     "name": control2.currentText,
+                                                     "name": nameCombo2.currentText,
                                                      "value2": numField.text,
                                                      "value3": numField2.text
                                                  })
@@ -830,12 +828,12 @@ Rectangle {
                                     && numField2.text !== ""
                                     && rootObj.isNumeric(numField2.text)) {
                                 filterManager.addFilterTag(
-                                            control2.currentText,
+                                            nameCombo2.currentText,
                                             parseFloat(numField.text),
                                             parseFloat(numField2.text), "<=>")
 
                                 tagsModel.append({
-                                                     "name": control2.currentText,
+                                                     "name": nameCombo2.currentText,
                                                      "value2": numField.text,
                                                      "value3": numField2.text
                                                  })
@@ -914,7 +912,6 @@ Rectangle {
                             anchors.fill: parent
                             hoverEnabled: true
                             onEntered: {
-                                print(index)
                                 if (!typesHolder.selected == true) {
                                     borderRect.border.color = rootObj.foregroundColor
                                     showDetails.colorHandler = rootObj.foregroundColor
@@ -1041,9 +1038,56 @@ Rectangle {
                                 color: showDetails.colorHandler
                                 Layout.leftMargin: 15 / /*Style.monitorRatio*/ 1.3
                                 Layout.rightMargin: 15 / /*Style.monitorRatio*/ 1.3
+
                                 MouseArea {
                                     anchors.fill: parent
-                                    onClicked: tagsModel.remove(index)
+                                    onClicked: {
+                                        function comparetor(txt){
+                                            if  (txt === "!=")
+                                                return Tag.NotEqual
+                                            else if (txt === ">")
+                                                return Tag.Greater
+                                            else if (txt === "<")
+                                                return Tag.Less
+                                            else if (txt === ">=")
+                                                return Tag.GreaterEqual
+                                            else if (txt === "<=")
+                                                return Tag.LessEqual
+                                            else
+                                                return Tag.Equal
+
+
+                                        }
+                                        if(model.color)
+                                        {
+                                            filterManager.removeFilterTag(model.name,
+                                                                          model.color,
+                                                                          Tag.Equal,
+                                                                          model.logical? Tag.And : Tag.Or)
+                                        }
+                                        else if (model.value1)
+                                        {
+                                            filterManager.removeFilterTag(model.name,
+                                                                          model.value1,
+                                                                          Tag.Equal,
+                                                                          model.logical? Tag.And : Tag.Or)
+                                        }
+                                        else if (model.value4)
+                                        {
+                                            filterManager.removeFilterTag(model.name,
+                                                                          model.value4,
+                                                                          comparetor(model.compVal),
+                                                                          model.logical? Tag.And : Tag.Or)
+                                        }
+
+                                        print(model.value4)
+                                        print(model.value1)
+                                        print(model.color)
+                                        tagsModel.remove(index)
+//                                        filterManager.removeFilterTag()
+//                                        filterManager.addFilterTag(nameCombo.currentText, descriptionField.text, Tag.Equal, checkB1.checked ? Tag.And : Tag.Or)
+
+                                    }
                                 }
                             }
                         }
