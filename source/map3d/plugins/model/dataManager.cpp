@@ -37,6 +37,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
     osg::ref_ptr<SimpleModelNode> node;
 
     if (!mNodeMap.contains(nodeData.id)) {
+        emit nodeAppended(this->nodeCount() - 1);
         // TODO: setup filter needed data mUniqueColorss
 
         // adding new uniuqe category name
@@ -98,8 +99,6 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         mNodeMap[nodeData.id] = node;
         node->setBookmarkManager(mMainWindow->getBookmarkManager());
 
-        qDebug() << this->nodeCount();
-        emit nodeAppended(this->nodeCount() - 1);
     } else {
         node = mNodeMap[nodeData.id];
         for (int layerId : node->nodeData().layersId) {
