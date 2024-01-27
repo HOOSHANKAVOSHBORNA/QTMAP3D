@@ -52,6 +52,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
             if (!found) {
                 mUniqueCategoryNames.append(category);
+                emit categoryAppended(mUniqueCategoryNames.size() - 1);
             }
         }
 
@@ -69,13 +70,16 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
             if (!found) {
                 mUniqueAddedColumnNames.append(name);
                 mColumnToCategory.insert(name, nodeData.fieldData.at(i).category);
+                emit columnAppended(mUniqueAddedColumnNames.size() - 1 + mFixedColumnNames.size());
             }
         }
 
-        qDebug() << "debug: " << mUniqueCategoryNames.size();
-        for (int i = 0; i < mUniqueCategoryNames.size(); ++i) {
-            qDebug() << "debug: " << mUniqueCategoryNames.at(i);
-        }
+        // DEBUG
+        //        qDebug() << "debug: " << mUniqueCategoryNames.size();
+        //        for (int i = 0; i < mUniqueCategoryNames.size(); ++i) {
+        //            qDebug() << "debug: " << mUniqueCategoryNames.at(i);
+        //        }
+        // ENDDEBUG
 
         if (nodeData.type == NodeType::Movable)
             node = new MoveableModelNode(mMapItem,
@@ -93,6 +97,9 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         node->setPosition(geoPoint);
         mNodeMap[nodeData.id] = node;
         node->setBookmarkManager(mMainWindow->getBookmarkManager());
+
+        qDebug() << this->nodeCount();
+        emit nodeAppended(this->nodeCount() - 1);
     } else {
         node = mNodeMap[nodeData.id];
         for (int layerId : node->nodeData().layersId) {
@@ -106,6 +113,8 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
             node->asFlyableModelNode()->flyTo(geoPoint, nodeData.speed);
         else
             node->setPosition(geoPoint);
+
+        emit nodeUpdated(getNodeIndexById(nodeData.id));
     }
     node->setName(nodeData.name.toStdString());
     //    node->setPosition(geoPoint);
@@ -118,8 +127,6 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         if(layer)
             layer->addChild(node);
     }
-
-    emit nodeDataManagerChanged();
 
     return node;
 }
@@ -137,6 +144,16 @@ void DataManager::removeNode(const NodeData &nodeData)
     }
 }
 
+QVector<QString> DataManager::fixedColumnNames() const
+{
+    return mFixedColumnNames;
+}
+
+void DataManager::setFixedColumnNames(const QVector<QString> &newFixedColumnNames)
+{
+    mFixedColumnNames = newFixedColumnNames;
+}
+
 QMap<QString, QString> DataManager::columnToCategory() const
 {
     return mColumnToCategory;
@@ -145,6 +162,17 @@ QMap<QString, QString> DataManager::columnToCategory() const
 void DataManager::setColumnToCategory(const QMap<QString, QString> &newColumnToCategory)
 {
     mColumnToCategory = newColumnToCategory;
+}
+
+int DataManager::getNodeIndexById(int id)
+{
+    for (int i = 0; i < mNodeMap.size(); ++i) {
+        if (mNodeMap.keys().at(i) == id) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 QVector<QString> DataManager::uniqueCategoryNames()

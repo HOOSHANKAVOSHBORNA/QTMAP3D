@@ -17,13 +17,9 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
     mProxyModel = new NodeProxyModel;
     mProxyModel->setSourceModel(nodeModel);
 
-    CategoryTabbarModel *tabbarModel = new CategoryTabbarModel(
-        dataManager->getUniqueCategoryNames());
-    connect(mDataManager,
-            &DataManager::nodeDataManagerChanged,
-            tabbarModel,
-            &CategoryTabbarModel::onTabResetModel);
+    CategoryTabbarModel *tabbarModel = new CategoryTabbarModel(dataManager);
     mProxyModel->setTabbarModel(tabbarModel);
+
     createQml();
 }
 
@@ -134,31 +130,30 @@ bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &so
 
     return m_filterColumn == currentColumnCategory;
 
-    return true;
-    if (m_filterColumn == tabList.at(0)) { //Main
-        //        qDebug()<<sourceModel()->headerData(sourceColumn,Qt::Horizontal);
-        //        QModelIndex index = sourceModel()->index(0, sourceColumn, sourceParent);
-        //        QVariant data = sourceModel()->data(index);
-        QVariant data = sourceModel()->headerData(sourceColumn, Qt::Horizontal);
-        bool result = false;
-        for (int i = 0; i < columnName.size(); ++i) {
-            if (i <= Ecolumn::EMaster || i >= Ecolumn::EBattle) {
-                //qDebug()<<Ecolumn::EMaster;
-                result = result || data.toString().contains(columnName.at(i), Qt::CaseInsensitive);
-            }
-        }
-        return result;
-    } else if (m_filterColumn == tabList.at(1)) { //Location
-        QVariant data = sourceModel()->headerData(sourceColumn, Qt::Horizontal);
-        bool result = false;
-        for (int i = 0; i < columnName.size(); ++i) {
-            if (i <= Ecolumn::EName || i >= Ecolumn::ELatitude) {
-                result = result || data.toString().contains(columnName.at(i), Qt::CaseInsensitive);
-            }
-        }
-        return result;
-    }
-    return true;
+    //    if (m_filterColumn == tabList.at(0)) { //Main
+    //        //        qDebug()<<sourceModel()->headerData(sourceColumn,Qt::Horizontal);
+    //        //        QModelIndex index = sourceModel()->index(0, sourceColumn, sourceParent);
+    //        //        QVariant data = sourceModel()->data(index);
+    //        QVariant data = sourceModel()->headerData(sourceColumn, Qt::Horizontal);
+    //        bool result = false;
+    //        for (int i = 0; i < columnName.size(); ++i) {
+    //            if (i <= Ecolumn::EMaster || i >= Ecolumn::EBattle) {
+    //                //qDebug()<<Ecolumn::EMaster;
+    //                result = result || data.toString().contains(columnName.at(i), Qt::CaseInsensitive);
+    //            }
+    //        }
+    //        return result;
+    //    } else if (m_filterColumn == tabList.at(1)) { //Location
+    //        QVariant data = sourceModel()->headerData(sourceColumn, Qt::Horizontal);
+    //        bool result = false;
+    //        for (int i = 0; i < columnName.size(); ++i) {
+    //            if (i <= Ecolumn::EName || i >= Ecolumn::ELatitude) {
+    //                result = result || data.toString().contains(columnName.at(i), Qt::CaseInsensitive);
+    //            }
+    //        }
+    //        return result;
+    //    }
+    //    return true;
 }
 
 bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -403,7 +398,11 @@ QStringList NodeProxyModel::filterCombo(QString text, QString nameFilter)
 NodeListModel::NodeListModel(DataManager *dataManager)
 {
     mDataManager = dataManager;
-    connect(mDataManager, &DataManager::nodeDataManagerChanged, this, &NodeListModel::resetTable);
+
+    connect(mDataManager, &DataManager::nodeAppended, this, &NodeListModel::onNodeAppended);
+    connect(mDataManager, &DataManager::nodeUpdated, this, &NodeListModel::onNodeUpated);
+
+    connect(mDataManager, &DataManager::columnAppended, this, &NodeListModel::onColumnAppended);
 
     selectionModel = new QItemSelectionModel();
 }
@@ -421,7 +420,7 @@ int NodeListModel::rowCount(const QModelIndex &) const
 
 int NodeListModel::columnCount(const QModelIndex &) const
 {
-    return mFixedColumnNames.size() + mDataManager->uniqueAddedColumnNames().size();
+    return mDataManager->fixedColumnNames().size() + mDataManager->uniqueAddedColumnNames().size();
 }
 
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
@@ -445,8 +444,8 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
 
     QString columnName;
 
-    if (index.column() < mFixedColumnNames.size()) {
-        columnName = mFixedColumnNames.at(index.column());
+    if (index.column() < mDataManager->fixedColumnNames().size()) {
+        columnName = mDataManager->fixedColumnNames().at(index.column());
         if (columnName == "Name") {
             return nodeData.name;
         } else if (columnName == "Color") {
@@ -459,8 +458,8 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
             return "Defualt";
         }
     } else {
-        columnName = mDataManager->uniqueAddedColumnNames().at(index.column()
-                                                               - mFixedColumnNames.size());
+        columnName = mDataManager->uniqueAddedColumnNames().at(
+            index.column() - mDataManager->fixedColumnNames().size());
 
         int foundIndex = -1;
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
@@ -512,10 +511,11 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
 
 QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (section < mFixedColumnNames.size()) {
-        return mFixedColumnNames.at(section);
+    if (section < mDataManager->fixedColumnNames().size()) {
+        return mDataManager->fixedColumnNames().at(section);
     } else {
-        return mDataManager->uniqueAddedColumnNames().at(section - mFixedColumnNames.size());
+        return mDataManager->uniqueAddedColumnNames().at(section
+                                                         - mDataManager->fixedColumnNames().size());
     }
 }
 
@@ -540,14 +540,6 @@ QItemSelectionModel *NodeListModel::selectModel()
     return selectionModel;
 }
 
-void NodeListModel::resetTable()
-{
-    //    qDebug() << "debug"
-    //             << "lolo";
-    beginResetModel();
-    endResetModel();
-}
-
 DataManager *NodeListModel::dataManager() const
 {
     return mDataManager;
@@ -556,6 +548,28 @@ DataManager *NodeListModel::dataManager() const
 void NodeListModel::setDataManager(DataManager *newDataManager)
 {
     mDataManager = newDataManager;
+}
+
+void NodeListModel::onNodeAppended(int index)
+{
+    beginInsertRows(QModelIndex(), this->rowCount(), this->rowCount());
+    endInsertRows();
+    emit dataChanged(this->index(this->rowCount(), 0), this->index(this->rowCount(), 0));
+    //    beginResetModel();
+    //    endResetModel();
+}
+
+void NodeListModel::onNodeUpated(int index)
+{
+    emit dataChanged(this->index(index, 0), this->index(index, 0));
+}
+
+void NodeListModel::onColumnAppended(int index)
+{
+    beginInsertColumns(QModelIndex(), index, index);
+    endInsertColumns();
+    //    beginResetModel();
+    //    endResetModel();
 }
 
 QHash<int, QByteArray> NodeListModel::roleNames() const
@@ -603,39 +617,33 @@ QHash<int, QByteArray> NodeListModel::roleNames() const
 //    endResetModel();
 //}
 
-CategoryTabbarModel::CategoryTabbarModel(QVector<QString> *newTabNames)
+CategoryTabbarModel::CategoryTabbarModel(DataManager *dataManager)
 {
-    mTabNames = newTabNames;
+    mDataManager = dataManager;
+
+    connect(dataManager,
+            &DataManager::categoryAppended,
+            this,
+            &CategoryTabbarModel::onCategoryAppended);
 
     // TEST
-    //    mTabNames->append("akbar");
-    //    mTabNames->append("Abbas");
+    //    mDataManager->getUniqueCategoryNames()->append("akbar");
+    //    mDataManager->getUniqueCategoryNames()->append("Abbas");
     // ENDTEST
 }
 
 int CategoryTabbarModel::rowCount(const QModelIndex &parent) const
 {
-    return mTabNames->size();
+    return mDataManager->getUniqueCategoryNames()->size();
 }
 
 QVariant CategoryTabbarModel::data(const QModelIndex &index, int role) const
 {
-    return mTabNames->at(index.row());
+    return mDataManager->getUniqueCategoryNames()->at(index.row());
 }
 
-void CategoryTabbarModel::setTabNames(QVector<QString> *newTabNames)
+void CategoryTabbarModel::onCategoryAppended(int index)
 {
-    mTabNames = newTabNames;
-}
-
-QVector<QString> *CategoryTabbarModel::tabNames() const
-{
-    return mTabNames;
-}
-
-void CategoryTabbarModel::onTabResetModel()
-{
-    beginResetModel();
-
-    endResetModel();
+    beginInsertRows(QModelIndex(), index, index);
+    endInsertRows();
 }

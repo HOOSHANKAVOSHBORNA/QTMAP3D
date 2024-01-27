@@ -20,26 +20,18 @@ class NodeListModel;
 class CategoryTabbarModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(
-        QVector<QString> *tabNames READ tabNames WRITE setTabNames NOTIFY tabNamesChanged FINAL)
 
 public:
-    explicit CategoryTabbarModel(QVector<QString> *newTabNames);
+    explicit CategoryTabbarModel(DataManager *dataManager);
 
     virtual int rowCount(const QModelIndex &parent) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
-    void setTabNames(QVector<QString> *newTabNames);
-    QVector<QString> *tabNames() const;
-
 public slots:
-    void onTabResetModel();
-
-signals:
-    void tabNamesChanged();
+    void onCategoryAppended(int index);
 
 private:
-    QVector<QString> *mTabNames;
+    DataManager *mDataManager;
 };
 
 //-----------------------------------------NodeListModel------------------------------------
@@ -59,8 +51,6 @@ public:
     Q_INVOKABLE void selectionRow(int rowCount, int idxRow);
     Q_INVOKABLE QItemSelectionModel *selectModel();
 
-    void resetTable();
-
     // TODO: write select attacker and show targets
     QVector<NodeData> *DataAttacker = new QVector<NodeData>;
     //    Q_INVOKABLE void attacker(QString name);
@@ -69,12 +59,16 @@ public:
     DataManager *dataManager() const;
     void setDataManager(DataManager *newDataManager);
 
+public slots:
+    void onNodeAppended(int index);
+    void onNodeUpated(int index);
+
+    void onColumnAppended(int index);
+
 private:
     DataManager *mDataManager;
     QItemSelectionModel *selectionModel;
     QString modelType;
-
-    QVector<QString> mFixedColumnNames = {"Color", "Icon", "Name", "Type"};
 
     //    QMap<EColumn, QString> columnToName = {{Color, "Color"},
     //                                           {Icon, "Icon"},
