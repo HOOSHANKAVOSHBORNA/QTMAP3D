@@ -173,6 +173,7 @@ Item {
             }
         }
 
+
         StackLayout {
             id: stackLayout
 
@@ -186,9 +187,11 @@ Item {
                 id: profileItem
                 windowTitle: sideModel.get(0).name
                 isWindow: sideModel.get(0).isWindow
+
+
                 containerItem: ProfileItem {
                     id: profile
-                    model:ProfileManagerInstance.getProfile()
+                    model: UserInfo
                 }
 
                 onWindowClose: {

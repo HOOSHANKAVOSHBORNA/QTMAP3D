@@ -19,7 +19,7 @@ Rectangle {
 
     property real heightFactor : 0.0
 
-    property double massageFontSize: 16 / Style.monitorRatio
+    property double massageFontSize: 13 / Style.monitorRatio
     property var model
     property var sourceModel
     property string modeMap: "geocentric"
@@ -744,7 +744,7 @@ height: control.displayText !== name?implicitHeight : 1
                             text: messageText
                             color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
-                            font.pixelSize:  16/ Style.monitorRatio
+                            font.pixelSize:  13/ Style.monitorRatio
                             selectedTextColor: Style.foregroundColor
                             selectionColor: Style.selectColor
                             placeholderTextColor: Style.disableColor

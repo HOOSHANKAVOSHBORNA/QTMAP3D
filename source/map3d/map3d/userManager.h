@@ -6,23 +6,28 @@
 #include <QQuickWindow>
 
 class QQmlEngine;
-class LoginPage : public QQuickWindow
+class LoginPage : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool windowHidden READ windowHidden WRITE setWindowHidden NOTIFY windowHiddenChanged)
+
 public:
-    LoginPage(QWindow *parent = nullptr);
+    LoginPage(ServiceManager *serviceManager, QObject *parent = nullptr);
 
     void setServiceManager(ServiceManager *newServiceManager);
 
-public slots:
-    void signIn(const QString username, const QString password);
-//    void signUp(const QString username, const QString password);
+   Q_INVOKABLE void signIn(const QString username, const QString password);
+   Q_INVOKABLE void openSettings();
 
-signals:
+   bool windowHidden() const;
+   void setWindowHidden(bool newWindowHidden);
+
+   signals:
     void signedIn();
+    void windowHiddenChanged();
 
-protected:
-    void closeEvent(QCloseEvent *) override;
+   protected:
+   Q_INVOKABLE  void onWindowClosed();
 private:
     void onUserDataReceived(const UserData &userData);
 private:
@@ -31,26 +36,7 @@ private:
     ServiceManager* mServiceManager{nullptr};
     UserData mLoginUserData;
 
-};
-
-class UserManager: public QObject
-{
-    Q_OBJECT
-
-public:
-    UserManager(ServiceManager *serviceManger,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
-
-signals:
-    void signedIn();
-
-private:
-    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
-
-private:
-    ServiceManager *mServiceManager{nullptr};
-    QQmlApplicationEngine *mQmlEngine{nullptr};
-    LoginPage *mLoginPage{nullptr};
-
+    bool mWindowHidden{false};
 };
 
 class Profile:public QObject
@@ -59,48 +45,50 @@ class Profile:public QObject
 
     Q_PROPERTY(QString name READ getName  WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY usernameChanged)
-    Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
 
 public:
-    explicit Profile(QObject *parent = nullptr){}
 
-   Q_INVOKABLE QString getName() const;
-   Q_INVOKABLE void setName(const QString &newName);
-   Q_INVOKABLE QString getUsername() const;
-   Q_INVOKABLE void setUsername(const QString &newUsername);
-   Q_INVOKABLE QString getPassword() const;
-   Q_INVOKABLE void setPassword(const QString &newPassword);
 
-   Q_INVOKABLE bool validateChanges(QString name, QString username, QString password);
+    explicit Profile(ServiceManager *serviceManager, QObject *parent = nullptr);
+
+    QString getName() const;
+    void setName(const QString &newName);
+    QString getUsername() const;
+    void setUsername(const QString &newUsername);
+    Q_INVOKABLE void logOut();
+
 
 signals:
     void nameChanged();
-
     void usernameChanged();
 
-    void passwordChanged();
-
 private:
-    QString mName;
-    QString mUsername;
-    QString mPassword;
+    ServiceManager* mServiceManager{nullptr};
+    QString mName{"Alireza Nabati"};
+    QString mUsername{"Alirez98"};
 };
 
-class ProfileManager:public QObject
+
+
+
+class UserManager: public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
 
 public:
-    static ProfileManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
-    ~ProfileManager();
-    Q_INVOKABLE Profile *getProfile();
-protected:
-    ProfileManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
+    UserManager(ServiceManager *serviceManager,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
+
+signals:
+    void signedIn();
+
+
 private:
-    static inline ProfileManager* mInstance{nullptr};
+    ServiceManager *mServiceManager{nullptr};
+    QQmlApplicationEngine *mQmlEngine{nullptr};
+    LoginPage *mLoginPage{nullptr};
     Profile *mProfile;
 };
+
+
 
 #endif // USERMANAGER_H

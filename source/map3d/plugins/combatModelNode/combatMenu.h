@@ -71,6 +71,7 @@ public:
     void addAttacker(SimpleModelNode* node);
     void addTarget(SimpleModelNode* node);
     Q_INVOKABLE void select(int row);
+    Q_INVOKABLE void operatorToggle(bool isAttacker);
 
     QString getOperatorName();
     QUrl getOperatorIcon();

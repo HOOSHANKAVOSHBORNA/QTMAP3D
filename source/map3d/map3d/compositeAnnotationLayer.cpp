@@ -9,6 +9,7 @@ ParenticAnnotationLayer::ParenticAnnotationLayer(int id, QObject *parent):
     mUserId(id)
 {
     init();
+    mFilterManager = nullptr;
 }
 
 ParenticAnnotationLayer::~ParenticAnnotationLayer()
@@ -131,7 +132,6 @@ void ParenticAnnotationLayer::filter()
         auto node = getGroup()->getChild(i);
         auto nodeData = dynamic_cast<NodeData*>(node->getUserData());
         if (nodeData) {
-            // ToDo!:
             bool t = mFilterManager->checkNodeToShow(nodeData);
             node->setNodeMask(t);
         }
@@ -202,6 +202,7 @@ unsigned int CompositeAnnotationLayer::getNumLayers() const
 
 void CompositeAnnotationLayer::addLayer(ParenticAnnotationLayer *layer)
 {
+    layer->setFilterManager(mFilterManager);
     mChildildren.push_back(layer);
     layer->addParent(this);
     mRoot->addChild(layer->getNode());

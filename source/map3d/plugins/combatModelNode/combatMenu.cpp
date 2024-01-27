@@ -280,6 +280,13 @@ void OperatorListModel::select(int row)
     setOperatorIsAttacker(mSelectedNode->nodeData().isAttacker);
 }
 
+void OperatorListModel::operatorToggle(bool isAttacker)
+{
+    beginResetModel();
+    mIsAttacker = isAttacker;
+    endResetModel();
+}
+
 QString OperatorListModel::getOperatorName()
 {
     return mOperatorName;

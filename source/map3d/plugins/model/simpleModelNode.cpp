@@ -166,7 +166,7 @@ void SimpleModelNode::setNodeData(const NodeData &nodeData)
 //                               QString::fromStdString(mNodeData->imgSrc));
 
 //    //TODO add signal for update data--------------------
-//    setUserData(mNodeData);
+    setUserData(&mNodeData);
 }
 
 osgEarth::Color SimpleModelNode::color() const
