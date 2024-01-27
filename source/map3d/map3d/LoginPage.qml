@@ -35,7 +35,7 @@ onClosing:{
         Image {
             id: backGroundImage
             anchors.top: parent.top
-            source: "qrc:/Resources/beautiful-earth.jpg"
+            source: "qrc:/Resources/login-earth.jpg"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin: 40
             fillMode: Image.PreserveAspectFit
@@ -128,7 +128,7 @@ onClosing:{
                 RowLayout{
                     spacing: 0
                     IconImage{
-                        source: "qrc:/Resources/lock.png"
+                        source: "qrc:/Resources/lock-closed.png"
                         Layout.preferredHeight: 23 / Style.monitorRatio
                         Layout.preferredWidth: 23 / Style.monitorRatio
                     }
@@ -263,7 +263,7 @@ onClosing:{
                 anchors.leftMargin: 50 / Style.monitorRatio
                 anchors.rightMargin: 50 / Style.monitorRatio
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 26 / Style.monitorRatio
+                anchors.bottomMargin: 50 / Style.monitorRatio
                 hoverEnabled: true
                 background: Rectangle{
                     color: Style.foregroundColor
