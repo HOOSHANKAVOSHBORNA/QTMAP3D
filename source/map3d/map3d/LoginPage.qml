@@ -1,17 +1,23 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import Crystal
+import "style"
 
 
 ApplicationWindow {
     id:signUpWindow
-    width: 800
-    height: 600
+    width: 1080 / Style.monitorRatio
+    height: 1920 / Style.monitorRatio
     minimumHeight: 600
     minimumWidth: 800
     visible: !loginPage.windowHidden
-
     title: qsTr("SignIn/SignUp")
+
+    readonly property color foregroundColor: Qt.rgba(Style.foregroundColor.r,
+                                                     Style.foregroundColor.g,
+                                                     Style.foregroundColor.b,
+                                                     0.50)
 
 //    onSignedIn: (status)=>{
 
@@ -35,117 +41,235 @@ onClosing:{
             fillMode: Image.PreserveAspectFit
         }
 
-        Column {
-            id: fields
-            anchors.horizontalCenter: parent.horizontalCenter
+        Rectangle{
+            color: "silver"
+            width: 440 / Style.monitorRatio
+            height: 464 / Style.monitorRatio
             anchors.verticalCenter: parent.verticalCenter
-            anchors.topMargin: 170
-            spacing: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 0.2 * parent.width
+            radius: 20 / Style.monitorRatio
 
-            TextField {
-                id: usernameInput
-                width: 350
-                height: 60
-                anchors.leftMargin: 20
-                placeholderText: "Username"
-                placeholderTextColor: "white"
-                font.pixelSize: 20
-                leftPadding: 20
-                background: buttonBackground
-                Rectangle {
-                    id: buttonBackground
-                    color: "#000000"
-                    implicitWidth: 100
-                    implicitHeight: 40
-                    opacity: usernameInput.focus ? 0.65 : 0.3
-                    radius: 50
-                    border.color: "#ffffff"
+            Text{
+                id:logInText
+                text: "Log in"
+                font.pixelSize: 35 / Style.monitorRatio
+                color: Style.foregroundColor
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.leftMargin: 50 / Style.monitorRatio
+                anchors.topMargin: 60 / Style.monitorRatio
+            }
+
+            ColumnLayout{
+                id:firstPage
+                visible: true
+                anchors.top: logInText.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: signInBtn.top
+                anchors.leftMargin: 50 / Style.monitorRatio
+                anchors.rightMargin: 50 / Style.monitorRatio
+                anchors.topMargin: 20 / Style.monitorRatio
+                anchors.bottomMargin: 60 / Style.monitorRatio
+                spacing: 0
+
+                RowLayout{
+                    spacing: 0
+                    Layout.topMargin: 30 / Style.monitorRatio
+                    IconImage{
+                        source: "qrc:/Resources/user.png"
+                        Layout.preferredHeight: 25 / Style.monitorRatio
+                        Layout.preferredWidth: 25 / Style.monitorRatio
+                    }
+
+                    Text {
+                        text: "Alireza Nabati"
+                        font.pixelSize: 23 / Style.monitorRatio
+                        color: Style.foregroundColor
+                    }
+                }
+
+                Text{
+                    text: "Select role"
+                    Layout.topMargin: 30 / Style.monitorRatio
+                    font.pixelSize: 22 / Style.monitorRatio
+                    font.bold: true
+                    color: Style.foregroundColor
+                }
+
+                RadioButton{
+                    text: "Administrator"
+                    Layout.topMargin: 12 / Style.monitorRatio
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.fillWidth: true
+                    contentItem: Text{
+                        text: parent.text
+                        font.pixelSize: 20 / Style.monitorRatio
+                        color: Style.foregroundColor
+                        leftPadding: 20 / Style.monitorRatio
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    indicator: Image{
+                      width: 20 / Style.monitorRatio
+                      height: 20 / Style.monitorRatio
+                      source: "qrc:/Resources/circle.png"
+                    }
+                }
+
+                RadioButton{
+                    text: "Admin"
+                    Layout.topMargin: 12 / Style.monitorRatio
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.fillWidth: true
+                    contentItem: Text{
+                        text: parent.text
+                        font.pixelSize: 20 / Style.monitorRatio
+                        color: Style.foregroundColor
+                        leftPadding: 20 / Style.monitorRatio
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    indicator: Image{
+                      width: 20 / Style.monitorRatio
+                      height: 20 / Style.monitorRatio
+                      source: "qrc:/Resources/circle.png"
+                    }
+                }
+
+                RadioButton{
+                    text: "Reviewer"
+                    Layout.topMargin: 12 / Style.monitorRatio
+                    Layout.preferredHeight: 20 / Style.monitorRatio
+                    Layout.fillWidth: true
+                    contentItem: Text{
+                        text: parent.text
+                        font.pixelSize: 20 / Style.monitorRatio
+                        color: Style.foregroundColor
+                        leftPadding: 20 / Style.monitorRatio
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    indicator: Image{
+                      width: 20 / Style.monitorRatio
+                      height: 20 / Style.monitorRatio
+                      source: "qrc:/Resources/circle.png"
+                    }
                 }
 
             }
 
-            TextField {
-                id: passwordInput
-                width: 350
-                height: 60
-                anchors.leftMargin: 20
-                echoMode: TextInput.Password
-                passwordMaskDelay: 1000
-                background: buttonBackground1
-                placeholderText: "Password"
-                placeholderTextColor: "white"
-                font.pixelSize: 20
-                leftPadding: 20
-                Rectangle {
-                    id: buttonBackground1
-                    color: "#000000"
-                    implicitWidth: 100
-                    implicitHeight: 40
-                    opacity: passwordInput.focus ? 0.65 : 0.3
-                    radius: 50
-                    border.color: "#ffffff"
+            ColumnLayout{
+                id:secondPage
+                visible: false
+                anchors.top: logInText.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: signInBtn.top
+                anchors.leftMargin: 50 / Style.monitorRatio
+                anchors.rightMargin: 50 / Style.monitorRatio
+                anchors.topMargin: 20 / Style.monitorRatio
+                anchors.bottomMargin: 60 / Style.monitorRatio
+                spacing: 0
+
+                RowLayout{
+                    spacing: 0
+                    IconImage{
+                        source: "qrc:/Resources/user.png"
+                        Layout.preferredHeight: 23 / Style.monitorRatio
+                        Layout.preferredWidth: 23 / Style.monitorRatio
+                    }
+                    Text{
+                        id:username
+                        text: "Username"
+                        font.pixelSize: 20 / Style.monitorRatio
+                        Layout.leftMargin: 5 / Style.monitorRatio
+                        color: Style.foregroundColor
+                    }
+                }
+                TextField {
+                    Layout.preferredWidth: 340 / Style.monitorRatio
+                    height: 40 / Style.monitorRatio
+                    font.pointSize: 17 / Style.monitorRatio
+                    leftPadding: 20 / Style.monitorRatio
+                    color: foregroundColor
+                    placeholderText:"Enter your Username"
+                    placeholderTextColor: foregroundColor
+                    background: Rectangle {
+                        color: foregroundColor
+                        radius: height / 2
+                    }
+                   onAccepted: {
+
+                   }
+                }
+                RowLayout{
+                    spacing: 0
+                    IconImage{
+                        source: "qrc:/Resources/user.png"
+                        Layout.preferredHeight: 23 / Style.monitorRatio
+                        Layout.preferredWidth: 23 / Style.monitorRatio
+                    }
+                    Text{
+                        text: "Password"
+                        font.pixelSize: 20 / Style.monitorRatio
+                        Layout.leftMargin: 5 / Style.monitorRatio
+                        color: Style.foregroundColor
+                    }
+                }
+                TextField {
+                    id:password
+                    Layout.preferredWidth: 340 / Style.monitorRatio
+                    height: 40 / Style.monitorRatio
+                    font.pointSize: 17 / Style.monitorRatio
+                    leftPadding: 20 / Style.monitorRatio
+                    color: foregroundColor
+                    placeholderText:"Enter your Password"
+                    placeholderTextColor: foregroundColor
+                    echoMode: TextField.Password
+                    background: Rectangle {
+                        color: foregroundColor
+                        radius: height / 2
+                    }
+                   onAccepted: {
+
+                   }
                 }
 
             }
-        }
 
-        Column {
-            id: buttons
-            y: 944
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottomMargin: 50
-            spacing: 20
-
-            Button {
-                id: signn
-                width: 350
-                height: 60
-
-                implicitWidth: Math.max(
-                                   buttonBackground ? buttonBackground.implicitWidth : 0,
-                                   textItem2.implicitWidth + leftPadding + rightPadding)
-                implicitHeight: Math.max(
-                                    buttonBackground ? buttonBackground.implicitHeight : 0,
-                                    textItem2.implicitHeight + topPadding + bottomPadding)
-                leftPadding: 4
-                rightPadding: 4
-
-                text: "SignIn"
+            Button{
+                id:signInBtn
+                height: 40 / Style.monitorRatio
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: 50 / Style.monitorRatio
+                anchors.rightMargin: 50 / Style.monitorRatio
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 26 / Style.monitorRatio
                 hoverEnabled: true
-                enabled: true
-
-                background: buttonBackground4
-                Rectangle {
-                    id: buttonBackground4
-                    color: "#000000"
-                    implicitWidth: 100
-                    implicitHeight: 40
-                    opacity: signn.pressed ? 1 : signn.hovered ? 0.6 : 0.3
-                    radius: 50
-                    border.color: "#41cd52"
+                background: Rectangle{
+                    color: Style.foregroundColor
+                    radius: width/(Style.monitorRatio * 2)
+                }
+                contentItem: Text{
+                    text: "Sign in"
+                    color: parent.hovered ? "#01AED6" : Style.backgroundColor
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                 }
 
                 onClicked: {
-                 loginPage.signIn(usernameInput.text, passwordInput.text)
 
-                }
+                   if(!firstPage.visible && secondPage.visible)
+                      loginPage.signIn(username.text, password.text)
 
-                contentItem: textItem2
-                Text {
-                    id: textItem2
-                    width: 500
-                    height: 100
-                    text: signn.text
-                    font.pixelSize: 34
+                   if(firstPage.visible && !secondPage.visible){
+                       firstPage.visible = false
+                       secondPage.visible = true
+                   }
 
-                    opacity: enabled ? 1.0 : 0.3
-                    color: "#41cd52"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.family: "Titillium Web ExtraLight"
                 }
             }
+
         }
     }
 }
