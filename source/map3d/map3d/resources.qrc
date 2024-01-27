@@ -522,5 +522,7 @@
         <file>Resources/draw.png</file>
         <file>Resources/user.png</file>
         <file>Resources/circular-logout.png</file>
+        <file>Resources/beautiful-earth.jpg</file>
+        <file>Resources/lock.png</file>
     </qresource>
 </RCC>

@@ -35,7 +35,7 @@ onClosing:{
         Image {
             id: backGroundImage
             anchors.top: parent.top
-            source: "qrc:/Resources/login.png"
+            source: "qrc:/Resources/beautiful-earth.jpg"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.topMargin: 40
             fillMode: Image.PreserveAspectFit
@@ -61,9 +61,107 @@ onClosing:{
                 anchors.topMargin: 60 / Style.monitorRatio
             }
 
+            Button{
+
+                background: Image{
+                source: "qrc:/Resources/Settings.png"
+                }
+
+                width: 25 / Style.monitorRatio
+                height: 25 / Style.monitorRatio
+
+                anchors.right: parent.right
+                anchors.rightMargin: 50 / Style.monitorRatio
+                anchors.top: parent.top
+                anchors.topMargin: 70 / Style.monitorRatio
+
+                onClicked:{
+
+                }
+            }
+
             ColumnLayout{
                 id:firstPage
                 visible: true
+                anchors.top: logInText.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: signInBtn.top
+                anchors.leftMargin: 50 / Style.monitorRatio
+                anchors.rightMargin: 50 / Style.monitorRatio
+                anchors.topMargin: 20 / Style.monitorRatio
+                anchors.bottomMargin: 60 / Style.monitorRatio
+                spacing: 0
+
+                RowLayout{
+                    spacing: 0
+                    IconImage{
+                        source: "qrc:/Resources/user.png"
+                        Layout.preferredHeight: 23 / Style.monitorRatio
+                        Layout.preferredWidth: 23 / Style.monitorRatio
+                    }
+                    Text{
+                        id:username
+                        text: "Username"
+                        font.pixelSize: 20 / Style.monitorRatio
+                        Layout.leftMargin: 5 / Style.monitorRatio
+                        color: Style.foregroundColor
+                    }
+                }
+                TextField {
+                    id:usernameText
+                    Layout.preferredWidth: 340 / Style.monitorRatio
+                    height: 40 / Style.monitorRatio
+                    font.pointSize: 17 / Style.monitorRatio
+                    leftPadding: 20 / Style.monitorRatio
+                    color: foregroundColor
+                    placeholderText:"Enter your Username"
+                    placeholderTextColor: foregroundColor
+                    background: Rectangle {
+                        color: foregroundColor
+                        radius: height / 2
+                    }
+                   onAccepted: {
+
+                   }
+                }
+                RowLayout{
+                    spacing: 0
+                    IconImage{
+                        source: "qrc:/Resources/lock.png"
+                        Layout.preferredHeight: 23 / Style.monitorRatio
+                        Layout.preferredWidth: 23 / Style.monitorRatio
+                    }
+                    Text{
+                        text: "Password"
+                        font.pixelSize: 20 / Style.monitorRatio
+                        Layout.leftMargin: 5 / Style.monitorRatio
+                        color: Style.foregroundColor
+                    }
+                }
+                TextField {
+                    id:password
+                    Layout.preferredWidth: 340 / Style.monitorRatio
+                    height: 40 / Style.monitorRatio
+                    font.pointSize: 17 / Style.monitorRatio
+                    leftPadding: 20 / Style.monitorRatio
+                    color: foregroundColor
+                    placeholderText:"Enter your Password"
+                    placeholderTextColor: foregroundColor
+                    echoMode: TextField.Password
+                    background: Rectangle {
+                        color: foregroundColor
+                        radius: height / 2
+                    }
+                   onAccepted: {
+                     loginPage.openSettings()
+                   }
+                }
+            }
+
+            ColumnLayout{
+                id:secondPage
+                visible: false
                 anchors.top: logInText.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -84,7 +182,7 @@ onClosing:{
                     }
 
                     Text {
-                        text: "Alireza Nabati"
+                        text: usernameText.text
                         font.pixelSize: 23 / Style.monitorRatio
                         color: Style.foregroundColor
                     }
@@ -153,85 +251,6 @@ onClosing:{
                       height: 20 / Style.monitorRatio
                       source: "qrc:/Resources/circle.png"
                     }
-                }
-
-            }
-
-            ColumnLayout{
-                id:secondPage
-                visible: false
-                anchors.top: logInText.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: signInBtn.top
-                anchors.leftMargin: 50 / Style.monitorRatio
-                anchors.rightMargin: 50 / Style.monitorRatio
-                anchors.topMargin: 20 / Style.monitorRatio
-                anchors.bottomMargin: 60 / Style.monitorRatio
-                spacing: 0
-
-                RowLayout{
-                    spacing: 0
-                    IconImage{
-                        source: "qrc:/Resources/user.png"
-                        Layout.preferredHeight: 23 / Style.monitorRatio
-                        Layout.preferredWidth: 23 / Style.monitorRatio
-                    }
-                    Text{
-                        id:username
-                        text: "Username"
-                        font.pixelSize: 20 / Style.monitorRatio
-                        Layout.leftMargin: 5 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                }
-                TextField {
-                    Layout.preferredWidth: 340 / Style.monitorRatio
-                    height: 40 / Style.monitorRatio
-                    font.pointSize: 17 / Style.monitorRatio
-                    leftPadding: 20 / Style.monitorRatio
-                    color: foregroundColor
-                    placeholderText:"Enter your Username"
-                    placeholderTextColor: foregroundColor
-                    background: Rectangle {
-                        color: foregroundColor
-                        radius: height / 2
-                    }
-                   onAccepted: {
-
-                   }
-                }
-                RowLayout{
-                    spacing: 0
-                    IconImage{
-                        source: "qrc:/Resources/user.png"
-                        Layout.preferredHeight: 23 / Style.monitorRatio
-                        Layout.preferredWidth: 23 / Style.monitorRatio
-                    }
-                    Text{
-                        text: "Password"
-                        font.pixelSize: 20 / Style.monitorRatio
-                        Layout.leftMargin: 5 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                }
-                TextField {
-                    id:password
-                    Layout.preferredWidth: 340 / Style.monitorRatio
-                    height: 40 / Style.monitorRatio
-                    font.pointSize: 17 / Style.monitorRatio
-                    leftPadding: 20 / Style.monitorRatio
-                    color: foregroundColor
-                    placeholderText:"Enter your Password"
-                    placeholderTextColor: foregroundColor
-                    echoMode: TextField.Password
-                    background: Rectangle {
-                        color: foregroundColor
-                        radius: height / 2
-                    }
-                   onAccepted: {
-
-                   }
                 }
 
             }
