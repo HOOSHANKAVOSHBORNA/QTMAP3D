@@ -71,3 +71,8 @@ void ListWindow::setTabbarModel(TabbarModel *newTabbarModel)
     mTabbarModel = newTabbarModel;
     emit tabbarModelChanged();
 }
+
+void ListWindow::appendItem(QString newTitle, QQuickItem *newItem)
+{
+    mTabbarModel->appendRow(new TabbarItem{newTitle, newItem});
+}

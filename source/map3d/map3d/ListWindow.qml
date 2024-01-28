@@ -9,14 +9,14 @@ CListWindow {
     id: rootItem
     width: 1000
     height: 600
-//    color: 'transparent'
-//    flags: Qt.FramelessWindowHint
 
+    //    color: 'transparent'
+    //    flags: Qt.FramelessWindowHint
     Rectangle {
         color: Style.backgroundColor
         anchors.fill: parent
-        radius: 20
 
+        //        radius: 20
         ColumnLayout {
             anchors.fill: parent
             anchors.leftMargin: 25
@@ -39,30 +39,7 @@ CListWindow {
                     font.weight: 500
                     color: Style.foregroundColor
                 }
-
-                Button {
-                    Layout.preferredWidth: 25
-                    Layout.preferredHeight: width
-                    padding: 0
-
-                    background: Rectangle {
-                        color: 'transparent'
-                    }
-
-                    display: AbstractButton.IconOnly
-
-                    icon {
-                        width: 25
-                        height: 25
-                        source: 'qrc:/Resources/add-place-close.png'
-                    }
-
-                    onClicked: {
-                        rootItem.close()
-                    }
-                }
             }
-
 
             TabBar {
                 id: listTabbar
@@ -97,7 +74,8 @@ CListWindow {
                         contentItem: Rectangle {
                             anchors.fill: parent
                             border.width: 1
-                            border.color: (model.index === listTabbar.currentIndex || hovered) ? Style.hoverColor : Style.foregroundColor
+                            border.color: (model.index === listTabbar.currentIndex
+                                           || hovered) ? Style.hoverColor : Style.foregroundColor
                             radius: 15
                             color: 'transparent'
 
@@ -105,7 +83,8 @@ CListWindow {
                                 id: titleTxt
                                 anchors.centerIn: parent
                                 text: model.title
-                                color: (model.index === listTabbar.currentIndex || hovered) ? Style.hoverColor : Style.foregroundColor
+                                color: (model.index === listTabbar.currentIndex
+                                        || hovered) ? Style.hoverColor : Style.foregroundColor
                                 font.family: Style.fontFamily
                                 font.pixelSize: 17
                             }
@@ -126,41 +105,39 @@ CListWindow {
             }
         }
 
-
-
         // --------------------- just for test
-//        RowLayout {
-//            height: 50
-//            anchors.bottom: parent.bottom
-//            anchors.left: parent.left
-//            anchors.right: parent.right
-//            anchors.margins: 10
+        //        RowLayout {
+        //            height: 50
+        //            anchors.bottom: parent.bottom
+        //            anchors.left: parent.left
+        //            anchors.right: parent.right
+        //            anchors.margins: 10
 
-//            TextField {
-//                id: addNewTitle
-//                Layout.fillHeight: true
-//                Layout.fillWidth: true
-//                text: 'newTitle'
-//            }
+        //            TextField {
+        //                id: addNewTitle
+        //                Layout.fillHeight: true
+        //                Layout.fillWidth: true
+        //                text: 'newTitle'
+        //            }
 
-//            Button {
-//                Layout.fillHeight: true
-//                Layout.fillWidth: true
-//                text: 'add'
+        //            Button {
+        //                Layout.fillHeight: true
+        //                Layout.fillWidth: true
+        //                text: 'add'
 
-//                onClicked: {
-//                    appendTest(addNewTitle.text)
-//                }
-//            }
-//        }
+        //                onClicked: {
+        //                    appendTest(addNewTitle.text)
+        //                }
+        //            }
+        //        }
         // just for test
     }
 
     Component.onCompleted: {
-        appendTest('ayfirst')
-        appendTest('aysecond')
-        appendTest('aythird')
-        appendTest('ayforth')
-    }
 
+        //        appendTest('ayfirst')
+        //        appendTest('aysecond')
+        //        appendTest('aythird')
+        //        appendTest('ayforth')
+    }
 }

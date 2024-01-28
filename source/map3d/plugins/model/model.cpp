@@ -97,6 +97,10 @@ bool Model::setup()
     // property item setup
     mProperty = new Property(mapItem());
 
+    // list window setup
+    mNodeList = new NodeList(mapItem(), mDataManager);
+    mainWindow()->addTabToListWindow("Allllll", mNodeList->qmlItem());
+
     return true;
 }
 

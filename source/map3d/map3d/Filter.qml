@@ -5,6 +5,7 @@ import QtQuick.Effects
 import Crystal 1.0
 import "style"
 
+
 Rectangle {
     id: rootObj
     property var filterManager
@@ -156,6 +157,7 @@ Rectangle {
                         onClicked: {
                             if (colorLeftIcon.position > 0)
                                 colorLeftIcon.position -= 0.24
+
                         }
                     }
                 }
@@ -208,7 +210,6 @@ Rectangle {
                         visible: false
                     }
                 }
-
                 IconImage {
                     id: colorRightIcon
                     source: "qrc:/Resources/down.png"
@@ -221,6 +222,7 @@ Rectangle {
                         onClicked: {
                             if (colorLeftIcon.position < 0.9) {
                                 colorLeftIcon.position += 0.24
+
                             }
                         }
                     }
@@ -282,6 +284,7 @@ Rectangle {
                                 verticalAlignment: Text.AlignVCenter
                                 elide: Text.ElideRight
                             }
+
                             background: Rectangle {
                                 color: "transparent"
                             }
@@ -305,6 +308,7 @@ Rectangle {
                                         from: 1.0
                                         to: 0.0
                                     }
+
                                 }
 
                                 contentItem: ListView {
@@ -820,6 +824,7 @@ Rectangle {
                                     MouseArea {
                                         anchors.fill: parent
                                         onClicked: tagsModel.remove(index)
+
                                     }
                                 }
                             }

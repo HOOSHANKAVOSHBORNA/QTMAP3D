@@ -28,6 +28,11 @@ void LoginPage::signIn(const QString username, const QString password)
     emit signedIn();
 }
 
+void LoginPage::openSettings()
+{
+
+}
+
 void LoginPage::onWindowClosed()
 {
     QCoreApplication::exit(-1);

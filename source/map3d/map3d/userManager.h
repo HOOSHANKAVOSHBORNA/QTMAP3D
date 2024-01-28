@@ -17,7 +17,7 @@ public:
     void setServiceManager(ServiceManager *newServiceManager);
 
    Q_INVOKABLE void signIn(const QString username, const QString password);
-
+   Q_INVOKABLE void openSettings();
 
    bool windowHidden() const;
    void setWindowHidden(bool newWindowHidden);

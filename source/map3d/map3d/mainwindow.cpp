@@ -200,7 +200,7 @@ void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 //                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
 //                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
 //                                  );
-
+        mListWindow->appendItem(tabTitle, tabItem);
     }
 }
 
