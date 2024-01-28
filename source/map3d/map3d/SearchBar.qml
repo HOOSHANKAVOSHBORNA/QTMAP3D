@@ -50,7 +50,7 @@ Item{
             visible: !flag
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: searchIcon.right
-anchors.right: openCloseIcons.left
+            anchors.right: openCloseIcons.left
             verticalAlignment: Text.AlignVCenter
             font.family: Style.fontFamily
             font.pixelSize: 16/Style.monitorRatio
@@ -119,6 +119,19 @@ anchors.right: openCloseIcons.left
             }
         }
     }
+    MultiEffect {
+        source: mainRec
+        enabled: true
+        anchors.fill: mainRec
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 1
+        shadowHorizontalOffset: 1.5
+        shadowVerticalOffset:.5
+        shadowOpacity:1
+        shadowScale: 0.7
+
+    }
     Rectangle{
         id:filterPresentation
         anchors.fill: mainRec
@@ -162,10 +175,12 @@ anchors.right: openCloseIcons.left
         anchors.topMargin: 9 / Style.monitorRatio
         color: Style.backgroundColor
         width:350 / Style.monitorRatio
-        height:0 /*340 / Style.monitorRatio*/
+        height:0
         radius: 20 / Style.monitorRatio
         z:-1
         visible: !flag
+
+
         Filter {
             id: dropDown
             anchors.top: filterRect.top
@@ -174,38 +189,66 @@ anchors.right: openCloseIcons.left
             visible: parent.height > 300
         }
     }
+    Rectangle{
+        id:back
+    z:0
+    width: parent.width-3
+    color: Style.backgroundColor
+//    height: parent.height
+    anchors.bottom: nodeShowListScroller.bottom
+    anchors.top: nodeShowListScroller.top
+    visible: filterRect.height > 300
+    radius:20
+    Rectangle{
+        anchors.centerIn: parent
+        z:-1
+        radius: 20
+        color: Qt.rgba(Style.foregroundColor.r,Style.foregroundColor.g,Style.foregroundColor.b,0.03)
+        width: parent.width +2
+        height: parent.height + 3
+
+    }
+    }
+
     ScrollView{
-        z:10
+        z:1
+        id:nodeShowListScroller
         anchors.bottom: filterRect.bottom
         anchors.bottomMargin: 5
         anchors.left: parent.left
         anchors.leftMargin: 15/Style.monitorRatio
+        anchors.right: parent.right
         width: filterRect.width
         height: 110/Style.monitorRatio
         visible: filterRect.height > 300
         ListView{
             id:listView
-
-
             clip: true
-            model: /*rootItem.model*/ [ "Aircraft","Rectangel","Circle","Aircraft","Tank","Car"]
+            model: rootItem.model
             delegate:
-                Button
-            {
+                Button{
                 id:delegateBtn
                 width: listView.width
                 height: 20
                 hoverEnabled: true
                 visible: !flag
-                required property string modelData
+
                 contentItem:Item {
                     anchors.fill: parent
 
                     Text {
+                        id:lvText
+                        anchors.left: seperator.right
+                        anchors.leftMargin: 10 / Style.monitorRatio
+                        text:model.display
+                        font.family: Style.fontFamily
+                        font.pixelSize: 15 / Style.monitorRatio
+                        color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
+                        elide: Text.ElideRight
+                    }
+                    Text {
                         id:id
-                        anchors.left: lvText.right
-                        anchors.leftMargin: 15 / Style.monitorRatio
-                        text: /*model.id_*/"5"
+                        text: model.id_
                         font.family: Style.fontFamily
                         font.pixelSize: 15 / Style.monitorRatio
                         color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
@@ -213,8 +256,9 @@ anchors.right: openCloseIcons.left
                         elide: Text.ElideRight
                     }
                     Text {
-                        id:lvText
-                        text: /*model.display*/ modelData
+                        id:seperator
+                        anchors.left: id.right
+                        text:" :"
                         font.family: Style.fontFamily
                         font.pixelSize: 15 / Style.monitorRatio
                         color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
@@ -223,8 +267,7 @@ anchors.right: openCloseIcons.left
                     }
                 }
                 onClicked:{
-                    print("onNodeCliked")
-                    //                    rootItem.model.onNodeClicked(index)
+                    rootItem.model.onNodeClicked(index)
                 }
                 background: Rectangle
                 {
@@ -250,7 +293,6 @@ anchors.right: openCloseIcons.left
         duration: 150
         easing.type: Easing.OutQuint
     }
-    //    }
 }
 
 

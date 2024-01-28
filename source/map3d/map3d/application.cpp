@@ -14,6 +14,7 @@
 #include "listWindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
+#include "filterManager.h"
 
 Application::Application() :
     mPluginManager(new PluginManager)

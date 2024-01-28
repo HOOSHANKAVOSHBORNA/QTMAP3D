@@ -49,33 +49,34 @@ public:
     ListWindow(QQuickWindow *parent = nullptr);
     TabbarModel *tabbarModel() const;
     void setTabbarModel(TabbarModel *newTabbarModel);
+    void appendItem(QString newTitle, QQuickItem *newItem);
 
     // TEST
-    Q_INVOKABLE void appendTest(TabbarItem *newTabbarItem) {
-        mTabbarModel->appendRow(newTabbarItem);
-    }
+    //    Q_INVOKABLE void appendTest(TabbarItem *newTabbarItem) {
+    //        mTabbarModel->appendRow(newTabbarItem);
+    //    }
 
-    Q_INVOKABLE void appendTest(QString newTitle)
-    {
-        QQmlComponent *comp = new QQmlComponent(qmlEngine(this));
+    //    Q_INVOKABLE void appendTest(QString newTitle)
+    //    {
+    //        QQmlComponent *comp = new QQmlComponent(qmlEngine(this));
 
-        QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-            if(status == QQmlComponent::Error) {
-                qDebug() << "Can not load this: " << comp->errorString();
-            }
+    //        QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+    //            if(status == QQmlComponent::Error) {
+    //                qDebug() << "Can not load this: " << comp->errorString();
+    //            }
 
-            if(status == QQmlComponent::Ready) {
-                QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-                item->setProperty("title", newTitle);
+    //            if(status == QQmlComponent::Ready) {
+    //                QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+    //                item->setProperty("title", newTitle);
 
-                appendTest(new TabbarItem{newTitle, item});
+    //                appendTest(new TabbarItem{newTitle, item});
 
-                //                                    ToolboxManager::createSingletonInstance(nullptr, nullptr)->addPropertyItem(item, QStringLiteral("Test Item"));
-            }
-        });
+    //                //                                    ToolboxManager::createSingletonInstance(nullptr, nullptr)->addPropertyItem(item, QStringLiteral("Test Item"));
+    //            }
+    //        });
 
-        comp->loadUrl(QUrl("qrc:/TestItem.qml"));
-    }
+    //        comp->loadUrl(QUrl("qrc:/TestItem.qml"));
+    //    }
     // ENDTEST
 
 signals:

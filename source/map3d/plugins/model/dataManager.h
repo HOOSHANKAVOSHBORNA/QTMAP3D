@@ -21,6 +21,29 @@ public:
 //    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
     QMap<int, osg::ref_ptr<SimpleModelNode>> *getNodeMap();
 
+    QVector<QString> uniqueAddedColumnNames() const;
+    void setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames);
+
+    QVector<QString> uniqueCategoryNames();
+    void setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames);
+    QVector<QString> *getUniqueCategoryNames();
+
+    QMap<QString, QString> columnToCategory() const;
+    void setColumnToCategory(const QMap<QString, QString> &newColumnToCategory);
+
+    int getNodeIndexById(int id);
+
+    QVector<QString> fixedColumnNames() const;
+    void setFixedColumnNames(const QVector<QString> &newFixedColumnNames);
+
+signals:
+    void nodeAppended(int index);
+    void nodeUpdated(int index);
+
+    void categoryAppended(int index);
+
+    void columnAppended(int index);
+
 public slots:
     SimpleModelNode* onNodeDataReceived(const NodeData &nodeData);
 
@@ -34,6 +57,13 @@ private:
 //    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
 //    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
+    QVector<QString> mFixedColumnNames = {"Color", "Icon", "Name", "Type"};
+    QVector<QString> mUniqueAddedColumnNames;
+    QVector<QString> mUniqueCategoryNames;
+    QMap<QString, QString> mColumnToCategory = {{"Color", "Fixed"},
+                                                {"Icon", "Fixed"},
+                                                {"Name", "Fixed"},
+                                                {"Type", "Fixed"}};
     NodeData* mNodeData;
     MainWindow *mMainWindow;
 };

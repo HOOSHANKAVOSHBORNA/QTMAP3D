@@ -2,14 +2,12 @@ import QtQuick.Layouts
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
+import Crystal 1.0
+
 
 Rectangle {
-    id: rootObj
+    id: rootObj    
     property var filterManager
-    //    required property var colorModel
-    //    required property var columnModel
-    //    required property var rangeModel
-    //    required property var compareModel
     readonly property color backgroundColor: "#DEE3E6"
     readonly property color foregroundColor: "#003569"
     readonly property color fg20: Qt.rgba(rootObj.foregroundColor.r,
@@ -48,14 +46,15 @@ Rectangle {
     RowLayout {
         id: searchRow
         anchors.top: parent.top
-        anchors.topMargin: 20 / /*Style.monitorRatio*/ 1.3
+        anchors.topMargin: 36 / /*Style.monitorRatio*/ 1.3
         anchors.left: parent.left
         anchors.leftMargin: 15 / /*Style.monitorRatio*/ 1.3
         Rectangle {
+            visible: false
             id: searchBar
             Layout.minimumWidth: 300 / /*Style.monitorRatio*/ 1.3
             width: parent.width / /*Style.monitorRatio*/ 1.3
-            height: 28 / /*Style.monitorRatio*/ 1.3
+            height: 32 / /*Style.monitorRatio*/ 1.3
             radius: 15
             color: rootObj.fg20
             IconImage {
@@ -68,7 +67,7 @@ Rectangle {
                 height: 24 / /*Style.monitorRatio*/ 1.3
                 color: rootObj.fg75
             }
-            visible: false
+
 
             TextField {
                 id: searchTextField
@@ -100,12 +99,61 @@ Rectangle {
         anchors.left: parent.left
         anchors.leftMargin: 15 / rootObj.monitorRatio
         RowLayout {
+            Label {
+                width: 36 / rootObj.monitorRatio
+                height: 18 / rootObj.monitorRatio
+                text: "Logical Operator :"
+//                Layout.leftMargin: 15 / rootObj.monitorRatio
+                font.pixelSize: 15 / rootObj.monitorRatio
+                font.family: rootObj.fontFamily
+                color: rootObj.foregroundColor
+            }
+            CheckBox{
+                id:checkB1;
+                onClicked:{
+                    if(checkB2.checked){
+                        checkB2.checked = false
+                    }else{
+                        checked = true
+                    }
+                }
+                checked: true
+            }
+            Label {
+                width: 36 / rootObj.monitorRatio
+                height: 18 / rootObj.monitorRatio
+                text: "And"
+                font.pixelSize: 15 / rootObj.monitorRatio
+                font.family: rootObj.fontFamily
+                color: rootObj.foregroundColor
+
+            }
+            CheckBox{
+                id:checkB2
+                onClicked:{
+                    if(checkB1.checked){
+                        checkB1.checked = false
+                    }else{
+                        checked = true
+                    }
+                }
+            }
+            Label {
+                width: 36 / rootObj.monitorRatio
+                height: 18 / rootObj.monitorRatio
+                text: "Or"
+                font.pixelSize: 15 / rootObj.monitorRatio
+                font.family: rootObj.fontFamily
+                color: rootObj.foregroundColor
+
+            }
+        }
+        RowLayout {
 
             Label {
                 width: 36 / rootObj.monitorRatio
                 height: 18 / rootObj.monitorRatio
                 text: "Color"
-//                Layout.leftMargin: 15 / rootObj.monitorRatio
                 font.pixelSize: 15 / rootObj.monitorRatio
                 font.family: rootObj.fontFamily
                 color: rootObj.foregroundColor
@@ -136,7 +184,7 @@ Rectangle {
 
                     Repeater {
                         id: colorRepeater
-                        model: filterManager.colorFilterFields ///*colorModel*/ ["#EF2929", "#FCAF3E", "#FCE94F", "#8AE234", "#FCAF3E", "#FCE94F", "#8AE234", "#EF2929", "#FCAF3E", "#FCE94F", "#8AE234", "#729FCF", "#AD7FA8", "#E9B96E", "#8AE234", "#729FCF", "#AD7FA8", "#E9B96E"]
+                        model: filterManager.colorFilterFields
                         delegate: Rectangle {
                             required property var modelData
                             width: 24 / rootObj.monitorRatio
@@ -147,7 +195,7 @@ Rectangle {
                                 anchors.fill: parent
                                 onClicked: {
                                     filterManager.addFilterTag("color",
-                                                               modelData)
+                                                               modelData, Tag.Equal, checkB1.checked ? Tag.And:Tag.Or)
                                     tagsModel.append({
                                                          "name": "color",
                                                          "color": modelData,
@@ -155,7 +203,8 @@ Rectangle {
                                                          "value2": "",
                                                          "value3": "",
                                                          "value4": "",
-                                                         "compVal": ""
+                                                         "compVal": "",
+                                                         "logical": checkB1.checked ? true : false
                                                      })
                                 }
                             }
@@ -212,57 +261,35 @@ Rectangle {
                     anchors.right: parent.right
                     spacing: 5
                     ComboBox {
-                        id: control
+                        id: nameCombo
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
-                        model: filterManager.stringFilterFields // /* columnModel*/ ["test","test2"]
+                        model: filterManager.stringFilterFields
 
-                        function findLongestString(stringList) {
-                            var longest = ""
 
-                            for (var i = 0; i < stringList.length; i++) {
-                                if (stringList[i].length > longest.length) {
-                                    longest = stringList[i]
-                                }
-                            }
-
-                            return longest
-                        }
-                        Text {
-                            id: maximumText
-                            text: "Longest String: " + control.findLongestString(
-                                      control.model)
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                control.txtWidth = maximumText.width
-                            }
-                            visible: false
-                        }
                         delegate: ItemDelegate {
                             id: itemDelegate
-                            implicitWidth: control.txtWidth
+                            implicitWidth: nameCombo.txtWidth
                             background: Rectangle {
-                                width: control.txtWidth
+                                width: nameCombo.txtWidth
                                 color: rootObj.backgroundColor
                                 border.width: .3
                                 border.color: "black"
                             }
 
                             contentItem: Text {
-                                //Layout.leftMargin: 20
-                                text: control.textRole ? (Array.isArray(
-                                                              control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
+                                text: nameCombo.textRole ? (Array.isArray(
+                                                              nameCombo.model) ? modelData[nameCombo.textRole] : model[nameCombo.textRole]) : modelData
                                 color: rootObj.foregroundColor
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / rootObj.monitorRatio
                             }
-
-                            //                                highlighted: control.highlightedIndex === index
                         }
                         indicator: Rectangle {}
                         contentItem: Text {
-                            text: control.displayText
+                            id:txtContentItem1
+                            text: nameCombo.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
                             color: rootObj.fg30
@@ -271,6 +298,49 @@ Rectangle {
                         }
                         background: Rectangle {
                             color: "transparent"
+                        }
+                        popup: Popup {
+                            id: popupCombo1
+                            y: nameCombo.height - 1
+                            width: 100
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+                            enter: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 0.0
+                                    to: 1.0
+                                }
+                            }
+
+                            exit: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 1.0
+                                    to: 0.0
+                                }
+                            }
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: nameCombo.delegateModel
+                                currentIndex: nameCombo.highlightedIndex
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                border.color: rootObj.foregroundColor
+                                radius: 2
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    txtContentItem1.text = nameCombo.textAt(
+                                                nameCombo.highlightedIndex)
+                                    popupCombo1.close()
+                                }
+                            }
                         }
                     }
                     Label {
@@ -294,14 +364,15 @@ Rectangle {
                             radius: 15
                         }
                         onAccepted: {
-                            filterManager.addFilterTag(control.currentText, descriptionField.text)
+                            filterManager.addFilterTag(nameCombo.currentText, descriptionField.text, Tag.Equal, checkB1.checked ? Tag.And : Tag.Or)
                             tagsModel.append({
-                                                 "name": control.currentText,
+                                                 "name": nameCombo.currentText,
                                                  "value1": descriptionField.text,
                                                  "value2": "",
                                                  "value3": "",
                                                  "value4": "",
-                                                 "compVal": ""
+                                                 "compVal": "",
+                                                 "logical": checkB1.checked ? true : false
                                              })
                         }
                     }
@@ -331,44 +402,24 @@ Rectangle {
                     anchors.topMargin: -3
                     spacing: 5
                     ComboBox {
-                        id: control3
+                        id: longLatAltCombo
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
                         model: filterManager.numFilterFields ///* compareModel*/ ["test","test2"]
 
-                        function findLongestString(stringList) {
-                            var longest = ""
-
-                            for (var i = 0; i < stringList.length; i++) {
-                                if (stringList[i].length > longest.length) {
-                                    longest = stringList[i]
-                                }
-                            }
-                            return longest
-                        }
-                        Text {
-                            id: maximumText3
-                            text: "Longest String: " + control3.findLongestString(
-                                      control3.model)
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                control3.txtWidth = maximumText3.width
-                            }
-                            visible: false
-                        }
                         delegate: ItemDelegate {
-                            implicitWidth: control3.txtWidth
+                            implicitWidth: longLatAltCombo.txtWidth
                             background: Rectangle {
-                                width: control3.txtWidth
+                                width: longLatAltCombo.txtWidth
                                 color: rootObj.backgroundColor
                                 border.width: .3
                                 border.color: "black"
                             }
 
                             contentItem: Text {
-                                text: control3.textRole ? (Array.isArray(
-                                                               control3.model) ? modelData[control3.textRole] : model[control3.textRole]) : modelData
+                                text: longLatAltCombo.textRole ? (Array.isArray(
+                                                               longLatAltCombo.model) ? modelData[longLatAltCombo.textRole] : model[longLatAltCombo.textRole]) : modelData
                                 color: rootObj.foregroundColor
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / rootObj.monitorRatio
@@ -376,7 +427,8 @@ Rectangle {
                         }
                         indicator: Rectangle {}
                         contentItem: Text {
-                            text: control3.displayText
+                            id:txtContentItem3
+                            text: longLatAltCombo.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
                             color: rootObj.fg30
@@ -386,68 +438,126 @@ Rectangle {
                         background: Rectangle {
                             color: "transparent"
                         }
+                        popup: Popup {
+                            id: popupCombo3
+                            y: longLatAltCombo.height - 1
+                            width: 100
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+                            enter: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 0.0
+                                    to: 1.0
+                                }
+                            }
+
+                            exit: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 1.0
+                                    to: 0.0
+                                }
+                            }
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: longLatAltCombo.delegateModel
+                                currentIndex: longLatAltCombo.highlightedIndex
+                                //visible: false
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                border.color: rootObj.foregroundColor
+                                radius: 2
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    txtContentItem3.text = longLatAltCombo.textAt(
+                                                longLatAltCombo.highlightedIndex)
+                                    popupCombo3.close()
+                                }
+                            }
+                        }
                     }
+                    // -----------------------------------------------
                     Item {
                         width: 26 / rootObj.monitorRatio
                         height: 26 / rootObj.monitorRatio
+                        //                            anchors.centerIn: filterString11
+                        //Layout.verticalCenter: filterString11.verticalCenter
                         Rectangle {
-                            id: comparisonHold
+                            id: comparison
                             anchors.fill: parent
                             radius: width / 2
                             color: rootObj.backgroundColor
-
-                            ComboBox {
-                                id: comparison
+                            Label {
+                                id: lblComparision
                                 anchors.centerIn: parent
-                                anchors.fill: parent
-                                model: /* myProxyModel.comboItem*/ ["=", "<=", ">=", "<", ">"]
+                                text: "="
+                                font.pixelSize: 20 / rootObj.monitorRatio
+                                font.family: rootObj.fontFamily
+                                color: rootObj.foregroundColor
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        comparisonMenu.popup()
+                                    }
+                                }
+                                Menu {
+                                    id: comparisonMenu
+                                    width: 30
 
-                                function findLongestString(stringList) {
-                                    var longest = ""
+                                    Repeater {
+                                        id: repeaterMenu
+                                        model: ["<", "<=", "=", ">=", ">"]
+                                        MenuItem {
+                                            text: modelData
 
-                                    for (var i = 0; i < stringList.length; i++) {
-                                        if (stringList[i].length > longest.length) {
-                                            longest = stringList[i]
+                                            background: Rectangle {
+                                                width: 30
+                                                color: rootObj.backgroundColor
+                                                border.width: .3
+                                                border.color: "black"
+                                            }
+                                            contentItem: Text {
+                                                text: modelData
+                                                //width: 50
+                                                color: "#003569"
+                                                font.family: "Roboto"
+                                                font.pixelSize: 14 / rootObj.monitorRatio
+                                            }
+                                            onClicked: {
+                                                lblComparision.text = modelData
+                                            }
                                         }
                                     }
-                                    return longest
-                                }
-                                delegate: ItemDelegate {
-                                    implicitWidth: 26 / /*Style.monitorRatio*/ 1.3
-                                    background: Rectangle {
-                                        width: 26 / /*Style.monitorRatio*/ 1.3
-                                        color: rootObj.backgroundColor
-                                        border.width: .3
-                                        border.color: "black"
+
+                                    enter: Transition {
+                                        NumberAnimation {
+                                            property: "opacity"
+                                            from: 0.0
+                                            to: 1.0
+                                        }
                                     }
 
-                                    contentItem: Text {
-                                        text: comparison.textRole ? (Array.isArray(
-                                                                         comparison.model) ? modelData[comparison.textRole] : model[comparison.textRole]) : modelData
-                                        color: rootObj.foregroundColor
-                                        font.family: rootObj.fontFamily
-                                        font.pixelSize: 14 / rootObj.monitorRatio
+                                    exit: Transition {
+                                        NumberAnimation {
+                                            property: "opacity"
+                                            from: 1.0
+                                            to: 0.0
+                                        }
                                     }
-                                }
-                                indicator: Rectangle {}
-                                contentItem: Text {
-                                    text: comparison.displayText
-                                    font.family: rootObj.fontFamily
-                                    font.pixelSize: 14 / rootObj.monitorRatio
-                                    color: rootObj.fg30
-                                    verticalAlignment: Text.AlignVCenter
-                                    horizontalAlignment: Text.AlignHCenter
-                                    elide: Text.ElideRight
-                                }
-                                background: Rectangle {
-                                    color: "transparent"
                                 }
                             }
                         }
                         MultiEffect {
-                            source: comparisonHold
+                            source: comparison
                             enabled: true
-                            anchors.fill: comparisonHold
+                            anchors.fill: comparison
                             shadowColor: "black"
                             shadowEnabled: true
                             shadowBlur: 1
@@ -457,6 +567,7 @@ Rectangle {
                             shadowScale: 0.6
                         }
                     }
+
                     TextField {
                         id: numbfield3
                         implicitWidth: 60 / rootObj.monitorRatio
@@ -481,17 +592,37 @@ Rectangle {
                             from: 1
                             duration: 3500
                             easing.type: Easing.OutQuint
+
+                        }
+                        function comparetor(txt){
+                            if  (txt === "!=")
+                                return Tag.NotEqual
+                            else if (txt === ">")
+                                return Tag.Greater
+                            else if (txt === "<")
+                                return Tag.Less
+                            else if (txt === ">=")
+                                return Tag.GreaterEqual
+                            else if (txt === "<=")
+                                return Tag.LessEqual
+                            else
+                                return Tag.Equal
+
+
                         }
                         onAccepted: {
+
+
                             if (rootObj.isNumeric(numbfield3.text)) {
                                 filterManager.addFilterTag(
-                                            control3.currentText,
-                                            parseFloat(numbfield3.text),
-                                            comparison.currentText)
+                                            longLatAltCombo.currentText,
+                                            parseFloat(numbfield3.text),numbfield3.comparetor(lblComparision.text),
+                                            checkB1.checked ? Tag.And : Tag.Or)
                                 tagsModel.append({
-                                                     "name": control3.currentText,
+                                                     "name": longLatAltCombo.currentText,
                                                      "value4": numbfield3.text,
-                                                     "compVal": comparison.currentText
+                                                     "compVal": lblComparision.text,
+                                                     "logical": checkB1.checked ? true : false
                                                  })
                             } else {
                                 redBackG3.color = "red"
@@ -503,6 +634,7 @@ Rectangle {
             }
         }
         Rectangle {
+            visible: false
             id: filterRange
             width: 268 / rootObj.monitorRatio
             height: 28 / rootObj.monitorRatio
@@ -523,45 +655,25 @@ Rectangle {
                     anchors.centerIn: parent
                     spacing: 5
                     ComboBox {
-                        id: control2
+                        id: nameCombo2
                         property real txtWidth: 0
                         Layout.minimumWidth: 50
                         Layout.maximumWidth: 50
                         model: filterManager.numFilterFields /* rangeModel*/
                         /*["test","test2"]*/
-                        function findLongestString(stringList) {
-                            var longest = ""
 
-                            for (var i = 0; i < stringList.length; i++) {
-                                if (stringList[i].length > longest.length) {
-                                    longest = stringList[i]
-                                }
-                            }
-
-                            return longest
-                        }
-                        Text {
-                            id: maximumText1
-                            text: "Longest String: " + control.findLongestString(
-                                      control.model)
-                            anchors.centerIn: parent
-                            Component.onCompleted: {
-                                control2.txtWidth = maximumText1.width
-                            }
-                            visible: false
-                        }
                         delegate: ItemDelegate {
-                            implicitWidth: control2.txtWidth
+                            implicitWidth: nameCombo2.txtWidth
                             background: Rectangle {
-                                width: control2.txtWidth
+                                width: nameCombo2.txtWidth
                                 color: rootObj.backgroundColor
                                 border.width: .3
                                 border.color: "black"
                             }
 
                             contentItem: Text {
-                                text: control2.textRole ? (Array.isArray(
-                                                               control2.model) ? modelData[control2.textRole] : model[control2.textRole]) : modelData
+                                text: nameCombo2.textRole ? (Array.isArray(
+                                                               nameCombo2.model) ? modelData[nameCombo2.textRole] : model[nameCombo2.textRole]) : modelData
                                 color: rootObj.foregroundColor
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / rootObj.monitorRatio
@@ -569,7 +681,8 @@ Rectangle {
                         }
                         indicator: Rectangle {}
                         contentItem: Text {
-                            text: control2.displayText
+                            id:txtContentItem2
+                            text: nameCombo2.displayText
                             font.family: rootObj.fontFamily
                             font.pixelSize: 14 / rootObj.monitorRatio
                             color: rootObj.fg30
@@ -578,6 +691,50 @@ Rectangle {
                         }
                         background: Rectangle {
                             color: "transparent"
+                        }
+                        popup: Popup {
+                            id: popupCombo2
+                            y: nameCombo2.height - 1
+                            width: 100
+                            implicitHeight: contentItem.implicitHeight
+                            padding: 1
+                            enter: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 0.0
+                                    to: 1.0
+                                }
+                            }
+
+                            exit: Transition {
+                                NumberAnimation {
+                                    property: "opacity"
+                                    from: 1.0
+                                    to: 0.0
+                                }
+                            }
+
+                            contentItem: ListView {
+                                clip: true
+                                implicitHeight: contentHeight
+                                model: nameCombo2.delegateModel //comboFilter1.popup.visible ? comboFilter1.delegateModel : null
+                                currentIndex: nameCombo2.highlightedIndex
+                                //visible: false
+                                ScrollIndicator.vertical: ScrollIndicator {}
+                            }
+
+                            background: Rectangle {
+                                border.color: rootObj.foregroundColor
+                                radius: 2
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    txtContentItem2.text = nameCombo2.textAt(
+                                                nameCombo2.highlightedIndex)
+                                    popupCombo2.close()
+                                }
+                            }
                         }
                     }
                     Label {
@@ -618,11 +775,11 @@ Rectangle {
                                     && rootObj.isNumeric(numField.text)) {
 
                                 filterManager.addFilterTag(
-                                            control2.currentText,
+                                            nameCombo2.currentText,
                                             parseFloat(numField.text),
                                             parseFloat(numField2.text), "<=>")
                                 tagsModel.append({
-                                                     "name": control2.currentText,
+                                                     "name": nameCombo2.currentText,
                                                      "value2": numField.text,
                                                      "value3": numField2.text
                                                  })
@@ -671,12 +828,12 @@ Rectangle {
                                     && numField2.text !== ""
                                     && rootObj.isNumeric(numField2.text)) {
                                 filterManager.addFilterTag(
-                                            control2.currentText,
+                                            nameCombo2.currentText,
                                             parseFloat(numField.text),
                                             parseFloat(numField2.text), "<=>")
 
                                 tagsModel.append({
-                                                     "name": control2.currentText,
+                                                     "name": nameCombo2.currentText,
                                                      "value2": numField.text,
                                                      "value3": numField2.text
                                                  })
@@ -720,35 +877,55 @@ Rectangle {
                         property bool selected: false
                         id: typesHolder
                         implicitHeight: 26 / /*Style.monitorRatio*/ 1.3
-                        implicitWidth: showDetails.implicitWidth
-                        color: checked ? "transparent" : Qt.rgba(
-                                             rootObj.foregroundColor.r,
-                                             rootObj.foregroundColor.g,
-                                             rootObj.foregroundColor.b, 0.1)
+                        implicitWidth: showDetails.implicitWidth + (index ? andOrLabel.implicitWidth + 5 : 0)
+                        color: "transparent"
                         radius: 20
-                        border {
+                        Rectangle{
+                            id:borderRect
+                            implicitHeight: 26 / /*Style.monitorRatio*/ 1.3
+                            implicitWidth: showDetails.implicitWidth
+                            anchors.right: parent.right
+                            color: checked ? "transparent" : Qt.rgba(
+                                                 rootObj.foregroundColor.r,
+                                                 rootObj.foregroundColor.g,
+                                                 rootObj.foregroundColor.b, 0.1)
+                            border {
 
-                            color: "#01AED6" /*rootObj.disableColor*/
-                            width: 1
+                                color: "#01AED6" /*rootObj.disableColor*/
+                                width: 1
+                            }
+                            radius: 20
                         }
+                        Label {
+                            id:andOrLabel
+                            anchors.right: borderRect.left
+                            anchors.rightMargin: 5
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: model.logical ? "&&" : "||"
+                            font.pixelSize: 17 / /*Style.monitorRatio*/ 1.3
+                            font.family: "Roboto"
+                            color: showDetails.colorHandler
+                            visible: index ? true : false
+                        }
+
                         MouseArea {
                             anchors.fill: parent
                             hoverEnabled: true
                             onEntered: {
                                 if (!typesHolder.selected == true) {
-                                    typesHolder.border.color = rootObj.foregroundColor
+                                    borderRect.border.color = rootObj.foregroundColor
                                     showDetails.colorHandler = rootObj.foregroundColor
                                 } else {
-                                    typesHolder.border.color = rootObj.foregroundColor
+                                    borderRect.border.color = rootObj.foregroundColor
                                     showDetails.colorHandler = rootObj.foregroundColor
                                 }
                             }
                             onExited: {
                                 if (typesHolder.selected == true) {
-                                    typesHolder.border.color = rootObj.fg30
+                                    borderRect.border.color = rootObj.fg30
                                     showDetails.colorHandler = rootObj.fg30
                                 } else {
-                                    typesHolder.border.color = "#01AED6"
+                                    borderRect.border.color = "#01AED6"
                                     showDetails.colorHandler = "#01AED6"
                                 }
                             }
@@ -769,7 +946,7 @@ Rectangle {
 
                         RowLayout {
                             id: showDetails
-                            anchors.fill: parent
+                            anchors.right:  parent.right
                             property color colorHandler: "#01AED6"
                             Text {
                                 Layout.alignment: Qt.AlignLeft
@@ -861,9 +1038,56 @@ Rectangle {
                                 color: showDetails.colorHandler
                                 Layout.leftMargin: 15 / /*Style.monitorRatio*/ 1.3
                                 Layout.rightMargin: 15 / /*Style.monitorRatio*/ 1.3
+
                                 MouseArea {
                                     anchors.fill: parent
-                                    onClicked: tagsModel.remove(index)
+                                    onClicked: {
+                                        function comparetor(txt){
+                                            if  (txt === "!=")
+                                                return Tag.NotEqual
+                                            else if (txt === ">")
+                                                return Tag.Greater
+                                            else if (txt === "<")
+                                                return Tag.Less
+                                            else if (txt === ">=")
+                                                return Tag.GreaterEqual
+                                            else if (txt === "<=")
+                                                return Tag.LessEqual
+                                            else
+                                                return Tag.Equal
+
+
+                                        }
+                                        if(model.color)
+                                        {
+                                            filterManager.removeFilterTag(model.name,
+                                                                          model.color,
+                                                                          Tag.Equal,
+                                                                          model.logical? Tag.And : Tag.Or)
+                                        }
+                                        else if (model.value1)
+                                        {
+                                            filterManager.removeFilterTag(model.name,
+                                                                          model.value1,
+                                                                          Tag.Equal,
+                                                                          model.logical? Tag.And : Tag.Or)
+                                        }
+                                        else if (model.value4)
+                                        {
+                                            filterManager.removeFilterTag(model.name,
+                                                                          model.value4,
+                                                                          comparetor(model.compVal),
+                                                                          model.logical? Tag.And : Tag.Or)
+                                        }
+
+                                        print(model.value4)
+                                        print(model.value1)
+                                        print(model.color)
+                                        tagsModel.remove(index)
+//                                        filterManager.removeFilterTag()
+//                                        filterManager.addFilterTag(nameCombo.currentText, descriptionField.text, Tag.Equal, checkB1.checked ? Tag.And : Tag.Or)
+
+                                    }
                                 }
                             }
                         }

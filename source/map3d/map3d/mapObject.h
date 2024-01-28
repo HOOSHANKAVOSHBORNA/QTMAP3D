@@ -62,11 +62,8 @@ public:
     ParenticAnnotationLayer *getLayerByUserId(int userid);
     void setFilterManager(FilterManager *newFilterManager);
 
-    void addLayerFromServeice(ParenticAnnotationLayer *layer);
     ParenticAnnotationLayer *getServiceLayerBiId(int id);
-    void clearOldParenticLayers();
 public slots:
-    void clearCompositeLayers();
     void filterNodes();
     void onLayerDataReceived(const LayerData &layerData);
 signals:
@@ -85,8 +82,6 @@ private:
     void removeLayerData(const LayerData &layerData);
 private:
     QMap<osgEarth::Layer*, CompositeCallback*> mCompositeCallbacks;
-    std::map<int, osg::ref_ptr<ParenticAnnotationLayer>> mParenticLayers;
-    std::map<int, osg::ref_ptr<CompositeAnnotationLayer>> mCompositeLayers;
     QMap<int, osg::ref_ptr<ParenticAnnotationLayer>> mLayerMap;
     FilterManager *mFilterManager;
     int mRefrehsTime{0};

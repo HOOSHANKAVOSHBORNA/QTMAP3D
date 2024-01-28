@@ -264,7 +264,6 @@
         <file>Resources/48/location-off.png</file>
         <file>Resources/48/location.png</file>
         <file>Resources/48/lock-open.png</file>
-        <file>Resources/48/lock.png</file>
         <file>Resources/48/magic-wand.png</file>
         <file>Resources/48/magnet.png</file>
         <file>Resources/48/mail-add.png</file>
@@ -519,6 +518,24 @@
         <file>Resources/inform.png</file>
         <file>Resources/bullet.png</file>
         <file>Resources/splash.gif</file>
+        <file>Resources/aircraft-icon.jpg</file>
+        <file>Resources/battle-icon.jpg</file>
+        <file>Resources/close-icon.jpg</file>
+        <file>Resources/delete-icon.jpg</file>
+        <file>Resources/down-icon.jpg</file>
+        <file>Resources/left-icon.jpg</file>
+        <file>Resources/more-icon.jpg</file>
+        <file>Resources/target-icon.jpg</file>
+        <file>Resources/track-icon.jpg</file>
+        <file>Resources/up-icon.jpg</file>
+        <file>Resources/goto-icon.jpg</file>
+        <file>Resources/search-icon.jpg</file>
+        <file>Resources/right-icon.jpg</file>
         <file>Resources/draw.png</file>
+        <file>Resources/user.png</file>
+        <file>Resources/circular-logout.png</file>
+        <file>Resources/filled-circle.png</file>
+        <file>Resources/lock-closed.png</file>
+        <file>Resources/login-earth.jpg</file>
     </qresource>
 </RCC>

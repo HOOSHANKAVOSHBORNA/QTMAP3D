@@ -10,8 +10,7 @@
 #include <osgEarthAnnotation/PlaceNode>
 
 #include "dataManager.h"
-//#include "flyableModelNode.h"
-//#include "moveableModelNode.h"
+#include "nodeList.h"
 #include "plugininterface.h"
 #include "property.h"
 #include "simpleModelNode.h"
@@ -93,6 +92,7 @@ private:
     DataManager *mDataManager;
 //    QQuickItem *mItem;
     Property *mProperty;
+    NodeList *mNodeList;
 };
 
 #endif // MODEL_H
