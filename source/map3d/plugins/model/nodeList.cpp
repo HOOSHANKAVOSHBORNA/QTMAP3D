@@ -20,6 +20,9 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
     CategoryTabbarModel *tabbarModel = new CategoryTabbarModel(dataManager);
     mProxyModel->setTabbarModel(tabbarModel);
 
+    CategoryTagModel *categoryTagsModel = new CategoryTagModel(dataManager);
+    mProxyModel->setCategoryTagModel(categoryTagsModel);
+
     createQml();
 }
 
@@ -122,7 +125,10 @@ bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &so
     QString currentColumnCategory = dataManager->columnToCategory().value(currentColumnName,
                                                                           "NotFound");
 
-    qDebug() << "debug  " << currentColumnName << ", " << currentColumnCategory;
+    // DEBUG
+    //    qDebug() << "debug  " << currentColumnName << ", " << currentColumnCategory;
+    // ENDDEBUG
+
     // TODO: don't use from Main Information
     if (currentColumnCategory == "Fixed" || currentColumnCategory == "Main Information") {
         return true;
@@ -158,7 +164,19 @@ bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &so
 
 bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
-    return true;
+    //    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
+    //    QString categoryTab = dataManager->categoryTagNames().at(ifDataFromQmlIsIndexNotString);
+
+    if (mFilterType == "All") {
+        return true;
+    }
+
+    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
+    qDebug() << "rowCount: " << rowCount() << ", sourceRow: " << sourceRow << ", ";
+    int lindex = mapToSource(this->index(sourceRow, 0)).row();
+    QString rowCategory = dataManager->getNodeAtIndex(lindex)->nodeData().category;
+    return rowCategory.contains(mFilterType, Qt::CaseInsensitive);
+
     //search Tag all of them
     bool resultName = m_filterName.isEmpty();
     bool result1 = TagColor.isEmpty();
@@ -285,6 +303,11 @@ void NodeProxyModel::filterString(QString search, QString value)
     //m_search = search;
     m_search = "filter";
     //qDebug() << value;
+    // TEST
+    //    beginResetModel();
+    //    endResetModel();
+    // ENDTEST
+
     invalidateFilter();
 }
 
@@ -365,6 +388,13 @@ void NodeProxyModel::removeTag(QString filterSearch, QString name, QString value
     invalidateFilter();
 }
 
+void NodeProxyModel::filterCategoryTag(QString name)
+{
+    mFilterType = name;
+    m_search = "filter category";
+    invalidateFilter();
+}
+
 void NodeProxyModel::selectionRow(int Row, int Column)
 {
     dynamic_cast<NodeListModel *>(sourceModel())->selectionRow(Row, Column);
@@ -399,10 +429,16 @@ NodeListModel::NodeListModel(DataManager *dataManager)
 {
     mDataManager = dataManager;
 
-    connect(mDataManager, &DataManager::nodeAppended, this, &NodeListModel::onNodeAppended);
+    connect(mDataManager, &DataManager::nodeAppendingStart, this, &NodeListModel::beginInsertRows);
+    connect(mDataManager, &DataManager::nodeAppendingEnd, this, &NodeListModel::endInsertRows);
+
     connect(mDataManager, &DataManager::nodeUpdated, this, &NodeListModel::onNodeUpated);
 
-    connect(mDataManager, &DataManager::columnAppended, this, &NodeListModel::onColumnAppended);
+    connect(mDataManager,
+            &DataManager::columnAppendigStart,
+            this,
+            &NodeListModel::beginInsertColumns);
+    connect(mDataManager, &DataManager::columnAppendigEnd, this, &NodeListModel::endInsertColumns);
 
     selectionModel = new QItemSelectionModel();
 }
@@ -525,7 +561,6 @@ void NodeListModel::selectionRow(int Row, int Column)
     //selectionModel->clear();
     //QItemSelectionModel selectionModel;
     //selectionModel->select(index(0,2), QItemSelectionModel::ClearAndSelect);
-    qDebug() << "wtf:" << selectionModel;
     selectionModel->select(index(0, 0),
                            QItemSelectionModel::Clear | QItemSelectionModel::SelectCurrent
                                | QItemSelectionModel::Rows);
@@ -536,7 +571,6 @@ void NodeListModel::selectionRow(int Row, int Column)
 
 QItemSelectionModel *NodeListModel::selectModel()
 {
-    qDebug() << "selectttt ";
     return selectionModel;
 }
 
@@ -550,26 +584,9 @@ void NodeListModel::setDataManager(DataManager *newDataManager)
     mDataManager = newDataManager;
 }
 
-void NodeListModel::onNodeAppended(int index)
-{
-    beginInsertRows(QModelIndex(), this->rowCount(), this->rowCount());
-    endInsertRows();
-    emit dataChanged(this->index(this->rowCount(), 0), this->index(this->rowCount(), 0));
-    //    beginResetModel();
-    //    endResetModel();
-}
-
 void NodeListModel::onNodeUpated(int index)
 {
     emit dataChanged(this->index(index, 0), this->index(index, 0));
-}
-
-void NodeListModel::onColumnAppended(int index)
-{
-    beginInsertColumns(QModelIndex(), index, index);
-    endInsertColumns();
-    //    beginResetModel();
-    //    endResetModel();
 }
 
 QHash<int, QByteArray> NodeListModel::roleNames() const
@@ -622,9 +639,13 @@ CategoryTabbarModel::CategoryTabbarModel(DataManager *dataManager)
     mDataManager = dataManager;
 
     connect(dataManager,
-            &DataManager::categoryAppended,
+            &DataManager::tabNameAppendingStart,
             this,
-            &CategoryTabbarModel::onCategoryAppended);
+            &CategoryTabbarModel::beginInsertRows);
+    connect(dataManager,
+            &DataManager::tabNameAppendingEnd,
+            this,
+            &CategoryTabbarModel::endInsertRows);
 
     // TEST
     //    mDataManager->getUniqueCategoryNames()->append("akbar");
@@ -644,6 +665,51 @@ QVariant CategoryTabbarModel::data(const QModelIndex &index, int role) const
 
 void CategoryTabbarModel::onCategoryAppended(int index)
 {
-    beginInsertRows(QModelIndex(), index, index);
+    qDebug() << "onTabNameAppended";
+    beginInsertRows(QModelIndex(), this->rowCount() - 1, this->rowCount() - 1);
     endInsertRows();
+}
+
+CategoryTagModel::CategoryTagModel(DataManager *dataManager)
+{
+    mDataManager = dataManager;
+
+    connect(dataManager,
+            &DataManager::categoryTagAppendingStart,
+            this,
+            &CategoryTagModel::beginInsertRows);
+    connect(dataManager,
+            &DataManager::categoryTagAppendingEnd,
+            this,
+            &CategoryTagModel::endInsertRows);
+}
+
+int CategoryTagModel::rowCount(const QModelIndex &parent) const
+{
+    return mDataManager->categoryTagNames().size();
+}
+
+QVariant CategoryTagModel::data(const QModelIndex &index, int role) const
+{
+    return mDataManager->categoryTagNames().at(index.row());
+}
+
+void CategoryTagModel::onCategoryTagAppended()
+{
+    qDebug() << "onCategoryTagAppended";
+    beginInsertRows(QModelIndex(), this->rowCount() - 1, this->rowCount() - 1);
+    endInsertRows();
+}
+
+CategoryTagModel *NodeProxyModel::categoryTagModel() const
+{
+    return m_categoryTagModel;
+}
+
+void NodeProxyModel::setCategoryTagModel(CategoryTagModel *newCategoryTagModel)
+{
+    if (m_categoryTagModel == newCategoryTagModel)
+        return;
+    m_categoryTagModel = newCategoryTagModel;
+    emit categoryTagModelChanged();
 }

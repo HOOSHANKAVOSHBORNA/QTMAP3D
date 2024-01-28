@@ -36,13 +36,23 @@ public:
     QVector<QString> fixedColumnNames() const;
     void setFixedColumnNames(const QVector<QString> &newFixedColumnNames);
 
+    QVector<QString> categoryTagNames() const;
+    void setCategoryTagNames(const QVector<QString> &newCategoryTagNames);
+
 signals:
-    void nodeAppended(int index);
+    void nodeAppendingStart(QModelIndex, int, int);
+    void nodeAppendingEnd();
+
     void nodeUpdated(int index);
 
-    void categoryAppended(int index);
+    void columnAppendigStart(QModelIndex, int, int);
+    void columnAppendigEnd();
 
-    void columnAppended(int index);
+    void categoryTagAppendingStart(QModelIndex, int, int);
+    void categoryTagAppendingEnd();
+
+    void tabNameAppendingStart(QModelIndex, int, int);
+    void tabNameAppendingEnd();
 
 public slots:
     SimpleModelNode* onNodeDataReceived(const NodeData &nodeData);
@@ -59,7 +69,8 @@ private:
 //    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
     QVector<QString> mFixedColumnNames = {"Color", "Icon", "Name", "Type"};
     QVector<QString> mUniqueAddedColumnNames;
-    QVector<QString> mUniqueCategoryNames;
+    QVector<QString> mUniqueTabNames;
+    QVector<QString> mCategoryTagNames = {"All"};
     QMap<QString, QString> mColumnToCategory = {{"Color", "Fixed"},
                                                 {"Icon", "Fixed"},
                                                 {"Name", "Fixed"},

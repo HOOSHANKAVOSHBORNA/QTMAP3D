@@ -37,48 +37,48 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
     osg::ref_ptr<SimpleModelNode> node;
 
     if (!mNodeMap.contains(nodeData.id)) {
-        emit nodeAppended(this->nodeCount() - 1);
         // TODO: setup filter needed data mUniqueColorss
 
         // adding new uniuqe category name
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
             QString category = nodeData.fieldData.at(i).category;
             bool found = false;
-            for (int j = 0; j < mUniqueCategoryNames.size(); ++j) {
-                if (category == mUniqueCategoryNames.at(j)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                mUniqueCategoryNames.append(category);
-                emit categoryAppended(mUniqueCategoryNames.size() - 1);
+            if (!mUniqueTabNames.contains(category)) {
+                emit tabNameAppendingStart(QModelIndex(),
+                                           mUniqueTabNames.size(),
+                                           mUniqueTabNames.size());
+                mUniqueTabNames.append(category);
+                emit tabNameAppendingEnd();
             }
         }
 
         // adding new unique column name
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
             QString name = nodeData.fieldData.at(i).name;
-            bool found = false;
-            for (int j = 0; j < mUniqueAddedColumnNames.size(); ++j) {
-                if (name == mUniqueAddedColumnNames.at(j)) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
+            if (!mUniqueAddedColumnNames.contains(name)) {
+                emit columnAppendigStart(QModelIndex(),
+                                         mUniqueAddedColumnNames.size(),
+                                         mUniqueAddedColumnNames.size());
                 mUniqueAddedColumnNames.append(name);
                 mColumnToCategory.insert(name, nodeData.fieldData.at(i).category);
-                emit columnAppended(mUniqueAddedColumnNames.size() - 1 + mFixedColumnNames.size());
+                emit columnAppendigEnd();
             }
         }
 
+        //add new Category Tag Names
+        QString categoryTag = nodeData.category;
+        if (!mCategoryTagNames.contains(categoryTag)) {
+            emit categoryTagAppendingStart(QModelIndex(),
+                                           mCategoryTagNames.size(),
+                                           mCategoryTagNames.size());
+            mCategoryTagNames.append(categoryTag);
+            emit categoryTagAppendingEnd();
+        }
+
         // DEBUG
-        //        qDebug() << "debug: " << mUniqueCategoryNames.size();
-        //        for (int i = 0; i < mUniqueCategoryNames.size(); ++i) {
-        //            qDebug() << "debug: " << mUniqueCategoryNames.at(i);
+        //        qDebug() << "debug: " << mUniqueTabNames.size();
+        //        for (int i = 0; i < mUniqueTabNames.size(); ++i) {
+        //            qDebug() << "debug: " << mUniqueTabNames.at(i);
         //        }
         // ENDDEBUG
 
@@ -96,7 +96,12 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
                                        nodeData.url2D.toStdString());
 
         node->setPosition(geoPoint);
+
+        // TODO: you should append node between start and end insert row instructions
+        emit nodeAppendingStart(QModelIndex(), nodeCount(), nodeCount());
         mNodeMap[nodeData.id] = node;
+        emit nodeAppendingEnd();
+
         node->setBookmarkManager(mMainWindow->getBookmarkManager());
 
     } else {
@@ -143,6 +148,16 @@ void DataManager::removeNode(const NodeData &nodeData)
     }
 }
 
+QVector<QString> DataManager::categoryTagNames() const
+{
+    return mCategoryTagNames;
+}
+
+void DataManager::setCategoryTagNames(const QVector<QString> &newCategoryTagNames)
+{
+    mCategoryTagNames = newCategoryTagNames;
+}
+
 QVector<QString> DataManager::fixedColumnNames() const
 {
     return mFixedColumnNames;
@@ -176,17 +191,17 @@ int DataManager::getNodeIndexById(int id)
 
 QVector<QString> DataManager::uniqueCategoryNames()
 {
-    return mUniqueCategoryNames;
+    return mUniqueTabNames;
 }
 
 QVector<QString> *DataManager::getUniqueCategoryNames()
 {
-    return &mUniqueCategoryNames;
+    return &mUniqueTabNames;
 }
 
 void DataManager::setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames)
 {
-    mUniqueCategoryNames = newUniqueCategoryNames;
+    mUniqueTabNames = newUniqueCategoryNames;
 }
 
 QVector<QString> DataManager::uniqueAddedColumnNames() const
@@ -206,5 +221,6 @@ int DataManager::nodeCount()
 
 SimpleModelNode *DataManager::getNodeAtIndex(int index)
 {
+    qDebug() << "debug " << index;
     return mNodeMap.values().at(index);
 }

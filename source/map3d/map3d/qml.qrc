@@ -11,7 +11,6 @@
         <file>location/SavePointWidget.qml</file>
         <file>toolbox/DelegateItem.qml</file>
         <file>toolbox/Toolbox.qml</file>
-        <file>ListWindow.qml</file>
         <file>ContextmenuWidget.qml</file>
         <file>setting/DelegateItem.qml</file>
         <file>setting/Settings.qml</file>
@@ -46,5 +45,6 @@
         <file>Components/DebugInLayout.qml</file>
         <file>SettingsItem.qml</file>
         <file>ProfileItem.qml</file>
+        <file>ListWindow.qml</file>
     </qresource>
 </RCC>
