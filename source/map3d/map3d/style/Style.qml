@@ -51,7 +51,7 @@ QtObject {
 
 
     //-------   UI Desired Size Added    ---------//
-    readonly property double monitorRatio: 1.1
+    readonly property double monitorRatio: 1920/Screen.width
     readonly property string fontFamily:"Roboto"
     readonly property double fontPointSize: 11/monitorRatio
 
