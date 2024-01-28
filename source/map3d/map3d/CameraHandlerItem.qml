@@ -24,7 +24,7 @@ Item {
     width: mainRowLayout.implicitWidth
     height: mainRowLayout.implicitHeight
     smooth: true
-    
+
     RowLayout {
         id: mainRowLayout
         anchors.fill: parent
@@ -41,6 +41,7 @@ Item {
                 width: 80/Style.monitorRatio
                 height: 80/Style.monitorRatio
                 source: "qrc:/Resources/eye.png"
+                visible: false
                 
             }
             CameraPositionHandlerItem{
@@ -48,6 +49,7 @@ Item {
                 width: 80/Style.monitorRatio
                 height: 80/Style.monitorRatio
                 source: "qrc:/Resources/hand.png"
+                visible: false
             }
         }
         
@@ -88,6 +90,28 @@ Item {
                 
                 Button {
                     id: zoomOutBtn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     anchors.top: seperator.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: 40/Style.monitorRatio
@@ -123,8 +147,11 @@ Item {
                     radius:width/2
                 }
                 onClicked: {
-                    
+                     rotateCameraHandler.visible = true
+                     moveCameraHandler.visible   = true
+
                     if(rootItem.positionFactor){
+
                         showSlider.stop()
                         hideSlider.start()
                     } else {

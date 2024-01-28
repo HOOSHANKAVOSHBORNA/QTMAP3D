@@ -192,11 +192,15 @@ Item{
     Rectangle{
         id:back
     z:0
-    width: parent.width-3
+//    width: parent.width-3
+    anchors.left: nodeShowListScroller.left
+    anchors.leftMargin: -10 / Style.monitorRatio
+    anchors.right: nodeShowListScroller.right
     color: Style.backgroundColor
-//    height: parent.height
+    height: 80 / Style.monitorRatio
     anchors.bottom: nodeShowListScroller.bottom
-    anchors.top: nodeShowListScroller.top
+//    anchors.top: nodeShowListScroller.top
+//    anchors.topMargin: 30 / Style.monitorRatio
     visible: filterRect.height > 300
     radius:20
     Rectangle{
@@ -219,11 +223,12 @@ Item{
         anchors.leftMargin: 15/Style.monitorRatio
         anchors.right: parent.right
         width: filterRect.width
-        height: 110/Style.monitorRatio
+        height: 80/Style.monitorRatio
         visible: filterRect.height > 300
         ListView{
             id:listView
             clip: true
+            anchors.leftMargin: 10/Style.monitorRatio
             model: rootItem.model
             delegate:
                 Button{

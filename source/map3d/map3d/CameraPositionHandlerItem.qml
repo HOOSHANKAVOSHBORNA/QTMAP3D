@@ -56,15 +56,15 @@ Item {
             rotation: -90
 
         }
-Rectangle{
-    width: 62/Style.monitorRatio
-    height: 62/Style.monitorRatio
-    color:"transparent"
-    radius: width/2
-    anchors.centerIn: parent
-    border.color: Qt.rgba(Style.foregroundColor.r,Style.foregroundColor.g,Style.foregroundColor.b,0.25)
+        Rectangle{
+            width: 62/Style.monitorRatio
+            height: 62/Style.monitorRatio
+            color:"transparent"
+            radius: width/2
+            anchors.centerIn: parent
+            border.color: Qt.rgba(Style.foregroundColor.r,Style.foregroundColor.g,Style.foregroundColor.b,0.25)
 
-}
+        }
         Rectangle{
             id: middleHole
             width:draggableCircle.width

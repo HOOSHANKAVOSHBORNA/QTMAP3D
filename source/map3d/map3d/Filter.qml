@@ -155,6 +155,7 @@ Rectangle {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
+
                             if (colorLeftIcon.position > 0)
                                 colorLeftIcon.position -= 0.24
 
@@ -183,7 +184,7 @@ Rectangle {
                                     anchors.fill: parent
                                     onClicked: {
                                         filterManager.addFilterTag("color",
-                                                                   modelData, TagComparision.Equal, andCheck.checked ? TagLogicalOperator.And:TagLogicalOperator.Or)
+                                                                   modelData, TagComparision.Equal, andCheck.checked ? Tag.And:Tag.Or)
                                         tagsModel.append({
                                                              "name": "color",
                                                              "color": modelData,
@@ -345,25 +346,47 @@ Rectangle {
                             placeholderText: qsTr("Description")
                             color: rootObj.foregroundColor
                             font.family: rootObj.fontFamily
-                            font.pointSize: 13 / Style.monitorRatio
+                            font.pixelSize: 15 / Style.monitorRatio
                             selectedTextColor: rootObj.backgroundColor
                             selectionColor: rootObj.foregroundColor
                             placeholderTextColor: rootObj.fg30
                             background: Rectangle {
+                                id: redBackG2
                                 color: "transparent"
-                                radius: 15
+                                radius: 8
+                            }
+
+                            PropertyAnimation {
+                                id: rbg2
+                                target: redBackG2
+                                properties: "opacity"
+                                to: 0
+                                from: 1
+                                duration: 2500
+                                easing.type: Easing.OutQuint
+
                             }
                             onAccepted: {
-                                filterManager.addFilterTag(control.currentText, descriptionField.text, TagComparision.Equal, andCheck.checked ? TagLogicalOperator.And : TagLogicalOperator.Or)
-                                tagsModel.append({
-                                                     "name": control.currentText,
-                                                     "value1": descriptionField.text,
-                                                     "value2": "",
-                                                     "value3": "",
-                                                     "value4": "",
-                                                     "compVal": "",
-                                                     "logical": andCheck.checked ? true : false
-                                                 })
+                                if (rootObj.isNumeric(descriptionField.text)) {
+                                    filterManager.addFilterTag(control.currentText,
+                                                               descriptionField.text,
+                                                               TagComparision.Equal,
+                                                               andCheck.checked ? Tag.And : Tag.Or)
+                                    tagsModel.append({
+                                                         "name": control.currentText,
+                                                         "color": "",
+                                                         "value1": descriptionField.text,
+                                                         "value2": "",
+                                                         "value3": "",
+                                                         "value4": "",
+                                                         "compVal": "",
+                                                         "logical": andCheck.checked ? true : false
+                                                     })
+                                }
+                                else {
+                                    redBackG2.color = "red"
+                                    rbg2.running = true
+                                }
                             }
                         }
                     }
@@ -379,7 +402,7 @@ Rectangle {
                 property color s: "black"
                 color: Qt.rgba(s.r, s.g, s.b, .04)
                 Rectangle {
-                    width: filterCompare.width - 3
+                    width: filterCompare.width  - 3
                     height: 28 / Style.monitorRatio - 3
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
@@ -580,10 +603,11 @@ Rectangle {
                                 properties: "opacity"
                                 to: 0
                                 from: 1
-                                duration: 3500
+                                duration: 2500
                                 easing.type: Easing.OutQuint
 
                             }
+
                             function comparetor(txt){
                                 if  (txt === "!=")
                                     return Tag.NotEqual
@@ -597,12 +621,9 @@ Rectangle {
                                     return Tag.LessEqual
                                 else
                                     return Tag.Equal
-
-
                             }
+
                             onAccepted: {
-
-
                                 if (rootObj.isNumeric(numbfield3.text)) {
                                     filterManager.addFilterTag(
                                                 control3.currentText,
@@ -612,10 +633,12 @@ Rectangle {
                                                          "name": control3.currentText,
                                                          "value4": numbfield3.text,
                                                          "compVal": lblComparision.text,
-                                                         "logical": andCheck.checked ? true : false
+                                                         "logical": andCheck.checked ? true : false,
+                                                         "color": "",
+                                                         "value1": "",
+                                                         "value2": "",
+                                                         "value3": ""
                                                      })
-
-                                    tagsModel.sync()
 
                                 } else {
                                     redBackG3.color = "red"
@@ -631,9 +654,10 @@ Rectangle {
 
         ScrollView {
             id: mainScroll
-            // anchors.top: filterFields.bottom
-            height: 60 / Style.monitorRatio
-            // anchors.topMargin: 18 / Style.monitorRatio
+            Layout.maximumHeight: 53 / Style.monitorRatio
+            //             anchors.top: filterFields.bottom
+            //            height: 60 / Style.monitorRatio
+            Layout.topMargin: 5 / Style.monitorRatio
             RowLayout {
                 width: rootObj.width
                 visible: true
@@ -657,13 +681,13 @@ Rectangle {
                             property bool checked: true
                             property bool selected: false
                             id: typesHolder
-                            implicitHeight: 26 / Style.monitorRatio
+                            implicitHeight: 22 / Style.monitorRatio
                             implicitWidth: showDetails.implicitWidth + (index ? andOrLabel.implicitWidth + 5 : 0)
                             color: "transparent"
                             radius: 20
                             Rectangle{
                                 id:borderRect
-                                implicitHeight: 26 / Style.monitorRatio
+                                implicitHeight: 22 / Style.monitorRatio
                                 implicitWidth: showDetails.implicitWidth
                                 anchors.right: parent.right
                                 color: checked ? "transparent" : Qt.rgba(
@@ -671,7 +695,6 @@ Rectangle {
                                                      rootObj.foregroundColor.g,
                                                      rootObj.foregroundColor.b, 0.1)
                                 border {
-
                                     color: "#01AED6" /*rootObj.disableColor*/
                                     width: 1
                                 }
@@ -683,7 +706,7 @@ Rectangle {
                                 anchors.rightMargin: 5
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: model.logical ? "&&" : "||"
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: 15 / Style.monitorRatio
                                 font.family: "Roboto"
                                 color: showDetails.colorHandler
                                 visible: index ? true : false
@@ -735,7 +758,7 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: model.name ? model.name : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
                                     Layout.leftMargin: 15 / Style.monitorRatio
                                     Layout.topMargin: 2 / Style.monitorRatio
@@ -743,7 +766,7 @@ Rectangle {
                                 }
                                 Label {
                                     text: ":"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     font.family: "Roboto"
                                     color: showDetails.colorHandler
                                     visible: model.compVal ? false : true
@@ -754,7 +777,7 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: model.value1 ? model.value1 : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
                                     visible: model.value2 || model.value4
                                              || model.color ? false : true
@@ -764,14 +787,14 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: model.value2 ? model.value2 : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
                                     visible: model.value3
                                              && model.value2 ? true : false
                                 }
                                 Label {
                                     text: "To"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     font.family: "Roboto"
                                     color: showDetails.colorHandler
                                     visible: model.value2 ? true : false
@@ -781,7 +804,7 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: model.value3 ? model.value3 : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
                                     visible: model.value3
                                              && model.value2 ? true : false
@@ -791,7 +814,7 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: model.compVal ? model.compVal : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
                                     visible: model.compVal ? true : false
                                 }
@@ -800,7 +823,7 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: model.value4 ? model.value4 : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
                                     visible: model.value4 ? true : false
                                 }
@@ -809,15 +832,15 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: model.color ? model.color : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
                                     visible: model.color ? true : false
                                 }
                                 IconImage {
                                     id: closeIcon
                                     source: "qrc:/Resources/close.png"
-                                    Layout.preferredHeight: 20 / Style.monitorRatio
-                                    Layout.preferredWidth: 20 / Style.monitorRatio
+                                    Layout.preferredHeight: 18 / Style.monitorRatio
+                                    Layout.preferredWidth: 18 / Style.monitorRatio
                                     color: showDetails.colorHandler
                                     Layout.leftMargin: 15 / Style.monitorRatio
                                     Layout.rightMargin: 15 / Style.monitorRatio
