@@ -120,6 +120,11 @@ void FilterManager::removeFilterTag(QString field, QVariant value, Tag::Comparis
     emit filterTagsEdited();
 }
 
+const QVector<Tag *> FilterManager::getFilterTags() const
+{
+    return mFilterTags;
+}
+
 // void FilterManager::addFilterTag(QString key, QString value)
 // {
 // //    if (mFilterTags.contains(key)) {
