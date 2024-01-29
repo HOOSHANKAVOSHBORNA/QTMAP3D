@@ -9,7 +9,7 @@ import "style"
 Rectangle {
     id: rootObj
     property var filterManager
-
+    property alias innerWidth : mainColumn.height
     readonly property color backgroundColor: "#DEE3E6"
     readonly property color foregroundColor: "#003569"
     readonly property color fg20: Qt.rgba(rootObj.foregroundColor.r,
@@ -38,12 +38,26 @@ Rectangle {
     function isNumeric(s) {
         return !isNaN(s - parseFloat(s))
     }
+    Rectangle{
+        width: parent.width - 3/ Style.monitorRatio
+        height: 20
+        anchors.top: parent.top
+        color: Style.backgroundColor
+        z:2
+        anchors.topMargin: mainColumn.height - 4 / Style.monitorRatio
+        radius: 20
+        Rectangle{
+            width: parent.width
+            height: 10/Style.monitorRatio
+            color: Qt.rgba(Style.foregroundColor.r,Style.foregroundColor.g,Style.foregroundColor.b,0.03)
+        }
+    }
 
     color: "#DEE3E6"
     width: parent.width
-    height: filterFields.height + searchRow.height + mainScroll.height + 52 / Style.monitorRatio
     radius: 15
     ColumnLayout {
+        id:mainColumn
         RowLayout {
             id: searchRow
             Layout.topMargin: 36 / Style.monitorRatio
@@ -152,6 +166,7 @@ Rectangle {
                     Layout.preferredWidth: 18 / Style.monitorRatio
                     rotation: 90
                     color: colorLeftIcon.position < .01 ? rootObj.backgroundColor : "transparent"
+                    visible:colorRepeater.count > 4
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
@@ -173,6 +188,8 @@ Rectangle {
 
                         Repeater {
                             id: colorRepeater
+                            onItemAdded: {rootObj.innerWidth = mainColumn.height
+                                print(innerWidth)}
                             model: filterManager.colorFilterFields
                             delegate: Rectangle {
                                 required property var modelData
@@ -218,6 +235,8 @@ Rectangle {
                     Layout.preferredWidth: 18 / Style.monitorRatio
                     rotation: -90
                     color: colorLeftIcon.position > .95 ? rootObj.backgroundColor : "transparent"
+                    visible:colorRepeater.count > 4
+
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
@@ -285,6 +304,7 @@ Rectangle {
                                 verticalAlignment: Text.AlignVCenter
                                 elide: Text.ElideRight
                             }
+                            editable: true
 
                             background: Rectangle {
                                 color: "transparent"
@@ -292,7 +312,7 @@ Rectangle {
                             popup: Popup {
                                 id: popupCombo1
                                 y: control.height - 1
-                                width: 100
+                                width: 100 / Style.monitorRatio
                                 implicitHeight: contentItem.implicitHeight
                                 padding: 1
                                 enter: Transition {
@@ -327,9 +347,13 @@ Rectangle {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
+                                        print("---------sss----------")
+                                        print(control.textAt(
+                                                  control.highlightedIndex))
                                         txtContentItem1.text = control.textAt(
                                                     control.highlightedIndex)
                                         popupCombo1.close()
+
                                     }
                                 }
                             }
@@ -500,8 +524,6 @@ Rectangle {
                         Item {
                             width: 26 / Style.monitorRatio
                             height: 26 / Style.monitorRatio
-                            //                            anchors.centerIn: filterString11
-                            //Layout.verticalCenter: filterString11.verticalCenter
                             Rectangle {
                                 id: comparison
                                 anchors.fill: parent
@@ -511,7 +533,7 @@ Rectangle {
                                     id: lblComparision
                                     anchors.centerIn: parent
                                     text: "="
-                                    font.pixelSize: 20 / Style.monitorRatio
+                                    font.pixelSize: 16 / Style.monitorRatio
                                     font.family: rootObj.fontFamily
                                     color: rootObj.foregroundColor
                                     MouseArea {
@@ -654,28 +676,26 @@ Rectangle {
 
         ScrollView {
             id: mainScroll
-            Layout.maximumHeight: 53 / Style.monitorRatio
-            //             anchors.top: filterFields.bottom
-            //            height: 60 / Style.monitorRatio
-            Layout.topMargin: 5 / Style.monitorRatio
+            Layout .topMargin: 10 / Style.monitorRatio
+            //            Layout.maximumHeight: 45 / Style.monitorRatio
+            //            Layout.minimumHeight:  45 / Style.monitorRatio
+            Layout.preferredHeight: 50 / Style.monitorRatio
+
             RowLayout {
                 width: rootObj.width
                 visible: true
                 clip: true
 
                 Flow {
-                    spacing: 5 / Style.monitorRatio
-                    height: 40 / Style.monitorRatio
-                    Layout.bottomMargin: 20
+                    spacing: 1
                     Layout.fillWidth: true
-                    Layout.leftMargin: 5
+                    Layout.leftMargin: 3 / Style.monitorRatio
 
                     Repeater {
 
                         model: ListModel {
                             id: tagsModel
                         }
-
                         delegate: Rectangle {
                             property bool visiblitySet: true
                             property bool checked: true
@@ -703,7 +723,7 @@ Rectangle {
                             Label {
                                 id:andOrLabel
                                 anchors.right: borderRect.left
-                                anchors.rightMargin: 5
+                                anchors.rightMargin: 5 / Style.monitorRatio
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: model.logical ? "&&" : "||"
                                 font.pixelSize: 15 / Style.monitorRatio
@@ -716,7 +736,6 @@ Rectangle {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 onEntered: {
-                                    print(index)
                                     if (!typesHolder.selected == true) {
                                         borderRect.border.color = rootObj.foregroundColor
                                         showDetails.colorHandler = rootObj.foregroundColor
@@ -844,9 +863,12 @@ Rectangle {
                                     color: showDetails.colorHandler
                                     Layout.leftMargin: 15 / Style.monitorRatio
                                     Layout.rightMargin: 15 / Style.monitorRatio
+
                                     MouseArea {
                                         anchors.fill: parent
-                                        onClicked: tagsModel.remove(index)
+                                        onClicked: {tagsModel.remove(index)
+                                        }
+
 
                                     }
                                 }
@@ -856,6 +878,7 @@ Rectangle {
                 }
             }
         }
+
     }
     PropertyAnimation {
         id: openMotion
