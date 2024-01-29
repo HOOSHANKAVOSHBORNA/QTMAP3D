@@ -439,6 +439,18 @@ Rectangle {
                         anchors.topMargin: -3
                         spacing: 5
                         ComboBox {
+
+                            function filterModel(searchFilterText,searchFilterModel) {
+                                var filteredModel = [];
+                                for (var i = 0; i < searchFilterModel.length; ++i) {
+
+                                    var itemName = searchFilterModel[i].toLowerCase();
+                                    if (itemName.startsWith(searchFilterText)) {
+                                        filteredModel.push(searchFilterModel[i]);
+                                    }
+                                }
+                                return filteredModel;
+                            }
                             id: control3
                             property real txtWidth: 0
                             Layout.minimumWidth: 50
@@ -463,14 +475,25 @@ Rectangle {
                                 }
                             }
                             indicator: Rectangle {}
-                            contentItem: Text {
+                            contentItem: TextField {
                                 id:txtContentItem3
-                                text: control3.displayText
+//                                text: control3.displayText
+                                placeholderText:  control3.displayText
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / Style.monitorRatio
                                 color: rootObj.fg30
+                                placeholderTextColor: rootObj.fg30
                                 verticalAlignment: Text.AlignVCenter
-                                elide: Text.ElideRight
+//                                elide: Text.ElideRight
+                                background: Rectangle{
+                                    color: "transparent"
+                                }
+                                onTextChanged: {
+                                    popupCombo3.open()
+                                    var searchFilter = txtContentItem3.text.toLowerCase();
+                                    control3.model = control3.filterModel(searchFilter,filterManager.numFilterFields);
+
+                                }
                             }
                             background: Rectangle {
                                 color: "transparent"
@@ -756,7 +779,6 @@ Rectangle {
                                 }
 
                                 onClicked: {
-
                                     if (!typesHolder.selected) {
                                         typesHolder.selected = true
                                         typesHolder.border.color = "#01AED6"
