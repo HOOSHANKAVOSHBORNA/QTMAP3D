@@ -43,7 +43,7 @@
         <file>Components/OpacitySlider.qml</file>
         <file>Components/DebugInAnchor.qml</file>
         <file>Components/DebugInLayout.qml</file>
-        <file>SettingsItem.qml</file>
+        <file>ConnectionConfiguration.qml</file>
         <file>ProfileItem.qml</file>
         <file>ListWindow.qml</file>
     </qresource>

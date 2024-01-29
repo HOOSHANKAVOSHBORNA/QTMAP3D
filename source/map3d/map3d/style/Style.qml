@@ -48,9 +48,10 @@ QtObject {
     readonly property color uiBlue: "#003569"
 
     //-------   UI Desired Size Added    ---------//
-    readonly property double monitorRatio: 1.3
-    readonly property string fontFamily: "Roboto"
-    readonly property double fontPointSize: 11 / monitorRatio
+    readonly property double monitorRatio: 1920 / Screen.width
+    readonly property string fontFamily:"Roboto"
+    readonly property double fontPointSize: 11/monitorRatio
+
 
     //    readonly property int containerSize      : 40/1.3
     //    readonly property int uiSecondContainerSize: 65

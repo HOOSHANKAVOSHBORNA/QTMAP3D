@@ -27,7 +27,6 @@ add_executable(Map3d
         pluginmanager.cpp   pluginmanager.h
         serviceManager.h serviceManager.cpp
         defenseDataManager.cpp  defenseDataManager.h
-
         layerManager.cpp layerManager.h
         osgRenderNode.cpp   osgRenderNode.h
         osgViewerItem.cpp osgViewerItem.h
@@ -52,9 +51,8 @@ add_executable(Map3d
         layerProperty.h layerProperty.cpp
         autoScaler.h autoScaler.cpp
         splash.h splash.cpp
-        settings.h settings.cpp
         listWindow.cpp listWindow.h
-    )
+        connectionConfiguration.h connectionConfiguration.cpp)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/" "Components/")

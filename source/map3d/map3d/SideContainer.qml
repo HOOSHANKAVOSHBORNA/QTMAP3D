@@ -280,9 +280,8 @@ Item {
                 id:settingsDocItem
                 windowTitle: sideModel.get(5).name
 
-                containerItem: SettingsItem{
+                containerItem: ConnectionConfiguration{
                     id:settingsItem
-                    model: SettingsInstance.getSettings()
                 }
 
                 onWindowClose: {

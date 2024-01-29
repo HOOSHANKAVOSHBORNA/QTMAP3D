@@ -1,5 +1,5 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef CONNECTIONCONFIGURATION_H
+#define CONNECTIONCONFIGURATION_H
 
 #include <QObject>
 #include <QQuickItem>
@@ -9,7 +9,7 @@
 //#include <QStandardPaths>
 //#include <QDir>
 
-class Settings:public QObject
+class ConnectionConfiguration:public QObject
 {
     Q_OBJECT
 
@@ -19,7 +19,7 @@ class Settings:public QObject
     Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
 
 public:
-   explicit Settings(QObject *parent = nullptr);
+   explicit ConnectionConfiguration(QObject *parent = nullptr);
 
     Q_INVOKABLE QString getIp() const;
     Q_INVOKABLE void setIp(const QString &newIp);
@@ -54,20 +54,20 @@ private:
 //    const QString savedFileName = QString("settings.json");
 };
 
-class SettingsManager:public QObject
+class ConnectionConfigurationManager:public QObject
 {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
 public:
-    static SettingsManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
-    ~SettingsManager();
-    Q_INVOKABLE Settings *getSettings();
+    static ConnectionConfigurationManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+    ~ConnectionConfigurationManager();
+    Q_INVOKABLE ConnectionConfiguration *getConnectionConfiguration();
 protected:
-    SettingsManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
+    ConnectionConfigurationManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
 private:
-    static inline SettingsManager* mInstance{nullptr};
-    Settings *mSettings;
+    static inline ConnectionConfigurationManager* mInstance{nullptr};
+    ConnectionConfiguration *mConnectionConfiguration;
 };
 
-#endif // SETTINGS_H
+#endif // CONNECTIONCONFIGURATION_H

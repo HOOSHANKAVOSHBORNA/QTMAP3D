@@ -7,14 +7,18 @@ import "style"
 
 ApplicationWindow {
     id:signUpWindow
-    width: 1080 / Style.monitorRatio
-    height: 1920 / Style.monitorRatio
+    width: 1920 / Style.monitorRatio
+    height: 1080 / Style.monitorRatio
     minimumHeight: 600
     minimumWidth: 800
     visible: !loginPage.windowHidden
     title: qsTr("SignIn/SignUp")
 
-    readonly property color foregroundColor: Qt.rgba(Style.foregroundColor.r,
+    readonly property color foregroundColorTextBox: Qt.rgba(Style.foregroundColor.r,
+                                                     Style.foregroundColor.g,
+                                                     Style.foregroundColor.b,
+                                                     0.20)
+    readonly property color foregroundColorText: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
@@ -34,10 +38,9 @@ onClosing:{
 
         Image {
             id: backGroundImage
-            anchors.top: parent.top
             source: "qrc:/Resources/login-earth.jpg"
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.topMargin: 40
+            anchors.fill: parent
             fillMode: Image.PreserveAspectFit
         }
 
@@ -76,7 +79,7 @@ onClosing:{
                 anchors.topMargin: 70 / Style.monitorRatio
 
                 onClicked:{
-
+                    loginPage.openSettings()
                 }
             }
 
@@ -114,11 +117,11 @@ onClosing:{
                     height: 40 / Style.monitorRatio
                     font.pointSize: 17 / Style.monitorRatio
                     leftPadding: 20 / Style.monitorRatio
-                    color: foregroundColor
+                    color: foregroundColorText
                     placeholderText:"Enter your Username"
-                    placeholderTextColor: foregroundColor
+                    placeholderTextColor: foregroundColorText
                     background: Rectangle {
-                        color: foregroundColor
+                        color: foregroundColorTextBox
                         radius: height / 2
                     }
                    onAccepted: {
@@ -145,12 +148,12 @@ onClosing:{
                     height: 40 / Style.monitorRatio
                     font.pointSize: 17 / Style.monitorRatio
                     leftPadding: 20 / Style.monitorRatio
-                    color: foregroundColor
+                    color: foregroundColorText
                     placeholderText:"Enter your Password"
-                    placeholderTextColor: foregroundColor
+                    placeholderTextColor: foregroundColorText
                     echoMode: TextField.Password
                     background: Rectangle {
-                        color: foregroundColor
+                        color: foregroundColorTextBox
                         radius: height / 2
                     }
                    onAccepted: {
@@ -197,6 +200,7 @@ onClosing:{
                 }
 
                 RadioButton{
+                    id:administrator
                     text: "Administrator"
                     Layout.topMargin: 12 / Style.monitorRatio
                     Layout.preferredHeight: 20 / Style.monitorRatio
@@ -208,14 +212,15 @@ onClosing:{
                         leftPadding: 20 / Style.monitorRatio
                         verticalAlignment: Text.AlignVCenter
                     }
-                    indicator: Image{
+                    indicator:Image{
                       width: 20 / Style.monitorRatio
                       height: 20 / Style.monitorRatio
-                      source: "qrc:/Resources/circle.png"
+                      source: administrator.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
                     }
                 }
 
                 RadioButton{
+                    id:admin
                     text: "Admin"
                     Layout.topMargin: 12 / Style.monitorRatio
                     Layout.preferredHeight: 20 / Style.monitorRatio
@@ -230,11 +235,12 @@ onClosing:{
                     indicator: Image{
                       width: 20 / Style.monitorRatio
                       height: 20 / Style.monitorRatio
-                      source: "qrc:/Resources/circle.png"
+                      source: admin.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
                     }
                 }
 
                 RadioButton{
+                    id:reviewer
                     text: "Reviewer"
                     Layout.topMargin: 12 / Style.monitorRatio
                     Layout.preferredHeight: 20 / Style.monitorRatio
@@ -249,7 +255,7 @@ onClosing:{
                     indicator: Image{
                       width: 20 / Style.monitorRatio
                       height: 20 / Style.monitorRatio
-                      source: "qrc:/Resources/circle.png"
+                      source: reviewer.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
                     }
                 }
 
@@ -263,7 +269,7 @@ onClosing:{
                 anchors.leftMargin: 50 / Style.monitorRatio
                 anchors.rightMargin: 50 / Style.monitorRatio
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 50 / Style.monitorRatio
+                anchors.bottomMargin: 30 / Style.monitorRatio
                 hoverEnabled: true
                 background: Rectangle{
                     color: Style.foregroundColor
