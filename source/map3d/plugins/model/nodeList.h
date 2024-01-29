@@ -80,18 +80,6 @@ private:
     DataManager *mDataManager;
     QItemSelectionModel *selectionModel;
     QString modelType;
-
-    //    QMap<EColumn, QString> columnToName = {{Color, "Color"},
-    //                                           {Icon, "Icon"},
-    //                                           {Name, "Name"},
-    //                                           {Type, "Type"},
-    //                                           {Latitude, "Latitude"},
-    //                                           {Longitude, "Longitude"},
-    //                                           {Altitude, "Altitude"},
-    //                                           {Speed, "Speed"},
-    //                                           {Battle, "Battle"},
-    //                                           {Target, "Target"},
-    //                                           {More, "More"}};
 };
 
 //--------------------------------------NodeProxyModel-------------------------------------
@@ -142,7 +130,6 @@ public:
     Q_INVOKABLE void sortTable(int column);
     bool filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const;
 
-    Q_INVOKABLE void nodeTypeFilter(QString type);
     Q_INVOKABLE void filterString(QString search, QString value);
     Q_INVOKABLE void filterStringColumn(QString tabName);
 
@@ -198,7 +185,7 @@ private:
     //QString m_filterColor;
     QString mFilterType = "All";
     QString m_filterName;
-    QString m_filterColumn;
+    QString m_filterColumn = "Essential";
     //int m_filterFrom;
     //int m_filterTo;
     //QString m_condition;

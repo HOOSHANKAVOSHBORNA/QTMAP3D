@@ -97,7 +97,6 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
         node->setPosition(geoPoint);
 
-        // TODO: you should append node between start and end insert row instructions
         emit nodeAppendingStart(QModelIndex(), nodeCount(), nodeCount());
         mNodeMap[nodeData.id] = node;
         emit nodeAppendingEnd();
@@ -150,6 +149,16 @@ void DataManager::removeNode(const NodeData &nodeData)
         mNodeMap.remove(nodeData.id);
         nodeRemovingEnd();
     }
+}
+
+QVector<QString> DataManager::essentialColumnNames() const
+{
+    return mEssentialColumnNames;
+}
+
+void DataManager::setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames)
+{
+    mEssentialColumnNames = newEssentialColumnNames;
 }
 
 QVector<QString> DataManager::categoryTagNames() const

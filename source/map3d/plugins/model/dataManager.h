@@ -39,6 +39,9 @@ public:
     QVector<QString> categoryTagNames() const;
     void setCategoryTagNames(const QVector<QString> &newCategoryTagNames);
 
+    QVector<QString> essentialColumnNames() const;
+    void setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames);
+
 signals:
     void nodeAppendingStart(QModelIndex, int, int);
     void nodeAppendingEnd();
@@ -70,14 +73,14 @@ private:
 //    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
 //    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
-    QVector<QString> mFixedColumnNames = {"Color", "Icon", "Name", "Type"};
-    QVector<QString> mUniqueAddedColumnNames;
-    QVector<QString> mUniqueTabNames;
+    QVector<QString> mUniqueTabNames = {"Essential"};
     QVector<QString> mCategoryTagNames = {"All"};
-    QMap<QString, QString> mColumnToCategory = {{"Color", "Fixed"},
-                                                {"Icon", "Fixed"},
-                                                {"Name", "Fixed"},
-                                                {"Type", "Fixed"}};
+    QVector<QString> mFixedColumnNames = {"Color", "Icon", "Id", "Name"};
+    QVector<QString> mEssentialColumnNames
+        = {"Type", "IsAttacker", "Latitude", "Longitude", "Altitude", "Speed"};
+    QVector<QString> mUniqueAddedColumnNames;
+
+    QMap<QString, QString> mColumnToCategory;
     NodeData* mNodeData;
     MainWindow *mMainWindow;
 };

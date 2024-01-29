@@ -146,6 +146,16 @@ void NodeProxyModel::sortTable(int column)
 
 bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const
 {
+    // fixed columns
+    if (sourceColumn >= 0 && sourceColumn <= 3) {
+        return true;
+    }
+
+    // essential columns
+    if (m_filterColumn == "Essential" && sourceColumn >= 4 && sourceColumn <= 9) {
+        return true;
+    }
+
     DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
     QString currentColumnName = sourceModel()->headerData(sourceColumn, Qt::Horizontal).toString();
     QString currentColumnCategory = dataManager->columnToCategory().value(currentColumnName,
@@ -154,11 +164,6 @@ bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &so
     // DEBUG
     //    qDebug() << "debug  " << currentColumnName << ", " << currentColumnCategory;
     // ENDDEBUG
-
-    // TODO: don't use from Main Information
-    if (currentColumnCategory == "Fixed" || currentColumnCategory == "Main Information") {
-        return true;
-    }
 
     return m_filterColumn == currentColumnCategory;
 
@@ -198,7 +203,6 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
     }
 
     DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
-    //    int lindex = mapToSource(this->index(sourceRow, 0)).row();
     QString rowCategory = dataManager->getNodeAtIndex(sourceRow)->nodeData().category;
     return rowCategory.contains(mFilterType, Qt::CaseInsensitive);
 
@@ -265,16 +269,6 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
         }
         return result1 && result2 && result3 && result4 && resultName;
     }
-
-    if (m_search == "type") {
-        QModelIndex index = sourceModel()->index(sourceRow, Ecolumn::EType, sourceParent);
-        QVariant data = sourceModel()->data(index);
-        if (mFilterType == "All")
-            return true;
-        else
-            return data.toString().contains(mFilterType, Qt::CaseInsensitive);
-    }
-
     //    if (m_search == "attack") {
     //        //qDebug() << attakerList.at(0);
     //        QModelIndex index = sourceModel()->index(sourceRow, Ecolumn::EName, sourceParent);
@@ -313,13 +307,6 @@ CategoryTabbarModel *NodeProxyModel::tabbarModel() const
 void NodeProxyModel::setTabbarModel(CategoryTabbarModel *newTabbarModel)
 {
     mTabbarModel = newTabbarModel;
-}
-
-void NodeProxyModel::nodeTypeFilter(QString type)
-{
-    mFilterType = type;
-    m_search = "type";
-    invalidateFilter();
 }
 
 void NodeProxyModel::filterString(QString search, QString value)
@@ -466,7 +453,8 @@ int NodeListModel::rowCount(const QModelIndex &) const
 
 int NodeListModel::columnCount(const QModelIndex &) const
 {
-    return mDataManager->fixedColumnNames().size() + mDataManager->uniqueAddedColumnNames().size();
+    return mDataManager->fixedColumnNames().size() + mDataManager->uniqueAddedColumnNames().size()
+           + mDataManager->essentialColumnNames().size();
 }
 
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
@@ -475,22 +463,42 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
 
     QString columnName;
 
-    if (index.column() < mDataManager->fixedColumnNames().size()) {
-        columnName = mDataManager->fixedColumnNames().at(index.column());
-        if (columnName == "Name") {
-            return nodeData.name;
-        } else if (columnName == "Color") {
-            return nodeData.color;
-        } else if (columnName == "Type") {
-            return nodeData.type.toString();
-        } else if (columnName == "Icon") {
-            return nodeData.iconInfoUrl;
-        } else {
-            return "Defualt";
-        }
-    } else {
+    if (index.column() == 0 && role != Qt::BackgroundRole) {
+        return QVariant("notType");
+    }
+
+    if (index.column() == 1 && role != Qt::DecorationRole) {
+        return QVariant("notType");
+    }
+
+    if (index.column() > 1 && index.column() <= columnCount() && role != Qt::DisplayRole) {
+        return QVariant("notType");
+    }
+
+    if (index.column() == 0) {
+        return nodeData.color;
+    } else if (index.column() == 1) {
+        return nodeData.iconInfoUrl;
+    } else if (index.column() == 2) {
+        return nodeData.id;
+    } else if (index.column() == 3) {
+        return nodeData.name;
+    } else if (index.column() == 4) {
+        return nodeData.type.toString();
+    } else if (index.column() == 5) {
+        return nodeData.isAttacker;
+    } else if (index.column() == 6) {
+        return nodeData.latitude;
+    } else if (index.column() == 7) {
+        return nodeData.longitude;
+    } else if (index.column() == 8) {
+        return nodeData.altitude;
+    } else if (index.column() == 9) {
+        return nodeData.speed;
+    } else if (index.column() > 9) {
         columnName = mDataManager->uniqueAddedColumnNames().at(
-            index.column() - mDataManager->fixedColumnNames().size());
+            index.column() - mDataManager->fixedColumnNames().size()
+            - mDataManager->essentialColumnNames().size());
 
         // TODO; use from find_if not for loop
         int foundIndex = -1;
@@ -502,11 +510,13 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         }
 
         if (foundIndex == -1) {
-            return "Not Set";
+            return "NaN";
         } else {
             return nodeData.fieldData.at(foundIndex).value;
         }
     }
+
+    return "BADINDEX";
 
     //    // color roles
     //    if (role == Qt::BackgroundRole) {
@@ -545,9 +555,18 @@ QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int
 {
     if (section < mDataManager->fixedColumnNames().size()) {
         return mDataManager->fixedColumnNames().at(section);
+    } else if (section < mDataManager->fixedColumnNames().size()
+                             + mDataManager->essentialColumnNames().size()) {
+        return mDataManager->essentialColumnNames().at(section
+                                                       - mDataManager->fixedColumnNames().size());
     } else {
-        return mDataManager->uniqueAddedColumnNames().at(section
-                                                         - mDataManager->fixedColumnNames().size());
+        qDebug() << "addedColumnIndex: "
+                 << section - mDataManager->fixedColumnNames().size()
+                        - mDataManager->essentialColumnNames().size()
+                 << ", addColumnLength: " << mDataManager->uniqueAddedColumnNames().size();
+        return mDataManager->uniqueAddedColumnNames().at(
+            section - mDataManager->fixedColumnNames().size()
+            - mDataManager->essentialColumnNames().size());
     }
 }
 
