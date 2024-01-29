@@ -6,8 +6,8 @@
 #include <QQuickWindow>
 #include <QJsonObject>
 
-LoginPage::LoginPage(ServiceManager* serviceManager, QObject *parent):
-    QObject(parent), mServiceManager{serviceManager}
+LoginPage::LoginPage(ServiceManager* serviceManager, QQmlApplicationEngine *qmlEngine, QObject *parent):
+    QObject(parent), mServiceManager{serviceManager},mQmlEngine{qmlEngine}
 {
 
 }
@@ -30,7 +30,24 @@ void LoginPage::signIn(const QString username, const QString password)
 
 void LoginPage::openSettings()
 {
+    mSettingsWindow = new QQuickWindow();
+    QQmlComponent* comp = new QQmlComponent(mQmlEngine);
+    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status){
+        if(status == QQmlComponent::Error){
+            qDebug()<<"Can not load SettingsItem : "<<comp->errorString();
+        }
 
+        if(status == QQmlComponent::Ready){
+           QQuickItem *settingsItem = qobject_cast<QQuickItem*>(comp->create());
+           QQuickItem *rootItem = mSettingsWindow->contentItem();
+           settingsItem->setParentItem(rootItem);
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/ConnectionConfiguration.qml"));
+
+    mSettingsWindow->setHeight(400);
+    mSettingsWindow->setWidth(400);
+    mSettingsWindow->show();
 }
 
 void LoginPage::onWindowClosed()
@@ -63,10 +80,12 @@ UserManager::UserManager(ServiceManager *serviceManager, QQmlApplicationEngine *
 {
     mProfile = new Profile(serviceManager);
     qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
-    mLoginPage = new LoginPage(serviceManager);
+    mLoginPage = new LoginPage(serviceManager,qmlEngine);
     qmlEngine->rootContext()->setContextProperty("loginPage", mLoginPage);
     connect(mLoginPage, &LoginPage::signedIn, this, &UserManager::signedIn);
     mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
+    qmlRegisterSingletonType<ConnectionConfigurationManager>("Crystal", 1, 0, "ConnectionConfigurationInstance", ConnectionConfigurationManager::createSingletonInstance);
+
 }
 
 

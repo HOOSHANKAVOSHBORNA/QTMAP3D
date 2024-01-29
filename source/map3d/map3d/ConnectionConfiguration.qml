@@ -1,13 +1,14 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
-
+import Crystal
 import "style"
 
 Item {
     id:rootItem
 
-    property var model
+    property var model : ConnectionConfigurationInstance.getConnectionConfiguration()
+
     readonly property color foregroundColor: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
@@ -16,7 +17,8 @@ Item {
                                                      Style.backgroundColor.g,
                                                      Style.backgroundColor.b,
                                                      0.30)
-
+    height: parent ? parent.height : 0
+    width: parent ? parent.width : 0
     ColumnLayout{
         anchors.left: parent.left
         anchors.right: parent.right

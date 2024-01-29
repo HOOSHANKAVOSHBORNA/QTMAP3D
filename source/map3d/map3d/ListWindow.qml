@@ -26,118 +26,18 @@ CListWindow {
 
             spacing: 0
 
-            RowLayout {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 25
-                Layout.bottomMargin: 20
+            Repeater {
+                id: rep
+                model: tabbarModel
 
-                Text {
+                Rectangle {
                     Layout.fillWidth: true
-                    text: 'Object list'
-                    font.family: Style.fontFamily
-                    font.pixelSize: 23
-                    font.weight: 500
-                    color: Style.foregroundColor
-                }
-            }
-
-            TabBar {
-                id: listTabbar
-                Layout.fillWidth: true
-                Layout.preferredHeight: 26
-                Layout.bottomMargin: 20
-                padding: 0
-                spacing: 5
-
-                background: Rectangle {
-                    //                color: 'red'
+                    Layout.fillHeight: true
                     color: 'transparent'
+
+                    data: model.item
                 }
-
-                Repeater {
-                    id: rep
-                    model: tabbarModel
-
-                    TabButton {
-                        required property var model
-
-                        padding: 0
-                        anchors.top: parent.top
-                        width: titleTxt.width + 2 * 15
-                        height: 26
-
-                        background: Rectangle {
-                            color: 'transparent'
-                            anchors.fill: parent
-                        }
-
-                        contentItem: Rectangle {
-                            anchors.fill: parent
-                            border.width: 1
-                            border.color: (model.index === listTabbar.currentIndex
-                                           || hovered) ? Style.hoverColor : Style.foregroundColor
-                            radius: 15
-                            color: 'transparent'
-
-                            Text {
-                                id: titleTxt
-                                anchors.centerIn: parent
-                                text: model.title
-                                color: (model.index === listTabbar.currentIndex
-                                        || hovered) ? Style.hoverColor : Style.foregroundColor
-                                font.family: Style.fontFamily
-                                font.pixelSize: 17
-                            }
-                        }
-                    }
-
-                    onItemAdded: (index, modelItem) => {
-                                     stackLayout.data.push(modelItem.model.item)
-                                 }
-                }
-            }
-
-            StackLayout {
-                id: stackLayout
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                currentIndex: listTabbar.currentIndex
             }
         }
-
-        // --------------------- just for test
-        //        RowLayout {
-        //            height: 50
-        //            anchors.bottom: parent.bottom
-        //            anchors.left: parent.left
-        //            anchors.right: parent.right
-        //            anchors.margins: 10
-
-        //            TextField {
-        //                id: addNewTitle
-        //                Layout.fillHeight: true
-        //                Layout.fillWidth: true
-        //                text: 'newTitle'
-        //            }
-
-        //            Button {
-        //                Layout.fillHeight: true
-        //                Layout.fillWidth: true
-        //                text: 'add'
-
-        //                onClicked: {
-        //                    appendTest(addNewTitle.text)
-        //                }
-        //            }
-        //        }
-        // just for test
-    }
-
-    Component.onCompleted: {
-
-        //        appendTest('ayfirst')
-        //        appendTest('aysecond')
-        //        appendTest('aythird')
-        //        appendTest('ayforth')
     }
 }

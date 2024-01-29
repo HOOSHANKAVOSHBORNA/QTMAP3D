@@ -550,16 +550,16 @@ Rectangle {
                     anchors.fill: parent
 
                     onDoubleClicked: {
-                        // --- for debug
-                        console.log("model.name: ", model.name)
-                        console.log("model.lon: ", model.lon)
-                        console.log("model.lat: ", model.lat)
-                        console.log("model.z: ", model.z)
-                        console.log("model.heading: ", model.heading)
-                        console.log("model.pitch: ", model.pitch)
-                        console.log("model.range: ", model.range)
 
-                        // ---
+                        // DEBUG
+                        //                        console.log("model.name: ", model.name)
+                        //                        console.log("model.lon: ", model.lon)
+                        //                        console.log("model.lat: ", model.lat)
+                        //                        console.log("model.z: ", model.z)
+                        //                        console.log("model.heading: ", model.heading)
+                        //                        console.log("model.pitch: ", model.pitch)
+                        //                        console.log("model.range: ", model.range)
+                        // ENDDEBUG
                         lvLocationManger.model.goToLocation(
                                     lvLocationManger.model.index(index, 0))
                     }

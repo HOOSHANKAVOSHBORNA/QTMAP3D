@@ -1,6 +1,6 @@
-#include "settings.h"
+#include "connectionConfiguration.h"
 
-Settings::Settings(QObject *parent):QObject(parent)
+ConnectionConfiguration::ConnectionConfiguration(QObject *parent):QObject(parent)
 {
     mSettings = new QSettings("MySettings","Configuration");
 
@@ -17,12 +17,12 @@ Settings::Settings(QObject *parent):QObject(parent)
     mPassword = data;
 }
 
-QString Settings::getIp() const
+QString ConnectionConfiguration::getIp() const
 {
     return mIp;
 }
 
-void Settings::setIp(const QString &newIp)
+void ConnectionConfiguration::setIp(const QString &newIp)
 {
     if (mIp == newIp)
         return;
@@ -30,12 +30,12 @@ void Settings::setIp(const QString &newIp)
     emit ipChanged();
 }
 
-QString Settings::getPort() const
+QString ConnectionConfiguration::getPort() const
 {
     return mPort;
 }
 
-void Settings::setPort(const QString &newPort)
+void ConnectionConfiguration::setPort(const QString &newPort)
 {
     if (mPort == newPort)
         return;
@@ -43,12 +43,12 @@ void Settings::setPort(const QString &newPort)
     emit portChanged();
 }
 
-QString Settings::getUsername() const
+QString ConnectionConfiguration::getUsername() const
 {
     return mUsername;
 }
 
-void Settings::setUsername(const QString &newUsername)
+void ConnectionConfiguration::setUsername(const QString &newUsername)
 {
     if (mUsername == newUsername)
         return;
@@ -56,12 +56,12 @@ void Settings::setUsername(const QString &newUsername)
     emit usernameChanged();
 }
 
-QString Settings::getPassword() const
+QString ConnectionConfiguration::getPassword() const
 {
     return mPassword;
 }
 
-void Settings::setPassword(const QString &newPassword)
+void ConnectionConfiguration::setPassword(const QString &newPassword)
 {
     if (mPassword == newPassword)
         return;
@@ -69,7 +69,7 @@ void Settings::setPassword(const QString &newPassword)
     emit passwordChanged();
 }
 
-void Settings::saveSettings()
+void ConnectionConfiguration::saveSettings()
 {
     mSettings->setValue("configs/ip", mIp);
     mSettings->setValue("configs/port", mPort);
@@ -89,7 +89,7 @@ void Settings::saveSettings()
 //    return json;
 //}
 
-bool Settings::writeToFile()
+bool ConnectionConfiguration::writeToFile()
 {
 
 
@@ -111,26 +111,26 @@ bool Settings::writeToFile()
 }
 
 
-SettingsManager *SettingsManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+ConnectionConfigurationManager *ConnectionConfigurationManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new SettingsManager(); }
+    if(mInstance == nullptr){ mInstance = new ConnectionConfigurationManager(); }
     return mInstance;
 }
 
-SettingsManager::~SettingsManager()
+ConnectionConfigurationManager::~ConnectionConfigurationManager()
 {
-    delete mSettings;
+    delete mConnectionConfiguration;
 }
 
-Settings* SettingsManager::getSettings()
+ConnectionConfiguration* ConnectionConfigurationManager::getConnectionConfiguration()
 {
-    return mSettings;
+    return mConnectionConfiguration;
 }
 
-SettingsManager::SettingsManager(QObject *parent):QObject(parent)
+ConnectionConfigurationManager::ConnectionConfigurationManager(QObject *parent):QObject(parent)
 {
-    mSettings = new Settings();
+    mConnectionConfiguration = new ConnectionConfiguration();
 }
 
