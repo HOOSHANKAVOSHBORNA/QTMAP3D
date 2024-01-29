@@ -23,6 +23,42 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
     CategoryTagModel *categoryTagsModel = new CategoryTagModel(dataManager);
     mProxyModel->setCategoryTagModel(categoryTagsModel);
 
+    // connections
+    connect(mDataManager,
+            &DataManager::nodeAppendingStart,
+            nodeModel,
+            &NodeListModel::beginInsertRows);
+    connect(mDataManager, &DataManager::nodeAppendingEnd, nodeModel, &NodeListModel::endInsertRows);
+    connect(mDataManager,
+            &DataManager::nodeAppendingEnd,
+            mProxyModel,
+            &NodeProxyModel::invalidateRowFilterInvoker);
+
+    connect(mDataManager,
+            &DataManager::nodeRemovingStart,
+            nodeModel,
+            &NodeListModel::beginRemoveRows);
+    connect(mDataManager, &DataManager::nodeRemovingEnd, nodeModel, &NodeListModel::endRemoveRows);
+    connect(mDataManager,
+            &DataManager::nodeRemovingEnd,
+            mProxyModel,
+            &NodeProxyModel::invalidateRowFilterInvoker);
+
+    connect(mDataManager, &DataManager::nodeUpdated, nodeModel, &NodeListModel::onNodeUpated);
+
+    connect(mDataManager,
+            &DataManager::columnAppendigStart,
+            nodeModel,
+            &NodeListModel::beginInsertColumns);
+    connect(mDataManager,
+            &DataManager::columnAppendigEnd,
+            nodeModel,
+            &NodeListModel::endInsertColumns);
+    connect(mDataManager,
+            &DataManager::columnAppendigEnd,
+            mProxyModel,
+            &NodeProxyModel::invalidateColumnFilterInvoker);
+
     createQml();
 }
 
@@ -72,26 +108,16 @@ void NodeList::setQmlItem(QQuickItem *newQmlItem)
 
 NodeProxyModel::NodeProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
-{
-    //    int DataTableSize = dynamic_cast<NodeListModel*>(sourceModel())->Data.at(0).FieldData.size();
-    //    for (int i = 0; i < DataTableSize; i++) {
-    //        columnName.append(dynamic_cast<NodeListModel*>(sourceModel())->Data.at(0).FieldData.at(i).name);
-    //    }
-    //    NodeListModel *nodeModel = new NodeListModel;
-    //    for (int i = 0; i < nodeModel->Data.at(0).FieldData.size(); i++) {
-    //        columnName.append(nodeModel->Data.at(0).FieldData.at(i).name);
-    //    }
-    //    //add column Int to columnNameInt
-    //    for (int i = 0; i < nodeModel->Data.at(0).FieldData.size(); ++i) {
-    //        if (nodeModel->Data.at(0).FieldData.at(i).value.type() == QVariant::Int) {
-    //            //qDebug()<<nodeListModel.Data.at(0).FieldData.at(i).name;
-    //            columnNameInt.append(nodeModel->Data.at(0).FieldData.at(i).name);
-    //        }
-    //    }
-    //    setSourceModel(nodeModel);
+{}
 
-    //    qDebug()<<columnNameInt;
-    //    qDebug()<<dynamic_cast<NodeListModel *>(sourceModel())->Data.at(0).FieldData.size();
+void NodeProxyModel::invalidateRowFilterInvoker()
+{
+    invalidateRowsFilter();
+}
+
+void NodeProxyModel::invalidateColumnFilterInvoker()
+{
+    invalidateColumnsFilter();
 }
 
 bool NodeProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
@@ -172,9 +198,8 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
     }
 
     DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
-    qDebug() << "rowCount: " << rowCount() << ", sourceRow: " << sourceRow << ", ";
-    int lindex = mapToSource(this->index(sourceRow, 0)).row();
-    QString rowCategory = dataManager->getNodeAtIndex(lindex)->nodeData().category;
+    //    int lindex = mapToSource(this->index(sourceRow, 0)).row();
+    QString rowCategory = dataManager->getNodeAtIndex(sourceRow)->nodeData().category;
     return rowCategory.contains(mFilterType, Qt::CaseInsensitive);
 
     //search Tag all of them
@@ -359,7 +384,6 @@ void NodeProxyModel::removeTag(QString filterSearch, QString name, QString value
 {
     //qDebug()<<filterSearch<<name<<value1;
     if (filterSearch == "colorFilter") {
-        //qDebug()<<"ssss";
         TagColor.removeIf(
             [valueToRemove = value1](const FilterTag &s) { return s.value == valueToRemove; });
         //        TagColor.removeAll([valueToRemove = value1](const FilterTag& s) {
@@ -391,7 +415,6 @@ void NodeProxyModel::removeTag(QString filterSearch, QString name, QString value
 void NodeProxyModel::filterCategoryTag(QString name)
 {
     mFilterType = name;
-    m_search = "filter category";
     invalidateFilter();
 }
 
@@ -429,17 +452,6 @@ NodeListModel::NodeListModel(DataManager *dataManager)
 {
     mDataManager = dataManager;
 
-    connect(mDataManager, &DataManager::nodeAppendingStart, this, &NodeListModel::beginInsertRows);
-    connect(mDataManager, &DataManager::nodeAppendingEnd, this, &NodeListModel::endInsertRows);
-
-    connect(mDataManager, &DataManager::nodeUpdated, this, &NodeListModel::onNodeUpated);
-
-    connect(mDataManager,
-            &DataManager::columnAppendigStart,
-            this,
-            &NodeListModel::beginInsertColumns);
-    connect(mDataManager, &DataManager::columnAppendigEnd, this, &NodeListModel::endInsertColumns);
-
     selectionModel = new QItemSelectionModel();
 }
 
@@ -450,8 +462,6 @@ int NodeListModel::rowCount(const QModelIndex &) const
     //    if (modelType == "attackerModel")
     //        return DataAttacker->size();
     return mDataManager->nodeCount();
-    //    qDebug() << "debug: " << mDataManager->nodeCount();
-    //    return 10;
 }
 
 int NodeListModel::columnCount(const QModelIndex &) const
@@ -462,21 +472,6 @@ int NodeListModel::columnCount(const QModelIndex &) const
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
 {
     NodeData nodeData = mDataManager->getNodeAtIndex(index.row())->nodeData();
-    //Attack = nodeData.fieldData.size() + EColumn::Battle + 1;
-    //EColumn::Attack = static_cast<EColumn>(nodeData.fieldData.size() + EColumn::Battle + 1);
-    //qDebug() << "enum" << myEnum << EColumn::Attack;
-    //qDebug() << nodeData.fieldData.size();
-    //qDebug() << nodeData.fieldData.at(1).value.toString();
-
-    //    qDebug() << nodeData.category;
-    //    for (int i = 0; i < nodeData.fieldData.size(); ++i) {
-    //        if (nodeData.fieldData.size()) {
-    //            qDebug() << "fieldData" << i << nodeData.fieldData.at(i).name << ", "
-    //                     << nodeData.fieldData.at(i).value << ", " << nodeData.fieldData.at(i).category;
-    //        }
-    //    }
-
-    //qDebug() << "fieldData.size(): " << nodeData.fieldData.size();
 
     QString columnName;
 
@@ -497,6 +492,7 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         columnName = mDataManager->uniqueAddedColumnNames().at(
             index.column() - mDataManager->fixedColumnNames().size());
 
+        // TODO; use from find_if not for loop
         int foundIndex = -1;
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
             if (nodeData.fieldData.at(i).name == columnName) {
@@ -663,13 +659,6 @@ QVariant CategoryTabbarModel::data(const QModelIndex &index, int role) const
     return mDataManager->getUniqueCategoryNames()->at(index.row());
 }
 
-void CategoryTabbarModel::onCategoryAppended(int index)
-{
-    qDebug() << "onTabNameAppended";
-    beginInsertRows(QModelIndex(), this->rowCount() - 1, this->rowCount() - 1);
-    endInsertRows();
-}
-
 CategoryTagModel::CategoryTagModel(DataManager *dataManager)
 {
     mDataManager = dataManager;
@@ -692,13 +681,6 @@ int CategoryTagModel::rowCount(const QModelIndex &parent) const
 QVariant CategoryTagModel::data(const QModelIndex &index, int role) const
 {
     return mDataManager->categoryTagNames().at(index.row());
-}
-
-void CategoryTagModel::onCategoryTagAppended()
-{
-    qDebug() << "onCategoryTagAppended";
-    beginInsertRows(QModelIndex(), this->rowCount() - 1, this->rowCount() - 1);
-    endInsertRows();
 }
 
 CategoryTagModel *NodeProxyModel::categoryTagModel() const

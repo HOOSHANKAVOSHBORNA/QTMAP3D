@@ -143,8 +143,12 @@ void DataManager::removeNode(const NodeData &nodeData)
             if(layer)
                 layer->removeChild(mNodeMap[nodeData.id]);
         }
+
+        int nodeDataId = getNodeIndexById(nodeData.id);
+        nodeRemovingStart(QModelIndex(), nodeDataId, nodeDataId);
         mNodeMap[nodeData.id].release();
         mNodeMap.remove(nodeData.id);
+        nodeRemovingEnd();
     }
 }
 
@@ -221,6 +225,5 @@ int DataManager::nodeCount()
 
 SimpleModelNode *DataManager::getNodeAtIndex(int index)
 {
-    qDebug() << "debug " << index;
     return mNodeMap.values().at(index);
 }

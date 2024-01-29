@@ -43,6 +43,9 @@ signals:
     void nodeAppendingStart(QModelIndex, int, int);
     void nodeAppendingEnd();
 
+    void nodeRemovingStart(QModelIndex, int, int);
+    void nodeRemovingEnd();
+
     void nodeUpdated(int index);
 
     void columnAppendigStart(QModelIndex, int, int);
