@@ -317,7 +317,7 @@ Rectangle {
         }
 
         ListElement {
-            name: "Setting"
+            name: "Connection Configuration"
             iconSource: "qrc:/Resources/settings.png"
             checked: false
             isWindow: false
