@@ -560,10 +560,6 @@ QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int
         return mDataManager->essentialColumnNames().at(section
                                                        - mDataManager->fixedColumnNames().size());
     } else {
-        qDebug() << "addedColumnIndex: "
-                 << section - mDataManager->fixedColumnNames().size()
-                        - mDataManager->essentialColumnNames().size()
-                 << ", addColumnLength: " << mDataManager->uniqueAddedColumnNames().size();
         return mDataManager->uniqueAddedColumnNames().at(
             section - mDataManager->fixedColumnNames().size()
             - mDataManager->essentialColumnNames().size());
@@ -572,7 +568,6 @@ QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int
 
 void NodeListModel::selectionRow(int Row, int Column)
 {
-    qDebug() << "Row select: " << Row << "Column select: " << Column;
     //selectionModel->clear();
     //QItemSelectionModel selectionModel;
     //selectionModel->select(index(0,2), QItemSelectionModel::ClearAndSelect);
