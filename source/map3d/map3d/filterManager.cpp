@@ -113,7 +113,9 @@ void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision
 void FilterManager::removeFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op)
 {
     Tag *tag = new Tag{field, value, comp, op};
-    auto it = std::find(mFilterTags.begin(), mFilterTags.end(), tag);
+    auto it = std::find_if(mFilterTags.begin(), mFilterTags.end(), [this, tag](const Tag *t){
+        return *tag == t;
+    });
     if (it != mFilterTags.end()) {
         mFilterTags.erase(it);
     }

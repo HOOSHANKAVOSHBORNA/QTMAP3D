@@ -188,8 +188,6 @@ Rectangle {
 
                         Repeater {
                             id: colorRepeater
-                            onItemAdded: {rootObj.innerWidth = mainColumn.height
-                                print(innerWidth)}
                             model: filterManager.colorFilterFields
                             delegate: Rectangle {
                                 required property var modelData
@@ -200,17 +198,13 @@ Rectangle {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        filterManager.addFilterTag("color",
-                                                                   modelData, TagComparision.Equal, andCheck.checked ? Tag.And:Tag.Or)
+                                        filterManager.addFilterTag("Color",
+                                                                   modelData, Tag.Equal, andCheck.checked ? Tag.And : Tag.Or)
                                         tagsModel.append({
                                                              "name": "color",
-                                                             "color": modelData,
-                                                             "value1": "",
-                                                             "value2": "",
-                                                             "value3": "",
-                                                             "value4": "",
-                                                             "compVal": "",
-                                                             "logical": andCheck.checked ? true : false
+                                                             "value": modelData,
+                                                             "compVal": "=",
+                                                             "logical": andCheck.checked ? Tag.And : Tag.Or
                                                          })
                                     }
                                 }
@@ -347,9 +341,6 @@ Rectangle {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        print("---------sss----------")
-                                        print(control.textAt(
-                                                  control.highlightedIndex))
                                         txtContentItem1.text = control.textAt(
                                                     control.highlightedIndex)
                                         popupCombo1.close()
@@ -398,13 +389,9 @@ Rectangle {
                                                                andCheck.checked ? Tag.And : Tag.Or)
                                     tagsModel.append({
                                                          "name": control.currentText,
-                                                         "color": "",
-                                                         "value1": descriptionField.text,
-                                                         "value2": "",
-                                                         "value3": "",
-                                                         "value4": "",
-                                                         "compVal": "",
-                                                         "logical": andCheck.checked ? true : false
+                                                         "value": descriptionField.text,
+                                                         "compVal": "=",
+                                                         "logical": andCheck.checked ? Tag.And : Tag.Or
                                                      })
                                 }
                                 else {
@@ -477,14 +464,14 @@ Rectangle {
                             indicator: Rectangle {}
                             contentItem: TextField {
                                 id:txtContentItem3
-//                                text: control3.displayText
+                                //                                text: control3.displayText
                                 placeholderText:  control3.displayText
                                 font.family: rootObj.fontFamily
                                 font.pixelSize: 14 / Style.monitorRatio
                                 color: rootObj.fg30
                                 placeholderTextColor: rootObj.fg30
                                 verticalAlignment: Text.AlignVCenter
-//                                elide: Text.ElideRight
+                                //                                elide: Text.ElideRight
                                 background: Rectangle{
                                     color: "transparent"
                                 }
@@ -525,7 +512,6 @@ Rectangle {
                                     implicitHeight: contentHeight
                                     model: control3.delegateModel
                                     currentIndex: control3.highlightedIndex
-                                    //visible: false
                                     ScrollIndicator.vertical: ScrollIndicator {}
                                 }
 
@@ -571,7 +557,7 @@ Rectangle {
 
                                         Repeater {
                                             id: repeaterMenu
-                                            model: ["<", "<=", "=", ">=", ">"]
+                                            model: ["!=", "<", "<=", "=", ">=", ">"]
                                             MenuItem {
                                                 text: modelData
 
@@ -583,7 +569,6 @@ Rectangle {
                                                 }
                                                 contentItem: Text {
                                                     text: modelData
-                                                    //width: 50
                                                     color: "#003569"
                                                     font.family: "Roboto"
                                                     font.pixelSize: 14 / Style.monitorRatio
@@ -653,36 +638,18 @@ Rectangle {
 
                             }
 
-                            function comparetor(txt){
-                                if  (txt === "!=")
-                                    return Tag.NotEqual
-                                else if (txt === ">")
-                                    return Tag.Greater
-                                else if (txt === "<")
-                                    return Tag.Less
-                                else if (txt === ">=")
-                                    return Tag.GreaterEqual
-                                else if (txt === "<=")
-                                    return Tag.LessEqual
-                                else
-                                    return Tag.Equal
-                            }
-
                             onAccepted: {
                                 if (rootObj.isNumeric(numbfield3.text)) {
                                     filterManager.addFilterTag(
                                                 control3.currentText,
-                                                parseFloat(numbfield3.text),numbfield3.comparetor(lblComparision.text),
+                                                parseFloat(numbfield3.text),
+                                                rootObj.comparetor(lblComparision.text),
                                                 andCheck.checked ? Tag.And : Tag.Or)
                                     tagsModel.append({
                                                          "name": control3.currentText,
-                                                         "value4": numbfield3.text,
+                                                         "value": numbfield3.text,
                                                          "compVal": lblComparision.text,
-                                                         "logical": andCheck.checked ? true : false,
-                                                         "color": "",
-                                                         "value1": "",
-                                                         "value2": "",
-                                                         "value3": ""
+                                                         "logical": andCheck.checked ? Tag.And : Tag.Or
                                                      })
 
                                 } else {
@@ -700,8 +667,6 @@ Rectangle {
         ScrollView {
             id: mainScroll
             Layout .topMargin: 10 / Style.monitorRatio
-            //            Layout.maximumHeight: 45 / Style.monitorRatio
-            //            Layout.minimumHeight:  45 / Style.monitorRatio
             Layout.preferredHeight: 50 / Style.monitorRatio
 
             RowLayout {
@@ -715,10 +680,11 @@ Rectangle {
                     Layout.leftMargin: 3 / Style.monitorRatio
 
                     Repeater {
-
+                        id: tagsRep
                         model: ListModel {
                             id: tagsModel
                         }
+
                         delegate: Rectangle {
                             property bool visiblitySet: true
                             property bool checked: true
@@ -738,7 +704,7 @@ Rectangle {
                                                      rootObj.foregroundColor.g,
                                                      rootObj.foregroundColor.b, 0.1)
                                 border {
-                                    color: "#01AED6" /*rootObj.disableColor*/
+                                    color: "#01AED6"
                                     width: 1
                                 }
                                 radius: 20
@@ -748,7 +714,7 @@ Rectangle {
                                 anchors.right: borderRect.left
                                 anchors.rightMargin: 5 / Style.monitorRatio
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: model.logical ? "&&" : "||"
+                                text: model.logical === Tag.And ? "&&" : "||"
                                 font.pixelSize: 15 / Style.monitorRatio
                                 font.family: "Roboto"
                                 color: showDetails.colorHandler
@@ -762,30 +728,30 @@ Rectangle {
                                     if (!typesHolder.selected == true) {
                                         borderRect.border.color = rootObj.foregroundColor
                                         showDetails.colorHandler = rootObj.foregroundColor
-
-                                    } else {
-                                        borderRect.border.color = rootObj.foregroundColor
-                                        showDetails.colorHandler = rootObj.foregroundColor
+                                        closeIcon.color = rootObj.foregroundColor
                                     }
+
                                 }
                                 onExited: {
                                     if (typesHolder.selected == true) {
                                         borderRect.border.color = rootObj.fg30
                                         showDetails.colorHandler = rootObj.fg30
+                                        closeIcon.color = rootObj.fg30
                                     } else {
                                         borderRect.border.color = "#01AED6"
                                         showDetails.colorHandler = "#01AED6"
+                                        closeIcon.color = "#01AED6"
                                     }
                                 }
 
                                 onClicked: {
                                     if (!typesHolder.selected) {
                                         typesHolder.selected = true
-                                        typesHolder.border.color = "#01AED6"
+                                        borderRect.border.color = "#01AED6"
                                         showDetails.colorHandler = "#01AED6"
                                     } else {
                                         typesHolder.selected = false
-                                        typesHolder.border.color = rootObj.fg30
+                                        borderRect.border.color = rootObj.fg30
                                         showDetails.colorHandler = rootObj.fg30
                                     }
                                 }
@@ -806,89 +772,39 @@ Rectangle {
                                     Layout.bottomMargin: 2 / Style.monitorRatio
                                 }
                                 Label {
-                                    text: ":"
+                                    text: model.name === "color" ? ":" : model.compVal
                                     font.pixelSize: 15 / Style.monitorRatio
                                     font.family: "Roboto"
                                     color: showDetails.colorHandler
-                                    visible: model.compVal ? false : true
+                                    //                                    visible: model.name !== "color" ? false : true
                                 }
 
                                 Text {
                                     id: itemValue
                                     Layout.alignment: Qt.AlignLeft
-                                    text: model.value1 ? model.value1 : 0
+                                    text: model.value ? model.value : 0
                                     font.family: "Roboto"
                                     font.pixelSize: 15 / Style.monitorRatio
                                     color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
-                                    visible: model.value2 || model.value4
-                                             || model.color ? false : true
+                                    visible: model.value ? model.value : 0
                                 }
-                                Text {
-                                    id: itemValue2
-                                    Layout.alignment: Qt.AlignLeft
-                                    text: model.value2 ? model.value2 : 0
-                                    font.family: "Roboto"
-                                    font.pixelSize: 15 / Style.monitorRatio
-                                    color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
-                                    visible: model.value3
-                                             && model.value2 ? true : false
-                                }
-                                Label {
-                                    text: "To"
-                                    font.pixelSize: 15 / Style.monitorRatio
-                                    font.family: "Roboto"
-                                    color: showDetails.colorHandler
-                                    visible: model.value2 ? true : false
-                                }
-                                Text {
-                                    id: itemValue3
-                                    Layout.alignment: Qt.AlignLeft
-                                    text: model.value3 ? model.value3 : 0
-                                    font.family: "Roboto"
-                                    font.pixelSize: 15 / Style.monitorRatio
-                                    color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
-                                    visible: model.value3
-                                             && model.value2 ? true : false
-                                }
-                                Text {
-                                    id: comparisonIcon
-                                    Layout.alignment: Qt.AlignLeft
-                                    text: model.compVal ? model.compVal : 0
-                                    font.family: "Roboto"
-                                    font.pixelSize: 15 / Style.monitorRatio
-                                    color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
-                                    visible: model.compVal ? true : false
-                                }
-                                Text {
-                                    id: itemValue4
-                                    Layout.alignment: Qt.AlignLeft
-                                    text: model.value4 ? model.value4 : 0
-                                    font.family: "Roboto"
-                                    font.pixelSize: 15 / Style.monitorRatio
-                                    color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
-                                    visible: model.value4 ? true : false
-                                }
-                                Text {
-                                    id: itemColor
-                                    Layout.alignment: Qt.AlignLeft
-                                    text: model.color ? model.color : 0
-                                    font.family: "Roboto"
-                                    font.pixelSize: 15 / Style.monitorRatio
-                                    color: showDetails.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
-                                    visible: model.color ? true : false
-                                }
+
+
+
                                 IconImage {
                                     id: closeIcon
                                     source: "qrc:/Resources/close.png"
                                     Layout.preferredHeight: 18 / Style.monitorRatio
                                     Layout.preferredWidth: 18 / Style.monitorRatio
-                                    color: showDetails.colorHandler
                                     Layout.leftMargin: 15 / Style.monitorRatio
                                     Layout.rightMargin: 15 / Style.monitorRatio
-
+                                    color: "#01AED6"
                                     MouseArea {
+
                                         anchors.fill: parent
-                                        onClicked: {tagsModel.remove(index)
+                                        onClicked: {
+                                            rootObj.filterManager.removeFilterTag(tagsModel.get(index).name, tagsModel.get(index).value, rootObj.comparetor(tagsModel.get(index).compVal), tagsModel.get(index).logical)
+                                            tagsModel.remove(index)
                                         }
 
 
@@ -901,6 +817,21 @@ Rectangle {
             }
         }
 
+
+    }
+    function comparetor(txt){
+        if  (txt === "!=")
+            return Tag.NotEqual
+        else if (txt === ">")
+            return Tag.Greater
+        else if (txt === "<")
+            return Tag.Less
+        else if (txt === ">=")
+            return Tag.GreaterEqual
+        else if (txt === "<=")
+            return Tag.LessEqual
+        else
+            return Tag.Equal
     }
     PropertyAnimation {
         id: openMotion

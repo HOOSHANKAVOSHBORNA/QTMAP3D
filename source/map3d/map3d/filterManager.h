@@ -43,7 +43,7 @@ public:
     LogicalOperator logicalOperator;
 
     bool operator==(const Tag* t) const {
-        return (t->field == field) && (t->comparision == comparision) && (t->value == value);
+        return (t->field == field) && (t->comparision == comparision) && (t->value == value) && t->logicalOperator == logicalOperator;
     }
 
 };
