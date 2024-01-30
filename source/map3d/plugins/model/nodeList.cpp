@@ -151,6 +151,11 @@ bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &so
         return true;
     }
 
+    // icon columns
+    if (sourceColumn >= sourceModel()->columnCount() - 3) {
+        return true;
+    }
+
     // essential columns
     if (m_filterColumn == "Essential" && sourceColumn >= 4 && sourceColumn <= 9) {
         return true;
@@ -454,9 +459,10 @@ int NodeListModel::rowCount(const QModelIndex &) const
 int NodeListModel::columnCount(const QModelIndex &) const
 {
     return mDataManager->fixedColumnNames().size() + mDataManager->uniqueAddedColumnNames().size()
-           + mDataManager->essentialColumnNames().size();
+           + mDataManager->essentialColumnNames().size() + 3;
 }
 
+// BOOKMARK: maindata
 QVariant NodeListModel::data(const QModelIndex &index, int role) const
 {
     NodeData nodeData = mDataManager->getNodeAtIndex(index.row())->nodeData();
@@ -471,7 +477,19 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         return QVariant("notType");
     }
 
-    if (index.column() > 1 && index.column() <= columnCount() && role != Qt::DisplayRole) {
+    if (index.column() > 1 && index.column() < columnCount() - 3 && role != Qt::DisplayRole) {
+        return QVariant("notType");
+    }
+
+    if (index.column() == columnCount() - 3 && role != AttackerButtonRole) {
+        return QVariant("notType");
+    }
+
+    if (index.column() == columnCount() - 2 && role != TargetButtonRole) {
+        return QVariant("notType");
+    }
+
+    if (index.column() == columnCount() - 1 && role != MoreButtonRole) {
         return QVariant("notType");
     }
 
@@ -495,7 +513,7 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         return nodeData.altitude;
     } else if (index.column() == 9) {
         return nodeData.speed;
-    } else if (index.column() > 9) {
+    } else if (index.column() > 9 && index.column() < columnCount() - 3) {
         columnName = mDataManager->uniqueAddedColumnNames().at(
             index.column() - mDataManager->fixedColumnNames().size()
             - mDataManager->essentialColumnNames().size());
@@ -514,6 +532,12 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         } else {
             return nodeData.fieldData.at(foundIndex).value;
         }
+    } else if (index.column() == columnCount() - 3) {
+        return "AttackerRole";
+    } else if (index.column() == columnCount() - 2) {
+        return "TargetRole";
+    } else if (index.column() == columnCount() - 1) {
+        return "MoreRole";
     }
 
     return "BADINDEX";
@@ -553,16 +577,20 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
 
 QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+    //    return "SomeColumn";
     if (section < mDataManager->fixedColumnNames().size()) {
         return mDataManager->fixedColumnNames().at(section);
     } else if (section < mDataManager->fixedColumnNames().size()
                              + mDataManager->essentialColumnNames().size()) {
         return mDataManager->essentialColumnNames().at(section
                                                        - mDataManager->fixedColumnNames().size());
-    } else {
+    } else if (section < columnCount() - 3) {
         return mDataManager->uniqueAddedColumnNames().at(
             section - mDataManager->fixedColumnNames().size()
             - mDataManager->essentialColumnNames().size());
+    } else {
+        // icon column header name
+        return " ";
     }
 }
 
@@ -601,13 +629,13 @@ void NodeListModel::onNodeUpated(int index)
 
 QHash<int, QByteArray> NodeListModel::roleNames() const
 {
-    return {
-        {Qt::DisplayRole, "display"},
-        {Qt::BackgroundRole, "background"},
-        {Qt::DecorationRole, "decorate"},
-        {Qt::EditRole, "editRole"}
-        //             {Qt::EditRole, "edit"},
-    };
+    return {{Qt::DisplayRole, "display"},
+            {Qt::BackgroundRole, "background"},
+            {Qt::DecorationRole, "decorate"},
+            {Qt::EditRole, "editRole"},
+            {AttackerButtonRole, "attackerButton"},
+            {TargetButtonRole, "targetButton"},
+            {MoreButtonRole, "moreButton"}};
 }
 
 //void NodeListModel::attacker(QString name)

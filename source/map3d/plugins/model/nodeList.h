@@ -54,6 +54,9 @@ protected:
     friend class NodeList;
 
 public:
+    enum { AttackerButtonRole = Qt::UserRole + 1, TargetButtonRole, MoreButtonRole };
+
+public:
     explicit NodeListModel(DataManager *dataManager);
 
     int rowCount(const QModelIndex & = QModelIndex()) const override;

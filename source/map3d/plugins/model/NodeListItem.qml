@@ -1594,64 +1594,14 @@ Item {
             //                model: tableview.selectionModel
             //                //model: tableModel
             //            }
+            readonly property int tableCellHeight: 30
+
             delegate: Rectangle {
-                id: tableDelegate
+                id: delegateContainer
 
-                //implicitWidth: 120 //rootItem.width / tableModel.columnCount() //120 //rootItem.height / 3
-                implicitHeight: 32
-                radius: model.column !== 0 ? 10 : 0
-                color: model.background === "notType" ? "#DEE3E6" : model.background
+                implicitHeight: tableview.tableCellHeight
+                color: 'transparent'
 
-                clip: true
-
-                //anchors.right: column === tableModel.columnCount()-1 ? parent.right : undefined
-                required property bool selected
-                property int idxRow: model.row
-                //property int rowCount: tableModel.getColumnCount()
-                property int columnCnt: tableModel.columnCount()
-                IconImage {
-                    id: icons
-
-                    anchors.centerIn: parent
-                    visible: model.decorate !== "notType"
-                    source: {
-                        if (model.decorate === "notType") {
-                            return "qrc:/Resources/hand.png"
-                        } else {
-                            if (model.decorate.substring(0, 5) === "qrc:/") {
-                                return model.decorate.substring(5)
-                            } else {
-                                return "qrc:/Resources/close.png"
-                            }
-                        }
-                    }
-
-                    color: (column === tableview.checkAttackIconColumn
-                            && row === tableview.checkAttackIconRow) ? "#01AED6" : "#003569"
-                    width: 30
-                    height: 30
-                }
-
-                Text {
-                    visible: model.display !== "notType"
-                    text: model.display === "notType" ? "ERROR" : model.display
-
-                    elide: Text.ElideRight
-                    //                    width: parent.width - 3
-                    font.pointSize: 17 / Style.monitorRatio
-                    font.family: Style.fontFamily
-                    color: Style.foregroundColor
-                    //anchors.fill: parent
-                    //anchors.centerIn: parent
-                    anchors.left: model.column === 2 ? parent.left : undefined
-                    anchors.centerIn: model.column === 2 ? undefined : parent
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    //                    visible: model.column !== 0 && model.column
-                    //                             !== 1 && model.column !== tableModel.columnCount()
-                    //                             - 3 && model.column !== tableModel.columnCount()
-                    //                             - 2 && model.column !== tableModel.columnCount() - 1
-                }
                 Rectangle {
                     width: parent.width
                     height: 1
@@ -1660,61 +1610,301 @@ Item {
                     anchors.bottom: parent.bottom
                 }
 
-                MouseArea {
+                Loader {
                     anchors.fill: parent
-                    onClicked: {
 
-                        //selectionID.select(tableview.selectionModel.model.index(row,0), ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Rows)
-                        //tableview.selectionModel.select(tableview.selectionModel.index(0,2), ItemSelectionModel.Toggle | ItemSelectionModel.Rows)
-                        //tableview.selectedRow = model.row
-                        //tableModel.selectionRow(row, 18)
-                        // console.log("Row index: ", model.row, "column", columnCnt)
-                        //console.log("column count : ", rowCount)
-                        //console.log("column filter count: ", tableModel.columnCount())
-                        //model.column === 11
-
-
-                        /*if (decorate === "qrc:/Resources/more-icon.jpg") {
-                            menuTable.popup()
-                        } else if (decorate === "qrc:/Resources/battle-icon.jpg"
-                                   && model.row === 0
-                                   && tableview.checkAttackIconRow !== -1) {
-                            console.log("chnage model")
-                            tableModel.setChangeModel("")
-                            tableview.checkAttackIconRow = -1
-                            tableview.checkAttackIconColumn = -1
-                            //tableview.selectedRow = model.row
-                            //tableModel.selectionRow(tableview.selectedRow, 18)
-                        } else if (decorate === "qrc:/Resources/battle-icon.jpg") {
-                            //console.log(tableview.itemAtIndex(0,2))
-                            tableModel.attacker(tableModel.data(tableview.index(
-                                                                    model.row,
-                                                                    2)))
-                            tableModel.setChangeModel("attackerModel")
-                            //tableview.model = tableModel ? tableModel : undefined
-                            //change color attackIcon
-                            tableview.checkAttackIconRow = 0
-                            tableview.checkAttackIconColumn = column
-                            selectionID.select(
-                                        tableview.selectionModel.model.index(
-                                            0, 0),
-                                        ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Rows)
-
-                            //tableModel.selectionRow(row, 0)
+                    sourceComponent: {
+                        if (model.background !== "notType") {
+                            return backgroundDelegate
+                        } else if (model.display !== "notType") {
+                            return displayDelegate
+                        } else if (model.decorate !== "notType") {
+                            return decorateDelegate
+                        } else if (model.attackerButton !== "notType") {
+                            return attackerButtonDelegate
+                        } else if (model.targetButton !== "notType") {
+                            return targetButtonDelegate
+                        } else if (model.moreButton !== "notType") {
+                            return moreButtonDelegate
+                        } else {
+                            return errorDelegate
                         }
+                    }
 
-                        if (decorate === "qrc:/Resources/target-icon.jpg") {
-                            console.log(tableModel.data(tableview.index(
-                                                            model.row, 2)))
-                            tableview.index(0, 11)
+                    Component {
+                        id: backgroundDelegate
 
-                            //console.log(move)
-                            //tableModel.moveAttackerToFirst(model.row)
-                        }*/
+                        Rectangle {
+                            anchors.fill: parent
+                            color: model.background
+                            radius: 10
+                        }
+                    }
+
+                    Component {
+                        id: decorateDelegate
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: 'transparent'
+
+                            IconImage {
+                                anchors.centerIn: parent
+                                source: {
+                                    if (model.decorate.substring(
+                                                0, 5) === "qrc:/") {
+                                        return model.decorate.substring(5)
+                                    } else {
+                                        return "qrc:/Resources/close.png"
+                                    }
+                                }
+
+                                color: (column === tableview.checkAttackIconColumn
+                                        && row
+                                        === tableview.checkAttackIconRow) ? "#01AED6" : "#003569"
+                                width: 30
+                                height: 30
+                            }
+                        }
+                    }
+
+                    Component {
+                        id: displayDelegate
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: 'transparent'
+
+                            Text {
+                                text: model.display
+
+                                elide: Text.ElideRight
+                                font.pointSize: 17 / Style.monitorRatio
+                                font.family: Style.fontFamily
+                                color: Style.foregroundColor
+                                anchors.left: model.column === 2 ? parent.left : undefined
+                                anchors.centerIn: model.column === 2 ? undefined : parent
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                    }
+
+                    Component {
+                        id: attackerButtonDelegate
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: 'transparent'
+
+                            IconImage {
+                                anchors.centerIn: parent
+                                color: (column === tableview.checkAttackIconColumn
+                                        && row === tableview.checkAttackIconRow) ? "#01AED6" : "transparent"
+                                //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "icons/airplane.png" //"icons/airplane.png" //decorate
+                                source: "qrc:/Resources/battle-icon.jpg"
+                                width: 30
+                                height: 30
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    print('model.row: ', model.row,
+                                          "model.column: ", model.column)
+                                }
+                            }
+                        }
+                    }
+
+                    Component {
+                        id: targetButtonDelegate
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: 'transparent'
+
+                            IconImage {
+                                anchors.centerIn: parent
+                                color: (column === tableview.checkAttackIconColumn
+                                        && row === tableview.checkAttackIconRow) ? "#01AED6" : "transparent"
+                                //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "icons/airplane.png" //"icons/airplane.png" //decorate
+                                source: "qrc:/Resources/target-icon.jpg"
+                                width: 30
+                                height: 30
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    print('model.row: ', model.row,
+                                          "model.column: ", model.column)
+                                }
+                            }
+                        }
+                    }
+
+                    Component {
+                        id: moreButtonDelegate
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: 'transparent'
+
+                            IconImage {
+                                anchors.centerIn: parent
+                                color: (column === tableview.checkAttackIconColumn
+                                        && row === tableview.checkAttackIconRow) ? "#01AED6" : "transparent"
+                                //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "icons/airplane.png" //"icons/airplane.png" //decorate
+                                source: "qrc:/Resources/more-icon.jpg"
+                                width: 30
+                                height: 30
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    print('model.row: ', model.row,
+                                          "model.column: ", model.column)
+                                }
+                            }
+                        }
+                    }
+
+                    Component {
+                        id: errorDelegate
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: 'red'
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: 'Error'
+                            }
+                        }
                     }
                 }
             }
 
+            //                Rectangle {
+            //                id: tableDelegate
+
+            //                //implicitWidth: 120 //rootItem.width / tableModel.columnCount() //120 //rootItem.height / 3
+            //                implicitHeight: 32
+            //                radius: model.column !== 0 ? 10 : 0
+            //                color: model.background === "notType" ? "#DEE3E6" : model.background
+
+            //                clip: true
+
+            //                //anchors.right: column === tableModel.columnCount()-1 ? parent.right : undefined
+            //                required property bool selected
+            //                property int idxRow: model.row
+            //                //property int rowCount: tableModel.getColumnCount()
+            //                property int columnCnt: tableModel.columnCount()
+            //                IconImage {
+            //                    id: icons
+
+            //                    anchors.centerIn: parent
+            //                    visible: model.decorate !== "notType"
+            //                    source: {
+            //                        if (model.decorate === "notType") {
+            //                            return "qrc:/Resources/hand.png"
+            //                        } else {
+            //                            if (model.decorate.substring(0, 5) === "qrc:/") {
+            //                                return model.decorate.substring(5)
+            //                            } else {
+            //                                return "qrc:/Resources/close.png"
+            //                            }
+            //                        }
+            //                    }
+
+            //                    color: (column === tableview.checkAttackIconColumn
+            //                            && row === tableview.checkAttackIconRow) ? "#01AED6" : "#003569"
+            //                    width: 30
+            //                    height: 30
+            //                }
+
+            //                Text {
+            //                    visible: model.display !== "notType"
+            //                    text: model.display === "notType" ? "ERROR" : model.display
+
+            //                    elide: Text.ElideRight
+            //                    //                    width: parent.width - 3
+            //                    font.pointSize: 17 / Style.monitorRatio
+            //                    font.family: Style.fontFamily
+            //                    color: Style.foregroundColor
+            //                    //anchors.fill: parent
+            //                    //anchors.centerIn: parent
+            //                    anchors.left: model.column === 2 ? parent.left : undefined
+            //                    anchors.centerIn: model.column === 2 ? undefined : parent
+            //                    anchors.verticalCenter: parent.verticalCenter
+
+            //                    //                    visible: model.column !== 0 && model.column
+            //                    //                             !== 1 && model.column !== tableModel.columnCount()
+            //                    //                             - 3 && model.column !== tableModel.columnCount()
+            //                    //                             - 2 && model.column !== tableModel.columnCount() - 1
+            //                }
+            //                Rectangle {
+            //                    width: parent.width
+            //                    height: 1
+            //                    color: Style.foregroundColor
+            //                    opacity: 0.2
+            //                    anchors.bottom: parent.bottom
+            //                }
+
+            //                MouseArea {
+            //                    anchors.fill: parent
+            //                    onClicked: {
+
+            //                        //selectionID.select(tableview.selectionModel.model.index(row,0), ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Rows)
+            //                        //tableview.selectionModel.select(tableview.selectionModel.index(0,2), ItemSelectionModel.Toggle | ItemSelectionModel.Rows)
+            //                        //tableview.selectedRow = model.row
+            //                        //tableModel.selectionRow(row, 18)
+            //                        // console.log("Row index: ", model.row, "column", columnCnt)
+            //                        //console.log("column count : ", rowCount)
+            //                        //console.log("column filter count: ", tableModel.columnCount())
+            //                        //model.column === 11
+
+            //                        /*if (decorate === "qrc:/Resources/more-icon.jpg") {
+            //                            menuTable.popup()
+            //                        } else if (decorate === "qrc:/Resources/battle-icon.jpg"
+            //                                   && model.row === 0
+            //                                   && tableview.checkAttackIconRow !== -1) {
+            //                            console.log("chnage model")
+            //                            tableModel.setChangeModel("")
+            //                            tableview.checkAttackIconRow = -1
+            //                            tableview.checkAttackIconColumn = -1
+            //                            //tableview.selectedRow = model.row
+            //                            //tableModel.selectionRow(tableview.selectedRow, 18)
+            //                        } else if (decorate === "qrc:/Resources/battle-icon.jpg") {
+            //                            //console.log(tableview.itemAtIndex(0,2))
+            //                            tableModel.attacker(tableModel.data(tableview.index(
+            //                                                                    model.row,
+            //                                                                    2)))
+            //                            tableModel.setChangeModel("attackerModel")
+            //                            //tableview.model = tableModel ? tableModel : undefined
+            //                            //change color attackIcon
+            //                            tableview.checkAttackIconRow = 0
+            //                            tableview.checkAttackIconColumn = column
+            //                            selectionID.select(
+            //                                        tableview.selectionModel.model.index(
+            //                                            0, 0),
+            //                                        ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Rows)
+
+            //                            //tableModel.selectionRow(row, 0)
+            //                        }
+
+            //                        if (decorate === "qrc:/Resources/target-icon.jpg") {
+            //                            console.log(tableModel.data(tableview.index(
+            //                                                            model.row, 2)))
+            //                            tableview.index(0, 11)
+
+            //                            //console.log(move)
+            //                            //tableModel.moveAttackerToFirst(model.row)
+            //                        }*/
+            //                    }
+            //                }
+            //            }
             columnWidthProvider: function (column) {
                 var columnProviderSize = rootItem.width / (tableModel.columnCount(
                                                                ) - 2)
