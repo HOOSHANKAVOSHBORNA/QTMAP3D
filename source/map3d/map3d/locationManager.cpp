@@ -98,7 +98,7 @@ void LocationProxyModel::goToLocation(const QModelIndex &index)
     dynamic_cast<LocationModel*>(sourceModel())->goToLocation(mapToSource(index));
 }
 
-// for debug
+// DEBUG
 void LocationProxyModel::printCurrentLocation()
 {
     osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
@@ -111,6 +111,7 @@ void LocationProxyModel::printCurrentLocation()
     qDebug() << "vp.pitch(): " << vp.pitch()->as(osgEarth::Units::DEGREES);
     qDebug() << "vp.range(): " << vp.range()->as(osgEarth::Units::METERS);
 }
+// ENDDEBUG
 
 void LocationProxyModel::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
 {

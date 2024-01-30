@@ -47,7 +47,7 @@ void Application::initialize()
     mServiceManager = new ServiceManager(mNetworkManager);
     //--user manger------------------------------------------
     mUserManager = new UserManager(mServiceManager, mQmlEngine);
-    connect(mUserManager, &UserManager::signedIn,[this]{
+    connect(mUserManager, &UserManager::signedIn, [this] {
         mQmlEngine->load(QStringLiteral("qrc:///SplashWindow.qml"));
     });
 }

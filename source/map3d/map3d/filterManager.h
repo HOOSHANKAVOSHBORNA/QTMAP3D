@@ -55,6 +55,7 @@ class FilterManager : public QObject
     Q_PROPERTY(QVector<QString> stringFilterFields READ stringFilterFields NOTIFY filterFieldsChanged)
     Q_PROPERTY(QVector<QString> numFilterFields READ numFilterFields NOTIFY filterFieldsChanged)
     Q_PROPERTY(QVector<QString> colorFilterFields READ colorFilterFields NOTIFY filterFieldsChanged)
+    Q_PROPERTY(QVector<Tag*> filterTags READ getFilterTags NOTIFY filterTagsEdited)
 public:
 
     FilterManager(QObject* parent = nullptr);
@@ -63,6 +64,7 @@ public:
 
     Q_INVOKABLE void addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
     Q_INVOKABLE void removeFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
+    Q_INVOKABLE const QVector<Tag*> getFilterTags() const;
 
     const QVector<QString> &stringFilterFields() const;
     const QVector<QString> &colorFilterFields() const;

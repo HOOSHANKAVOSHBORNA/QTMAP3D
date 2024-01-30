@@ -2,7 +2,8 @@
 #define USERMANAGER_H
 #include "qqmlapplicationengine.h"
 #include "serviceManager.h"
-
+#include "connectionConfiguration.h"
+#include <QQuickItem>
 #include <QQuickWindow>
 
 class QQmlEngine;
@@ -12,7 +13,7 @@ class LoginPage : public QObject
     Q_PROPERTY(bool windowHidden READ windowHidden WRITE setWindowHidden NOTIFY windowHiddenChanged)
 
 public:
-    LoginPage(ServiceManager *serviceManager, QObject *parent = nullptr);
+    LoginPage(ServiceManager *serviceManager,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
 
     void setServiceManager(ServiceManager *newServiceManager);
 
@@ -32,9 +33,9 @@ private:
     void onUserDataReceived(const UserData &userData);
 private:
     QQmlEngine* mQmlEngine{nullptr};
-
     ServiceManager* mServiceManager{nullptr};
     UserData mLoginUserData;
+    QQuickWindow* mSettingsWindow;
 
     bool mWindowHidden{false};
 };

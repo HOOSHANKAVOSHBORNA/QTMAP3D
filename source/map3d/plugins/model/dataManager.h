@@ -36,13 +36,29 @@ public:
     QVector<QString> fixedColumnNames() const;
     void setFixedColumnNames(const QVector<QString> &newFixedColumnNames);
 
+    QVector<QString> categoryTagNames() const;
+    void setCategoryTagNames(const QVector<QString> &newCategoryTagNames);
+
+    QVector<QString> essentialColumnNames() const;
+    void setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames);
+
 signals:
-    void nodeAppended(int index);
+    void nodeAppendingStart(QModelIndex, int, int);
+    void nodeAppendingEnd();
+
+    void nodeRemovingStart(QModelIndex, int, int);
+    void nodeRemovingEnd();
+
     void nodeUpdated(int index);
 
-    void categoryAppended(int index);
+    void columnAppendigStart(QModelIndex, int, int);
+    void columnAppendigEnd();
 
-    void columnAppended(int index);
+    void categoryTagAppendingStart(QModelIndex, int, int);
+    void categoryTagAppendingEnd();
+
+    void tabNameAppendingStart(QModelIndex, int, int);
+    void tabNameAppendingEnd();
 
 public slots:
     SimpleModelNode* onNodeDataReceived(const NodeData &nodeData);
@@ -57,13 +73,14 @@ private:
 //    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
 //    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
-    QVector<QString> mFixedColumnNames = {"Color", "Icon", "Name", "Type"};
+    QVector<QString> mUniqueTabNames = {"Essential"};
+    QVector<QString> mCategoryTagNames = {"All"};
+    QVector<QString> mFixedColumnNames = {"Color", "Icon", "Id", "Name"};
+    QVector<QString> mEssentialColumnNames
+        = {"Type", "IsAttacker", "Latitude", "Longitude", "Altitude", "Speed"};
     QVector<QString> mUniqueAddedColumnNames;
-    QVector<QString> mUniqueCategoryNames;
-    QMap<QString, QString> mColumnToCategory = {{"Color", "Fixed"},
-                                                {"Icon", "Fixed"},
-                                                {"Name", "Fixed"},
-                                                {"Type", "Fixed"}};
+
+    QMap<QString, QString> mColumnToCategory;
     NodeData* mNodeData;
     MainWindow *mMainWindow;
 };

@@ -17,6 +17,20 @@ class NodeList;
 class NodeListModel;
 
 // ---------------------------------------- Tiny Models
+class CategoryTagModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+public:
+    explicit CategoryTagModel(DataManager *dataManager);
+
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual QVariant data(const QModelIndex &index, int role) const override;
+
+private:
+    DataManager *mDataManager;
+};
+
 class CategoryTabbarModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -24,11 +38,8 @@ class CategoryTabbarModel : public QAbstractListModel
 public:
     explicit CategoryTabbarModel(DataManager *dataManager);
 
-    virtual int rowCount(const QModelIndex &parent) const override;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
-
-public slots:
-    void onCategoryAppended(int index);
 
 private:
     DataManager *mDataManager;
@@ -38,6 +49,9 @@ private:
 class NodeListModel : public QAbstractTableModel
 {
     Q_OBJECT
+
+protected:
+    friend class NodeList;
 
 public:
     explicit NodeListModel(DataManager *dataManager);
@@ -60,27 +74,12 @@ public:
     void setDataManager(DataManager *newDataManager);
 
 public slots:
-    void onNodeAppended(int index);
     void onNodeUpated(int index);
-
-    void onColumnAppended(int index);
 
 private:
     DataManager *mDataManager;
     QItemSelectionModel *selectionModel;
     QString modelType;
-
-    //    QMap<EColumn, QString> columnToName = {{Color, "Color"},
-    //                                           {Icon, "Icon"},
-    //                                           {Name, "Name"},
-    //                                           {Type, "Type"},
-    //                                           {Latitude, "Latitude"},
-    //                                           {Longitude, "Longitude"},
-    //                                           {Altitude, "Altitude"},
-    //                                           {Speed, "Speed"},
-    //                                           {Battle, "Battle"},
-    //                                           {Target, "Target"},
-    //                                           {More, "More"}};
 };
 
 //--------------------------------------NodeProxyModel-------------------------------------
@@ -88,6 +87,9 @@ class NodeProxyModel : public QSortFilterProxyModel
 {
     Q_PROPERTY(CategoryTabbarModel *tabbarModel READ tabbarModel WRITE setTabbarModel NOTIFY
                    tabbarModelChanged FINAL)
+    Q_PROPERTY(CategoryTagModel *categoryTagModel READ categoryTagModel WRITE setCategoryTagModel
+                   NOTIFY categoryTagModelChanged FINAL)
+
     struct FilterTag
     {
         QString name;
@@ -115,13 +117,22 @@ class NodeProxyModel : public QSortFilterProxyModel
     Q_OBJECT
     //Q_PROPERTY(QStringList comboItem READ comboItem WRITE setComboItem NOTIFY comboItemChanged FINAL)
     //Q_PROPERTY(QStringList comboItemList READ comboItemList WRITE setComboItemList NOTIFY comboItemListChanged FINAL)
+
+protected:
+    friend class NodeList;
+
 public:
     explicit NodeProxyModel(QObject *parent = nullptr);
+
+    void invalidateRowFilterInvoker();
+    void invalidateColumnFilterInvoker();
+
     Q_INVOKABLE void sortTable(int column);
     bool filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const;
-    Q_INVOKABLE void nodeTypeFilter(QString type);
+
     Q_INVOKABLE void filterString(QString search, QString value);
     Q_INVOKABLE void filterStringColumn(QString tabName);
+
     Q_INVOKABLE QList<QString> getDataComboBox();
     Q_INVOKABLE QList<QString> getDataComboBoxInt();
     //    Q_INVOKABLE QList<QString> getColorFilter();
@@ -129,7 +140,9 @@ public:
     Q_INVOKABLE void addTag1(QString name, QString value);
     Q_INVOKABLE void addTag2(QString name, int value1, int value2);
     Q_INVOKABLE void addTag3(QString name, int value, QString mark);
+
     Q_INVOKABLE void removeTag(QString filterSearch, QString name, QString value);
+    Q_INVOKABLE void filterCategoryTag(QString name);
 
     //QStringList comboItem() const;
     //void setComboItem(const QStringList &newComboItem);
@@ -149,12 +162,17 @@ public:
     Q_INVOKABLE CategoryTabbarModel *tabbarModel() const;
     void setTabbarModel(CategoryTabbarModel *newTabbarModel);
 
+    CategoryTagModel *categoryTagModel() const;
+    void setCategoryTagModel(CategoryTagModel *newCategoryTagModel);
+
 signals:
     //void comboItemChanged();
 
     //void comboItemListChanged();
 
     void tabbarModelChanged();
+
+    void categoryTagModelChanged();
 
 public slots:
     void modelChanged();
@@ -165,9 +183,9 @@ protected:
 
 private:
     //QString m_filterColor;
-    QString mFilterType;
+    QString mFilterType = "All";
     QString m_filterName;
-    QString m_filterColumn;
+    QString m_filterColumn = "Essential";
     //int m_filterFrom;
     //int m_filterTo;
     //QString m_condition;
@@ -215,6 +233,7 @@ private:
         ETarget,
         EMore
     };
+    CategoryTagModel *m_categoryTagModel = nullptr;
 };
 
 //--------------------------------NodeList-----------------------

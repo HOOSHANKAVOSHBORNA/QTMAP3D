@@ -6,7 +6,6 @@ import "style"
 
 Item{
     id: rootItem
-
     property var model
     property var filterManager
     property bool flag: true
@@ -61,6 +60,7 @@ Item{
             }
             onTextChanged: function() {
                 rootItem.model.setFilterString(text)
+                print(filterRect.height)
             }
             placeholderText: "Search ..."
             placeholderTextColor: Style.disableColor
@@ -183,31 +183,13 @@ Item{
 
         Filter {
             id: dropDown
+            property int innerWidth
             anchors.top: filterRect.top
             anchors.left: parent.left
             filterManager: rootItem.filterManager
-            visible: parent.height > 300
-        }
-    }
-    Rectangle{
-        id:back
-    z:0
-    width: parent.width-3
-    color: Style.backgroundColor
-//    height: parent.height
-    anchors.bottom: nodeShowListScroller.bottom
-    anchors.top: nodeShowListScroller.top
-    visible: filterRect.height > 300
-    radius:20
-    Rectangle{
-        anchors.centerIn: parent
-        z:-1
-        radius: 20
-        color: Qt.rgba(Style.foregroundColor.r,Style.foregroundColor.g,Style.foregroundColor.b,0.03)
-        width: parent.width +2
-        height: parent.height + 3
+            visible: parent.height > 300 / Style.monitorRatio
 
-    }
+        }
     }
 
     ScrollView{
@@ -219,11 +201,12 @@ Item{
         anchors.leftMargin: 15/Style.monitorRatio
         anchors.right: parent.right
         width: filterRect.width
-        height: 110/Style.monitorRatio
-        visible: filterRect.height > 300
+        height: 100/Style.monitorRatio
+        visible: filterRect.height > 300 / Style.monitorRatio
         ListView{
             id:listView
             clip: true
+            anchors.leftMargin: 10/Style.monitorRatio
             model: rootItem.model
             delegate:
                 Button{
@@ -281,7 +264,7 @@ Item{
         id : heightMotion
         target: filterRect
         properties: "height"
-        to:380 / Style.monitorRatio
+        to:420 / Style.monitorRatio
         duration: 550
         easing.type: Easing.OutQuint
     }
