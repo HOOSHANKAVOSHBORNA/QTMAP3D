@@ -8,162 +8,143 @@ Item {
     id:rootItem
 
     property var model : ConnectionConfigurationInstance.getConnectionConfiguration()
+    property alias saveBtn: saveBtn
 
-    readonly property color foregroundColor: Qt.rgba(Style.foregroundColor.r,
+    readonly property color foregroundColorTextBox: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.20)
-    readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
-                                                     Style.backgroundColor.g,
-                                                     Style.backgroundColor.b,
-                                                     0.30)
+    readonly property color foregroundColorText: Qt.rgba(Style.foregroundColor.r,
+                                                     Style.foregroundColor.g,
+                                                     Style.foregroundColor.b,
+                                                     0.50)
+
     height: parent ? parent.height : 0
     width: parent ? parent.width : 0
+
     ColumnLayout{
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: 10 / Style.monitorRatio
-        RowLayout{
-            Layout.fillWidth: true
-            Layout.preferredHeight: 40 / Style.monitorRatio
-            Layout.leftMargin: 5 / Style.monitorRatio
+        spacing: 0
+
             Text{
-                text: "ip "
-                font.pixelSize: 15 / Style.monitorRatio
+                text: "Username"
+                font.pixelSize: 20 / Style.monitorRatio
                 color: Style.foregroundColor
-                Layout.preferredWidth: 70 / Style.monitorRatio
-            }
-
-            TextField {
-                id: ip
-                Layout.preferredWidth: 200 / Style.monitorRatio
-                Layout.minimumWidth: 100 / Style.monitorRatio
-                Layout.fillWidth: true
-                Layout.rightMargin: 15 / Style.monitorRatio
-                height: 40 / Style.monitorRatio
-                font.pointSize: 10 / Style.monitorRatio
-                color: "black"
-                text: rootItem.model.ip
-                background: Rectangle {
-                    color: foregroundColor
-                    radius: height / 2
-                }
-//                onAccepted: {
-//                   rootItem.model.setIp(text)
-//                }
-            }
-        }
-
-        RowLayout{
-            Layout.fillWidth: true
-            Layout.preferredHeight: 40 / Style.monitorRatio
-            Layout.leftMargin: 5 / Style.monitorRatio
-            Text{
-                text: "port "
-                font.pixelSize: 15 / Style.monitorRatio
-                color: Style.foregroundColor
-                Layout.preferredWidth: 70 / Style.monitorRatio
-            }
-
-            TextField {
-                id: port
-                Layout.preferredWidth: 200 / Style.monitorRatio
-                Layout.minimumWidth: 100 / Style.monitorRatio
-                Layout.fillWidth: true
-                Layout.rightMargin: 15 / Style.monitorRatio
-                height: 40 / Style.monitorRatio
-                font.pointSize: 10 / Style.monitorRatio
-                color: "black"
-                text: rootItem.model.port
-                background: Rectangle {
-                    color: foregroundColor
-                    radius: height / 2
-                }
-//                onAccepted: {
-//                   rootItem.model.setPort(text)
-//                }
-            }
-        }
-
-        RowLayout{
-            Layout.fillWidth: true
-            Layout.preferredHeight: 40 / Style.monitorRatio
-            Layout.leftMargin: 5 / Style.monitorRatio
-            Text{
-                text: "username "
-                font.pixelSize: 15 / Style.monitorRatio
-                color: Style.foregroundColor
-                Layout.preferredWidth: 70 / Style.monitorRatio
             }
 
             TextField {
                 id: username
-                Layout.preferredWidth: 200 / Style.monitorRatio
-                Layout.minimumWidth: 100 / Style.monitorRatio
+                Layout.preferredWidth: 340 / Style.monitorRatio
                 Layout.fillWidth: true
-                Layout.rightMargin: 15 / Style.monitorRatio
-                height: 40 / Style.monitorRatio
-                font.pointSize: 10 / Style.monitorRatio
-                color: "black"
-                text: rootItem.model.username
+                Layout.topMargin: 5 / Style.monitorRatio
+                height: 43 / Style.monitorRatio
+                font.pointSize: 17 / Style.monitorRatio
+                leftPadding: 20 / Style.monitorRatio
+                color: foregroundColorText
+                placeholderTextColor: foregroundColorText
+                placeholderText: "Username"
+                text: rootItem.model ? rootItem.model.username : ""
                 background: Rectangle {
-                    color: foregroundColor
+                    color: foregroundColorTextBox
                     radius: height / 2
                 }
-//                onAccepted: {
-//                   rootItem.model.setUsername(text)
-//                }
             }
-        }
 
-        RowLayout{
-            Layout.fillWidth: true
-            Layout.preferredHeight: 40 / Style.monitorRatio
-            Layout.leftMargin: 5 / Style.monitorRatio
             Text{
-                text: "password "
-                font.pixelSize: 15 / Style.monitorRatio
+                text: "Password"
+                font.pixelSize: 20 / Style.monitorRatio
+                Layout.topMargin: 20 / Style.monitorRatio
                 color: Style.foregroundColor
-                Layout.preferredWidth: 70 / Style.monitorRatio
+
             }
 
             TextField {
                 id: password
-                Layout.preferredWidth: 200 / Style.monitorRatio
-                Layout.minimumWidth: 100 / Style.monitorRatio
+                Layout.preferredWidth: 340 / Style.monitorRatio
                 Layout.fillWidth: true
-                Layout.rightMargin: 15 / Style.monitorRatio
-                height: 40 / Style.monitorRatio
-                font.pointSize: 10 / Style.monitorRatio
-                color: "black"
-                text: rootItem.model.password
+                Layout.topMargin: 5 / Style.monitorRatio
+                height: 43 / Style.monitorRatio
+                font.pointSize: 17 / Style.monitorRatio
+                leftPadding: 20 / Style.monitorRatio
+                color: foregroundColorText
+                placeholderTextColor: foregroundColorText
+                placeholderText: "Password"
+                text: rootItem.model ? rootItem.model.password : ""
                 background: Rectangle {
-                    color: foregroundColor
+                    color: foregroundColorTextBox
                     radius: height / 2
                 }
-//                onAccepted: {
-//                   rootItem.model.setPassword(text)
-//                }
             }
-        }
+
+            Text{
+                text: "IP"
+                font.pixelSize: 20 / Style.monitorRatio
+                Layout.topMargin: 20 / Style.monitorRatio
+                color: Style.foregroundColor
+            }
+
+            TextField {
+                id: ip
+                Layout.preferredWidth: 340 / Style.monitorRatio
+                Layout.fillWidth: true
+                Layout.topMargin: 5 / Style.monitorRatio
+                height: 43 / Style.monitorRatio
+                font.pointSize: 17 / Style.monitorRatio
+                leftPadding: 20 / Style.monitorRatio
+                color: foregroundColorText
+                placeholderTextColor: foregroundColorText
+                placeholderText: "IP"
+                text: rootItem.model ? rootItem.model.ip : ""
+                background: Rectangle {
+                    color: foregroundColorTextBox
+                    radius: height / 2
+                }
+            }
+
+            Text{
+                text: "Port"
+                font.pixelSize: 20 / Style.monitorRatio
+                Layout.topMargin: 20 / Style.monitorRatio
+                color: Style.foregroundColor
+            }
+
+            TextField {
+                id: port
+                Layout.preferredWidth: 340 / Style.monitorRatio
+                Layout.fillWidth: true
+                Layout.topMargin: 5 / Style.monitorRatio
+                height: 43 / Style.monitorRatio
+                font.pointSize: 17 / Style.monitorRatio
+                leftPadding: 20 / Style.monitorRatio
+                color: foregroundColorText
+                placeholderTextColor: foregroundColorText
+                placeholderText: "port"
+                text: rootItem.model ? rootItem.model.port : ""
+                background: Rectangle {
+                    color: foregroundColorTextBox
+                    radius: height / 2
+                }
+            }
 
         Button {
-            id: doneBtn
+            id:saveBtn
             padding: 0
-            Layout.fillHeight: true
-            Layout.preferredWidth: 65 / Style.monitorRatio
-            Layout.alignment: Qt.AlignLeft
-            Layout.leftMargin: 5 / Style.monitorRatio
+            Layout.preferredHeight: 43 / Style.monitorRatio
+            Layout.preferredWidth: 340 / Style.monitorRatio
+            Layout.fillWidth: true
+            Layout.topMargin: 48 / Style.monitorRatio
+            hoverEnabled: true
 
             contentItem: Text {
-                text: "Confirm"
+                text: "Save changes"
                 font.pixelSize: 15 / Style.monitorRatio
-                color: Style.backgroundColor
+                color: parent.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
             background: Rectangle {
-                radius: 10 / Style.monitorRatio
+                radius: width / (Style.monitorRatio * 2)
                 color: Style.foregroundColor
             }
            onClicked: {

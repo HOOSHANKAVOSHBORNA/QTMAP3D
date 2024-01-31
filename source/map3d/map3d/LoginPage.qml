@@ -23,6 +23,8 @@ ApplicationWindow {
                                                      Style.foregroundColor.b,
                                                      0.50)
 
+    property bool logInPageVisible: true
+
 //    onSignedIn: (status)=>{
 
 //    }
@@ -31,20 +33,36 @@ onClosing:{
  loginPage.onWindowClosed()
 }
 
-    Rectangle {
-        id: rectangle
-        anchors.fill: parent
-        color: "black"
 
         Image {
             id: backGroundImage
             source: "qrc:/Resources/login-earth.jpg"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
-            fillMode: Image.PreserveAspectFit
+            fillMode: Image.PreserveAspectCrop
+        }
+
+        PropertyAnimation{
+            id:heightIncrease
+            target: containerRect
+            easing.type: Easing.OutCirc
+            property: "height"
+            from: 464 / Style.monitorRatio
+            to: 644 / Style.monitorRatio
+            duration: 500
+        }
+        PropertyAnimation{
+            id:heightDecrease
+            target: containerRect
+            easing.type: Easing.OutCirc
+            property: "height"
+            from: 644 / Style.monitorRatio
+            to: 464 / Style.monitorRatio
+            duration: 500
         }
 
         Rectangle{
+            id:containerRect
             color: "silver"
             width: 440 / Style.monitorRatio
             height: 464 / Style.monitorRatio
@@ -53,8 +71,9 @@ onClosing:{
             anchors.leftMargin: 0.2 * parent.width
             radius: 20 / Style.monitorRatio
 
+
             Text{
-                id:logInText
+                id:titleText
                 text: "Log in"
                 font.pixelSize: 35 / Style.monitorRatio
                 color: Style.foregroundColor
@@ -67,11 +86,12 @@ onClosing:{
             Button{
 
                 background: Image{
-                source: "qrc:/Resources/Settings.png"
+                id:connectionStatus
+                source: "qrc:/Resources/unplugged.png"
                 }
 
-                width: 25 / Style.monitorRatio
-                height: 25 / Style.monitorRatio
+                width: 39 / Style.monitorRatio
+                height: 39 / Style.monitorRatio
 
                 anchors.right: parent.right
                 anchors.rightMargin: 50 / Style.monitorRatio
@@ -79,14 +99,19 @@ onClosing:{
                 anchors.topMargin: 70 / Style.monitorRatio
 
                 onClicked:{
-                    loginPage.openSettings()
+                    signInpage.visible = false
+                    rolePage.visible = false
+                    connectionPage.visible = true
+                    signInBtn.visible = false
+                    titleText.text = "Connection"
+                    heightIncrease.start()
                 }
             }
 
             ColumnLayout{
-                id:firstPage
+                id:signInpage
                 visible: true
-                anchors.top: logInText.bottom
+                anchors.top: titleText.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: signInBtn.top
@@ -124,9 +149,6 @@ onClosing:{
                         color: foregroundColorTextBox
                         radius: height / 2
                     }
-                   onAccepted: {
-
-                   }
                 }
                 RowLayout{
                     spacing: 0
@@ -156,16 +178,13 @@ onClosing:{
                         color: foregroundColorTextBox
                         radius: height / 2
                     }
-                   onAccepted: {
-                     loginPage.openSettings()
-                   }
                 }
             }
 
             ColumnLayout{
-                id:secondPage
+                id:rolePage
                 visible: false
-                anchors.top: logInText.bottom
+                anchors.top: titleText.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: signInBtn.top
@@ -177,7 +196,7 @@ onClosing:{
 
                 RowLayout{
                     spacing: 0
-                    Layout.topMargin: 30 / Style.monitorRatio
+                    Layout.topMargin: 5 / Style.monitorRatio
                     IconImage{
                         source: "qrc:/Resources/user.png"
                         Layout.preferredHeight: 25 / Style.monitorRatio
@@ -258,8 +277,36 @@ onClosing:{
                       source: reviewer.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
                     }
                 }
-
             }
+
+            ConnectionConfiguration{
+                id:connectionPage
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.top: titleText.bottom
+                anchors.topMargin: 20 / Style.monitorRatio
+                anchors.leftMargin: 50 / Style.monitorRatio
+                anchors.rightMargin: 50 / Style.monitorRatio
+                visible: false
+                saveBtn.onClicked: {
+                    titleText.text = "Log in"
+                    heightDecrease.start()
+                    signInBtn.visible = true
+                    if(logInPageVisible){
+                        signInpage.visible = true
+                        rolePage.visible = false
+                    }
+                    else{
+                        signInpage.visible = false
+                        rolePage.visible = true
+                    }
+
+                    connectionPage.visible = false
+                    connectionStatus.source = "qrc:/Resources/plugged.png"
+                }
+            }
+
 
             Button{
                 id:signInBtn
@@ -284,17 +331,17 @@ onClosing:{
 
                 onClicked: {
 
-                   if(!firstPage.visible && secondPage.visible)
+                   if(!signInpage.visible && rolePage.visible)
                       loginPage.signIn(username.text, password.text)
 
-                   if(firstPage.visible && !secondPage.visible){
-                       firstPage.visible = false
-                       secondPage.visible = true
+                   if(signInpage.visible && !rolePage.visible){
+                       logInPageVisible = false
+                       signInpage.visible = false
+                       rolePage.visible = true
                    }
 
                 }
             }
 
         }
-    }
 }
