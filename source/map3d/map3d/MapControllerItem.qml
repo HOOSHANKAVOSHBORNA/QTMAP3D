@@ -186,27 +186,27 @@ MapController {
     //                }
     //            }
     //        }
-    SmallMap {
-        id: miniMap
-        objectName: "SmallMap"
-        //        x: map.width - 100-21
-        //        y: map.height - 120-20
-        anchors.right: cameraHandlerItem.right
-        anchors.bottom: compassItem.bottom
-        width: 110
-        height: 110
-        Component.onCompleted: {
-            setMainMapItem(map)
-        }
-        Rectangle {
-            anchors.centerIn: parent
-            width: parent.width / 15
-            height: width
-            color: "transparent"
-            border.color: "#01AED6"
-            border.width: 2
-        }
-    }
+//    SmallMap {
+//        id: miniMap
+//        objectName: "SmallMap"
+//        //        x: map.width - 100-21
+//        //        y: map.height - 120-20
+//        anchors.right: cameraHandlerItem.right
+//        anchors.bottom: compassItem.bottom
+//        width: 110
+//        height: 110
+//        Component.onCompleted: {
+//            setMainMapItem(map)
+//        }
+//        Rectangle {
+//            anchors.centerIn: parent
+//            width: parent.width / 15
+//            height: width
+//            color: "transparent"
+//            border.color: "#01AED6"
+//            border.width: 2
+//        }
+//    }
 
     StatusBar {
         id: statusBar

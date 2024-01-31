@@ -11,6 +11,11 @@ void NetworkManager::start()
 {
     connect(&mClient, &QAmqpClient::connected, this, &NetworkManager::clientConnected);
     connect(&mClient, qOverload<QAMQP::Error >(&QAmqpClient::error), this, &NetworkManager::clientError);
+    mClient.setHost("192.168.0.110");
+    mClient.setPort(5672);
+    mClient.setUsername("guest");
+    mClient.setPassword("guest");
+    mClient.setVirtualHost("/");
     mClient.connectToHost();
 }
 
