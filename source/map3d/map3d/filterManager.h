@@ -114,7 +114,7 @@ private:
     QVector<QString> mFilterFieldsColor;               // color fields
     QVector<QString> mFilterFieldsStr;                    // all   fields
     QVector<QString> mFilterFieldsNum;                 // int   fields
-    QVector<Tag*> mFilterTags{};        // map: < key, condistion>
+    QVector<Tag*> mFilterTags{};
 };
 
 #endif // FILTERMANAGER_H

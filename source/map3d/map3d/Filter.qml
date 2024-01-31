@@ -697,8 +697,7 @@ Rectangle {
                             id: tagsRep
                             model: rootObj.filterManager.filterTags
                             delegate: Rectangle {
-                                property color colorHandler: mouseArea.containsMouse ? rootObj.foregroundColor :
-                                                             modelData.isEnabled ? "#01AED6" : rootObj.fg30
+                                property color colorHandler: modelData.isEnabled ? "#01AED6" : rootObj.foregroundColor
                                 id: typesHolder
                                 implicitHeight: 22 / Style.monitorRatio
                                 implicitWidth: showDetails.implicitWidth + (index ? andOrLabel.implicitWidth + 5 : 0)
@@ -709,7 +708,9 @@ Rectangle {
                                     implicitHeight: 22 / Style.monitorRatio
                                     implicitWidth: showDetails.implicitWidth
                                     anchors.right: parent.right
-                                    color: "transparent"
+                                    color: mouseArea.containsMouse ? Qt.rgba(rootObj.foregroundColor.r,
+                                                                             rootObj.foregroundColor.g,
+                                                                             rootObj.foregroundColor.b, 0.1): "transparent"
                                     border {
                                         color: colorHandler
                                         width: 1
