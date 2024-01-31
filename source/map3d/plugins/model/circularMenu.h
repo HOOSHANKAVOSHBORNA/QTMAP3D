@@ -45,6 +45,7 @@ class CircularMenu : public QObject
 public:
     CircularMenu(QQuickItem *parentItem, osgEarth::Annotation::GeoPositionNode *osgNode);
     void appendMenuItem(CircularMenuItem* item);
+    void removeMenuItem(CircularMenuItem* item);
     void show(bool show);
     void setQmlNode(QmlNode *newQmlNode);
     QmlNode *qmlNode() const;
@@ -80,6 +81,7 @@ public:
     virtual QHash<int, QByteArray> roleNames() const override;
 
     void appendMenuItem(CircularMenuItem* item);
+    void removeMenuItem(CircularMenuItem* item);
 
 public slots:
     void onItemClicked(const QModelIndex &current);

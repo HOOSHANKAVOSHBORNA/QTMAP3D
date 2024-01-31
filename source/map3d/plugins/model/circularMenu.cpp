@@ -21,6 +21,11 @@ void CircularMenu::appendMenuItem(CircularMenuItem *item)
     mCircularMenuModel->appendMenuItem(item);
 }
 
+void CircularMenu::removeMenuItem(CircularMenuItem *item)
+{
+    mCircularMenuModel->removeMenuItem(item);
+}
+
 void CircularMenu::show(bool show)
 {
     mQmlNode->show(show);
@@ -49,7 +54,7 @@ void CircularMenu::createQML()
             mQmlNode = qobject_cast<QmlNode*>(comp->create());
             mQmlNode->setParentItem(mParentQmlItem);
             mQmlNode->setOsgNode(mOsgNode);
-//            mQmlNode->setVisible(true);
+            //            mQmlNode->setVisible(true);
             mQmlNode->setProperty("cppModel", QVariant::fromValue(mCircularMenuModel));
         }
     });
@@ -121,9 +126,20 @@ QHash<int, QByteArray> CircularMenuModel::roleNames() const
 
 void CircularMenuModel::appendMenuItem(CircularMenuItem *item)
 {
-    beginInsertRows(QModelIndex(), mItems.size(), mItems.size());
-    mItems.append(item);
-    endInsertRows();
+    if(!mItems.contains(item)){
+        beginInsertRows(QModelIndex(), mItems.size(), mItems.size());
+        mItems.append(item);
+        endInsertRows();
+    }
+}
+
+void CircularMenuModel::removeMenuItem(CircularMenuItem *item)
+{
+    if(mItems.contains(item)){
+        beginRemoveRows(QModelIndex(), mItems.size(), mItems.size());
+        mItems.removeOne(item);
+        endRemoveRows();
+    }
 }
 
 void CircularMenuModel::onItemClicked(const QModelIndex &current)

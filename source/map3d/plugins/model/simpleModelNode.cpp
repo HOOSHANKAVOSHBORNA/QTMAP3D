@@ -206,12 +206,16 @@ void SimpleModelNode::setAttacker(bool attacker)
 {
     mIsAttacker = attacker;
 
-    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
-        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
-        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
+//    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
+//        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
+//        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
 
+//        mCircularMenu->appendMenuItem(mAttackerMenuItem);
+//    }
+    if(mIsAttacker)
         mCircularMenu->appendMenuItem(mAttackerMenuItem);
-    }
+    else
+        mCircularMenu->removeMenuItem(mAttackerMenuItem);
 }
 
 bool SimpleModelNode::is3D() const
@@ -449,6 +453,9 @@ void SimpleModelNode::createCircularMenu()
     CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png"};
     QObject::connect(targetMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onTargetChecked);
 
+    mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
+    QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
+
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
     mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(targetMenuItem);
@@ -516,7 +523,7 @@ void SimpleModelNode::createOutlineImage()
             }
         }
     }
-    bool resultSnap = osgDB::writeImageFile(*mOutlineImage, "/home/client110/Pictures/mOutlineImage.png");
+//    bool resultSnap = osgDB::writeImageFile(*mOutlineImage, "/home/client110/Pictures/mOutlineImage.png");
 }
 
 
