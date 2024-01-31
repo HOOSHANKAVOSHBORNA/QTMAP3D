@@ -293,13 +293,22 @@ void SimpleModelNode::compile()
         image = osgDB::readImageFile(mUrl2D);
         mImages2D[mUrl2D] = image ;
     }
+    //--generate low model path ------------------------------
+    QUrl lowUrl3D(QString::fromStdString(mUrl3D));
+    lowUrl3D = lowUrl3D.resolved("low" + lowUrl3D.fileName());
+    //--------------------------------------------------------
     mImage = new osg::Image(*image, osg::CopyOp::DEEP_COPY_ALL);
     if (mNodes3D.contains(mUrl3D)){
         m3DBaseNode = mNodes3D[mUrl3D];
+        m3DLowNode = mNodes3D["../" +lowUrl3D.toString().toStdString()];
+
     }
     else {
         m3DBaseNode = osgDB::readRefNodeFile(mUrl3D);
         mNodes3D[mUrl3D] = m3DBaseNode ;
+        if((m3DLowNode = osgDB::readRefNodeFile("../" +lowUrl3D.toString().toStdString()))){
+            mNodes3D["../" +lowUrl3D.toString().toStdString()] = m3DLowNode;
+        }
     }
 
     //--auto scale-------------------------------------------------------
@@ -352,7 +361,12 @@ void SimpleModelNode::compile()
     mSwitchMode = new osg::Switch;
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
-    m3DNode->addChild(m3DBaseNode, 0, std::numeric_limits<float>::max());
+    m3DNode->addChild(m3DBaseNode, 0 , 100);
+    if(m3DLowNode){
+        m3DNode->addChild(m3DLowNode , 100 , std::numeric_limits<float>::max() );
+    }else{
+        m3DNode->addChild(m3DBaseNode , 0 , std::numeric_limits<float>::max() );
+    }
     mOutlineNode = new HighlightOutline;
     mOutlineNode->setWidth(6);
     mOutlineNode->setColor(mSelectColor);

@@ -103,6 +103,7 @@ private:
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<HighlightOutline> mOutlineNode;
     osg::ref_ptr<osg::Node> m3DBaseNode;
+    osg::ref_ptr<osg::Node> m3DLowNode;
     osg::ref_ptr<osg::Image> mImage;
     osg::ref_ptr<osg::Image> mOutlineImage;
     osg::ref_ptr<osg::Geode> m2DNode;
