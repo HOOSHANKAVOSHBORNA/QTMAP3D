@@ -65,7 +65,7 @@ Item {
         font.pointSize: 20 / Style.monitorRatio
         font.bold: true
     }
-
+    //-------------------------------------------CategoryTag-------------------------
     Rectangle {
         id: rectCategoryTag
         color: Style.backgroundColor
@@ -1409,6 +1409,7 @@ Item {
     //                }
 
     //            }}
+    //------------------------------------------TabBar------------------------------
     Rectangle {
         id: categoryRect
         color: Style.backgroundColor
@@ -1505,7 +1506,7 @@ Item {
             }
         }
     }
-
+    //---------------------------------------------HeaderData-----------------------------
     HorizontalHeaderView {
         anchors.left: rootItem.left
         anchors.leftMargin: 20
@@ -1550,6 +1551,7 @@ Item {
             }
         }
     }
+    //----------------------------------------TableView-------------------------
     ScrollView {
         id: scrollViewTable
         anchors.left: rootItem.left
@@ -1576,15 +1578,11 @@ Item {
             property color attackRowColor: rootItem.fg20
             property int checkAttackIconRow: -1
             property int checkAttackIconColumn: -1
+            property bool isAttackecd: false
 
             //columnSpacing: 1
             rowSpacing: 1
             clip: true
-
-            function oddRow(IndexRow) {
-                return IndexRow % tableview.rows
-                //                return tableview.rows % IndexRow
-            }
 
             model: tableModel //tableModel
 
@@ -1691,16 +1689,13 @@ Item {
 
                     Component {
                         id: attackerButtonDelegate
-
                         Rectangle {
                             anchors.fill: parent
                             color: 'transparent'
 
                             IconImage {
+                                id: iconAttackerButton
                                 anchors.centerIn: parent
-                                color: (column === tableview.checkAttackIconColumn
-                                        && row === tableview.checkAttackIconRow) ? "#01AED6" : "transparent"
-                                //source: model.column === 1 || model.column === 15 || model.column === 16 || model.column === 17 ? decorate : "icons/airplane.png" //"icons/airplane.png" //decorate
                                 source: "qrc:/Resources/battle-icon.jpg"
                                 width: 30
                                 height: 30
@@ -1711,6 +1706,16 @@ Item {
                                 onClicked: {
                                     print('model.row: ', model.row,
                                           "model.column: ", model.column)
+                                    if (tableview.isAttackecd) {
+                                        iconAttackerButton.color = "transparent"
+                                        tableview.isAttackecd = false
+                                    } else {
+                                        iconAttackerButton.color = "#01AED6"
+                                        tableview.isAttackecd = true
+                                    }
+
+                                    //tableview.checkAttackIconColumn = model.column
+                                    //tableview.checkAttackIconRow = model.row
                                 }
                             }
                         }
@@ -1765,6 +1770,7 @@ Item {
                                 onClicked: {
                                     print('model.row: ', model.row,
                                           "model.column: ", model.column)
+                                    menuTable.popup()
                                 }
                             }
                         }
@@ -1907,25 +1913,24 @@ Item {
             //            }
             columnWidthProvider: function (column) {
                 var columnProviderSize = rootItem.width / (tableModel.columnCount(
-                                                               ) - 2)
+                                                               ) - 3)
                 //console.log(rootItem.width / tableModel.columnCount())
                 if (column === 0) {
                     return tableview.columnZero
                 } else if (column === 1) {
                     return tableview.columnIcons
                 } else if (column === 2) {
+                    return tableview.columnIcons * 2
+                } else if (column === tableModel.columnCount() - 1) {
+                    return tableview.columnIcons
+                } else if (column === tableModel.columnCount() - 2) {
+                    return tableview.columnIcons
+                } else if (column === tableModel.columnCount() - 3) {
                     return tableview.columnIcons
                 } else {
                     return columnProviderSize
                 }
-
-                //                return column === 0 ? tableview.columnZero : (column === 1
-                //                                                              /*|| column === tableModel.columnCount(
-                //                                                                  ) - 2
-                //                                                              || column === tableModel.columnCount(
-                //                                                                  ) - 3*/  ? tableview.columnIcons : columnProviderSize)
-                //return tableview.width / tableModel.columnCount();
-            } //tableDelegate.implicitWidth
+            }
             Menu {
                 id: menuTable
                 padding: 5

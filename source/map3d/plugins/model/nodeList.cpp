@@ -459,7 +459,8 @@ int NodeListModel::rowCount(const QModelIndex &) const
 int NodeListModel::columnCount(const QModelIndex &) const
 {
     return mDataManager->fixedColumnNames().size() + mDataManager->uniqueAddedColumnNames().size()
-           + mDataManager->essentialColumnNames().size() + 3;
+           + mDataManager->essentialColumnNames().size()
+           + mDataManager->columnAttackTargetMore().size();
 }
 
 // BOOKMARK: maindata
@@ -506,11 +507,11 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
     } else if (index.column() == 5) {
         return nodeData.isAttacker;
     } else if (index.column() == 6) {
-        return nodeData.latitude;
+        return QString::number(nodeData.latitude, 'f', 2).toDouble(); //nodeData.latitude;
     } else if (index.column() == 7) {
-        return nodeData.longitude;
+        return QString::number(nodeData.longitude, 'f', 2).toDouble(); //nodeData.longitude;
     } else if (index.column() == 8) {
-        return nodeData.altitude;
+        return QString::number(nodeData.altitude, 'f', 2).toDouble(); //nodeData.altitude;
     } else if (index.column() == 9) {
         return nodeData.speed;
     } else if (index.column() > 9 && index.column() < columnCount() - 3) {
@@ -530,6 +531,11 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         if (foundIndex == -1) {
             return "NaN";
         } else {
+            QString type = nodeData.fieldData.at(foundIndex).value.typeName();
+            if (type == "double") {
+                return QString::number(nodeData.fieldData.at(foundIndex).value.toDouble(), 'f', 2)
+                    .toDouble();
+            }
             return nodeData.fieldData.at(foundIndex).value;
         }
     } else if (index.column() == columnCount() - 3) {
@@ -584,13 +590,13 @@ QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int
                              + mDataManager->essentialColumnNames().size()) {
         return mDataManager->essentialColumnNames().at(section
                                                        - mDataManager->fixedColumnNames().size());
-    } else if (section < columnCount() - 3) {
+    } else if (section < columnCount() - mDataManager->columnAttackTargetMore().size()) {
         return mDataManager->uniqueAddedColumnNames().at(
             section - mDataManager->fixedColumnNames().size()
             - mDataManager->essentialColumnNames().size());
     } else {
         // icon column header name
-        return " ";
+        return "";
     }
 }
 
