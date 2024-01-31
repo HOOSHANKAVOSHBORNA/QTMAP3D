@@ -322,7 +322,7 @@ void Model::onTankItemCheck(bool check)
         mNodeData.isAttacker = true;
         mNodeData.category = "User";
         mNodeData.url2D = "../data/models/tank/tank.png";
-        mNodeData.url3D = "../data/models/tank/tank.osg";
+        mNodeData.url3D = "../data/models/tank/tank.osgb";
         mNodeData.imgInfoUrl = "../data/models/tank/tank.png";
         mNodeData.iconInfoUrl = "qrc:/resources/tank.png";
         mNodeData.color = QColorConstants::White.name();
