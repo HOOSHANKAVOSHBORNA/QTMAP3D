@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     NodeTest nodeTest(&serviceManager);
     AssignmentTest assignmentTest(&serviceManager);
-    // ParticleTest particleTest(&serviceManager);
+    ParticleTest particleTest(&serviceManager);
 
     return a.exec();
 }

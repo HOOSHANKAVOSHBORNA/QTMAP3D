@@ -615,7 +615,7 @@ Item {
         clip: true
         Rectangle {
             id:battleLocationIcons
-            property bool flag: true
+            property bool flag: operatorListModel.operatorIsAttacker
             anchors.top: parent.top
             anchors.left: parent.left
             height: 70 / 1.3
