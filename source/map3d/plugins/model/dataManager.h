@@ -79,7 +79,6 @@ private:
     QVector<QString> mEssentialColumnNames
         = {"Type", "IsAttacker", "Latitude", "Longitude", "Altitude", "Speed"};
     QVector<QString> mUniqueAddedColumnNames;
-
     QMap<QString, QString> mColumnToCategory;
     NodeData* mNodeData;
     MainWindow *mMainWindow;
