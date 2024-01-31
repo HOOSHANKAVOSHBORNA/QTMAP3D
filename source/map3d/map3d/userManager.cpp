@@ -78,14 +78,14 @@ UserManager::UserManager(ServiceManager *serviceManager, QQmlApplicationEngine *
     mServiceManager(serviceManager),
     mQmlEngine(qmlEngine)
 {
+    qmlRegisterSingletonType<ConnectionConfigurationManager>("Crystal", 1, 0,
+                                   "ConnectionConfigurationInstance", ConnectionConfigurationManager::createSingletonInstance);
     mProfile = new Profile(serviceManager);
     qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
     mLoginPage = new LoginPage(serviceManager,qmlEngine);
     qmlEngine->rootContext()->setContextProperty("loginPage", mLoginPage);
     connect(mLoginPage, &LoginPage::signedIn, this, &UserManager::signedIn);
     mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
-    qmlRegisterSingletonType<ConnectionConfigurationManager>("Crystal", 1, 0, "ConnectionConfigurationInstance", ConnectionConfigurationManager::createSingletonInstance);
-
 }
 
 
