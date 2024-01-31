@@ -11,6 +11,12 @@ struct NodeData;
 
 struct Tag : public QObject {
     Q_OBJECT
+    Q_PROPERTY(QString field MEMBER field CONSTANT)
+    Q_PROPERTY(QVariant value MEMBER value CONSTANT)
+    Q_PROPERTY(bool isEnabled MEMBER isEnabled NOTIFY tagChanged)
+    Q_PROPERTY(Comparision comparision MEMBER comparision CONSTANT)
+    Q_PROPERTY(LogicalOperator logicalOperator MEMBER logicalOperator CONSTANT)
+
 public:
     enum Comparision{
         Equal,
@@ -28,24 +34,49 @@ public:
     Q_ENUM(LogicalOperator)
     Q_ENUM(Comparision)
 
-    Tag(QString field, QVariant value, Comparision comp = Greater, LogicalOperator op = And, QObject* parent = nullptr):
+    Tag(QString field, QVariant value, Comparision comp = Greater, LogicalOperator op = And, bool isEnabled = true, QObject* parent = nullptr):
         QObject(parent),
-        field(field),
-        value(value),
-        comparision(comp),
-        logicalOperator(op)
+        field{field},
+        value{value},
+        comparision{comp},
+        logicalOperator{op},
+        isEnabled{isEnabled}
     {}
 
     QString field;
     QVariant value;
-
+    bool isEnabled;
     Comparision comparision;
     LogicalOperator logicalOperator;
 
-    bool operator==(const Tag* t) const {
-        return (t->field == field) && (t->comparision == comparision) && (t->value == value) && t->logicalOperator == logicalOperator;
+    Q_INVOKABLE void toggleIsEnabled() {
+        isEnabled = !isEnabled;
+        emit tagChanged();
+    }
+    Q_INVOKABLE QString comparisionToString() const {
+        switch (comparision) {
+        case Comparision::Equal:
+            return "=";
+        case Comparision::NotEqual:
+            return "!=";
+        case Comparision::Greater:
+            return ">";
+        case Comparision::Less:
+            return "<";
+        case Comparision::GreaterEqual:
+            return ">=";
+        case Comparision::LessEqual:
+            return "<=";
+        }
+        return "";
     }
 
+    bool operator==(const Tag* t) const {
+        return (t->field.toLower() == field.toLower()) && (t->comparision == comparision) && (t->value == value) && t->logicalOperator == logicalOperator;
+    }
+
+signals:
+    void tagChanged();
 };
 
 class FilterManager : public QObject
@@ -64,7 +95,9 @@ public:
 
     Q_INVOKABLE void addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
     Q_INVOKABLE void removeFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
+    Q_INVOKABLE void removeFilterTag(int index);
     Q_INVOKABLE const QVector<Tag*> getFilterTags() const;
+    Q_INVOKABLE const Tag * const getFilterTagAt(int index);
 
     const QVector<QString> &stringFilterFields() const;
     const QVector<QString> &colorFilterFields() const;
@@ -81,7 +114,7 @@ private:
     QVector<QString> mFilterFieldsColor;               // color fields
     QVector<QString> mFilterFieldsStr;                    // all   fields
     QVector<QString> mFilterFieldsNum;                 // int   fields
-    QVector<Tag*> mFilterTags;        // map: < key, condistion>
+    QVector<Tag*> mFilterTags{};        // map: < key, condistion>
 };
 
 #endif // FILTERMANAGER_H
