@@ -33,11 +33,11 @@ void NodeTest::createInfo()
     if(mCount >= mMaxNumber)
         return;
     //---------------------------------------------------------
-    QVector<QString> colors{"yellow", "red", "blue", "green"};
+    QVector<QString> colors{"yellow", "red", "blue", "green", "white", "black"};
     QVector<QString> types{NodeType::Fixed, NodeType::Movable, NodeType::Flyable};
     QString name = "Node" + QString::number(mCount);
     int id = 30000 + mCount;
-    QColor color(colors[QRandomGenerator::global()->generate() % 4]);
+    QColor color(colors[QRandomGenerator::global()->generate() % colors.size()]);
     double longitude = 48 + (QRandomGenerator::global()->generate() % (59 - 48));
     double latitude = 27 + (QRandomGenerator::global()->generate() % (38 - 27));
     double altitude =0;/* (2000 + (QRandomGenerator::global()->generate() % (9000 - 2000)));*/
