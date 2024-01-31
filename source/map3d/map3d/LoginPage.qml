@@ -66,6 +66,7 @@ onClosing:{
             Button{
 
                 background: Image{
+                id:connectionStatus
                 source: "qrc:/Resources/unplugged.png"
                 }
 
@@ -284,7 +285,7 @@ onClosing:{
                     }
 
                     connectionPage.visible = false
-
+                    connectionStatus.source = "qrc:/Resources/plugged.png"
                 }
             }
 
