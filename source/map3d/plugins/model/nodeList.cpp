@@ -3,6 +3,7 @@
 #include <QPixmap>
 #include <QQmlComponent>
 #include <QQmlEngine>
+#include <QTimer>
 
 #include "nodeList.h"
 
@@ -23,41 +24,45 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
     CategoryTagModel *categoryTagsModel = new CategoryTagModel(dataManager);
     mProxyModel->setCategoryTagModel(categoryTagsModel);
 
+    QTimer *timer = new QTimer();
+    connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::resetNodeListModel);
+    timer->start(1000);
+
     // connections
-    connect(mDataManager,
-            &DataManager::nodeAppendingStart,
-            nodeModel,
-            &NodeListModel::beginInsertRows);
-    connect(mDataManager, &DataManager::nodeAppendingEnd, nodeModel, &NodeListModel::endInsertRows);
-    connect(mDataManager,
-            &DataManager::nodeAppendingEnd,
-            mProxyModel,
-            &NodeProxyModel::invalidateRowFilterInvoker);
+    //    connect(mDataManager,
+    //            &DataManager::nodeAppendingStart,
+    //            nodeModel,
+    //            &NodeListModel::beginInsertRows);
+    //    connect(mDataManager, &DataManager::nodeAppendingEnd, nodeModel, &NodeListModel::endInsertRows);
+    //    connect(mDataManager,
+    //            &DataManager::nodeAppendingEnd,
+    //            mProxyModel,
+    //            &NodeProxyModel::invalidateRowFilterInvoker);
 
-    connect(mDataManager,
-            &DataManager::nodeRemovingStart,
-            nodeModel,
-            &NodeListModel::beginRemoveRows);
-    connect(mDataManager, &DataManager::nodeRemovingEnd, nodeModel, &NodeListModel::endRemoveRows);
-    connect(mDataManager,
-            &DataManager::nodeRemovingEnd,
-            mProxyModel,
-            &NodeProxyModel::invalidateRowFilterInvoker);
+    //    connect(mDataManager,
+    //            &DataManager::nodeRemovingStart,
+    //            nodeModel,
+    //            &NodeListModel::beginRemoveRows);
+    //    connect(mDataManager, &DataManager::nodeRemovingEnd, nodeModel, &NodeListModel::endRemoveRows);
+    //    connect(mDataManager,
+    //            &DataManager::nodeRemovingEnd,
+    //            mProxyModel,
+    //            &NodeProxyModel::invalidateRowFilterInvoker);
 
-    connect(mDataManager, &DataManager::nodeUpdated, nodeModel, &NodeListModel::onNodeUpated);
+    //    connect(mDataManager, &DataManager::nodeUpdated, nodeModel, &NodeListModel::onNodeUpated);
 
-    connect(mDataManager,
-            &DataManager::columnAppendigStart,
-            nodeModel,
-            &NodeListModel::beginInsertColumns);
-    connect(mDataManager,
-            &DataManager::columnAppendigEnd,
-            nodeModel,
-            &NodeListModel::endInsertColumns);
-    connect(mDataManager,
-            &DataManager::columnAppendigEnd,
-            mProxyModel,
-            &NodeProxyModel::invalidateColumnFilterInvoker);
+    //    connect(mDataManager,
+    //            &DataManager::columnAppendigStart,
+    //            nodeModel,
+    //            &NodeListModel::beginInsertColumns);
+    //    connect(mDataManager,
+    //            &DataManager::columnAppendigEnd,
+    //            nodeModel,
+    //            &NodeListModel::endInsertColumns);
+    //    connect(mDataManager,
+    //            &DataManager::columnAppendigEnd,
+    //            mProxyModel,
+    //            &NodeProxyModel::invalidateColumnFilterInvoker);
 
     createQml();
 }
@@ -148,11 +153,6 @@ bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &so
 {
     // fixed columns
     if (sourceColumn >= 0 && sourceColumn <= 3) {
-        return true;
-    }
-
-    // icon columns
-    if (sourceColumn >= sourceModel()->columnCount() - 3) {
         return true;
     }
 
@@ -459,8 +459,7 @@ int NodeListModel::rowCount(const QModelIndex &) const
 int NodeListModel::columnCount(const QModelIndex &) const
 {
     return mDataManager->fixedColumnNames().size() + mDataManager->uniqueAddedColumnNames().size()
-           + mDataManager->essentialColumnNames().size()
-           + mDataManager->columnAttackTargetMore().size();
+           + mDataManager->essentialColumnNames().size();
 }
 
 // BOOKMARK: maindata
@@ -478,19 +477,7 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         return QVariant("notType");
     }
 
-    if (index.column() > 1 && index.column() < columnCount() - 3 && role != Qt::DisplayRole) {
-        return QVariant("notType");
-    }
-
-    if (index.column() == columnCount() - 3 && role != AttackerButtonRole) {
-        return QVariant("notType");
-    }
-
-    if (index.column() == columnCount() - 2 && role != TargetButtonRole) {
-        return QVariant("notType");
-    }
-
-    if (index.column() == columnCount() - 1 && role != MoreButtonRole) {
+    if (index.column() > 1 && role != Qt::DisplayRole) {
         return QVariant("notType");
     }
 
@@ -514,7 +501,7 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
         return QString::number(nodeData.altitude, 'f', 2).toDouble(); //nodeData.altitude;
     } else if (index.column() == 9) {
         return nodeData.speed;
-    } else if (index.column() > 9 && index.column() < columnCount() - 3) {
+    } else if (index.column() > 9) {
         columnName = mDataManager->uniqueAddedColumnNames().at(
             index.column() - mDataManager->fixedColumnNames().size()
             - mDataManager->essentialColumnNames().size());
@@ -538,12 +525,6 @@ QVariant NodeListModel::data(const QModelIndex &index, int role) const
             }
             return nodeData.fieldData.at(foundIndex).value;
         }
-    } else if (index.column() == columnCount() - 3) {
-        return "AttackerRole";
-    } else if (index.column() == columnCount() - 2) {
-        return "TargetRole";
-    } else if (index.column() == columnCount() - 1) {
-        return "MoreRole";
     }
 
     return "BADINDEX";
@@ -590,13 +571,10 @@ QVariant NodeListModel::headerData(int section, Qt::Orientation orientation, int
                              + mDataManager->essentialColumnNames().size()) {
         return mDataManager->essentialColumnNames().at(section
                                                        - mDataManager->fixedColumnNames().size());
-    } else if (section < columnCount() - mDataManager->columnAttackTargetMore().size()) {
+    } else {
         return mDataManager->uniqueAddedColumnNames().at(
             section - mDataManager->fixedColumnNames().size()
             - mDataManager->essentialColumnNames().size());
-    } else {
-        // icon column header name
-        return "";
     }
 }
 
@@ -633,15 +611,18 @@ void NodeListModel::onNodeUpated(int index)
     emit dataChanged(this->index(index, 0), this->index(index, 0));
 }
 
+void NodeListModel::resetNodeListModel()
+{
+    beginResetModel();
+    endResetModel();
+}
+
 QHash<int, QByteArray> NodeListModel::roleNames() const
 {
     return {{Qt::DisplayRole, "display"},
             {Qt::BackgroundRole, "background"},
             {Qt::DecorationRole, "decorate"},
-            {Qt::EditRole, "editRole"},
-            {AttackerButtonRole, "attackerButton"},
-            {TargetButtonRole, "targetButton"},
-            {MoreButtonRole, "moreButton"}};
+            {Qt::EditRole, "editRole"}};
 }
 
 //void NodeListModel::attacker(QString name)

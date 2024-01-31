@@ -42,9 +42,6 @@ public:
     QVector<QString> essentialColumnNames() const;
     void setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames);
 
-    QVector<QString> columnAttackTargetMore() const;
-    void setColumnAttackTargetMore(const QVector<QString> &newColumnAttackTargetMore);
-
 signals:
     void nodeAppendingStart(QModelIndex, int, int);
     void nodeAppendingEnd();
@@ -79,11 +76,9 @@ private:
     QVector<QString> mUniqueTabNames = {"Essential"};
     QVector<QString> mCategoryTagNames = {"All"};
     QVector<QString> mFixedColumnNames = {"Color", "Icon", "Id", "Name"};
-    QVector<QString> mColumnAttackTargetMore = {"Attacker", "Target", "More"};
     QVector<QString> mEssentialColumnNames
         = {"Type", "IsAttacker", "Latitude", "Longitude", "Altitude", "Speed"};
     QVector<QString> mUniqueAddedColumnNames;
-
     QMap<QString, QString> mColumnToCategory;
     NodeData* mNodeData;
     MainWindow *mMainWindow;

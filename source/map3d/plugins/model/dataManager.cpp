@@ -151,16 +151,6 @@ void DataManager::removeNode(const NodeData &nodeData)
     }
 }
 
-QVector<QString> DataManager::columnAttackTargetMore() const
-{
-    return mColumnAttackTargetMore;
-}
-
-void DataManager::setColumnAttackTargetMore(const QVector<QString> &newColumnAttackTargetMore)
-{
-    mColumnAttackTargetMore = newColumnAttackTargetMore;
-}
-
 QVector<QString> DataManager::essentialColumnNames() const
 {
     return mEssentialColumnNames;

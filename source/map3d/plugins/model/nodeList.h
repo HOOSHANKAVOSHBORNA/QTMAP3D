@@ -38,7 +38,7 @@ class CategoryTabbarModel : public QAbstractListModel
 public:
     explicit CategoryTabbarModel(DataManager *dataManager);
 
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
 private:
@@ -52,9 +52,6 @@ class NodeListModel : public QAbstractTableModel
 
 protected:
     friend class NodeList;
-
-public:
-    enum { AttackerButtonRole = Qt::UserRole + 1, TargetButtonRole, MoreButtonRole };
 
 public:
     explicit NodeListModel(DataManager *dataManager);
@@ -78,6 +75,7 @@ public:
 
 public slots:
     void onNodeUpated(int index);
+    void resetNodeListModel();
 
 private:
     DataManager *mDataManager;
