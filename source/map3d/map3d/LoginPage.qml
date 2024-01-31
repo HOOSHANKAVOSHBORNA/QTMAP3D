@@ -42,6 +42,25 @@ onClosing:{
             fillMode: Image.PreserveAspectCrop
         }
 
+        PropertyAnimation{
+            id:heightIncrease
+            target: containerRect
+            easing.type: Easing.OutCirc
+            property: "height"
+            from: 464 / Style.monitorRatio
+            to: 644 / Style.monitorRatio
+            duration: 500
+        }
+        PropertyAnimation{
+            id:heightDecrease
+            target: containerRect
+            easing.type: Easing.OutCirc
+            property: "height"
+            from: 644 / Style.monitorRatio
+            to: 464 / Style.monitorRatio
+            duration: 500
+        }
+
         Rectangle{
             id:containerRect
             color: "silver"
@@ -51,6 +70,7 @@ onClosing:{
             anchors.left: parent.left
             anchors.leftMargin: 0.2 * parent.width
             radius: 20 / Style.monitorRatio
+
 
             Text{
                 id:titleText
@@ -82,9 +102,9 @@ onClosing:{
                     signInpage.visible = false
                     rolePage.visible = false
                     connectionPage.visible = true
-                    containerRect.height = 644 / Style.monitorRatio
                     signInBtn.visible = false
                     titleText.text = "Connection"
+                    heightIncrease.start()
                 }
             }
 
@@ -100,7 +120,6 @@ onClosing:{
                 anchors.topMargin: 20 / Style.monitorRatio
                 anchors.bottomMargin: 60 / Style.monitorRatio
                 spacing: 0
-
 
                 RowLayout{
                     spacing: 0
@@ -272,8 +291,7 @@ onClosing:{
                 visible: false
                 saveBtn.onClicked: {
                     titleText.text = "Log in"
-                    containerRect.height = 464 / Style.monitorRatio
-
+                    heightDecrease.start()
                     signInBtn.visible = true
                     if(logInPageVisible){
                         signInpage.visible = true
