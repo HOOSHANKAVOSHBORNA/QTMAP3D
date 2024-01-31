@@ -538,5 +538,7 @@
         <file>Resources/login-earth.jpg</file>
         <file>Resources/radioButtonCircle.png</file>
         <file>Resources/radioButtonCircleEmpty.png</file>
+        <file>Resources/plugged.png</file>
+        <file>Resources/unplugged.png</file>
     </qresource>
 </RCC>

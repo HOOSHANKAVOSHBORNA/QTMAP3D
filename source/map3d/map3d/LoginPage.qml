@@ -23,6 +23,8 @@ ApplicationWindow {
                                                      Style.foregroundColor.b,
                                                      0.50)
 
+    property bool logInPageVisible: true
+
 //    onSignedIn: (status)=>{
 
 //    }
@@ -31,20 +33,17 @@ onClosing:{
  loginPage.onWindowClosed()
 }
 
-    Rectangle {
-        id: rectangle
-        anchors.fill: parent
-        color: "black"
 
         Image {
             id: backGroundImage
             source: "qrc:/Resources/login-earth.jpg"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
-            fillMode: Image.PreserveAspectFit
+            fillMode: Image.PreserveAspectCrop
         }
 
         Rectangle{
+            id:containerRect
             color: "silver"
             width: 440 / Style.monitorRatio
             height: 464 / Style.monitorRatio
@@ -54,7 +53,7 @@ onClosing:{
             radius: 20 / Style.monitorRatio
 
             Text{
-                id:logInText
+                id:titleText
                 text: "Log in"
                 font.pixelSize: 35 / Style.monitorRatio
                 color: Style.foregroundColor
@@ -67,11 +66,11 @@ onClosing:{
             Button{
 
                 background: Image{
-                source: "qrc:/Resources/Settings.png"
+                source: "qrc:/Resources/unplugged.png"
                 }
 
-                width: 25 / Style.monitorRatio
-                height: 25 / Style.monitorRatio
+                width: 39 / Style.monitorRatio
+                height: 39 / Style.monitorRatio
 
                 anchors.right: parent.right
                 anchors.rightMargin: 50 / Style.monitorRatio
@@ -79,14 +78,19 @@ onClosing:{
                 anchors.topMargin: 70 / Style.monitorRatio
 
                 onClicked:{
-                    loginPage.openSettings()
+                    signInpage.visible = false
+                    rolePage.visible = false
+                    connectionPage.visible = true
+                    containerRect.height = 644 / Style.monitorRatio
+                    signInBtn.visible = false
+                    titleText.text = "Connection"
                 }
             }
 
             ColumnLayout{
-                id:firstPage
+                id:signInpage
                 visible: true
-                anchors.top: logInText.bottom
+                anchors.top: titleText.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: signInBtn.top
@@ -95,6 +99,7 @@ onClosing:{
                 anchors.topMargin: 20 / Style.monitorRatio
                 anchors.bottomMargin: 60 / Style.monitorRatio
                 spacing: 0
+
 
                 RowLayout{
                     spacing: 0
@@ -124,9 +129,6 @@ onClosing:{
                         color: foregroundColorTextBox
                         radius: height / 2
                     }
-                   onAccepted: {
-
-                   }
                 }
                 RowLayout{
                     spacing: 0
@@ -156,16 +158,13 @@ onClosing:{
                         color: foregroundColorTextBox
                         radius: height / 2
                     }
-                   onAccepted: {
-                     loginPage.openSettings()
-                   }
                 }
             }
 
             ColumnLayout{
-                id:secondPage
+                id:rolePage
                 visible: false
-                anchors.top: logInText.bottom
+                anchors.top: titleText.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottom: signInBtn.top
@@ -177,7 +176,7 @@ onClosing:{
 
                 RowLayout{
                     spacing: 0
-                    Layout.topMargin: 30 / Style.monitorRatio
+                    Layout.topMargin: 5 / Style.monitorRatio
                     IconImage{
                         source: "qrc:/Resources/user.png"
                         Layout.preferredHeight: 25 / Style.monitorRatio
@@ -258,8 +257,37 @@ onClosing:{
                       source: reviewer.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
                     }
                 }
-
             }
+
+            ConnectionConfiguration{
+                id:connectionPage
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.top: titleText.bottom
+                anchors.topMargin: 20 / Style.monitorRatio
+                anchors.leftMargin: 50 / Style.monitorRatio
+                anchors.rightMargin: 50 / Style.monitorRatio
+                visible: false
+                saveBtn.onClicked: {
+                    titleText.text = "Log in"
+                    containerRect.height = 464 / Style.monitorRatio
+
+                    signInBtn.visible = true
+                    if(logInPageVisible){
+                        signInpage.visible = true
+                        rolePage.visible = false
+                    }
+                    else{
+                        signInpage.visible = false
+                        rolePage.visible = true
+                    }
+
+                    connectionPage.visible = false
+
+                }
+            }
+
 
             Button{
                 id:signInBtn
@@ -284,17 +312,17 @@ onClosing:{
 
                 onClicked: {
 
-                   if(!firstPage.visible && secondPage.visible)
+                   if(!signInpage.visible && rolePage.visible)
                       loginPage.signIn(username.text, password.text)
 
-                   if(firstPage.visible && !secondPage.visible){
-                       firstPage.visible = false
-                       secondPage.visible = true
+                   if(signInpage.visible && !rolePage.visible){
+                       logInPageVisible = false
+                       signInpage.visible = false
+                       rolePage.visible = true
                    }
 
                 }
             }
 
         }
-    }
 }
