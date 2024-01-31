@@ -87,18 +87,29 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData)
     if (mFilterTags.isEmpty())
         return true;
     // check first tag to set flag in start
+    bool firstTag = false;
     bool flag = checkNodeToShow(nodeData, mFilterTags[0]);
     for (auto &tag: mFilterTags) {
         if (!tag->isEnabled)
             continue;
         if (tag->logicalOperator == Tag::LogicalOperator::And) {
-            flag = flag && checkNodeToShow(nodeData, tag);
+            if (firstTag)
+                flag = flag && checkNodeToShow(nodeData, tag);
+            else {
+                firstTag = true;
+                flag = checkNodeToShow(nodeData, tag);
+            }
         } else {
-            flag = flag || checkNodeToShow(nodeData, tag);
+            if (firstTag)
+                flag = flag || checkNodeToShow(nodeData, tag);
+            else {
+                firstTag = true;
+                flag = checkNodeToShow(nodeData, tag);
+            }
         }
     }
 
-    return flag;
+    return firstTag ? flag : true;
 }
 
 void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op)
@@ -106,6 +117,7 @@ void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision
     Tag* tag = new Tag{field, value, comp, op};
     if (!mFilterTags.contains(tag)) {
         mFilterTags.push_back(tag);
+        connect(tag, &Tag::tagChanged, this, &FilterManager::filterTagsEdited);
     }else
         delete tag;
     emit filterTagsEdited();
