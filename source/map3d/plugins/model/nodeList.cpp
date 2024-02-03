@@ -25,7 +25,9 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
     mProxyModel->setCategoryTagModel(categoryTagsModel);
 
     QTimer *timer = new QTimer();
-    connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::resetNodeListModel);
+    connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::beginEndResetModel);
+    //    connect(timer, &QTimer::timeout, tabbarModel, &CategoryTabbarModel::beginEndResetModel);
+    connect(timer, &QTimer::timeout, categoryTagsModel, &CategoryTagModel::beginEndResetModel);
     timer->start(1000);
 
     // connections
@@ -611,7 +613,7 @@ void NodeListModel::onNodeUpated(int index)
     emit dataChanged(this->index(index, 0), this->index(index, 0));
 }
 
-void NodeListModel::resetNodeListModel()
+void NodeListModel::beginEndResetModel()
 {
     beginResetModel();
     endResetModel();
@@ -688,6 +690,12 @@ QVariant CategoryTabbarModel::data(const QModelIndex &index, int role) const
     return mDataManager->getUniqueCategoryNames()->at(index.row());
 }
 
+void CategoryTabbarModel::beginEndResetModel()
+{
+    beginResetModel();
+    endResetModel();
+}
+
 CategoryTagModel::CategoryTagModel(DataManager *dataManager)
 {
     mDataManager = dataManager;
@@ -710,6 +718,12 @@ int CategoryTagModel::rowCount(const QModelIndex &parent) const
 QVariant CategoryTagModel::data(const QModelIndex &index, int role) const
 {
     return mDataManager->categoryTagNames().at(index.row());
+}
+
+void CategoryTagModel::beginEndResetModel()
+{
+    beginResetModel();
+    endResetModel();
 }
 
 CategoryTagModel *NodeProxyModel::categoryTagModel() const

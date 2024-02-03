@@ -1429,7 +1429,7 @@ Item {
             width: parent.width
             anchors.left: parent.left
             anchors.right: parent.right
-            currentIndex: 0
+            //            currentIndex: categoryRect.currentIndex
             Component.onCompleted: {
 
                 //tableModel.filterStringColumn(repeater.itemAt(0).text)
@@ -1440,15 +1440,7 @@ Item {
                 id: repeater
                 model: tableModel ? tableModel.tabbarModel : undefined
                 onModelChanged: {
-
-                }
-
-                Component.onCompleted: {
-
                     tabBar.currentIndex = categoryRect.currentIndex
-                    //tableModel.filterStringColumn(repeater.itemAt(0).text)
-                    //console.log(repeater)
-                    //                    print(tableModel.tabbarModel.count)
                 }
 
                 delegate: TabButton {

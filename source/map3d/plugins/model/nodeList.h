@@ -27,6 +27,9 @@ public:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
+public slots:
+    void beginEndResetModel();
+
 private:
     DataManager *mDataManager;
 };
@@ -40,6 +43,9 @@ public:
 
     Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
+
+public slots:
+    void beginEndResetModel();
 
 private:
     DataManager *mDataManager;
@@ -75,7 +81,7 @@ public:
 
 public slots:
     void onNodeUpated(int index);
-    void resetNodeListModel();
+    void beginEndResetModel();
 
 private:
     DataManager *mDataManager;
