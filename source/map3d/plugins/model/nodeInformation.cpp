@@ -97,8 +97,8 @@ void NodeInformation::setNodeData(const NodeData &nodeData)
    mWindow->setProperty("iconUrl", iconUrl);
 
    QString imgUrl = nodeData.imgInfoUrl;
-   // if(!imgUrl.contains("qrc"))
-   //     imgUrl = "file:" + imgUrl;
+   if(!imgUrl.contains("qrc"))
+       imgUrl = "file:" + imgUrl;
    mWindow->setProperty("imageUrl", imgUrl);
 
     mNodeInformationModel->setNodeData(nodeData);

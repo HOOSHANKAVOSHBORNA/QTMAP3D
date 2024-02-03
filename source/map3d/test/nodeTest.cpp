@@ -61,7 +61,7 @@ void NodeTest::createInfo()
     nodData.imgInfoUrl = nodData.type == NodeType::Fixed ? "../data/models/system/system.jpg"
                          : nodData.type == NodeType::Movable
                              ? "../data/models/station/station.jpg"
-                             : "../data/models/airplan/airplane.jpg";
+                             : "../data/models/airplane/airplan.jpg";
 
     nodData.url2D = nodData.type == NodeType::Fixed ? "../data/models/station/station.png"
                     : nodData.type == NodeType::Movable
