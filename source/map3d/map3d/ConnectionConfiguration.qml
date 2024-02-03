@@ -8,8 +8,6 @@ Item {
     id: rootItem
 
     property var model: ConnectionConfigurationInstance.getConnectionConfiguration()
-    property alias saveBtn: saveBtn
-
     readonly property color foregroundColorTextBox: Qt.rgba(
                                                         Style.foregroundColor.r,
                                                         Style.foregroundColor.g,

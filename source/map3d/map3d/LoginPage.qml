@@ -24,6 +24,11 @@ ApplicationWindow {
                                                      Style.foregroundColor.b,
                                                      0.50)
 
+    readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
+                                                     Style.backgroundColor.g,
+                                                     Style.backgroundColor.b,
+                                                     0.60)
+
     property bool logInPageVisible: true
 
     //    onSignedIn: (status)=>{
@@ -89,7 +94,7 @@ ApplicationWindow {
 
     Rectangle {
         id: containerRect
-        color: "silver"
+        color: backgroundColor
         width: 440 / Style.monitorRatio
         height: 464 / Style.monitorRatio
         anchors.verticalCenter: parent.verticalCenter
@@ -98,48 +103,68 @@ ApplicationWindow {
         radius: 20 / Style.monitorRatio
         clip: true
 
-        Text {
-            id: titleText
-            text: "Log in"
-            font.pixelSize: 35 / Style.monitorRatio
-            color: Style.foregroundColor
+        RowLayout {
+            id: header
+            anchors.right: parent.right
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.leftMargin: 50 / Style.monitorRatio
+
             anchors.topMargin: 60 / Style.monitorRatio
-        }
 
-        Button {
-
-            background: Image {
-                id: connectionStatus
-                source: "qrc:/Resources/unplugged.png"
+            Text {
+                id: titleText
+                text: "Log in"
+                font.pixelSize: 35 / Style.monitorRatio
+                color: Style.foregroundColor
+                Layout.fillWidth: true
             }
 
-            width: 39 / Style.monitorRatio
-            height: 39 / Style.monitorRatio
+            Button {
+                id: connectionStatus
+                checkable: true
+                checked: false
+                background: Image {
+                    source: "qrc:/Resources/unplugged.png"
+                }
+                Layout.preferredHeight: 39 / Style.monitorRatio
+                Layout.preferredWidth: 39 / Style.monitorRatio
+                Layout.rightMargin: 50 / Style.monitorRatio
 
-            anchors.right: parent.right
-            anchors.rightMargin: 50 / Style.monitorRatio
-            anchors.top: parent.top
-            anchors.topMargin: 70 / Style.monitorRatio
-
-            onClicked: {
-                signInpage.visible = false
-                rolePage.visible = false
-                connectionPage.visible = true
-                signInBtn.visible = false
-                titleText.text = "Connection"
-                if (containerRect.height === 464 / Style.monitorRatio)
-                    heightIncrease.start()
-                leftToRightConnection.start()
+                onClicked: {
+                    leftToRightConnection.start()
+                    if (connectionStatus.checked) {
+                        signInpage.visible = false
+                        rolePage.visible = false
+                        connectionPage.visible = true
+                        signInBtn.visible = false
+                        titleText.text = "Connection"
+                        leftToRightConnection.start()
+                        heightIncrease.start()
+                    } else {
+                        titleText.text = "Log in"
+                        connectionPage.visible = false
+                        signInBtn.visible = true
+                        if (logInPageVisible) {
+                            signInpage.visible = true
+                            rolePage.visible = false
+                            heightDecrease.start()
+                            leftToRightSignIn.start()
+                        } else {
+                            signInpage.visible = false
+                            rolePage.visible = true
+                            heightDecrease.start()
+                            leftToRightRole.start()
+                        }
+                    }
+                }
             }
         }
 
         Item {
             id: signInpage
             visible: true
-            anchors.top: titleText.bottom
+            anchors.top: header.bottom
             anchors.bottom: signInBtn.top
             anchors.topMargin: 20 / Style.monitorRatio
             anchors.bottomMargin: 60 / Style.monitorRatio
@@ -170,8 +195,9 @@ ApplicationWindow {
                     height: 40 / Style.monitorRatio
                     font.pointSize: 17 / Style.monitorRatio
                     leftPadding: 20 / Style.monitorRatio
+
                     color: foregroundColorText
-                    placeholderText: "Enter your Username"
+                    placeholderText: activeFocus ? "" : "Enter your Username"
                     placeholderTextColor: foregroundColorText
                     background: Rectangle {
                         color: foregroundColorTextBox
@@ -199,7 +225,7 @@ ApplicationWindow {
                     font.pointSize: 17 / Style.monitorRatio
                     leftPadding: 20 / Style.monitorRatio
                     color: foregroundColorText
-                    placeholderText: "Enter your Password"
+                    placeholderText: activeFocus ? "" : "Enter your Password"
                     placeholderTextColor: foregroundColorText
                     echoMode: TextField.Password
                     background: Rectangle {
@@ -213,7 +239,7 @@ ApplicationWindow {
         Item {
             id: rolePage
             visible: false
-            anchors.top: titleText.bottom
+            anchors.top: header.bottom
             anchors.bottom: signInBtn.top
             anchors.topMargin: 20 / Style.monitorRatio
             anchors.bottomMargin: 60 / Style.monitorRatio
@@ -253,6 +279,7 @@ ApplicationWindow {
                     Layout.topMargin: 12 / Style.monitorRatio
                     Layout.preferredHeight: 20 / Style.monitorRatio
                     Layout.fillWidth: true
+                    opacity: checked ? 1 : 0.75
                     contentItem: Text {
                         text: parent.text
                         font.pixelSize: 20 / Style.monitorRatio
@@ -273,6 +300,7 @@ ApplicationWindow {
                     Layout.topMargin: 12 / Style.monitorRatio
                     Layout.preferredHeight: 20 / Style.monitorRatio
                     Layout.fillWidth: true
+                    opacity: checked ? 1 : 0.75
                     contentItem: Text {
                         text: parent.text
                         font.pixelSize: 20 / Style.monitorRatio
@@ -293,6 +321,7 @@ ApplicationWindow {
                     Layout.topMargin: 12 / Style.monitorRatio
                     Layout.preferredHeight: 20 / Style.monitorRatio
                     Layout.fillWidth: true
+                    opacity: checked ? 1 : 0.75
                     contentItem: Text {
                         text: parent.text
                         font.pixelSize: 20 / Style.monitorRatio
@@ -312,28 +341,9 @@ ApplicationWindow {
         ConnectionConfiguration {
             id: connectionPage
             anchors.bottom: parent.bottom
-            anchors.top: titleText.bottom
+            anchors.top: header.bottom
             anchors.topMargin: 20 / Style.monitorRatio
-
             visible: false
-
-            saveBtn.onClicked: {
-                titleText.text = "Log in"
-                heightDecrease.start()
-                signInBtn.visible = true
-                if (logInPageVisible) {
-                    signInpage.visible = true
-                    rolePage.visible = false
-                    leftToRightSignIn.start()
-                } else {
-                    signInpage.visible = false
-                    rolePage.visible = true
-                    leftToRightRole.start()
-                }
-
-                connectionPage.visible = false
-                connectionStatus.source = "qrc:/Resources/plugged.png"
-            }
         }
 
         Button {
