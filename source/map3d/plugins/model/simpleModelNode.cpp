@@ -206,12 +206,16 @@ void SimpleModelNode::setAttacker(bool attacker)
 {
     mIsAttacker = attacker;
 
-    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
-        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
-        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
+//    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
+//        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
+//        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
 
+//        mCircularMenu->appendMenuItem(mAttackerMenuItem);
+//    }
+    if(mIsAttacker)
         mCircularMenu->appendMenuItem(mAttackerMenuItem);
-    }
+    else
+        mCircularMenu->removeMenuItem(mAttackerMenuItem);
 }
 
 bool SimpleModelNode::is3D() const
@@ -289,13 +293,22 @@ void SimpleModelNode::compile()
         image = osgDB::readImageFile(mUrl2D);
         mImages2D[mUrl2D] = image ;
     }
+    //--generate low model path ------------------------------
+    QUrl lowUrl3D(QString::fromStdString(mUrl3D));
+    lowUrl3D = lowUrl3D.resolved("low" + lowUrl3D.fileName());
+    //--------------------------------------------------------
     mImage = new osg::Image(*image, osg::CopyOp::DEEP_COPY_ALL);
     if (mNodes3D.contains(mUrl3D)){
         m3DBaseNode = mNodes3D[mUrl3D];
+        m3DLowNode = mNodes3D["../" +lowUrl3D.toString().toStdString()];
+
     }
     else {
         m3DBaseNode = osgDB::readRefNodeFile(mUrl3D);
         mNodes3D[mUrl3D] = m3DBaseNode ;
+        if((m3DLowNode = osgDB::readRefNodeFile("../" +lowUrl3D.toString().toStdString()))){
+            mNodes3D["../" +lowUrl3D.toString().toStdString()] = m3DLowNode;
+        }
     }
 
     //--auto scale-------------------------------------------------------
@@ -348,7 +361,12 @@ void SimpleModelNode::compile()
     mSwitchMode = new osg::Switch;
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
-    m3DNode->addChild(m3DBaseNode, 0, std::numeric_limits<float>::max());
+    m3DNode->addChild(m3DBaseNode, 0 , 100);
+    if(m3DLowNode){
+        m3DNode->addChild(m3DLowNode , 100 , std::numeric_limits<float>::max() );
+    }else{
+        m3DNode->addChild(m3DBaseNode , 0 , std::numeric_limits<float>::max() );
+    }
     mOutlineNode = new HighlightOutline;
     mOutlineNode->setWidth(6);
     mOutlineNode->setColor(mSelectColor);
@@ -449,6 +467,9 @@ void SimpleModelNode::createCircularMenu()
     CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png"};
     QObject::connect(targetMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onTargetChecked);
 
+    mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
+    QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
+
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
     mCircularMenu->appendMenuItem(infoMenuItem);
     mCircularMenu->appendMenuItem(targetMenuItem);
@@ -516,7 +537,7 @@ void SimpleModelNode::createOutlineImage()
             }
         }
     }
-    bool resultSnap = osgDB::writeImageFile(*mOutlineImage, "/home/client110/Pictures/mOutlineImage.png");
+//    bool resultSnap = osgDB::writeImageFile(*mOutlineImage, "/home/client110/Pictures/mOutlineImage.png");
 }
 
 

@@ -44,11 +44,11 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
             QString category = nodeData.fieldData.at(i).category;
             bool found = false;
             if (!mUniqueTabNames.contains(category)) {
-                emit tabNameAppendingStart(QModelIndex(),
-                                           mUniqueTabNames.size(),
-                                           mUniqueTabNames.size());
+//                emit tabNameAppendingStart(QModelIndex(),
+//                                           mUniqueTabNames.size(),
+//                                           mUniqueTabNames.size());
                 mUniqueTabNames.append(category);
-                emit tabNameAppendingEnd();
+                //emit tabNameAppendingEnd();
             }
         }
 
@@ -56,23 +56,23 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
             QString name = nodeData.fieldData.at(i).name;
             if (!mUniqueAddedColumnNames.contains(name)) {
-                emit columnAppendigStart(QModelIndex(),
-                                         mUniqueAddedColumnNames.size(),
-                                         mUniqueAddedColumnNames.size());
+//                emit columnAppendigStart(QModelIndex(),
+//                                         mUniqueAddedColumnNames.size(),
+//                                         mUniqueAddedColumnNames.size());
                 mUniqueAddedColumnNames.append(name);
                 mColumnToCategory.insert(name, nodeData.fieldData.at(i).category);
-                emit columnAppendigEnd();
+//                emit columnAppendigEnd();
             }
         }
 
         //add new Category Tag Names
         QString categoryTag = nodeData.category;
         if (!mCategoryTagNames.contains(categoryTag)) {
-            emit categoryTagAppendingStart(QModelIndex(),
-                                           mCategoryTagNames.size(),
-                                           mCategoryTagNames.size());
+//            emit categoryTagAppendingStart(QModelIndex(),
+//                                           mCategoryTagNames.size(),
+//                                           mCategoryTagNames.size());
             mCategoryTagNames.append(categoryTag);
-            emit categoryTagAppendingEnd();
+//            emit categoryTagAppendingEnd();
         }
 
         // DEBUG
@@ -97,9 +97,9 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
         node->setPosition(geoPoint);
 
-        emit nodeAppendingStart(QModelIndex(), nodeCount(), nodeCount());
+//        emit nodeAppendingStart(QModelIndex(), nodeCount(), nodeCount());
         mNodeMap[nodeData.id] = node;
-        emit nodeAppendingEnd();
+//        emit nodeAppendingEnd();
 
         node->setBookmarkManager(mMainWindow->getBookmarkManager());
 
@@ -117,7 +117,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         else
             node->setPosition(geoPoint);
 
-        emit nodeUpdated(getNodeIndexById(nodeData.id));
+//        emit nodeUpdated(getNodeIndexById(nodeData.id));
     }
     node->setName(nodeData.name.toStdString());
     //    node->setPosition(geoPoint);
@@ -144,10 +144,10 @@ void DataManager::removeNode(const NodeData &nodeData)
         }
 
         int nodeDataId = getNodeIndexById(nodeData.id);
-        nodeRemovingStart(QModelIndex(), nodeDataId, nodeDataId);
+//        nodeRemovingStart(QModelIndex(), nodeDataId, nodeDataId);
         mNodeMap[nodeData.id].release();
         mNodeMap.remove(nodeData.id);
-        nodeRemovingEnd();
+//        nodeRemovingEnd();
     }
 }
 
