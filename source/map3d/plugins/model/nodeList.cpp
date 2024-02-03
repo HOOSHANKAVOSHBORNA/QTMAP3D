@@ -15,7 +15,7 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
 
     NodeListModel *nodeModel = new NodeListModel(dataManager);
 
-    mProxyModel = new NodeProxyModel;
+    mProxyModel = new NodeProxyModel(dataManager);
     mProxyModel->setSourceModel(nodeModel);
 
     CategoryTabbarModel *tabbarModel = new CategoryTabbarModel(dataManager);
@@ -113,9 +113,10 @@ void NodeList::setQmlItem(QQuickItem *newQmlItem)
 
 //--------------------------------------NodeProxyModel-------------------------------------
 
-NodeProxyModel::NodeProxyModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
-{}
+NodeProxyModel::NodeProxyModel(DataManager *dataManager)
+{
+    mDataManager = dataManager;
+}
 
 void NodeProxyModel::invalidateRowFilterInvoker()
 {
@@ -737,4 +738,10 @@ void NodeProxyModel::setCategoryTagModel(CategoryTagModel *newCategoryTagModel)
         return;
     m_categoryTagModel = newCategoryTagModel;
     emit categoryTagModelChanged();
+}
+
+void NodeProxyModel::goToPosition(int index)
+{
+    SimpleModelNode *node = mDataManager->getNodeAtIndex(mapToSource(this->index(index, 0)).row());
+    mDataManager->mapItem()->getCameraController()->goToPosition(node->getPosition(), 500);
 }

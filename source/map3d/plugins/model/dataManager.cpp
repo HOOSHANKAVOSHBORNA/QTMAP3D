@@ -151,6 +151,16 @@ void DataManager::removeNode(const NodeData &nodeData)
     }
 }
 
+MapItem *DataManager::mapItem() const
+{
+    return mMapItem;
+}
+
+void DataManager::setMapItem(MapItem *newMapItem)
+{
+    mMapItem = newMapItem;
+}
+
 QVector<QString> DataManager::essentialColumnNames() const
 {
     return mEssentialColumnNames;

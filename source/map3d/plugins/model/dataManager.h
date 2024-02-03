@@ -42,6 +42,9 @@ public:
     QVector<QString> essentialColumnNames() const;
     void setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames);
 
+    MapItem *mapItem() const;
+    void setMapItem(MapItem *newMapItem);
+
 signals:
     void nodeAppendingStart(QModelIndex, int, int);
     void nodeAppendingEnd();

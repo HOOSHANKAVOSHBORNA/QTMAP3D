@@ -1883,7 +1883,7 @@ Item {
             color: 'transparent'
             clip: true
 
-            Layout.minimumWidth: 100
+            Layout.minimumWidth: 130
             Layout.fillHeight: true
 
             //            Rectangle {
@@ -1903,14 +1903,27 @@ Item {
                 interactive: false
 
                 delegate: Rectangle {
+                    id: lvDelegate
+                    property int lvIndex: model.index
                     width: sideFixedIconsListView.width
                     height: tableview.tableCellHeight
                     color: 'transparent'
 
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: Style.foregroundColor
+                        opacity: 0.2
+                        anchors.bottom: parent.bottom
+                    }
+
                     Row {
                         anchors.fill: parent
+                        spacing: 2
                         Repeater {
-                            model: ["qrc:/Resources/battle-icon.jpg", "qrc:/Resources/target-icon.jpg", "qrc:/Resources/more-icon.jpg"]
+                            id: iconsRepeater
+
+                            model: ["qrc:/Resources/battle-icon.jpg", "qrc:/Resources/target-icon.jpg", "qrc:/Resources/goto-icon.jpg", "qrc:/Resources/track-icon.jpg"]
 
                             Rectangle {
                                 width: 30
@@ -1922,17 +1935,10 @@ Item {
                                     anchors.fill: parent
                                 }
 
-                                Rectangle {
-                                    width: parent.width
-                                    height: 1
-                                    color: Style.foregroundColor
-                                    opacity: 0.2
-                                    anchors.bottom: parent.bottom
-                                }
-
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
+                                        console.log(lvDelegate.lvIndex)
                                         if (tableview.isAttackecd) {
 
                                             //                                            iconAttackerButton.color = "transparent"
@@ -1942,7 +1948,8 @@ Item {
                                             //                                            iconAttackerButton.color = "#01AED6"
                                             //                                            tableview.isAttackecd = true
                                         }
-
+                                        tableModel.goToPosition(
+                                                    lvDelegate.lvIndex)
                                         //tableview.checkAttackIconColumn = model.column
                                         //tableview.checkAttackIconRow = model.row
                                     }

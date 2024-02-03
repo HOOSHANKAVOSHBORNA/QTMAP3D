@@ -129,7 +129,7 @@ protected:
     friend class NodeList;
 
 public:
-    explicit NodeProxyModel(QObject *parent = nullptr);
+    explicit NodeProxyModel(DataManager *dataManager);
 
     void invalidateRowFilterInvoker();
     void invalidateColumnFilterInvoker();
@@ -172,13 +172,14 @@ public:
     CategoryTagModel *categoryTagModel() const;
     void setCategoryTagModel(CategoryTagModel *newCategoryTagModel);
 
+    Q_INVOKABLE void goToPosition(int index);
+
 signals:
     //void comboItemChanged();
 
     //void comboItemListChanged();
 
     void tabbarModelChanged();
-
     void categoryTagModelChanged();
 
 public slots:
@@ -219,6 +220,8 @@ private:
     QList<FilterTag3> TagFilter3;
 
     QStringList attakerList;
+
+    DataManager *mDataManager;
 
     enum Ecolumn {
         EColor = 0,
