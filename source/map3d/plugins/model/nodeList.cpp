@@ -15,7 +15,7 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
 
     NodeListModel *nodeModel = new NodeListModel(dataManager);
 
-    mProxyModel = new NodeProxyModel;
+    mProxyModel = new NodeProxyModel(dataManager);
     mProxyModel->setSourceModel(nodeModel);
 
     CategoryTabbarModel *tabbarModel = new CategoryTabbarModel(dataManager);
@@ -25,7 +25,9 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
     mProxyModel->setCategoryTagModel(categoryTagsModel);
 
     QTimer *timer = new QTimer();
-    connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::resetNodeListModel);
+    connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::beginEndResetModel);
+    //    connect(timer, &QTimer::timeout, tabbarModel, &CategoryTabbarModel::beginEndResetModel);
+    connect(timer, &QTimer::timeout, categoryTagsModel, &CategoryTagModel::beginEndResetModel);
     timer->start(1000);
 
     // connections
@@ -111,9 +113,10 @@ void NodeList::setQmlItem(QQuickItem *newQmlItem)
 
 //--------------------------------------NodeProxyModel-------------------------------------
 
-NodeProxyModel::NodeProxyModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
-{}
+NodeProxyModel::NodeProxyModel(DataManager *dataManager)
+{
+    mDataManager = dataManager;
+}
 
 void NodeProxyModel::invalidateRowFilterInvoker()
 {
@@ -611,7 +614,7 @@ void NodeListModel::onNodeUpated(int index)
     emit dataChanged(this->index(index, 0), this->index(index, 0));
 }
 
-void NodeListModel::resetNodeListModel()
+void NodeListModel::beginEndResetModel()
 {
     beginResetModel();
     endResetModel();
@@ -688,6 +691,12 @@ QVariant CategoryTabbarModel::data(const QModelIndex &index, int role) const
     return mDataManager->getUniqueCategoryNames()->at(index.row());
 }
 
+void CategoryTabbarModel::beginEndResetModel()
+{
+    beginResetModel();
+    endResetModel();
+}
+
 CategoryTagModel::CategoryTagModel(DataManager *dataManager)
 {
     mDataManager = dataManager;
@@ -712,6 +721,12 @@ QVariant CategoryTagModel::data(const QModelIndex &index, int role) const
     return mDataManager->categoryTagNames().at(index.row());
 }
 
+void CategoryTagModel::beginEndResetModel()
+{
+    beginResetModel();
+    endResetModel();
+}
+
 CategoryTagModel *NodeProxyModel::categoryTagModel() const
 {
     return m_categoryTagModel;
@@ -723,4 +738,10 @@ void NodeProxyModel::setCategoryTagModel(CategoryTagModel *newCategoryTagModel)
         return;
     m_categoryTagModel = newCategoryTagModel;
     emit categoryTagModelChanged();
+}
+
+void NodeProxyModel::goToPosition(int index)
+{
+    SimpleModelNode *node = mDataManager->getNodeAtIndex(mapToSource(this->index(index, 0)).row());
+    mDataManager->mapItem()->getCameraController()->goToPosition(node->getPosition(), 500);
 }
