@@ -18,20 +18,45 @@ Item {
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
+    property alias connectionStatus: connectionStatus
 
     height: parent ? parent.height : 0
     width: parent ? parent.width : 0
 
     ColumnLayout {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: 50 / Style.monitorRatio
-        anchors.rightMargin: 50 / Style.monitorRatio
         spacing: 0
+
+        RowLayout {
+            id: header
+            Layout.fillWidth: true
+            Layout.topMargin: 60 / Style.monitorRatio
+
+            Text {
+                id: titleText
+                text: "Connection"
+                font.pixelSize: 35 / Style.monitorRatio
+                color: Style.foregroundColor
+                Layout.fillWidth: true
+            }
+
+            Button {
+                id: connectionStatus
+                background: Image {
+                    source: "qrc:/Resources/unplugged.png"
+                }
+                Layout.preferredHeight: 39 / Style.monitorRatio
+                Layout.preferredWidth: 39 / Style.monitorRatio
+
+                onClicked: {
+
+                }
+            }
+        }
 
         Text {
             text: "Username"
             font.pixelSize: 20 / Style.monitorRatio
+            Layout.topMargin: 50 / Style.monitorRatio
             color: Style.foregroundColor
         }
 
