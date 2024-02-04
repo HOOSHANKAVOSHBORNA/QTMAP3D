@@ -44,11 +44,11 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
             QString category = nodeData.fieldData.at(i).category;
             bool found = false;
             if (!mUniqueTabNames.contains(category)) {
-//                emit tabNameAppendingStart(QModelIndex(),
-//                                           mUniqueTabNames.size(),
-//                                           mUniqueTabNames.size());
+                emit tabNameAppendingStart(QModelIndex(),
+                                           mUniqueTabNames.size(),
+                                           mUniqueTabNames.size());
                 mUniqueTabNames.append(category);
-                //emit tabNameAppendingEnd();
+                emit tabNameAppendingEnd();
             }
         }
 
@@ -149,6 +149,16 @@ void DataManager::removeNode(const NodeData &nodeData)
         mNodeMap.remove(nodeData.id);
 //        nodeRemovingEnd();
     }
+}
+
+MapItem *DataManager::mapItem() const
+{
+    return mMapItem;
+}
+
+void DataManager::setMapItem(MapItem *newMapItem)
+{
+    mMapItem = newMapItem;
 }
 
 QVector<QString> DataManager::essentialColumnNames() const

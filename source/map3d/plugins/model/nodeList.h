@@ -27,6 +27,9 @@ public:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
 
+public slots:
+    void beginEndResetModel();
+
 private:
     DataManager *mDataManager;
 };
@@ -40,6 +43,9 @@ public:
 
     Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
+
+public slots:
+    void beginEndResetModel();
 
 private:
     DataManager *mDataManager;
@@ -75,7 +81,7 @@ public:
 
 public slots:
     void onNodeUpated(int index);
-    void resetNodeListModel();
+    void beginEndResetModel();
 
 private:
     DataManager *mDataManager;
@@ -123,7 +129,7 @@ protected:
     friend class NodeList;
 
 public:
-    explicit NodeProxyModel(QObject *parent = nullptr);
+    explicit NodeProxyModel(DataManager *dataManager);
 
     void invalidateRowFilterInvoker();
     void invalidateColumnFilterInvoker();
@@ -166,13 +172,14 @@ public:
     CategoryTagModel *categoryTagModel() const;
     void setCategoryTagModel(CategoryTagModel *newCategoryTagModel);
 
+    Q_INVOKABLE void goToPosition(int index);
+
 signals:
     //void comboItemChanged();
 
     //void comboItemListChanged();
 
     void tabbarModelChanged();
-
     void categoryTagModelChanged();
 
 public slots:
@@ -213,6 +220,8 @@ private:
     QList<FilterTag3> TagFilter3;
 
     QStringList attakerList;
+
+    DataManager *mDataManager;
 
     enum Ecolumn {
         EColor = 0,
