@@ -35,11 +35,11 @@ QVariant AssignmentListModel::data(const QModelIndex &index, int role) const
             return  QUrl(mAssignmentList.at(index.row())->target->nodeData().iconInfoUrl);
         else
             return  QUrl(mAssignmentList.at(index.row())->attacker->nodeData().iconInfoUrl);
-    case Color:
-        if(mIsAttacker)
-            return  mAssignmentList.at(index.row())->target->nodeData().color;
-        else
-            return  mAssignmentList.at(index.row())->attacker->nodeData().color;
+//    case Color:
+//        if(mIsAttacker)
+//            return  mAssignmentList.at(index.row())->target->nodeData().color;
+//        else
+//            return  mAssignmentList.at(index.row())->attacker->nodeData().color;
     case State:
         return mAssignmentList.at(index.row())->state;
     case StateColor:
@@ -58,7 +58,6 @@ QHash<int, QByteArray> AssignmentListModel::roleNames() const
     QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
     hash[Name] = "objectID";
     hash[Icon] = "objectIcon";
-    hash[Color] = "objectColor";
     hash[State] = "objectState";
     hash[StateColor] = "objectStateColor";
     hash[Select] = "objectSelection";
@@ -274,7 +273,7 @@ void OperatorListModel::select(int row)
         mAssignmentListModel->setOperator(mSelectedNode, false);
     }
     endResetModel();
-    setOperatorColor(mSelectedNode->nodeData().color);
+//    setOperatorColor(mSelectedNode->nodeData().color);
     setOperatorIcon(QUrl(mSelectedNode->nodeData().iconInfoUrl));
     setOperatorName(mSelectedNode->nodeData().name);
     setOperatorIsAttacker(mSelectedNode->nodeData().isAttacker);
@@ -297,10 +296,6 @@ QUrl OperatorListModel::getOperatorIcon()
     return mOperatorIcon;
 }
 
-QString OperatorListModel::getOperatorColor()
-{
-    return mOperatorColor;
-}
 
 bool OperatorListModel::getOperatorIsAttacker()
 {
@@ -319,11 +314,6 @@ void OperatorListModel::setOperatorIcon(QUrl url)
     emit operatorChanged();
 }
 
-void OperatorListModel::setOperatorColor(QString color)
-{
-    mOperatorColor= color;
-    emit operatorChanged();
-}
 
 void OperatorListModel::setOperatorIsAttacker(bool attacker)
 {

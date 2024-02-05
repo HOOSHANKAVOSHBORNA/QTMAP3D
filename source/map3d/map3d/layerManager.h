@@ -31,6 +31,8 @@ public:
 
     Q_INVOKABLE LayerModel *layerModel() const;
 
+
+
     QString propertyItemTitle() const;
     void setPropertyItemTitle(const QString &newPropertyItemTitle);
 
@@ -86,6 +88,7 @@ public slots:
     void onItemLeftClicked(const QModelIndex &current);
     void onRemoveItemClicked(const QModelIndex &current);
     void onMoveItem(QModelIndex oldIndex, QModelIndex newIndex);
+
 
 signals:
     void filterStringChanged();

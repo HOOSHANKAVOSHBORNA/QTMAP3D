@@ -437,7 +437,7 @@ Rectangle {
                                         onClicked: {
                                             txtContentItem1.text = control.textAt(
                                                         control.highlightedIndex)
-                                            console.log(control.highlightedIndex)
+
                                             popupCombo1.close()
                                         }
                                     }
@@ -628,7 +628,6 @@ Rectangle {
                                             onClicked: {
                                                 txtContentItem3.text = control3.textAt(
                                                             control3.highlightedIndex)
-                                                console.log(control3.highlightedIndex)
                                                 popupCombo3.close()
                                             }
                                         }

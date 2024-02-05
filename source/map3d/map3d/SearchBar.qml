@@ -60,7 +60,6 @@ Item{
             }
             onTextChanged: function() {
                 rootItem.model.setFilterString(text)
-                print(filterRect.height)
             }
             placeholderText: "Search ..."
             placeholderTextColor: Style.disableColor

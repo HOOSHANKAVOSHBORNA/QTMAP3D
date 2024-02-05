@@ -280,7 +280,6 @@ Rectangle {
     ListModel {
         id: sideBarModel
         signal toggleItem(var index, var checked)
-        //        onToggleItem:function(index, checked){ print(checked)}
         ListElement {
             name: "Profile"
             iconSource: "qrc:/Resources/user.png"

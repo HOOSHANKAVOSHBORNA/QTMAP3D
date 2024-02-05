@@ -69,7 +69,7 @@ Item {
                     Layout.preferredHeight: 55 / 1.3 /*Style.monitorRatio*/
                     Layout.preferredWidth: 55 / 1.3 /*Style.monitorRatio*/
                     Layout.leftMargin: 10 / 1.3 /*Style.monitorRatio*/
-                    color: operatorListModel ? operatorListModel.operatorColor : "black"
+                    color: backgroundColor/*operatorListModel ? operatorListModel.operatorColor : "black"*/
                 }
 
                 ColumnLayout {
@@ -288,7 +288,7 @@ Item {
                                 source: objectIcon
                                 width: 35 / 1.3 /*Style.monitorRatio*/
                                 height: 35 / 1.3 /*Style.monitorRatio*/
-                                color: objectColor
+                                color: backgroundColor/*objectColor*/
                             }
                         }
                         Rectangle {
@@ -407,8 +407,6 @@ Item {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.rightMargin: -5
-                //                anchors.verticalCenter: parent.verticalCenter
-                //                anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/Resources/down"
                 height: 30 / 1.3 /*Style.monitorRatio*/
                 width: 30 / 1.3 /*Style.monitorRatio*/
@@ -438,7 +436,6 @@ Item {
             color:/*Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
                           nodeInfoHolder.b, .03)*/"#DEE3E6"
             anchors.right: parent.right
-//            z:3
 
 
             Rectangle {
@@ -513,7 +510,6 @@ Item {
                             if(removeCheck){
                                 addbtn.color = "transparent"
                                       }
-
 
                         }
                     }
@@ -663,6 +659,7 @@ Item {
                     width: 25 / 1.3 /*Style.monitorRatio*/
                     height: 25 / 1.3 /*Style.monitorRatio*/
                     //                color: operatorColor
+                    color: backgroundColor
                 }
                 MouseArea{
                     id:mouseA
@@ -718,7 +715,7 @@ Item {
                                 source: operatorIcon
                                 width: 35 / 1.3 /*Style.monitorRatio*/
                                 height: 35 / 1.3 /*Style.monitorRatio*/
-                                color: operatorColor
+                                color: backgroundColor /*operatorColor*/
                             }
                         }
                         RowLayout {
@@ -734,7 +731,7 @@ Item {
                                 Layout.alignment: Qt.AlignHCenter
                                 text: operatorName
                                 font.pixelSize: 17 / 1.3 /*Style.monitorRatio*/
-                                color: operatorSelect ? "red" : operatorColor
+                                color:backgroundColor /*operatorSelect ? "red" : operatorColor*/
                                 //                            anchors.verticalCenter: parent.verticalCenter
                                 elide: Text.ElideRight
                             }
