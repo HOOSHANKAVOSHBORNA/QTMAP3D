@@ -6,14 +6,25 @@ import "style"
 ColumnLayout {
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
+    property alias backBtn: backBtn
     property alias usernameTxt: usernameTxt.text
 
     spacing: 0
 
+    Button {
+        id: backBtn
+        Layout.preferredHeight: 40 / Style.monitorRatio
+        Layout.preferredWidth: 40 / Style.monitorRatio
+        Layout.topMargin: 30 / Style.monitorRatio
+        background: Image {
+            source: "qrc:/Resources/back.png"
+        }
+    }
+
     RowLayout {
         id: header
         Layout.fillWidth: true
-        Layout.topMargin: 60 / Style.monitorRatio
+        Layout.topMargin: 30 / Style.monitorRatio
 
         Text {
             id: titleText
