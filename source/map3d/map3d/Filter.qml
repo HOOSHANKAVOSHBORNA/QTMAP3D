@@ -58,49 +58,50 @@ Rectangle {
     radius: 15
     ColumnLayout {
         id:mainColumn
-        RowLayout {
-            id: searchRow
-            Layout.topMargin: 36 / Style.monitorRatio
-            Layout.leftMargin: 15 / Style.monitorRatio
-            Rectangle {
-                id: searchBar
-                Layout.minimumWidth: 300 / Style.monitorRatio
-                width: parent.width / Style.monitorRatio
-                height: 32 / Style.monitorRatio
-                radius: 15
-                color: rootObj.fg20
-                IconImage {
-                    id: searchIconImage
-                    anchors.left: parent.left
-                    anchors.leftMargin: 10 / Style.monitorRatio
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "qrc:/Resources/search-icon.png"
-                    width: 24 / Style.monitorRatio
-                    height: 24 / Style.monitorRatio
-                    color: rootObj.fg75
-                }
-                visible: false
+        width: parent.width
+//        RowLayout {
+//            id: searchRow
+//            Layout.topMargin: 36 / Style.monitorRatio
+//            Layout.leftMargin: 15 / Style.monitorRatio
+//            Rectangle {
+//                id: searchBar
+//                Layout.minimumWidth: 300 / Style.monitorRatio
+//                width: parent.width / Style.monitorRatio
+//                height: 32 / Style.monitorRatio
+//                radius: 15
+//                color: rootObj.fg20
+//                IconImage {
+//                    id: searchIconImage
+//                    anchors.left: parent.left
+//                    anchors.leftMargin: 10 / Style.monitorRatio
+//                    anchors.verticalCenter: parent.verticalCenter
+//                    source: "qrc:/Resources/search-icon.png"
+//                    width: 24 / Style.monitorRatio
+//                    height: 24 / Style.monitorRatio
+//                    color: rootObj.fg75
+//                }
+//                visible: false
 
-                TextField {
-                    id: searchTextField
-                    anchors.fill: parent
-                    anchors.leftMargin: searchIconImage.width + searchIconImage.x
-                    implicitWidth: parent.width / 3
-                    placeholderText: qsTr("Search ...")
-                    color: rootObj.foregroundColor
-                    font.family: rootObj.fontFamily
-                    font.pointSize: 13 / Style.monitorRatio
-                    selectedTextColor: rootObj.backgroundColor
-                    selectionColor: rootObj.foregroundColor
-                    placeholderTextColor: rootObj.fg50
-                    wrapMode: Text.WrapAnywhere
-                    background: Rectangle {
-                        color: "transparent"
-                        radius: 15
-                    }
-                }
-            }
-        }
+//                TextField {
+//                    id: searchTextField
+//                    anchors.fill: parent
+//                    anchors.leftMargin: searchIconImage.width + searchIconImage.x
+//                    implicitWidth: parent.width / 3
+//                    placeholderText: qsTr("Search ...")
+//                    color: rootObj.foregroundColor
+//                    font.family: rootObj.fontFamily
+//                    font.pointSize: 13 / Style.monitorRatio
+//                    selectedTextColor: rootObj.backgroundColor
+//                    selectionColor: rootObj.foregroundColor
+//                    placeholderTextColor: rootObj.fg50
+//                    wrapMode: Text.WrapAnywhere
+//                    background: Rectangle {
+//                        color: "transparent"
+//                        radius: 15
+//                    }
+//                }
+//            }
+//        }
 
         Flow {
             id: filterFields
@@ -109,11 +110,12 @@ Rectangle {
             Layout.topMargin: 10 / Style.monitorRatio
             Layout.leftMargin: 15 / Style.monitorRatio
             RowLayout {
+                width: parent.width
+            RowLayout {
                 Label {
                     width: 36 / Style.monitorRatio
                     height: 18 / Style.monitorRatio
                     text: "Logical Operator :"
-                    //                Layout.leftMargin: 15 / Style.monitorRatio
                     font.pixelSize: 15 / Style.monitorRatio
                     font.family: rootObj.fontFamily
                     color: rootObj.foregroundColor
@@ -148,10 +150,12 @@ Rectangle {
 
                 }
             }
+            }
 
             RowLayout {
 
                 Label {
+
                     width: 36 / Style.monitorRatio
                     height: 18 / Style.monitorRatio
                     text: "Color"
@@ -188,7 +192,7 @@ Rectangle {
 
                         Repeater {
                             id: colorRepeater
-                            model: filterManager.colorFilterFields
+                            model: rootObj.filterManager ? filterManager.colorFilterFields: 0
                             delegate: Rectangle {
                                 required property var modelData
                                 width: 24 / Style.monitorRatio
@@ -251,6 +255,7 @@ Rectangle {
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
                     color: rootObj.backgroundColor
+
                     radius: 8
                     RowLayout {
                         anchors.bottom: parent.bottom
@@ -270,16 +275,8 @@ Rectangle {
                                 }
                                 return filteredModel;
                             }
-                            model: filterManager.stringFilterFields
-                            Text {
-                                id: maximumText
-                                text: "Longest String: "
-                                anchors.centerIn: parent
-                                Component.onCompleted: {
-                                    control.txtWidth = maximumText.width
-                                }
-                                visible: false
-                            }
+                            model: rootObj.filterManager ? filterManager.stringFilterFields: 0
+
                             delegate: ItemDelegate {
                                 id: itemDelegate
                                 implicitWidth: control.txtWidth
@@ -448,16 +445,8 @@ Rectangle {
                                     }
                                     return filteredModel;
                                 }
-                                model: filterManager.stringFilterFields
-                                Text {
-                                    id: maximumText3
-                                    text: "Longest String: "
-                                    anchors.centerIn: parent
-                                    Component.onCompleted: {
-                                        control3.txtWidth = maximumText3.width
-                                    }
-                                    visible: false
-                                }
+                                model: rootObj.filterManager?filterManager.stringFilterFields :0
+
                                 delegate: ItemDelegate {
                                     id: itemDelegate3
                                     implicitWidth: control.txtWidth
@@ -551,11 +540,12 @@ Rectangle {
                             Item {
                                 width: 26 / Style.monitorRatio
                                 height: 26 / Style.monitorRatio
-                                Rectangle {
+Rectangle {
                                     id: comparison
                                     anchors.fill: parent
                                     radius: width / 2
                                     color: rootObj.backgroundColor
+                                    anchors.verticalCenter: parent.verticalCenter
                                     Label {
                                         id: lblComparision
                                         anchors.centerIn: parent
@@ -695,7 +685,7 @@ Rectangle {
 
                         Repeater {
                             id: tagsRep
-                            model: rootObj.filterManager.filterTags
+                            model:rootObj.filterManager ? rootObj.filterManager.filterTags : 0
                             delegate: Rectangle {
                                 property color colorHandler: modelData.isEnabled ? "#01AED6" : rootObj.foregroundColor
                                 id: typesHolder

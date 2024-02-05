@@ -117,10 +117,10 @@ Item {
     Rectangle {
         id: filterRect
         anchors.top: rectCategoryTag.bottom
-        color: /*Style.backgroundColor*/ 'royalblue'
+        color: Style.backgroundColor
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 300 /*69 / Style.monitorRatio*/
+        height: 135 / Style.monitorRatio /*69 / Style.monitorRatio*/
         z: -1
 
         Filter {

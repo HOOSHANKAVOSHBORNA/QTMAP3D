@@ -41,7 +41,7 @@ ApplicationWindow {
         easing.type: Easing.OutCirc
         property: "height"
         from: 464 / Style.monitorRatio
-        to: 644 / Style.monitorRatio
+        to: 687 / Style.monitorRatio
         duration: 500
     }
     PropertyAnimation {
@@ -49,7 +49,7 @@ ApplicationWindow {
         target: containerRect
         easing.type: Easing.OutCirc
         property: "height"
-        from: 644 / Style.monitorRatio
+        from: 687 / Style.monitorRatio
         to: 464 / Style.monitorRatio
         duration: 500
     }
@@ -102,12 +102,17 @@ ApplicationWindow {
                 signInPage.visible = false
                 connectionPage.visible = true
                 topToBottomConnection.start()
+                heightIncrease.from = 464 / Style.monitorRatio
+                heightIncrease.to = 687 / Style.monitorRatio
                 heightIncrease.start()
             }
             signInBtn.onClicked: {
                 logInPageVisible = false
                 signInPage.visible = false
                 rolePage.visible = true
+                heightIncrease.from = 464 / Style.monitorRatio
+                heightIncrease.to = 504 / Style.monitorRatio
+                heightIncrease.start()
                 topToBottomRole.start()
             }
         }
@@ -124,6 +129,8 @@ ApplicationWindow {
             connectionStatus.onClicked: {
                 rolePage.visible = false
                 connectionPage.visible = true
+                heightIncrease.from = 504 / Style.monitorRatio
+                heightIncrease.to = 687 / Style.monitorRatio
                 heightIncrease.start()
                 topToBottomConnection.start()
             }
@@ -131,28 +138,66 @@ ApplicationWindow {
                 loginPage.signIn(signInPage.usernameTxt.text,
                                  signInPage.passwordTxt.text)
             }
+            backBtn.onClicked: {
+                rolePage.visible = false
+                signInPage.visible = true
+                heightDecrease.from = 504 / Style.monitorRatio
+                heightDecrease.to = 464 / Style.monitorRatio
+                heightDecrease.start()
+                topToBottomSignIn.start()
+            }
         }
 
         ConnectionConfiguration {
             id: connectionPage
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: 50 / Style.monitorRatio
-            anchors.rightMargin: 50 / Style.monitorRatio
             visible: false
-
-            connectionStatus.onClicked: {
+            backBtn.onClicked: {
                 if (logInPageVisible) {
                     connectionPage.visible = false
                     signInPage.visible = true
+                    heightDecrease.from = 687 / Style.monitorRatio
+                    heightDecrease.to = 464 / Style.monitorRatio
+                    heightDecrease.start()
                     topToBottomSignIn.start()
                 } else {
                     connectionPage.visible = false
+                    heightDecrease.from = 687 / Style.monitorRatio
+                    heightDecrease.to = 504 / Style.monitorRatio
+                    heightDecrease.start()
                     rolePage.visible = true
                     topToBottomRole.start()
                 }
-                heightDecrease.start()
             }
         }
     }
+    //    PropertyAnimation {
+    //        id: textAnimation
+    //        target: loadingText
+    //        property: "y"
+    //        loops: Animation.Infinite
+    //        from: 100
+    //        to: -100
+    //        duration: 2500
+    //        running: true
+    //    }
+
+    //    Rectangle {
+    //        width: parent.width
+    //        height: 0.1 * parent.height
+    //        y: 0.75 * parent.height
+    //        color: "transparent"
+    //        clip: true
+    //        Text {
+    //            id: loadingText
+    //            color: "red"
+    //            anchors.left: parent.left
+    //            anchors.leftMargin: parent.width / 2
+    //            text: "this is test 1
+    //this is test 2
+    //this is test 3
+    //this is test 4
+    //this is test 5
+    //"
+    //        }
+    //    }
 }
