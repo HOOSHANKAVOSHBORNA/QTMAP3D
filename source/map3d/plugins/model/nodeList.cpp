@@ -744,3 +744,10 @@ void NodeProxyModel::goToPosition(int index)
     SimpleModelNode *node = mDataManager->getNodeAtIndex(mapToSource(this->index(index, 0)).row());
     mDataManager->mapItem()->getCameraController()->goToPosition(node->getPosition(), 500);
 }
+
+void NodeProxyModel::trackPosition(int index)
+{
+    SimpleModelNode *node = mDataManager->getNodeAtIndex(mapToSource(this->index(index, 0)).row());
+    mDataManager->mapItem()->getCameraController()->setTrackNode(node->getGeoTransform(), 100);
+    //mMapItem->getCameraController()->setTrackNode(getGeoTransform(), 400);
+}

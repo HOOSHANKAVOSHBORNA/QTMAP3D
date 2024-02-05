@@ -664,17 +664,24 @@ Item {
                                     anchors.fill: parent
                                     onClicked: {
                                         console.log(lvDelegate.lvIndex)
-                                        if (tableview.isAttackecd) {
-
-                                            //                                            iconAttackerButton.color = "transparent"
-                                            //                                            tableview.isAttackecd = false
-                                        } else {
-
-                                            //                                            iconAttackerButton.color = "#01AED6"
-                                            //                                            tableview.isAttackecd = true
+                                        if (model.index === 2) {
+                                            tableModel.goToPosition(
+                                                        lvDelegate.lvIndex)
+                                        } else if (model.index === 3) {
+                                            tableModel.trackPosition(
+                                                        lvDelegate.lvIndex)
                                         }
-                                        tableModel.goToPosition(
-                                                    lvDelegate.lvIndex)
+
+                                        //                                        if (tableview.isAttackecd) {
+
+                                        //                                            iconAttackerButton.color = "transparent"
+                                        //                                            tableview.isAttackecd = false
+                                        //                                        } else {
+
+                                        //                                            iconAttackerButton.color = "#01AED6"
+                                        //                                            tableview.isAttackecd = true
+                                        //                                        }
+
                                         //tableview.checkAttackIconColumn = model.column
                                         //tableview.checkAttackIconRow = model.row
                                     }

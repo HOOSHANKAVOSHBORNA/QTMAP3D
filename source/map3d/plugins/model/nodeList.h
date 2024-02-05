@@ -174,6 +174,7 @@ public:
     void setCategoryTagModel(CategoryTagModel *newCategoryTagModel);
 
     Q_INVOKABLE void goToPosition(int index);
+    Q_INVOKABLE void trackPosition(int index);
 
 signals:
     //void comboItemChanged();
