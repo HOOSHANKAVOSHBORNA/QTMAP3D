@@ -16,14 +16,13 @@
 LayerManager::LayerManager()
 {
     mLayerModel = new LayerModel();
-
-    // write your setup in setMapItem method after set mapItem
 }
 
 LayerModel *LayerManager::layerModel() const
 {
     return mLayerModel;
 }
+
 
 LayerManager *LayerManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
@@ -42,7 +41,6 @@ void LayerManager::setMapItem(MapItem *mapItem)
 {
     mLayerModel->setMapItem(mapItem);
 
-    // property item setup
     mPropertyInterface = new LayerPropertyItem;
     mLayerModel->setPropertyInterface(mPropertyInterface);
     setPropertyInterface(mPropertyInterface);
@@ -86,9 +84,6 @@ void LayerModel::setMapItem(MapItem *mapItem)
     connect(mapItem, &MapItem::mapCleared, this, &LayerModel::resetModel);
     connect(mapItem->getMapObject(), &MapObject::layerAdded, this, &LayerModel::onLayerAdded);
     connect(mapItem->getMapObject(), &MapObject::layerRemoved, this, &LayerModel::onLayerRemoved);
-    //    connect(mapItem->getMapObject(), &MapObject::nodeToLayerAdded,this ,&LayersModel::onNodeToLayerAdded);
-    //    connect(mapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,this ,&LayersModel::onNodeFromLayerRemoved);
-    //    connect(mapItem->getMapObject(), &MapObject::parentLayerChanged,this ,&LayersModel::onParentLayerChanged);
 }
 
 MapItem *LayerModel::getMapItem()
@@ -156,6 +151,8 @@ void LayerModel::onVisibleItemClicked(const QModelIndex &current)
         setLayerVisible(visibleLayer);
 }
 
+
+
 void LayerModel::onItemLeftClicked(const QModelIndex &current)
 {
     QModelIndex indexSource = mapToSource(current);
@@ -167,7 +164,6 @@ void LayerModel::onItemLeftClicked(const QModelIndex &current)
     }
 
     osgEarth::Layer *layer = item->data(LayerRole).value<osgEarth::Layer *>();
-    //    osgEarth::Layer *parentLayer = parentItem->data(LayerRole).value<osgEarth::Layer *>();
 
     mPropertyInterface->setModelNodeLayer(layer);
 }

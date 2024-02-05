@@ -13,17 +13,6 @@ ApplicationWindow {
     visible: !loginPage.windowHidden
     title: qsTr("SignIn/SignUp")
 
-    readonly property color foregroundColorTextBox: Qt.rgba(
-                                                        Style.foregroundColor.r,
-                                                        Style.foregroundColor.g,
-                                                        Style.foregroundColor.b,
-                                                        0.20)
-    readonly property color foregroundColorText: Qt.rgba(
-                                                     Style.foregroundColor.r,
-                                                     Style.foregroundColor.g,
-                                                     Style.foregroundColor.b,
-                                                     0.50)
-
     readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
                                                      Style.backgroundColor.g,
                                                      Style.backgroundColor.b,
@@ -65,29 +54,29 @@ ApplicationWindow {
         duration: 500
     }
     PropertyAnimation {
-        id: leftToRightConnection
+        id: topToBottomConnection
         target: connectionPage
         easing.type: Easing.OutCirc
-        property: "x"
-        from: -200
+        property: "y"
+        from: -500
         to: 0
         duration: 500
     }
     PropertyAnimation {
-        id: leftToRightSignIn
-        target: signInpage
+        id: topToBottomSignIn
+        target: signInPage
         easing.type: Easing.OutCirc
-        property: "x"
-        from: -200
+        property: "y"
+        from: -500
         to: 0
         duration: 500
     }
     PropertyAnimation {
-        id: leftToRightRole
+        id: topToBottomRole
         target: rolePage
         easing.type: Easing.OutCirc
-        property: "x"
-        from: -200
+        property: "y"
+        from: -500
         to: 0
         duration: 500
     }
@@ -103,281 +92,66 @@ ApplicationWindow {
         radius: 20 / Style.monitorRatio
         clip: true
 
-        RowLayout {
-            id: header
-            anchors.right: parent.right
+        SignInPage {
+            id: signInPage
             anchors.left: parent.left
-            anchors.top: parent.top
+            anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio
-
-            anchors.topMargin: 60 / Style.monitorRatio
-
-            Text {
-                id: titleText
-                text: "Log in"
-                font.pixelSize: 35 / Style.monitorRatio
-                color: Style.foregroundColor
-                Layout.fillWidth: true
+            anchors.rightMargin: 50 / Style.monitorRatio
+            connectionStatus.onClicked: {
+                signInPage.visible = false
+                connectionPage.visible = true
+                topToBottomConnection.start()
+                heightIncrease.start()
             }
-
-            Button {
-                id: connectionStatus
-                checkable: true
-                checked: false
-                background: Image {
-                    source: "qrc:/Resources/unplugged.png"
-                }
-                Layout.preferredHeight: 39 / Style.monitorRatio
-                Layout.preferredWidth: 39 / Style.monitorRatio
-                Layout.rightMargin: 50 / Style.monitorRatio
-
-                onClicked: {
-                    leftToRightConnection.start()
-                    if (connectionStatus.checked) {
-                        signInpage.visible = false
-                        rolePage.visible = false
-                        connectionPage.visible = true
-                        signInBtn.visible = false
-                        titleText.text = "Connection"
-                        leftToRightConnection.start()
-                        heightIncrease.start()
-                    } else {
-                        titleText.text = "Log in"
-                        connectionPage.visible = false
-                        signInBtn.visible = true
-                        if (logInPageVisible) {
-                            signInpage.visible = true
-                            rolePage.visible = false
-                            heightDecrease.start()
-                            leftToRightSignIn.start()
-                        } else {
-                            signInpage.visible = false
-                            rolePage.visible = true
-                            heightDecrease.start()
-                            leftToRightRole.start()
-                        }
-                    }
-                }
+            signInBtn.onClicked: {
+                logInPageVisible = false
+                signInPage.visible = false
+                rolePage.visible = true
+                topToBottomRole.start()
             }
         }
 
-        Item {
-            id: signInpage
-            visible: true
-            anchors.top: header.bottom
-            anchors.bottom: signInBtn.top
-            anchors.topMargin: 20 / Style.monitorRatio
-            anchors.bottomMargin: 60 / Style.monitorRatio
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 50 / Style.monitorRatio
-                anchors.rightMargin: 50 / Style.monitorRatio
-                spacing: 0
-
-                RowLayout {
-                    spacing: 0
-                    IconImage {
-                        source: "qrc:/Resources/user.png"
-                        Layout.preferredHeight: 23 / Style.monitorRatio
-                        Layout.preferredWidth: 23 / Style.monitorRatio
-                    }
-                    Text {
-                        id: username
-                        text: "Username"
-                        font.pixelSize: 20 / Style.monitorRatio
-                        Layout.leftMargin: 5 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                }
-                TextField {
-                    id: usernameText
-                    Layout.preferredWidth: 340 / Style.monitorRatio
-                    height: 40 / Style.monitorRatio
-                    font.pointSize: 17 / Style.monitorRatio
-                    leftPadding: 20 / Style.monitorRatio
-
-                    color: foregroundColorText
-                    placeholderText: activeFocus ? "" : "Enter your Username"
-                    placeholderTextColor: foregroundColorText
-                    background: Rectangle {
-                        color: foregroundColorTextBox
-                        radius: height / 2
-                    }
-                }
-                RowLayout {
-                    spacing: 0
-                    IconImage {
-                        source: "qrc:/Resources/lock-closed.png"
-                        Layout.preferredHeight: 23 / Style.monitorRatio
-                        Layout.preferredWidth: 23 / Style.monitorRatio
-                    }
-                    Text {
-                        text: "Password"
-                        font.pixelSize: 20 / Style.monitorRatio
-                        Layout.leftMargin: 5 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                }
-                TextField {
-                    id: password
-                    Layout.preferredWidth: 340 / Style.monitorRatio
-                    height: 40 / Style.monitorRatio
-                    font.pointSize: 17 / Style.monitorRatio
-                    leftPadding: 20 / Style.monitorRatio
-                    color: foregroundColorText
-                    placeholderText: activeFocus ? "" : "Enter your Password"
-                    placeholderTextColor: foregroundColorText
-                    echoMode: TextField.Password
-                    background: Rectangle {
-                        color: foregroundColorTextBox
-                        radius: height / 2
-                    }
-                }
-            }
-        }
-
-        Item {
+        RoleSelectPage {
             id: rolePage
             visible: false
-            anchors.top: header.bottom
-            anchors.bottom: signInBtn.top
-            anchors.topMargin: 20 / Style.monitorRatio
-            anchors.bottomMargin: 60 / Style.monitorRatio
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.leftMargin: 50 / Style.monitorRatio
-                anchors.rightMargin: 50 / Style.monitorRatio
-                spacing: 0
+            usernameTxt: signInPage.usernameTxt
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 50 / Style.monitorRatio
+            anchors.rightMargin: 50 / Style.monitorRatio
 
-                RowLayout {
-                    spacing: 0
-                    Layout.topMargin: 5 / Style.monitorRatio
-                    IconImage {
-                        source: "qrc:/Resources/user.png"
-                        Layout.preferredHeight: 25 / Style.monitorRatio
-                        Layout.preferredWidth: 25 / Style.monitorRatio
-                    }
-
-                    Text {
-                        text: usernameText.text
-                        font.pixelSize: 23 / Style.monitorRatio
-                        color: Style.foregroundColor
-                    }
-                }
-
-                Text {
-                    text: "Select role"
-                    Layout.topMargin: 30 / Style.monitorRatio
-                    font.pixelSize: 22 / Style.monitorRatio
-                    font.bold: true
-                    color: Style.foregroundColor
-                }
-
-                RadioButton {
-                    id: administrator
-                    text: "Administrator"
-                    Layout.topMargin: 12 / Style.monitorRatio
-                    Layout.preferredHeight: 20 / Style.monitorRatio
-                    Layout.fillWidth: true
-                    opacity: checked ? 1 : 0.75
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 20 / Style.monitorRatio
-                        color: Style.foregroundColor
-                        leftPadding: 20 / Style.monitorRatio
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    indicator: Image {
-                        width: 20 / Style.monitorRatio
-                        height: 20 / Style.monitorRatio
-                        source: administrator.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
-                    }
-                }
-
-                RadioButton {
-                    id: admin
-                    text: "Admin"
-                    Layout.topMargin: 12 / Style.monitorRatio
-                    Layout.preferredHeight: 20 / Style.monitorRatio
-                    Layout.fillWidth: true
-                    opacity: checked ? 1 : 0.75
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 20 / Style.monitorRatio
-                        color: Style.foregroundColor
-                        leftPadding: 20 / Style.monitorRatio
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    indicator: Image {
-                        width: 20 / Style.monitorRatio
-                        height: 20 / Style.monitorRatio
-                        source: admin.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
-                    }
-                }
-
-                RadioButton {
-                    id: reviewer
-                    text: "Reviewer"
-                    Layout.topMargin: 12 / Style.monitorRatio
-                    Layout.preferredHeight: 20 / Style.monitorRatio
-                    Layout.fillWidth: true
-                    opacity: checked ? 1 : 0.75
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 20 / Style.monitorRatio
-                        color: Style.foregroundColor
-                        leftPadding: 20 / Style.monitorRatio
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    indicator: Image {
-                        width: 20 / Style.monitorRatio
-                        height: 20 / Style.monitorRatio
-                        source: reviewer.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
-                    }
-                }
+            connectionStatus.onClicked: {
+                rolePage.visible = false
+                connectionPage.visible = true
+                heightIncrease.start()
+                topToBottomConnection.start()
+            }
+            signInBtn.onClicked: {
+                loginPage.signIn(signInPage.usernameTxt.text,
+                                 signInPage.passwordTxt.text)
             }
         }
 
         ConnectionConfiguration {
             id: connectionPage
-            anchors.bottom: parent.bottom
-            anchors.top: header.bottom
-            anchors.topMargin: 20 / Style.monitorRatio
-            visible: false
-        }
-
-        Button {
-            id: signInBtn
-            height: 40 / Style.monitorRatio
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio
             anchors.rightMargin: 50 / Style.monitorRatio
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 30 / Style.monitorRatio
-            hoverEnabled: true
-            background: Rectangle {
-                color: Style.foregroundColor
-                radius: width / (Style.monitorRatio * 2)
-            }
-            contentItem: Text {
-                text: "Sign in"
-                color: parent.hovered ? "#01AED6" : Style.backgroundColor
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
+            visible: false
 
-            onClicked: {
-
-                if (!signInpage.visible && rolePage.visible)
-                    loginPage.signIn(username.text, password.text)
-
-                if (signInpage.visible && !rolePage.visible) {
-                    logInPageVisible = false
-                    signInpage.visible = false
+            connectionStatus.onClicked: {
+                if (logInPageVisible) {
+                    connectionPage.visible = false
+                    signInPage.visible = true
+                    topToBottomSignIn.start()
+                } else {
+                    connectionPage.visible = false
                     rolePage.visible = true
-                    leftToRightRole.start()
+                    topToBottomRole.start()
                 }
+                heightDecrease.start()
             }
         }
     }
