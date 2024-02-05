@@ -10,6 +10,7 @@
 #include <QSortFilterProxyModel>
 
 #include "dataManager.h"
+#include "filterManager.h"
 #include "mapControllerItem.h"
 
 class NodeProxyModel;
