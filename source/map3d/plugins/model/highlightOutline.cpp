@@ -80,7 +80,6 @@ void CustomOutlineTechnique::setColor(const osg::Vec4 &color)
 
 void CustomOutlineTechnique::define_passes()
 {
-    qDebug()<<"define_passes";
     /*
              * draw
              * - set stencil buffer to ref=1 where draw occurs
