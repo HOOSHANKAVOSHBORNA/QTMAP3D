@@ -24,7 +24,8 @@ add_library(combatModelNode SHARED
     assignDataManager.h assignDataManager.cpp
 )
 
-target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
+target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d/style")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawSphere")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawAnnotation")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCircle")

@@ -28,6 +28,7 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
     connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::beginEndResetModel);
     //    connect(timer, &QTimer::timeout, tabbarModel, &CategoryTabbarModel::beginEndResetModel);
     connect(timer, &QTimer::timeout, categoryTagsModel, &CategoryTagModel::beginEndResetModel);
+    connect(timer, &QTimer::timeout, mProxyModel, &NodeProxyModel::invalidateRowFilterInvoker);
     timer->start(1000);
 
     // connections
@@ -80,21 +81,19 @@ void NodeList::createQml()
 
         mQmlItem = qobject_cast<QQuickItem *>(comp->create());
         mQmlItem->setProperty("tableModel", QVariant::fromValue(mProxyModel));
+        mQmlItem->setProperty("filterManager", QVariant::fromValue(mDataManager->filterManager()));
     });
 
-    //qDebug() << "it is what it is";
     comp->loadUrl(QUrl("qrc:/NodeListItem.qml"));
 }
 
 NodeProxyModel *NodeList::proxyModel() const
 {
-    //qDebug() << "chch";
     return mProxyModel;
 }
 
 void NodeList::setProxyModel(NodeProxyModel *newProxyModel)
 {
-    //qDebug() << "chchch";
     mProxyModel = newProxyModel;
 }
 
@@ -112,7 +111,6 @@ void NodeList::setQmlItem(QQuickItem *newQmlItem)
 }
 
 //--------------------------------------NodeProxyModel-------------------------------------
-
 NodeProxyModel::NodeProxyModel(DataManager *dataManager)
 {
     mDataManager = dataManager;
@@ -133,19 +131,15 @@ bool NodeProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right)
     QVariant leftData = sourceModel()->data(left);
 
     QVariant rightData = sourceModel()->data(right);
-    //qDebug() << leftData << rightData;
     return leftData.toString() < rightData.toString();
 }
 
 void NodeProxyModel::sortTable(int column)
 {
-    //qDebug() << "call sort" << column;
     if (Asc) {
-        qDebug() << "Ascending Sort>>>>>";
         sort(column, Qt::AscendingOrder);
         Asc = false;
     } else if (!Asc) {
-        qDebug() << "Descending Sort>>>>>";
         sort(column, Qt::DescendingOrder);
         Asc = true;
     }
@@ -205,6 +199,10 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
 {
     //    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
     //    QString categoryTab = dataManager->categoryTagNames().at(ifDataFromQmlIsIndexNotString);
+    NodeData nodeData = mDataManager->getNodeAtIndex(sourceRow)->nodeData();
+    if (!mDataManager->filterManager()->checkNodeToShow(&nodeData)) {
+        return false;
+    }
 
     if (mFilterType == "All") {
         return true;
@@ -212,6 +210,7 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
 
     DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
     QString rowCategory = dataManager->getNodeAtIndex(sourceRow)->nodeData().category;
+
     return rowCategory.contains(mFilterType, Qt::CaseInsensitive);
 
     //search Tag all of them

@@ -5,7 +5,7 @@
 DataManager::DataManager(MapItem *mapItem, MainWindow *mainWindow)
     : mMapItem(mapItem), mMainWindow(mainWindow)
 {
-
+    mFilterManager = new FilterManager();
 }
 
 DataManager::~DataManager()
@@ -38,6 +38,8 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
     if (!mNodeMap.contains(nodeData.id)) {
         // TODO: setup filter needed data mUniqueColorss
+        NodeData movedNode(nodeData);
+        mFilterManager->addFilterField(&movedNode);
 
         // adding new uniuqe category name
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
@@ -149,6 +151,16 @@ void DataManager::removeNode(const NodeData &nodeData)
         mNodeMap.remove(nodeData.id);
 //        nodeRemovingEnd();
     }
+}
+
+FilterManager *DataManager::filterManager() const
+{
+    return mFilterManager;
+}
+
+void DataManager::setFilterManager(FilterManager *newFilterManager)
+{
+    mFilterManager = newFilterManager;
 }
 
 MapItem *DataManager::mapItem() const
