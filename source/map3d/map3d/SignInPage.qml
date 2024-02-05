@@ -15,8 +15,8 @@ ColumnLayout {
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
-    property alias usernametxt: usernametxt
-    property alias passwordtxt: passwordtxt
+    property alias usernameTxt: usernameTxt.text
+    property alias passwordTxt: passwordTxt
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
 
@@ -66,7 +66,7 @@ ColumnLayout {
         }
     }
     TextField {
-        id:usernametxt
+        id: usernameTxt
         Layout.fillWidth: true
         Layout.preferredWidth: 340 / Style.monitorRatio
         Layout.topMargin: 5 / Style.monitorRatio
@@ -99,7 +99,7 @@ ColumnLayout {
         }
     }
     TextField {
-        id: passwordtxt
+        id: passwordTxt
         Layout.fillWidth: true
         Layout.preferredWidth: 340 / Style.monitorRatio
         Layout.topMargin: 5 / Style.monitorRatio
@@ -135,7 +135,6 @@ ColumnLayout {
         }
 
         onClicked: {
-
 
         }
     }

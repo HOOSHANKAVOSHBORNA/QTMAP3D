@@ -115,6 +115,7 @@ ApplicationWindow {
         RoleSelectPage {
             id: rolePage
             visible: false
+            usernameTxt: signInPage.usernameTxt
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio
@@ -127,8 +128,8 @@ ApplicationWindow {
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
-                loginPage.signIn(signInPage.usernametxt.text,
-                                 signInPage.passwordtxt.text)
+                loginPage.signIn(signInPage.usernameTxt.text,
+                                 signInPage.passwordTxt.text)
             }
         }
 

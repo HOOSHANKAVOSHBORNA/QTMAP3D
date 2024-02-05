@@ -6,7 +6,7 @@ import "style"
 ColumnLayout {
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
-    property alias usernametxt: usernametxt
+    property alias usernameTxt: usernameTxt.text
 
     spacing: 0
 
@@ -47,7 +47,8 @@ ColumnLayout {
         }
 
         Text {
-            id:usernametxt
+            text: "sdfgsdfgsdfgsdg"
+            id: usernameTxt
             font.pixelSize: 23 / Style.monitorRatio
             color: Style.foregroundColor
         }
