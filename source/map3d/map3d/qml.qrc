@@ -46,5 +46,7 @@
         <file>ConnectionConfiguration.qml</file>
         <file>ProfileItem.qml</file>
         <file>ListWindow.qml</file>
+        <file>SignInPage.qml</file>
+        <file>RoleSelectPage.qml</file>
     </qresource>
 </RCC>

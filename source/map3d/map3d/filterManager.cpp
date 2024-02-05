@@ -4,7 +4,6 @@
 FilterManager::FilterManager(QObject *parent) : QObject(parent)
 {
     qmlRegisterType<Tag>("Crystal", 1, 0, "Tag");
-    qmlRegisterType<Tag::Comparision>("Crystal", 1, 0, "TagComparision");
 }
 
 void FilterManager::addFilterField(NodeData *nodeData)
@@ -88,16 +87,29 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData)
     if (mFilterTags.isEmpty())
         return true;
     // check first tag to set flag in start
+    bool firstTag = false;
     bool flag = checkNodeToShow(nodeData, mFilterTags[0]);
     for (auto &tag: mFilterTags) {
+        if (!tag->isEnabled)
+            continue;
         if (tag->logicalOperator == Tag::LogicalOperator::And) {
-            flag = flag && checkNodeToShow(nodeData, tag);
+            if (firstTag)
+                flag = flag && checkNodeToShow(nodeData, tag);
+            else {
+                firstTag = true;
+                flag = checkNodeToShow(nodeData, tag);
+            }
         } else {
-            flag = flag || checkNodeToShow(nodeData, tag);
+            if (firstTag)
+                flag = flag || checkNodeToShow(nodeData, tag);
+            else {
+                firstTag = true;
+                flag = checkNodeToShow(nodeData, tag);
+            }
         }
     }
 
-    return flag;
+    return firstTag ? flag : true;
 }
 
 void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op)
@@ -105,6 +117,7 @@ void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision
     Tag* tag = new Tag{field, value, comp, op};
     if (!mFilterTags.contains(tag)) {
         mFilterTags.push_back(tag);
+        connect(tag, &Tag::tagChanged, this, &FilterManager::filterTagsEdited);
     }else
         delete tag;
     emit filterTagsEdited();
@@ -122,65 +135,20 @@ void FilterManager::removeFilterTag(QString field, QVariant value, Tag::Comparis
     emit filterTagsEdited();
 }
 
+void FilterManager::removeFilterTag(int index)
+{
+    if (index >= mFilterTags.size())
+        return;
+    mFilterTags.remove(index);
+    emit filterTagsEdited();
+}
+
 const QVector<Tag *> FilterManager::getFilterTags() const
 {
     return mFilterTags;
 }
 
-// void FilterManager::addFilterTag(QString key, QString value)
-// {
-// //    if (mFilterTags.contains(key)) {
-// //        mFilterTags[key].push_back(Tag{true, value});
-// //    } else {
-// //        mFilterTags[key] = QVector<Tag>{Tag{true, value}};
-// //    }
-
-// }
-
-// void FilterManager::addFilterTag(QString key, double value, QString comp)
-// {
-// //    if (mFilterTags.contains(key)) {
-// //        mFilterTags[key].push_back(Tag{false, value, comp});
-// //    } else {
-// //        mFilterTags[key] = QVector<Tag>{Tag{false, value, comp}};
-// //    }
-//     emit filterTagsEdited();
-
-// }
-
-// void FilterManager::addFilterTag(QString key, double value1, double value2, QString comp)
-// {
-// //    if (mFilterTags.contains(key)) {
-// //        mFilterTags[key].push_back(Tag{false, 0, comp, QPair<double, double>{value1, value2}});
-// //    } else {
-// //        mFilterTags[key] = QVector<Tag>{Tag{false, 0, comp, QPair<double, double>{value1, value2}}};
-// //    }
-//     emit filterTagsEdited();
-// }
-
-// void FilterManager::removeFilterTag(QString key, QString value)
-// {
-// //    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{true, value});
-// //    if (it != mFilterTags[key].end()) {
-// //        mFilterTags[key].erase(it);
-// //    }
-//     emit filterTagsEdited();
-// }
-
-// void FilterManager::removeFilterTag(QString key, double value, QString comp)
-// {
-// //    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{false, value, comp});
-// //    if (it != mFilterTags[key].end()) {
-// //        mFilterTags[key].erase(it);
-// //    }
-//     emit filterTagsEdited();
-// }
-
-// void FilterManager::removeFilterTag(QString key, double value1, double value2, QString comp)
-// {
-// //    auto it = std::find(mFilterTags[key].begin(), mFilterTags[key].end(), Tag{false, -999999999, comp, QPair<double, double>{value1, value2}});
-// //    if (it != mFilterTags[key].end()) {
-// //        mFilterTags[key].erase(it);
-// //    }
-//     emit filterTagsEdited();
-// }
+const Tag* const FilterManager::getFilterTagAt(int index)
+{
+    return mFilterTags[index];
+}
