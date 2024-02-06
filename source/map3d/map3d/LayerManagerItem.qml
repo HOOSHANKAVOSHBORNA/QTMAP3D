@@ -7,7 +7,6 @@ import "style"
 
 Item {
     id: rootItem
-
     property var layerModel
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
@@ -77,24 +76,15 @@ Item {
             ScrollView {
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
-                //                Layout.topMargin: 10 / Style.monitorRatio
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                 TreeView {
                     id: treeView
+                    property string s :""
                     anchors.fill: parent
                     clip: true
                     rowSpacing: 5 / Style.monitorRatio
                     model: layerModel
-
-                    //                selectionModel: ItemSelectionModel {
-                    //                    id: selectionModel
-                    //                    model: layerModel
-                    //                    onCurrentChanged: {
-                    //                    }
-                    //                    onSelectionChanged:{
-                    //                    }
-                    //                }
                     delegate: Item {
                         id: treeDelegate
                         implicitWidth: treeView ? treeView.width ?? 0 : 0
@@ -182,23 +172,16 @@ Item {
 
                         MouseArea {
                             id: dragArea
+                            Component.onCompleted: {
+                                treeView.s = display
+                            }
+
                             anchors.fill: parent
                             drag.target: parent
                             drag.axis: Drag.YAxis
                             propagateComposedEvents: true
                             onClicked: function (mouse) {
                                 treeView.toggleExpanded(row)
-
-                                // TODO: change property visible in better way
-                                if (LayerManagerInstance.propertyInterface.name === display) {
-                                    propertySection.visible = !propertySection.visible
-                                } else {
-                                    propertySection.visible = true
-                                }
-
-                                // TODO: onItemLeftClick is not a good name
-                                rootItem.layerModel.onItemLeftClicked(
-                                            treeView.index(row, column))
                             }
                         }
 
@@ -234,7 +217,28 @@ Item {
                                 rotation: treeDelegate.expanded ? 180 : 0
                                 anchors.verticalCenter: parent.verticalCenter
                             }
+                            Rectangle{
+                                id:chk
+                                width: 12
+                                height: 12
+                                anchors.verticalCenter: parent.verticalCenter
+                                radius: 15
+                                anchors.right: indicator.left
+                                color:LayerManagerInstance.propertyInterface.name === display ?(propertySection.visible === true ?Style.backgroundColor : Style.foregroundColor) : Style.foregroundColor
+                                MouseArea{
+                                    anchors.fill: parent
+                                    onClicked:{
 
+                                        if (LayerManagerInstance.propertyInterface.name === display) {
+                                            propertySection.visible = !propertySection.visible
+                                        } else {
+                                            propertySection.visible = true
+                                        }
+                                        rootItem.layerModel.onItemLeftClicked(
+                                                    treeView.index(row, column))
+                                    }
+                                }
+                            }
                             IconImage {
                                 id: itemIcon
                                 anchors.verticalCenter: parent.verticalCenter
@@ -315,6 +319,7 @@ Item {
                                 anchors.fill: hideContainer
                                 propagateComposedEvents: true
                                 onClicked: {
+
                                     rootItem.layerModel.onVisibleItemClicked(
                                                 treeView.index(row, column))
                                 }
@@ -435,11 +440,8 @@ Item {
 
             Rectangle {
                 id: propertySection
-
                 visible: false
-
                 SplitView.preferredHeight: 300 / Style.monitorRatio
-                //                SplitView.preferredHeight: 450 / Style.monitorRatio
                 SplitView.fillWidth: true
                 color: 'transparent'
 

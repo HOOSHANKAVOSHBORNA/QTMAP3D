@@ -25,7 +25,7 @@ NodeTest::NodeTest(ServiceManager *serviceManager):
             mServiceManager->sendPolyLine(nodeInfo.polyLineData);
         }
     });
-    timerUpdate->start(500);
+    timerUpdate->start(1000);
 }
 
 void NodeTest::createInfo()
@@ -58,10 +58,10 @@ void NodeTest::createInfo()
                               ? "../data/models/car/car.png"
                               : "qrc:/Resources/aircraft.png";
 
-    nodData.imgInfoUrl = nodData.type == NodeType::Fixed ? "qrc:/Resources/system.jpg"
+    nodData.imgInfoUrl = nodData.type == NodeType::Fixed ? "../data/models/system/system.jpg"
                          : nodData.type == NodeType::Movable
-                             ? "qrc:/Resources/station.jpg"
-                             : "qrc:/Resources/airplane1.jpg";
+                             ? "../data/models/station/station.jpg"
+                             : "../data/models/airplane/airplan.jpg";
 
     nodData.url2D = nodData.type == NodeType::Fixed ? "../data/models/station/station.png"
                     : nodData.type == NodeType::Movable
@@ -152,6 +152,12 @@ void NodeTest::createInfo()
     info2Field.value = "StatusInfo";
     info2Field.category = "";
     statusNodeData.fieldData.push_back(info2Field);
+
+    NodeFieldData info3Field;
+    info3Field.name = "اطلاعات";
+    info3Field.value = "اطلاعات وضعیت";
+    info3Field.category = "";
+    statusNodeData.fieldData.push_back(info3Field);
     statusNodeData.fieldData.push_back(colorField);
 
     statusNodeData.command = Command::Add;

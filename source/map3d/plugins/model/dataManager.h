@@ -1,6 +1,7 @@
 #ifndef DATAMANAGER_H
 #define DATAMANAGER_H
 
+#include "filterManager.h"
 #include "mainwindow.h"
 #include "simpleModelNode.h"
 
@@ -42,6 +43,12 @@ public:
     QVector<QString> essentialColumnNames() const;
     void setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames);
 
+    MapItem *mapItem() const;
+    void setMapItem(MapItem *newMapItem);
+
+    FilterManager *filterManager() const;
+    void setFilterManager(FilterManager *newFilterManager);
+
 signals:
     void nodeAppendingStart(QModelIndex, int, int);
     void nodeAppendingEnd();
@@ -82,6 +89,7 @@ private:
     QMap<QString, QString> mColumnToCategory;
     NodeData* mNodeData;
     MainWindow *mMainWindow;
+    FilterManager *mFilterManager = nullptr;
 };
 
 #endif // DATAMANAGER_H

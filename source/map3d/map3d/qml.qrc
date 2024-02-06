@@ -46,5 +46,8 @@
         <file>ConnectionConfiguration.qml</file>
         <file>ProfileItem.qml</file>
         <file>ListWindow.qml</file>
+        <file>SignInPage.qml</file>
+        <file>RoleSelectPage.qml</file>
+        <file>Resources/back.png</file>
     </qresource>
 </RCC>

@@ -8,8 +8,6 @@ Item {
     id: rootItem
 
     property var model: ConnectionConfigurationInstance.getConnectionConfiguration()
-    property alias saveBtn: saveBtn
-
     readonly property color foregroundColorTextBox: Qt.rgba(
                                                         Style.foregroundColor.r,
                                                         Style.foregroundColor.g,
@@ -20,20 +18,56 @@ Item {
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
+    property alias connectionStatus: connectionStatus
+    property alias backBtn: backBtn
 
     height: parent ? parent.height : 0
     width: parent ? parent.width : 0
 
+
     ColumnLayout {
+        spacing: 0
+
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: 50 / Style.monitorRatio
         anchors.rightMargin: 50 / Style.monitorRatio
-        spacing: 0
+
+        Button {
+            id: backBtn
+            Layout.preferredHeight: 40 / Style.monitorRatio
+            Layout.preferredWidth: 40 / Style.monitorRatio
+            Layout.topMargin: 30 / Style.monitorRatio
+            background: Image {
+                source: "qrc:/Resources/back.png"
+            }
+        }
+
+        RowLayout {
+            id: header
+            Layout.fillWidth: true
+            Layout.topMargin: 31 / Style.monitorRatio
+
+            Text {
+                id: titleText
+                text: "Connection"
+                font.pixelSize: 35 / Style.monitorRatio
+                color: Style.foregroundColor
+                Layout.fillWidth: true
+            }
+
+            IconImage {
+                id: connectionStatus
+                source: "qrc:/Resources/unplugged.png"
+                Layout.preferredHeight: 39 / Style.monitorRatio
+                Layout.preferredWidth: 39 / Style.monitorRatio
+            }
+        }
 
         Text {
             text: "Username"
             font.pixelSize: 20 / Style.monitorRatio
+            Layout.topMargin: 50 / Style.monitorRatio
             color: Style.foregroundColor
         }
 
