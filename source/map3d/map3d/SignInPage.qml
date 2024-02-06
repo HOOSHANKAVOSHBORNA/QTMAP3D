@@ -4,20 +4,30 @@ import QtQuick.Controls
 import "style"
 
 ColumnLayout {
-    anchors.fill: parent
-    anchors.leftMargin: 50 / Style.monitorRatio
-    anchors.rightMargin: 50 / Style.monitorRatio
+
+    readonly property color foregroundColorTextBox: Qt.rgba(
+                                                        Style.foregroundColor.r,
+                                                        Style.foregroundColor.g,
+                                                        Style.foregroundColor.b,
+                                                        0.20)
+    readonly property color foregroundColorText: Qt.rgba(
+                                                     Style.foregroundColor.r,
+                                                     Style.foregroundColor.g,
+                                                     Style.foregroundColor.b,
+                                                     0.50)
+    property alias usernameTxt: usernameTxt.text
+    property alias passwordTxt: passwordTxt
+    property alias connectionStatus: connectionStatus
+    property alias signInBtn: signInBtn
+
     spacing: 0
 
     RowLayout {
         id: header
-        anchors.right: parent.right
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.leftMargin: 50 / Style.monitorRatio
-
-        anchors.topMargin: 60 / Style.monitorRatio
-
+        spacing: 0
+        Layout.fillWidth: true
+        Layout.preferredHeight: 40 / Style.monitorRatio
+        Layout.topMargin: 60 / Style.monitorRatio
         Text {
             id: titleText
             text: "Log in"
@@ -28,54 +38,27 @@ ColumnLayout {
 
         Button {
             id: connectionStatus
-            checkable: true
-            checked: false
             background: Image {
                 source: "qrc:/Resources/unplugged.png"
             }
             Layout.preferredHeight: 39 / Style.monitorRatio
             Layout.preferredWidth: 39 / Style.monitorRatio
-            Layout.rightMargin: 50 / Style.monitorRatio
-
             onClicked: {
-                leftToRightConnection.start()
-                if (connectionStatus.checked) {
-                    signInpage.visible = false
-                    rolePage.visible = false
-                    connectionPage.visible = true
-                    signInBtn.visible = false
-                    titleText.text = "Connection"
-                    leftToRightConnection.start()
-                    heightIncrease.start()
-                } else {
-                    titleText.text = "Log in"
-                    connectionPage.visible = false
-                    signInBtn.visible = true
-                    if (logInPageVisible) {
-                        signInpage.visible = true
-                        rolePage.visible = false
-                        heightDecrease.start()
-                        leftToRightSignIn.start()
-                    } else {
-                        signInpage.visible = false
-                        rolePage.visible = true
-                        heightDecrease.start()
-                        leftToRightRole.start()
-                    }
-                }
+
             }
         }
     }
 
     RowLayout {
         spacing: 0
+        Layout.fillWidth: true
+        Layout.topMargin: 50 / Style.monitorRatio
         IconImage {
             source: "qrc:/Resources/user.png"
             Layout.preferredHeight: 23 / Style.monitorRatio
             Layout.preferredWidth: 23 / Style.monitorRatio
         }
         Text {
-            id: username
             text: "Username"
             font.pixelSize: 20 / Style.monitorRatio
             Layout.leftMargin: 5 / Style.monitorRatio
@@ -83,8 +66,10 @@ ColumnLayout {
         }
     }
     TextField {
-        id: usernameText
+        id: usernameTxt
+        Layout.fillWidth: true
         Layout.preferredWidth: 340 / Style.monitorRatio
+        Layout.topMargin: 5 / Style.monitorRatio
         height: 40 / Style.monitorRatio
         font.pointSize: 17 / Style.monitorRatio
         leftPadding: 20 / Style.monitorRatio
@@ -99,6 +84,8 @@ ColumnLayout {
     }
     RowLayout {
         spacing: 0
+        Layout.fillWidth: true
+        Layout.topMargin: 20 / Style.monitorRatio
         IconImage {
             source: "qrc:/Resources/lock-closed.png"
             Layout.preferredHeight: 23 / Style.monitorRatio
@@ -112,8 +99,10 @@ ColumnLayout {
         }
     }
     TextField {
-        id: password
+        id: passwordTxt
+        Layout.fillWidth: true
         Layout.preferredWidth: 340 / Style.monitorRatio
+        Layout.topMargin: 5 / Style.monitorRatio
         height: 40 / Style.monitorRatio
         font.pointSize: 17 / Style.monitorRatio
         leftPadding: 20 / Style.monitorRatio
@@ -124,6 +113,29 @@ ColumnLayout {
         background: Rectangle {
             color: foregroundColorTextBox
             radius: height / 2
+        }
+    }
+
+    Button {
+        id: signInBtn
+
+        Layout.preferredHeight: 40 / Style.monitorRatio
+        Layout.fillWidth: true
+        Layout.topMargin: 48 / Style.monitorRatio
+        hoverEnabled: true
+        background: Rectangle {
+            color: Style.foregroundColor
+            radius: width / (Style.monitorRatio * 2)
+        }
+        contentItem: Text {
+            text: "Sign in"
+            color: parent.hovered ? "#01AED6" : Style.backgroundColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        onClicked: {
+
         }
     }
 }

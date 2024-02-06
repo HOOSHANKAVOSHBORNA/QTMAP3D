@@ -159,13 +159,13 @@ void SimpleModelNode::setNodeData(const NodeData &nodeData)
 //    setColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
         mNodeInformation->setNodeData(nodeData);
-//    if(mBookmarkItem)
-//        mBookmarkItem->setInfo(QString::fromStdString(mNodeData->type),
-//                               QString::fromStdString(mNodeData->name),
-//                               mNodeInformation->window(),
-//                               QString::fromStdString(mNodeData->imgSrc));
+    if (mBookmarkItem)
+        mBookmarkItem->setInfo(mNodeData.type.toString(),
+                               mNodeData.name,
+                               mNodeInformation->window(),
+                               mNodeData.iconInfoUrl);
 
-//    //TODO add signal for update data--------------------
+    //    //TODO add signal for update data--------------------
     setUserData(&mNodeData);
 }
 

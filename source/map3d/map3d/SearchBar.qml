@@ -60,7 +60,6 @@ Item{
             }
             onTextChanged: function() {
                 rootItem.model.setFilterString(text)
-                print(filterRect.height)
             }
             placeholderText: "Search ..."
             placeholderTextColor: Style.disableColor
@@ -185,6 +184,7 @@ Item{
             id: dropDown
             property int innerWidth
             anchors.top: filterRect.top
+            anchors.topMargin: 25 / Style.monitorRatio
             anchors.left: parent.left
             filterManager: rootItem.filterManager
             visible: parent.height > 300 / Style.monitorRatio

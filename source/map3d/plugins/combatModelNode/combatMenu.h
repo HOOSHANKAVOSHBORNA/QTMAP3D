@@ -12,7 +12,6 @@ public:
     enum CustomRoles {
         Name = Qt::UserRole + 1,
         Icon,
-        Color,
         State,
         StateColor,
         Select
@@ -53,7 +52,6 @@ class OperatorListModel : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(QString operatorName       READ getOperatorName       WRITE setOperatorName       NOTIFY operatorChanged FINAL)
     Q_PROPERTY(QUrl    operatorIcon       READ getOperatorIcon       WRITE setOperatorIcon       NOTIFY operatorChanged FINAL)
-    Q_PROPERTY(QString operatorColor      READ getOperatorColor      WRITE setOperatorColor      NOTIFY operatorChanged FINAL)
     Q_PROPERTY(bool    operatorIsAttacker READ getOperatorIsAttacker WRITE setOperatorIsAttacker NOTIFY operatorChanged FINAL)
 
 public:
@@ -75,11 +73,9 @@ public:
 
     QString getOperatorName();
     QUrl getOperatorIcon();
-    QString getOperatorColor();
     bool getOperatorIsAttacker();
     void setOperatorName(QString name);
     void setOperatorIcon(QUrl url);
-    void setOperatorColor(QString color);
     void setOperatorIsAttacker(bool attacker);
 
 signals:
@@ -94,7 +90,6 @@ private:
 
     QString mOperatorName;
     QUrl mOperatorIcon;
-    QString mOperatorColor;
     int mOperatorIsAttacker;
 
 };

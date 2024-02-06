@@ -540,5 +540,6 @@
         <file>Resources/radioButtonCircleEmpty.png</file>
         <file>Resources/plugged.png</file>
         <file>Resources/unplugged.png</file>
+        <file>Resources/back.png</file>
     </qresource>
 </RCC>
