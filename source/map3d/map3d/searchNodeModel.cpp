@@ -1,7 +1,7 @@
 #include "searchNodeModel.h"
 #include "mapObject.h"
 #include "serviceManager.h"
-
+#include "filterManager.h"
 #include <osgEarth/ModelLayer>
 #include <osg/Node>
 #include <osgEarthAnnotation/GeoPositionNode>
@@ -14,6 +14,7 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent):
     connect(mMapItem->getMapObject(), &MapObject::nodeToLayerAdded, this , &SearchNodeModel::addNode);
     connect(mMapItem->getMapObject(), &MapObject::nodeFromLayerRemoved,  this , &SearchNodeModel::removeNode);
     mTypeListModel = new TypeListModel;
+    mFilterManager = new FilterManager;
 
 }
 
@@ -55,6 +56,16 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer) {
             beginInsertRows(QModelIndex(), mNodes1.size(), mNodes1.size());
             mNodes1.push_back(new NodeInfo{geonode, nodeData});
             endInsertRows();
+        }
+
+        // ToDo: optimize it
+        for (auto &field : nodeData->fieldData){
+            if (field.name.toLower() == "color")
+                mFilterManager->addColorFilterField(field.value.toString());
+            else if (std::strcmp(field.value.typeName(), "double") == 0 || std::strcmp(field.value.typeName(), "qlonglong") == 0)
+                mFilterManager->addNumFilterField(field.name);
+            else if (std::strcmp(field.value.typeName(), "QString") == 0)
+                mFilterManager->addStringFilterField(field.name);
         }
     }
 }
@@ -114,6 +125,11 @@ TypeListModel *SearchNodeModel::getTypeListModel() const
     return mTypeListModel;
 }
 
+FilterManager *SearchNodeModel::filterManager() const
+{
+    return mFilterManager;
+}
+
 //void SearchNodeModel::init()
 //{
 //    std::vector<osg::ref_ptr<osgEarth::Layer>> layers;
@@ -157,21 +173,21 @@ bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
             if(myVector.size()==0){
                 return true;
             }
-                return false;
+            return false;
         }
     }else if ((index.data(SearchNodeModel::iD_).toString().contains(mFilterString, Qt::CaseInsensitive))){
         if (std::find(myVector.begin(), myVector.end(), dataString) != myVector.end()){
-                return true;
+            return true;
         }
         else{
-                if(myVector.size()==0){
+            if(myVector.size()==0){
                 return true;
-                }
-                return false;
+            }
+            return false;
         }
     }
     return false;
-    }
+}
 
 QString SearchNodeProxyModel::filterString() const
 {
@@ -248,6 +264,12 @@ void SearchNodeManager::setMapItem(MapItem *mapItem)
 SearchNodeProxyModel *SearchNodeManager::searchNodeProxyModel() const
 {
     return mSearchNodeProxyModel;
+}
+
+FilterManager* SearchNodeManager::getFilterManager() const
+{
+    auto i = dynamic_cast<SearchNodeModel*>(mSearchNodeProxyModel->sourceModel());
+    return i->filterManager();
 }
 
 SearchNodeManager *SearchNodeManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
