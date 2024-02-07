@@ -541,5 +541,6 @@
         <file>Resources/plugged.png</file>
         <file>Resources/unplugged.png</file>
         <file>Resources/back.png</file>
+        <file>Resources/loading.gif</file>
     </qresource>
 </RCC>

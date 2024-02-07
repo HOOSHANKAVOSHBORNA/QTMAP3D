@@ -28,28 +28,6 @@ void LoginPage::signIn(const QString username, const QString password)
     emit signedIn();
 }
 
-void LoginPage::openSettings()
-{
-    mSettingsWindow = new QQuickWindow();
-    QQmlComponent* comp = new QQmlComponent(mQmlEngine);
-    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status){
-        if(status == QQmlComponent::Error){
-            qDebug()<<"Can not load SettingsItem : "<<comp->errorString();
-        }
-
-        if(status == QQmlComponent::Ready){
-           QQuickItem *settingsItem = qobject_cast<QQuickItem*>(comp->create());
-           QQuickItem *rootItem = mSettingsWindow->contentItem();
-           settingsItem->setParentItem(rootItem);
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/ConnectionConfiguration.qml"));
-
-    mSettingsWindow->setHeight(400);
-    mSettingsWindow->setWidth(400);
-    mSettingsWindow->show();
-}
-
 void LoginPage::onWindowClosed()
 {
     QCoreApplication::exit(-1);
@@ -84,6 +62,9 @@ UserManager::UserManager(ServiceManager *serviceManager, QQmlApplicationEngine *
     qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
     mLoginPage = new LoginPage(serviceManager,qmlEngine);
     qmlEngine->rootContext()->setContextProperty("loginPage", mLoginPage);
+    mLoadingInfo = new LoadingInfo();
+    qmlEngine->rootContext()->setContextProperty("loadingInfo", mLoadingInfo);
+
     connect(mLoginPage, &LoginPage::signedIn, this, &UserManager::signedIn);
     mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
 }
