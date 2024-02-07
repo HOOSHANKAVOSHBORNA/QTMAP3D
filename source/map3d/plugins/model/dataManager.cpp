@@ -39,7 +39,6 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
     if (!mNodeMap.contains(nodeData.id)) {
         // TODO: setup filter needed data mUniqueColorss
         NodeData movedNode(nodeData);
-        mFilterManager->addFilterField(&movedNode);
 
         // adding new uniuqe category name
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {

@@ -29,15 +29,15 @@ MapControllerItem::MapControllerItem():
 //--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-    mFilterManager = new FilterManager(this);
+    mFilterManager = mSearchNodeManager->getFilterManager();
     getMapObject()->setFilterManager(mFilterManager);
-    connect(getMapObject(), &MapObject::nodeToLayerAdded, [this](osg::Node *node, osgEarth::Layer *layer){
-        auto data = node->getUserData();
-        NodeData *nodeData = dynamic_cast<NodeData*>(data);
-        if (nodeData){
-            mFilterManager->addFilterField(nodeData);
-        }
-    });
+    // connect(getMapObject(), &MapObject::nodeToLayerAdded, [this](osg::Node *node, osgEarth::Layer *layer){
+    //     auto data = node->getUserData();
+    //     NodeData *nodeData = dynamic_cast<NodeData*>(data);
+    //     if (nodeData){
+    //         mFilterManager->addFilterField(nodeData);
+    //     }
+    // });
 
 //    mSearchNodeManager = new SearchNodeManager();
 

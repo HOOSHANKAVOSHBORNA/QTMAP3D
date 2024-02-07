@@ -35,6 +35,7 @@ Item {
                                           Style.backgroundColor.g,
                                           Style.backgroundColor.b, 0.75)
 
+    //    DebugInAnchor {}
     function isNumeric(s) {
         return !isNaN(s - parseFloat(s))
     }
@@ -54,7 +55,7 @@ Item {
         id: txtObjectList
         text: "Object list"
         anchors.top: parent.top
-        anchors.topMargin: 20
+        anchors.topMargin: 0
         anchors.left: parent.left
         color: Style.foregroundColor
         font.family: Style.fontFamily
@@ -104,7 +105,8 @@ Item {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             repeaterNodeTypeFilter.currentIndex = index
-                            tableModel.filterCategoryTag(txtNodeTypeFilter.text)
+                            tableModel.setFilterCategoryTag(
+                                        txtNodeTypeFilter.text)
                         }
                     }
                 }
@@ -139,7 +141,7 @@ Item {
         width: rootItem.width
         height: 50
         anchors.top: filterRect.bottom
-        anchors.topMargin: 30
+        anchors.topMargin: 50
         anchors.left: rootItem.left
         anchors.right: rootItem.right
 
@@ -154,13 +156,8 @@ Item {
             width: parent.width
             anchors.left: parent.left
             anchors.right: parent.right
+
             //            currentIndex: categoryRect.currentIndex
-            Component.onCompleted: {
-
-                //tableModel.filterStringColumn(repeater.itemAt(0).text)
-                //console.log(tabMain.modelData)
-            }
-
             Repeater {
                 id: repeater
                 model: tableModel ? tableModel.tabbarModel : undefined
@@ -171,16 +168,10 @@ Item {
                 delegate: TabButton {
                     id: tabMain
 
-                    Component.onCompleted: {
-
-                        //                        tableModel.filterStringColumn(repeater.itemAt(0).text)
-                        //console.log(repeater.itemAt(0).text)
-                    }
-
                     text: model.display
 
                     onClicked: {
-                        tableModel.filterStringColumn(txtTabbar.text)
+                        tableModel.setFilterColumn(txtTabbar.text)
                         categoryRect.currentIndex = model.index
                     }
                     background: Rectangle {
@@ -664,17 +655,24 @@ Item {
                                     anchors.fill: parent
                                     onClicked: {
                                         console.log(lvDelegate.lvIndex)
-                                        if (tableview.isAttackecd) {
-
-                                            //                                            iconAttackerButton.color = "transparent"
-                                            //                                            tableview.isAttackecd = false
-                                        } else {
-
-                                            //                                            iconAttackerButton.color = "#01AED6"
-                                            //                                            tableview.isAttackecd = true
+                                        if (model.index === 2) {
+                                            tableModel.goToPosition(
+                                                        lvDelegate.lvIndex)
+                                        } else if (model.index === 3) {
+                                            tableModel.trackPosition(
+                                                        lvDelegate.lvIndex)
                                         }
-                                        tableModel.goToPosition(
-                                                    lvDelegate.lvIndex)
+
+                                        //                                        if (tableview.isAttackecd) {
+
+                                        //                                            iconAttackerButton.color = "transparent"
+                                        //                                            tableview.isAttackecd = false
+                                        //                                        } else {
+
+                                        //                                            iconAttackerButton.color = "#01AED6"
+                                        //                                            tableview.isAttackecd = true
+                                        //                                        }
+
                                         //tableview.checkAttackIconColumn = model.column
                                         //tableview.checkAttackIconRow = model.row
                                     }
