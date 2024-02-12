@@ -37,7 +37,6 @@ MainWindow::MainWindow(QWindow *parent) :
     qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
-//    qmlRegisterSingletonType<SettingsManager>("Crystal", 1, 0, "SettingsInstance", SettingsManager::createSingletonInstance);
 
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
     setColor(Qt::black);

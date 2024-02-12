@@ -25,7 +25,7 @@ NodeTest::NodeTest(ServiceManager *serviceManager):
             mServiceManager->sendPolyLine(nodeInfo.polyLineData);
         }
     });
-    timerUpdate->start(50);
+    timerUpdate->start(1000);
 }
 
 void NodeTest::createInfo()

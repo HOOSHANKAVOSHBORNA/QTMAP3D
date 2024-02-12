@@ -52,7 +52,8 @@ add_executable(Map3d
         autoScaler.h autoScaler.cpp
         splash.h splash.cpp
         listWindow.cpp listWindow.h
-        connectionConfiguration.h connectionConfiguration.cpp)
+        connectionConfiguration.h connectionConfiguration.cpp
+        loadingInfo.h loadingInfo.cpp)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/" "Components/")

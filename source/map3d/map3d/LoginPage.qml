@@ -41,7 +41,7 @@ ApplicationWindow {
         easing.type: Easing.OutCirc
         property: "height"
         from: 464 / Style.monitorRatio
-        to: 644 / Style.monitorRatio
+        to: 687 / Style.monitorRatio
         duration: 500
     }
     PropertyAnimation {
@@ -49,7 +49,7 @@ ApplicationWindow {
         target: containerRect
         easing.type: Easing.OutCirc
         property: "height"
-        from: 644 / Style.monitorRatio
+        from: 687 / Style.monitorRatio
         to: 464 / Style.monitorRatio
         duration: 500
     }
@@ -102,12 +102,17 @@ ApplicationWindow {
                 signInPage.visible = false
                 connectionPage.visible = true
                 topToBottomConnection.start()
+                heightIncrease.from = 464 / Style.monitorRatio
+                heightIncrease.to = 687 / Style.monitorRatio
                 heightIncrease.start()
             }
             signInBtn.onClicked: {
                 logInPageVisible = false
                 signInPage.visible = false
                 rolePage.visible = true
+                heightIncrease.from = 464 / Style.monitorRatio
+                heightIncrease.to = 504 / Style.monitorRatio
+                heightIncrease.start()
                 topToBottomRole.start()
             }
         }
@@ -124,6 +129,8 @@ ApplicationWindow {
             connectionStatus.onClicked: {
                 rolePage.visible = false
                 connectionPage.visible = true
+                heightIncrease.from = 504 / Style.monitorRatio
+                heightIncrease.to = 687 / Style.monitorRatio
                 heightIncrease.start()
                 topToBottomConnection.start()
             }
@@ -131,28 +138,82 @@ ApplicationWindow {
                 loginPage.signIn(signInPage.usernameTxt.text,
                                  signInPage.passwordTxt.text)
             }
+            backBtn.onClicked: {
+                rolePage.visible = false
+                signInPage.visible = true
+                heightDecrease.from = 504 / Style.monitorRatio
+                heightDecrease.to = 464 / Style.monitorRatio
+                heightDecrease.start()
+                topToBottomSignIn.start()
+            }
         }
 
         ConnectionConfiguration {
             id: connectionPage
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: 50 / Style.monitorRatio
-            anchors.rightMargin: 50 / Style.monitorRatio
             visible: false
-
-            connectionStatus.onClicked: {
+            backBtn.onClicked: {
                 if (logInPageVisible) {
                     connectionPage.visible = false
                     signInPage.visible = true
+                    heightDecrease.from = 687 / Style.monitorRatio
+                    heightDecrease.to = 464 / Style.monitorRatio
+                    heightDecrease.start()
                     topToBottomSignIn.start()
                 } else {
                     connectionPage.visible = false
+                    heightDecrease.from = 687 / Style.monitorRatio
+                    heightDecrease.to = 504 / Style.monitorRatio
+                    heightDecrease.start()
                     rolePage.visible = true
                     topToBottomRole.start()
                 }
-                heightDecrease.start()
             }
         }
+    }
+
+    //    Rectangle {
+    //        id: loadingContainer
+    //        width: parent.width
+    //        height: 0.1 * parent.height
+    //        y: 0.75 * parent.height
+    //        color: "transparent"
+    //        clip: true
+
+    //        ScrollView {
+    //            anchors.horizontalCenter: parent.horizontalCenter
+    //            height: parent.height
+    //            width: 200 / Style.monitorRatio
+
+    //            ListView {
+    //                model: loadingInfo
+
+    //                delegate: Text {
+    //                    id: loadingText
+    //                    font.pixelSize: 20 / Style.monitorRatio
+    //                    color: acceptionState ? "white" : "red"
+    //                    text: display
+    //                    leftPadding: 40 / Style.monitorRatio
+
+    //                    //                    PropertyAnimation {
+    //                    //                        id: textAnimation
+    //                    //                        target: loadingText
+    //                    //                        property: "y"
+    //                    //                        loops: Animation.Infinite
+    //                    //                        from: 1000
+    //                    //                        to: -1000
+    //                    //                        duration: 5000
+    //                    //                        running: true
+    //                    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    AnimatedImage {
+        source: "qrc:/Resources/loading.gif"
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 100 / Style.monitorRatio
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: 40 / Style.monitorRatio
+        height: 40 / Style.monitorRatio
     }
 }

@@ -19,17 +19,34 @@ Item {
                                                      Style.foregroundColor.b,
                                                      0.50)
     property alias connectionStatus: connectionStatus
+    property alias backBtn: backBtn
 
     height: parent ? parent.height : 0
     width: parent ? parent.width : 0
 
+
     ColumnLayout {
         spacing: 0
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: 50 / Style.monitorRatio
+        anchors.rightMargin: 50 / Style.monitorRatio
+
+        Button {
+            id: backBtn
+            Layout.preferredHeight: 40 / Style.monitorRatio
+            Layout.preferredWidth: 40 / Style.monitorRatio
+            Layout.topMargin: 30 / Style.monitorRatio
+            background: Image {
+                source: "qrc:/Resources/back.png"
+            }
+        }
 
         RowLayout {
             id: header
             Layout.fillWidth: true
-            Layout.topMargin: 60 / Style.monitorRatio
+            Layout.topMargin: 31 / Style.monitorRatio
 
             Text {
                 id: titleText
@@ -39,17 +56,11 @@ Item {
                 Layout.fillWidth: true
             }
 
-            Button {
+            IconImage {
                 id: connectionStatus
-                background: Image {
-                    source: "qrc:/Resources/unplugged.png"
-                }
+                source: "qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
-
-                onClicked: {
-
-                }
             }
         }
 

@@ -32,6 +32,8 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
 
+    FilterManager *filterManager() const;
+
 public slots:
     void addNode(osg::Node *node, osgEarth::Layer *layer);
     void removeNode( osg::Node *node,osgEarth::Layer *layer);
@@ -47,6 +49,7 @@ private:
     std::vector<NodeInfo *> mNodes1;
 
     TypeListModel *mTypeListModel{nullptr};
+    FilterManager *mFilterManager;
 };
 
 //----------------------------------------------
@@ -107,6 +110,7 @@ public:
     static SearchNodeManager* createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
     void setMapItem(MapItem *mapItem);
     Q_INVOKABLE SearchNodeProxyModel *searchNodeProxyModel() const;
+    FilterManager *getFilterManager() const;
 
 private:
     explicit SearchNodeManager();

@@ -83,14 +83,27 @@ class FilterManager : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(QVector<QString> stringFilterFields READ stringFilterFields NOTIFY filterFieldsChanged)
-    Q_PROPERTY(QVector<QString> numFilterFields READ numFilterFields NOTIFY filterFieldsChanged)
-    Q_PROPERTY(QVector<QString> colorFilterFields READ colorFilterFields NOTIFY filterFieldsChanged)
+    Q_PROPERTY(QSet<QString> stringFilterFields READ stringFilterFields NOTIFY filterFieldsChanged)
+    Q_PROPERTY(QSet<QString> numFilterFields READ numFilterFields NOTIFY filterFieldsChanged)
+    Q_PROPERTY(QSet<QString> colorFilterFields READ colorFilterFields NOTIFY filterFieldsChanged)
     Q_PROPERTY(QVector<Tag*> filterTags READ getFilterTags NOTIFY filterTagsEdited)
 public:
 
     FilterManager(QObject* parent = nullptr);
-    void addFilterField(NodeData *nodeData);
+    // void addFilterField(NodeData *nodeData);
+    void addColorFilterField(QSet<QString> &fields);
+    void setColorFilterField(QSet<QString> &fields);
+    void addColorFilterField(QString fields);
+    void addNumFilterField(QSet<QString> &fields);
+    void setNumFilterField(QSet<QString> &fields);
+    void addNumFilterField(QString fields);
+    void addStringFilterField(QSet<QString> &fields);
+    void setStringFilterField(QSet<QString> &fields);
+    void addStringFilterField(QString fields);
+
+    void removeColorFilterField(QString field);
+    void removeNumFilterField(QString field);
+    void removeStringFilterField(QString field);
     bool checkNodeToShow(NodeData *nodeData);
 
     Q_INVOKABLE void addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
@@ -99,21 +112,21 @@ public:
     Q_INVOKABLE const QVector<Tag*> getFilterTags() const;
     Q_INVOKABLE const Tag * const getFilterTagAt(int index);
 
-    const QVector<QString> &stringFilterFields() const;
-    const QVector<QString> &colorFilterFields() const;
-    const QVector<QString> &numFilterFields() const;
+    const QSet<QString> &stringFilterFields() const;
+    const QSet<QString> &colorFilterFields() const;
+    const QSet<QString> &numFilterFields() const;
 
 signals:
     void filterFieldsChanged();
     void filterTagsEdited();
 private:
-    void addFilterField(QString field, QVariant value);
+    // void addFilterField(QString field, QVariant value);
     bool checkNodeToShow(NodeData *nodeData, Tag* tag);
 
 private:
-    QVector<QString> mFilterFieldsColor;               // color fields
-    QVector<QString> mFilterFieldsStr;                    // all   fields
-    QVector<QString> mFilterFieldsNum;                 // int   fields
+    QSet<QString> mFilterFieldsColor;               // color fields
+    QSet<QString> mFilterFieldsStr;                    // all   fields
+    QSet<QString> mFilterFieldsNum;                 // int   fields
     QVector<Tag*> mFilterTags{};
 };
 

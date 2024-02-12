@@ -2,6 +2,7 @@
 #define USERMANAGER_H
 #include "qqmlapplicationengine.h"
 #include "serviceManager.h"
+#include "loadingInfo.h"
 #include "connectionConfiguration.h"
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -18,7 +19,6 @@ public:
     void setServiceManager(ServiceManager *newServiceManager);
 
    Q_INVOKABLE void signIn(const QString username, const QString password);
-   Q_INVOKABLE void openSettings();
 
    bool windowHidden() const;
    void setWindowHidden(bool newWindowHidden);
@@ -88,6 +88,7 @@ private:
     QQmlApplicationEngine *mQmlEngine{nullptr};
     LoginPage *mLoginPage{nullptr};
     Profile *mProfile;
+    LoadingInfo *mLoadingInfo;
 };
 
 
