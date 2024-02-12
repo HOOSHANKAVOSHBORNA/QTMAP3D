@@ -18,7 +18,7 @@ class ListWindow;
 class LayerModel;
 
 Q_DECLARE_METATYPE(MapItem)
-class MainWindow : public QQuickWindow
+class MainWindow : public QQuickItem
 {
     Q_OBJECT
 //    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
@@ -66,11 +66,6 @@ public:
 public slots:
     void showListWindow();
     void setListWindow(ListWindow *listWindow);
-
-signals:
-
-protected:
-    bool event(QEvent *ev) override;
 
 private:
     MapControllerItem *mMapItem = nullptr;

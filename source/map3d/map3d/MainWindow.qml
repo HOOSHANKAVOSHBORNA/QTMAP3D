@@ -5,53 +5,47 @@ import QtQuick.Layouts 1.13
 import QtQuick.Controls.Material 2.12
 import QtQuick.Effects
 import Crystal 1.0
-import "style"
 
+import "style"
 
 CMainWindow {
     id: mainWindow
-    // visible: true
-    width: 800
-    minimumWidth: 800
-    minimumHeight: 700
-    x: (Screen.width - width) / 2
-    y: (Screen.height - height) / 2
-    title: qsTr("MAP3D")
 
+    // visible: true
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
-    readonly property color     _colorHover : "#01AED6"
-    readonly property color     _colorPresed : "#003569"
+    readonly property color _colorHover: "#01AED6"
+    readonly property color _colorPresed: "#003569"
 
     function addToCenterCenterContainer(item) {
         centerCenterContainer.data.push(item)
     }
-    color: Style.backgroundColor
-    Item {
+
+    Rectangle {
         anchors.fill: parent
 
+        color: 'purple'
 
         Item {
             id: unPinContainer
             anchors.top: parent.top
             anchors.left: parent.left
-            anchors.margins: 5/Style.monitorRatio
+            anchors.margins: 5 / Style.monitorRatio
             z: 1
             width: sideBar.minWidth
-            height: mainWindow.height - (25 + 10)/Style.monitorRatio
+            height: mainWindow.height - (25 + 10) / Style.monitorRatio
 
             SideBar {
                 id: sideBar
                 anchors.fill: parent
                 //                pin: true
                 onPinChanged: {
-                    if(pin){
+                    if (pin) {
                         parent = pinContainer
                         pinContainer.visible = true
                         unPinContainer.visible = false
-                    }
-                    else{
+                    } else {
                         parent = unPinContainer
                         pinContainer.visible = false
                         unPinContainer.visible = true

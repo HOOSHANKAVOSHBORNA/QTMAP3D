@@ -4,14 +4,11 @@ import QtQuick.Layouts
 import Crystal
 import "style"
 
-ApplicationWindow {
+Item {
     id: signUpWindow
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
-    minimumHeight: 600
-    minimumWidth: 800
     visible: !loginPage.windowHidden
-    title: qsTr("SignIn/SignUp")
 
     readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
                                                      Style.backgroundColor.g,
@@ -23,10 +20,6 @@ ApplicationWindow {
     //    onSignedIn: (status)=>{
 
     //    }
-    onClosing: {
-        loginPage.onWindowClosed()
-    }
-
     Image {
         id: backGroundImage
         source: "qrc:/Resources/login-earth.jpg"

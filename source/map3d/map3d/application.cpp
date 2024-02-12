@@ -10,11 +10,10 @@
 #include <QSplashScreen>
 
 #include "application.h"
-#include "mainwindow.h"
 #include "listWindow.h"
+#include "mainwindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
-#include "filterManager.h"
 
 Application::Application() :
     mPluginManager(new PluginManager)
@@ -39,27 +38,113 @@ void Application::initialize()
     qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
     qmlRegisterType<Splash>("Crystal", 1, 0, "CSplash");
+
     //--qml--------------------------------------------------
     initializeQmlEngine();
+
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
     mNetworkManager->start();
+
     mServiceManager = new ServiceManager(mNetworkManager);
+
     //--user manger------------------------------------------
     mUserManager = new UserManager(mServiceManager, mQmlEngine);
-    connect(mUserManager, &UserManager::signedIn, [this] {
-        mQmlEngine->load(QStringLiteral("qrc:///SplashWindow.qml"));
+
+    connect(mPluginManager, &PluginManager::pluginsLoaded, this, &Application::ready);
+    connect(this, &Application::ready, this, &Application::createApplicationQml);
+
+    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
+    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
+}
+
+void Application::initializeQmlEngine()
+{
+    mQmlEngine = new QQmlApplicationEngine();
+    QObject::connect(mQmlEngine,
+                     &QQmlApplicationEngine::objectCreated,
+                     this,
+                     &Application::onQmlObjectCreated,
+                     Qt::DirectConnection);
+
+    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreationFailed, [](const QUrl &url) {
+        qDebug() << "Can not create: " << url.toString();
     });
+}
+
+void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
+{
+    if (!obj) {
+        qDebug() << "Can not create: " << objUrl.toString();
+        QCoreApplication::exit(-1);
+        return;
+    }
+
+    MainWindow *mainWnd = qobject_cast<MainWindow *>(obj);
+    ListWindow *listWnd = qobject_cast<ListWindow *>(obj);
+
+    if (mainWnd) {
+        qDebug() << "Load: " << objUrl.toString();
+        mMainWindow = mainWnd;
+        mMainWindow->initComponent();
+
+        mPluginManager->loadPlugins();
+        mPluginManager->setup();
+    } else if (listWnd) {
+        qDebug() << "Load: " << objUrl.toString();
+        mListWindow = listWnd;
+        mMainWindow->setListWindow(mListWindow);
+    } else {
+        qDebug() << "qml object created not found!";
+    }
+}
+
+void Application::createApplicationQml()
+{
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+        if (status == QQmlComponent::Error) {
+            qDebug() << "Can not load this: " << comp->errorString();
+        }
+
+        if (status == QQmlComponent::Ready) {
+            mApplicationQml = qobject_cast<QQuickWindow *>(comp->create());
+
+            qDebug() << "application window loaded";
+            qDebug() << mMainWindow;
+            mApplicationQml->setProperty("mainWindow", QVariant::fromValue(mMainWindow));
+        }
+    });
+
+    comp->loadUrl(QUrl("qrc:/ApplicationWindow.qml"));
+}
+
+void Application::createMainWindowQml()
+{
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+        if (status == QQmlComponent::Error) {
+            qDebug() << "Can not load this: " << comp->errorString();
+        }
+
+        if (status == QQmlComponent::Ready) {
+            mMainWindow = static_cast<MainWindow *>(qobject_cast<QQuickItem *>(comp->create()));
+
+            qDebug() << "main window loaded";
+        }
+    });
+
+    comp->loadUrl(QUrl("qrc:/MainWindow.qml"));
 }
 
 void Application::show()
 {
     if (mIsReady) {
-        mMainWindow->show();
+        mApplicationQml->show();
     } else {
-        QObject::connect(this, &Application::ready, [this]() {
-            mMainWindow->show();
-        });
+        QObject::connect(this, &Application::ready, [this]() { mApplicationQml->show(); });
     }
 }
 
@@ -72,54 +157,12 @@ void Application::initializeSurfaceFormat()
     QSurfaceFormat::setDefaultFormat(fmt);
 }
 
-void Application::initializeQmlEngine()
-{
-    mQmlEngine = new QQmlApplicationEngine();
-    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreated,
-                     this, &Application::onQmlObjectCreated,
-                     Qt::DirectConnection);
-
-    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreationFailed,[]( const QUrl &url){
-        qDebug()<<"Can not create: "<< url.toString();
-    });
-}
-
-void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
-{
-    if(!obj){
-        qDebug()<<"Can not create: "<< objUrl.toString();
-        QCoreApplication::exit(-1);
-        return;
-    }
-
-    MainWindow *mainWnd = qobject_cast<MainWindow*>(obj);
-    ListWindow *listWnd = qobject_cast<ListWindow*>(obj);
-    Splash *splash = qobject_cast<Splash*>(obj);
-
-    if (splash) {
-        qDebug()<<"Load: "<< objUrl.toString();
-        mSplash = splash;
-        showSplash();
-    }
-    if (mainWnd) {
-        qDebug()<<"Load: "<< objUrl.toString();
-        mMainWindow = mainWnd;
-        mMainWindow->initComponent();
-    }
-
-    if (listWnd) {
-        qDebug()<<"Load: "<< objUrl.toString();
-        mListWindow = listWnd;
-        mMainWindow->setListWindow(mListWindow);
-    }
-}
-
 void Application::onUICreated()
 {
-//    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
+    //    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
     // connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
-            // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
-        // });
+    // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
+    // });
     // connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
     mIsReady = true;
@@ -129,22 +172,4 @@ void Application::onUICreated()
 ServiceManager *Application::serviceManager() const
 {
     return mServiceManager;
-}
-
-void Application::showSplash()
-{
-    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
-    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
-    mSplash->show();
-    QTimer *splashTimer = new QTimer;
-    connect(splashTimer, &QTimer::timeout, [this](){
-        mPluginManager->loadPlugins();
-        mPluginManager->setup();
-    });
-    splashTimer->setSingleShot(true);
-    splashTimer->start(400);
-    connect(mPluginManager, &PluginManager::pluginsLoaded, [this](){
-        mSplash->hide();
-        onUICreated();
-    });
 }

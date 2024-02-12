@@ -64,9 +64,6 @@ UserManager::UserManager(ServiceManager *serviceManager, QQmlApplicationEngine *
     qmlEngine->rootContext()->setContextProperty("loginPage", mLoginPage);
     mLoadingInfo = new LoadingInfo();
     qmlEngine->rootContext()->setContextProperty("loadingInfo", mLoadingInfo);
-
-    connect(mLoginPage, &LoginPage::signedIn, this, &UserManager::signedIn);
-    mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
 }
 
 
