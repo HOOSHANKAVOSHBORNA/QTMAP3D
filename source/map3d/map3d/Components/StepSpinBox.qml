@@ -30,12 +30,14 @@ Item {
             Layout.preferredWidth: 69
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01]
             currentIndex: rootItem.stepIndex
-            font.pointSize: 10
+//            font.pointSize: 10
+            font.pixelSize: 15 / Style.monitorRatio
             displayText: model[currentIndex].toString()
 
             contentItem: Text {
                 text: stepCombobox.displayText
                 color: Style.foregroundColor
+                font.pixelSize: 15 / Style.monitorRatio
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
             }
@@ -44,8 +46,8 @@ Item {
                 color: bg30
                 radius: 15
                 IconImage {
-                    width: 15
-                    height: 15
+                    width: 15 / Style.monitorRatio
+                    height: 15 / Style.monitorRatio
                     source: "qrc:/Resources/down.png"
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter

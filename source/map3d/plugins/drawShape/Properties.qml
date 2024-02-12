@@ -102,8 +102,6 @@ Item {
 
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-
-                        //                        selectedColor: /*rootItem.model.fillColor*/ '#099999'
                         onSelectedColorChanged: {
                             rootItem.model.fillColor = selectedColor
                         }
@@ -144,11 +142,8 @@ Item {
 
                             ColorPicker {
                                 id: strokeColorPick
-
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-
-                                //                                selectedColor: rootItem.model.strokeColor /*'#099999'*/
                                 onSelectedColorChanged: {
                                     rootItem.model.strokeColor = selectedColor
                                 }
@@ -229,12 +224,6 @@ Item {
                                     Layout.minimumWidth: 100 / Style.monitorRatio
                                     Layout.rightMargin: 5 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
-
-
-
-
-
-
                                     height: valHeight / Style.monitorRatio
                                     decimals: 4
                                     from: -180
@@ -287,7 +276,7 @@ Item {
                                     text: "Z "
                                     padding: 5 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
-                                    font.pointSize: 10
+                                    font.pointSize: 10 / Style.monitorRatio
                                     color: Style.foregroundColor
                                 }
                                 StepSpinBox {
@@ -318,7 +307,7 @@ Item {
                             CheckBox {
                                 id: relative
                                 text: "Relative"
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pointSize:10 / Style.monitorRatio
                                 checked: false
 
                                 onCheckStateChanged: if (checked === true) {
@@ -449,7 +438,7 @@ Item {
                             Text {
                                 Layout.preferredWidth: 20 / Style.monitorRatio
                                 text: "Z "
-                                padding: 5
+                                padding: 5 / Style.monitorRatio
                                 font.pointSize: 10 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 color: Style.foregroundColor
@@ -1005,7 +994,7 @@ Item {
                     Switch {
                         id: showLenghtValue
                         padding: 0
-                        width: 100
+                        width: 100 / Style.monitorRatio
                         height: valHeight / Style.monitorRatio
                         checked: false
                         onToggled: function () {
