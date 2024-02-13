@@ -5,10 +5,13 @@ import Crystal
 import "style"
 
 Item {
-    id: signUpWindow
+    id: loginPage
+
+    property var loginPageCpp: undefined
+    property var connectionConfigCpp: undefined
+
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
-    visible: !loginPage.windowHidden
 
     readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
                                                      Style.backgroundColor.g,
@@ -129,7 +132,7 @@ Item {
             }
             signInBtn.onClicked: {
 
-                loginPage.signIn(signInPage.usernameTxt.text,
+                loginPageCpp.signIn(signInPage.usernameTxt.text,
                                  signInPage.passwordTxt.text)
             }
             backBtn.onClicked: {
@@ -144,6 +147,7 @@ Item {
 
         ConnectionConfiguration {
             id: connectionPage
+            connectionConfigCpp: loginPage.connectionConfigCpp
             visible: false
             backBtn.onClicked: {
                 if (logInPageVisible) {

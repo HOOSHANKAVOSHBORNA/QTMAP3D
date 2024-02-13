@@ -12,20 +12,16 @@
 #include <QQmlEngine>
 #include <QJSEngine>
 
-#include "mainwindow.h"
-#include "mapItem.h"
-#include "listWindow.h"
-#include "qqmlcontext.h"
-#include "mapControllerItem.h"
-#include "layerManager.h"
-#include "locationManager.h"
-//#include "settings.h"
-#include "qmlNode.h"
-#include "filterManager.h"
-#include "userManager.h"
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
+#include "layerManager.h"
+#include "listWindow.h"
+#include "locationManager.h"
+#include "mainwindow.h"
+#include "mapControllerItem.h"
+#include "mapItem.h"
+#include "qmlNode.h"
 #include "smallMap.h"
 
 MainWindow::MainWindow(QWindow *parent)

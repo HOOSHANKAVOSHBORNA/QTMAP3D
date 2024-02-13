@@ -1,4 +1,5 @@
 #include "userManager.h"
+#include "connectionConfiguration.h"
 //#include "qcryptographichash.h"
 #include <QQmlContext>
 #include <QApplication>
