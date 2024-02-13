@@ -32,15 +32,7 @@ Window {
             }
 
             TabButton {
-                text: 'Splash Page'
-            }
-
-            TabButton {
-                text: 'Connection Page'
-            }
-
-            TabButton {
-                text: 'Role Page'
+                text: 'Loading Page'
             }
 
             TabButton {
@@ -59,17 +51,6 @@ Window {
             Layout.fillHeight: true
             currentIndex: debugTabbar.currentIndex
 
-            //        Rectangle {
-            //            Layout.fillWidth: true
-            //            Layout.fillHeight: true
-
-            //            color: 'royalblue'
-
-            //            Text {
-            //                text: qsTr("Login Page")
-            //                anchors.centerIn: parent
-            //            }
-            //        }
             LoginPage {
                 loginPageCpp: applicationWindow.loginPageCpp
                 Layout.fillWidth: true
@@ -83,42 +64,6 @@ Window {
 
             }
 
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                color: 'royalblue'
-
-                Text {
-                    text: qsTr("Connection Page")
-                    anchors.centerIn: parent
-                }
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                color: 'royalblue'
-
-                Text {
-                    text: qsTr("Role Page")
-                    anchors.centerIn: parent
-                }
-            }
-
-//            StackLayout {
-//                id: something
-//                Layout.fillWidth: true
-//                Layout.fillHeight: true
-
-////                data: applicationWindow.mainWindow ?? []
-
-//                //                Text {
-//                //                    text: qsTr("Map Page")
-//                //                    anchors.centerIn: parent
-//                //                }
-//            }
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
