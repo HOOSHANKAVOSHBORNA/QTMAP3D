@@ -7,6 +7,8 @@ import "style"
 Item {
     id: rootItem
 
+    property var connectionConfigCpp: undefined
+
     property var model: ConnectionConfigurationInstance.getConnectionConfiguration()
     readonly property color foregroundColorTextBox: Qt.rgba(
                                                         Style.foregroundColor.r,

@@ -7,6 +7,9 @@ import "Components"
 Window {
     id: applicationWindow
 
+    property var loginPageCpp: undefined
+    property var connectionConfigCpp: undefined
+    property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
 
     width: 800
@@ -30,22 +33,14 @@ Window {
             }
 
             TabButton {
-                text: 'Splash Page'
-            }
-
-            TabButton {
-                text: 'Connection Page'
-            }
-
-            TabButton {
-                text: 'Role Page'
+                text: 'Loading Page'
             }
 
             TabButton {
                 text: 'Map Page'
 
                 onClicked: {
-                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem();
+                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem()
                 }
             }
         }
@@ -57,78 +52,26 @@ Window {
             Layout.fillHeight: true
             currentIndex: debugTabbar.currentIndex
 
-            //        Rectangle {
-            //            Layout.fillWidth: true
-            //            Layout.fillHeight: true
-
-            //            color: 'royalblue'
-
-            //            Text {
-            //                text: qsTr("Login Page")
-            //                anchors.centerIn: parent
-            //            }
-            //        }
             LoginPage {
+                loginPageCpp: applicationWindow.loginPageCpp
+                connectionConfigCpp: applicationWindow.connectionConfigCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
 
-            Rectangle {
+            LoadingPage {
+                loadingPageCpp: applicationWindow.loadingPageCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-
-                color: 'royalblue'
-
-                Text {
-                    text: qsTr("Splash Page")
-                    anchors.centerIn: parent
-                }
             }
 
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                color: 'royalblue'
-
-                Text {
-                    text: qsTr("Connection Page")
-                    anchors.centerIn: parent
-                }
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                color: 'royalblue'
-
-                Text {
-                    text: qsTr("Role Page")
-                    anchors.centerIn: parent
-                }
-            }
-
-//            StackLayout {
-//                id: something
-//                Layout.fillWidth: true
-//                Layout.fillHeight: true
-
-////                data: applicationWindow.mainWindow ?? []
-
-//                //                Text {
-//                //                    text: qsTr("Map Page")
-//                //                    anchors.centerIn: parent
-//                //                }
-//            }
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
-//                mapItem: applicationWindow.mapItem
+                //                mapItem: applicationWindow.mapItem
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
-
         }
     }
 }

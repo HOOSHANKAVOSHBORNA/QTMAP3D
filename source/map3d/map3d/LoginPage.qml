@@ -5,10 +5,13 @@ import Crystal
 import "style"
 
 Item {
-    id: signUpWindow
+    id: loginPage
+
+    property var loginPageCpp: undefined
+    property var connectionConfigCpp: undefined
+
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
-    visible: !loginPage.windowHidden
 
     readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
                                                      Style.backgroundColor.g,
@@ -128,7 +131,8 @@ Item {
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
-                loginPage.signIn(signInPage.usernameTxt.text,
+
+                loginPageCpp.signIn(signInPage.usernameTxt.text,
                                  signInPage.passwordTxt.text)
             }
             backBtn.onClicked: {
@@ -143,6 +147,7 @@ Item {
 
         ConnectionConfiguration {
             id: connectionPage
+            connectionConfigCpp: loginPage.connectionConfigCpp
             visible: false
             backBtn.onClicked: {
                 if (logInPageVisible) {
@@ -164,49 +169,4 @@ Item {
         }
     }
 
-    //    Rectangle {
-    //        id: loadingContainer
-    //        width: parent.width
-    //        height: 0.1 * parent.height
-    //        y: 0.75 * parent.height
-    //        color: "transparent"
-    //        clip: true
-
-    //        ScrollView {
-    //            anchors.horizontalCenter: parent.horizontalCenter
-    //            height: parent.height
-    //            width: 200 / Style.monitorRatio
-
-    //            ListView {
-    //                model: loadingInfo
-
-    //                delegate: Text {
-    //                    id: loadingText
-    //                    font.pixelSize: 20 / Style.monitorRatio
-    //                    color: acceptionState ? "white" : "red"
-    //                    text: display
-    //                    leftPadding: 40 / Style.monitorRatio
-
-    //                    //                    PropertyAnimation {
-    //                    //                        id: textAnimation
-    //                    //                        target: loadingText
-    //                    //                        property: "y"
-    //                    //                        loops: Animation.Infinite
-    //                    //                        from: 1000
-    //                    //                        to: -1000
-    //                    //                        duration: 5000
-    //                    //                        running: true
-    //                    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    AnimatedImage {
-        source: "qrc:/Resources/loading.gif"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 100 / Style.monitorRatio
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: 40 / Style.monitorRatio
-        height: 40 / Style.monitorRatio
-    }
 }

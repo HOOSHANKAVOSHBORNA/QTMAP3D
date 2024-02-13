@@ -1,14 +1,18 @@
 #ifndef LOADINGINFO_H
 #define LOADINGINFO_H
 #include <QAbstractListModel>
-
+#include <QTimer>
 struct LoadingInfoItem
 {
     QString text;
     bool acceptionState;
 
-    bool operator ==(LoadingInfoItem other){
-        return (text == other.text && acceptionState == other.acceptionState);
+    bool operator <(const LoadingInfoItem& item) const {
+        return acceptionState < item.acceptionState;
+    }
+
+    bool operator ==(const LoadingInfoItem& item) const {
+        return acceptionState == item.acceptionState && text == item.text;
     }
 };
 
@@ -26,9 +30,13 @@ public:
    virtual QHash<int, QByteArray> roleNames() const override;
    Q_INVOKABLE void addItem(const QString &loadingData, bool acceptionState);
    Q_INVOKABLE void removeItem(int index);
+   Q_INVOKABLE void changeAcceptionState(int index, bool state);
+   void swapItem(int sourceIndex, int destinationIndex);
+   void updateData(int index);
 
 private:
    std::vector<LoadingInfoItem> mLoadingDataItem;
+    QTimer* mTimer;
 };
 
 #endif // LOADINGINFO_H
