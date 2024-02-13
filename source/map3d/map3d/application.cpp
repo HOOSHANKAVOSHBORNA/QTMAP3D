@@ -129,10 +129,11 @@ void Application::createApplicationQml()
             //            qDebug() << "application window loaded";
             //            qDebug() << mMainWindow;
             //            mApplicationQml->setProperty("mainPageCpp", QVariant::fromValue(mMainWindow));
-            mApplicationQml = qobject_cast<QQuickWindow *>(comp->createWithInitialProperties({{"loginPageCpp", QVariant::fromValue(loginPage)},
-                                                                                              {"ConnectionConfigCpp", QVariant::fromValue(connectionConfiguration)},
-                                                                                              {"loadingPageCpp", QVariant::fromValue(loadingPage)},
-                                                                                              {"mainPageCpp", QVariant::fromValue(mMainWindow)}}));
+            mApplicationQml = qobject_cast<QQuickWindow *>(comp->createWithInitialProperties(
+                {{"loginPageCpp", QVariant::fromValue(loginPage)},
+                 {"connectionConfigCpp", QVariant::fromValue(connectionConfiguration)},
+                 {"loadingPageCpp", QVariant::fromValue(loadingPage)},
+                 {"mainPageCpp", QVariant::fromValue(mMainWindow)}}));
             //            mApplicationQml->setProperty("mapItem", QVariant::fromValue(mapItem));
             mPluginManager->loadPlugins();
             mPluginManager->setup();

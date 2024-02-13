@@ -39,9 +39,9 @@ Window {
             TabButton {
                 text: 'Map Page'
 
-                onClicked: {
-                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem()
-                }
+                //                onClicked: {
+                //                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem()
+                //                }
             }
         }
 
@@ -68,7 +68,7 @@ Window {
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
-                //                mapItem: applicationWindow.mapItem
+                mapItem: applicationWindow.mainPageCpp.getMapItem()
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }

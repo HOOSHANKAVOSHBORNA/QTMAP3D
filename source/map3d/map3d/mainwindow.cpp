@@ -46,7 +46,13 @@ MainWindow::~MainWindow()
 void MainWindow::initComponent()
 {
     QQmlEngine *engine = qmlEngine(this);
-    mMapItem = new MapControllerItem();;
+    mMapItem = new MapControllerItem();
+
+    // --------------------- don't touch 2 below lines!!!!!!! ------------------------------------
+    mMapItem->setWidth(300);
+    mMapItem->setHeight(300);
+    // --------------------- I don't know why anyway :) ------------------------------------------
+
     mMapItem->setQmlEngine(engine);
     LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
     locationManager->initialize(mMapItem);
