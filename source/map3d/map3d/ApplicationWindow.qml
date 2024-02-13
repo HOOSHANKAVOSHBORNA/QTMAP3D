@@ -47,7 +47,7 @@ Window {
                 text: 'Map Page'
 
                 onClicked: {
-                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem();
+                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem()
                 }
             }
         }
@@ -76,11 +76,10 @@ Window {
                 Layout.fillHeight: true
             }
 
-            LoadingInfo {
+            LoadingPage {
                 loadingPageCpp: applicationWindow.loadingPageCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-
             }
 
             Rectangle {
@@ -107,26 +106,25 @@ Window {
                 }
             }
 
-//            StackLayout {
-//                id: something
-//                Layout.fillWidth: true
-//                Layout.fillHeight: true
+            //            StackLayout {
+            //                id: something
+            //                Layout.fillWidth: true
+            //                Layout.fillHeight: true
 
-////                data: applicationWindow.mainWindow ?? []
+            ////                data: applicationWindow.mainWindow ?? []
 
-//                //                Text {
-//                //                    text: qsTr("Map Page")
-//                //                    anchors.centerIn: parent
-//                //                }
-//            }
+            //                //                Text {
+            //                //                    text: qsTr("Map Page")
+            //                //                    anchors.centerIn: parent
+            //                //                }
+            //            }
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
-//                mapItem: applicationWindow.mapItem
+                //                mapItem: applicationWindow.mapItem
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
-
         }
     }
 }

@@ -1,4 +1,5 @@
 import QtQuick 2.13
+import "style"
 
 Item {
     property var loadingPageCpp: undefined
@@ -20,7 +21,7 @@ Item {
             delegate: Text {
                 id: loadingText
                 font.pixelSize: 20 / Style.monitorRatio
-                color: acceptionState ? "white" : "red"
+                color: acceptionState ? "white" : "green"
                 text: display
             }
 
