@@ -37,8 +37,8 @@ Item {
                                           Style.backgroundColor.g,
                                           Style.backgroundColor.b, 0.30)
 
-    width: 97
-    height: 20
+    width: 97 / Style.monitorRatio
+    height: 20 / Style.monitorRatio
 
     Binding {
         target: root
@@ -54,13 +54,19 @@ Item {
         from: root.from * decimalFactor
         to: root.to * decimalFactor
         stepSize: root.stepSize * decimalFactor
-
         contentItem: TextInput {
             id: textInput
+            onLengthChanged: {
+                if (length > 8) {
+                    undo()
+                }
+            }
+
             text: textFromValue()
+            font.pixelSize: 15 / Style.monitorRatio
             color: Style.foregroundColor
-            selectionColor: "#21be2b"
-            selectedTextColor: "#ffffff"
+            selectionColor: Style.backgroundColor
+            selectedTextColor: Style.foregroundColor
             horizontalAlignment: Qt.AlignHCenter
             verticalAlignment: Qt.AlignVCenter
             readOnly: !editable
@@ -71,10 +77,10 @@ Item {
         down.indicator: Rectangle {
             id: downIndicator
             color: "transparent"
-            anchors.leftMargin: 25
+            anchors.leftMargin: 25 / Style.monitorRatio
             x: spinBox.mirrored ? parent.width - width : 0
             height: parent.height
-            width: 15
+            width: 15 / Style.monitorRatio
             Image {
                 width: 15
                 height: 15
@@ -88,11 +94,11 @@ Item {
             color: "transparent"
             x: spinBox.mirrored ? 0 : parent.width - width
             height: parent.height
-            width: 15
+            width: 15 / Style.monitorRatio
 
             Image {
-                width: 15
-                height: 15
+                width: 20 / Style.monitorRatio
+                height:  20 / Style.monitorRatio
                 anchors.centerIn: parent
                 source: "qrc:/Resources/add.png"
             }

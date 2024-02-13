@@ -201,6 +201,13 @@ Item {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.RightButton
                                 onClicked: function (mouse) {
+                                    if (LayerManagerInstance.propertyInterface.name === display) {
+                                        propertySection.visible = !propertySection.visible
+                                    } else {
+                                        propertySection.visible = true
+                                    }
+                                    rootItem.layerModel.onItemLeftClicked(
+                                                treeView.index(row, column))
                                     contextMenu.popup()
                                 }
                             }
@@ -217,25 +224,48 @@ Item {
                                 rotation: treeDelegate.expanded ? 180 : 0
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-                            Rectangle{
-                                id:chk
-                                width: 12
-                                height: 12
+                            /// -----------  inja
+//                            Rectangle{
+//                                id:chk
+//                                width: 12
+//                                height: 12
+//                                anchors.verticalCenter: parent.verticalCenter
+//                                radius: 15
+//                                anchors.right: indicator.left
+//                                color:LayerManagerInstance.propertyInterface.name === display ?(propertySection.visible === true ?Style.backgroundColor : Style.foregroundColor) : Style.foregroundColor
+//                                MouseArea{
+//                                    anchors.fill: parent
+//                                    onClicked:{
+
+//                                        if (LayerManagerInstance.propertyInterface.name === display) {
+//                                            propertySection.visible = !propertySection.visible
+//                                        } else {
+//                                            propertySection.visible = true
+//                                        }
+//                                        rootItem.layerModel.onItemLeftClicked(
+//                                                    treeView.index(row, column))
+//                                    }
+//                                }
+//                            }
+                            IconImage {
+                                id: tick
                                 anchors.verticalCenter: parent.verticalCenter
-                                radius: 15
                                 anchors.right: indicator.left
-                                color:LayerManagerInstance.propertyInterface.name === display ?(propertySection.visible === true ?Style.backgroundColor : Style.foregroundColor) : Style.foregroundColor
+                                source: "qrc:/Resources/tick8"
+                                width: 24 / Style.monitorRatio
+                                height: 24 / Style.monitorRatio
+                                color: Style.foregroundColor
+                                visible: !(LayerManagerInstance.propertyInterface.name === display ?(propertySection.visible === false ?true : false) : true)
                                 MouseArea{
                                     anchors.fill: parent
-                                    onClicked:{
-
-                                        if (LayerManagerInstance.propertyInterface.name === display) {
-                                            propertySection.visible = !propertySection.visible
-                                        } else {
-                                            propertySection.visible = true
-                                        }
-                                        rootItem.layerModel.onItemLeftClicked(
-                                                    treeView.index(row, column))
+                                    onClicked: {
+                                    if (LayerManagerInstance.propertyInterface.name === display) {
+                                        propertySection.visible = !propertySection.visible
+                                    } else {
+                                        propertySection.visible = true
+                                    }
+                                    rootItem.layerModel.onItemLeftClicked(
+                                                treeView.index(row, column))
                                     }
                                 }
                             }

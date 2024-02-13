@@ -20,17 +20,6 @@ Item {
 
     anchors.fill: parent
 
-    // DEBUG
-    //    Text {
-    //        z: 20
-    //        anchors.centerIn: parent
-    //        text: 'Model Property Item'
-    //    }
-    //    Rectangle {
-    //        anchors.fill: parent
-    //        color: 'pink'
-    //    }
-    // ENDDEBUG
     ScrollView {
         anchors.fill: parent
         clip: true
@@ -205,10 +194,10 @@ Item {
 
                             Text {
                                 Layout.preferredWidth: 20 / Style.monitorRatio
-                                text: "Z"
+                                text: "Z "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10
+                                font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
 
@@ -432,7 +421,7 @@ Item {
                                 text: "Z "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10
+                                font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
 
@@ -570,7 +559,7 @@ Item {
                                 text: "Z "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10
+                                font.pointSize: 10 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
 

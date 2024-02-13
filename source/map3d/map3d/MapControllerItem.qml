@@ -2,24 +2,26 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
-//import Qt5Compat.GraphicalEffects
 import Crystal 1.0
+
 import "style"
 
-MapController {
+Item {
+    property var mapItem
+
     id: map
-    zoomInButtonPressed: cameraHandlerItem.zoomInButtonPressed
-    zoomOutButtonPressed: cameraHandlerItem.zoomOutButtonPressed
+//    zoomInButtonPressed: cameraHandlerItem.zoomInButtonPressed
+//    zoomOutButtonPressed: cameraHandlerItem.zoomOutButtonPressed
 
-    movePosition: cameraHandlerItem.movePosition
-    rotatePosition: cameraHandlerItem.rotatePositon
+//    movePosition: cameraHandlerItem.movePosition
+//    rotatePosition: cameraHandlerItem.rotatePositon
 
-    anchors.fill: parent
-    objectName: "MainMap"
-    property real itemPositionFactor: 1.0
-    property bool itemVisible: true
-    readonly property int iconSize: 26 / Style.monitorRatio
-    readonly property real itemMargin: 10
+//    anchors.fill: parent
+//    objectName: "MainMap"
+//    property real itemPositionFactor: 1.0
+//    property bool itemVisible: true
+//    readonly property int iconSize: 26 / Style.monitorRatio
+//    readonly property real itemMargin: 10
 
     //    onClicked: function() {
     //        toggleItemsVisible();
@@ -29,141 +31,145 @@ MapController {
     //        anchors.fill: parent
     //        color: Qt.rgba(1, 0, 0, .5)
     //    }
-    function toggleItemsVisible() {
-        if (map.itemVisible === true) {
-            itemsShowAnimation.stop()
-            itemsHideAnimation.start()
-            map.itemVisible = false
-        } else {
+//    function toggleItemsVisible() {
+//        if (map.itemVisible === true) {
+//            itemsShowAnimation.stop()
+//            itemsHideAnimation.start()
+//            map.itemVisible = false
+//        } else {
 
-            itemsHideAnimation.stop()
-            itemsShowAnimation.start()
-            map.itemVisible = true
-        }
-    }
-
-    Item {
-        id: topMenuContainer
-        anchors.top: parent.top
-        anchors.topMargin: 10
-        anchors.horizontalCenter: parent.horizontalCenter
-        visible: topMenuVisible
-        width: 706
-        height: 75
-
-        // just for test
-        //        Rectangle {
-        //            anchors.horizontalCenter: parent.horizontalCenter
-        //            width: 300
-        //            height: 60
-        //            color: 'blue'
-        //        }
-        children: topMenuItem ?? []
-        //                    children: TestItem { title: 'test item' }
+//            itemsHideAnimation.stop()
+//            itemsShowAnimation.start()
+//            map.itemVisible = true
+//        }
+//    }
+    StackLayout{
+        anchors.fill: parent
+        data: mapItem ?? []
     }
 
-    PropertyAnimation {
-        id: itemsShowAnimation
-        target: map
-        property: "itemPositionFactor"
-        from: map.itemPositionFactor
-        to: 1.0
-        duration: 200 * Math.abs(1.0 - map.itemPositionFactor)
+//    Item {
+//        id: topMenuContainer
+//        anchors.top: parent.top
+//        anchors.topMargin: 10
+//        anchors.horizontalCenter: parent.horizontalCenter
+//        visible: topMenuVisible
+//        width: 706
+//        height: 75
 
-        easing.type: Easing.OutQuint
-    }
-    PropertyAnimation {
-        id: itemsHideAnimation
-        target: map
-        property: "itemPositionFactor"
-        from: map.itemPositionFactor
-        to: 0.0
-        duration: 200 * Math.abs(map.itemPositionFactor)
+//        // just for test
+//        //        Rectangle {
+//        //            anchors.horizontalCenter: parent.horizontalCenter
+//        //            width: 300
+//        //            height: 60
+//        //            color: 'blue'
+//        //        }
+//        children: topMenuItem ?? []
+//        //                    children: TestItem { title: 'test item' }
+//    }
 
-        easing.type: Easing.InQuint
-    }
-    Label {
-        id: fpsLabel
-        text: map.fps.toLocaleString(Qt.locale(), 'f', 2)
-        color: 'springgreen'
-        style: Text.Outline
-        styleColor: "black"
-        font.pointSize: 20
-        font.weight: Font.Bold
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.leftMargin: 80
-    }
-    SearchBar {
-        id: searcbar
-        x: parent.width - itemPositionFactor * (width + itemMargin)
-        anchors.top: parent.top
-        anchors.topMargin: itemMargin + 3
-        //        model: map.searchNodeProxyModel()
-        model: SearchNodeManagerInstance.searchNodeProxyModel()
-        //        model: map.searchNodeManager().searchNodeProxyModel()
-        filterManager: map.filterManager()
-    }
+//    PropertyAnimation {
+//        id: itemsShowAnimation
+//        target: map
+//        property: "itemPositionFactor"
+//        from: map.itemPositionFactor
+//        to: 1.0
+//        duration: 200 * Math.abs(1.0 - map.itemPositionFactor)
 
-    MultiEffect {
-        source: searcbar
-        enabled: true
-        anchors.fill: searcbar
-        shadowColor: "black"
-        shadowEnabled: true
-        shadowBlur: 0.6
-        shadowHorizontalOffset: 3.5
-        shadowVerticalOffset: 2.5
-        shadowOpacity: 0.25
-        shadowScale: 1.04
-    }
-    Compass {
-        id: compassItem
-        anchors.left: parent.left
-        anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
-        anchors.bottomMargin: itemMargin
-        y: parent.height - itemPositionFactor
-           * (compassItem.height + (itemMargin) + statusBar.height)
-        headingAngle: map.compassDirection.x
-        pitchAngle: map.compassDirection.y + 90
-        color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
-        MouseArea {
-            id: mouseArea
-            anchors.fill: parent
-            onDoubleClicked: {
-                map.setHeadingToNorth()
-            }
-            hoverEnabled: true
-            property bool hovered: false
-            onEntered: hovered = true
-            onExited: hovered = false
-        }
-    }
-    MultiEffect {
-        source: compassItem
-        enabled: true
-        anchors.fill: compassItem
-        shadowColor: "black"
-        shadowEnabled: true
-        shadowBlur: 0.6
-        shadowHorizontalOffset: 3.5
-        shadowVerticalOffset: 2.5
-        shadowOpacity: 0.35
-        shadowScale: 0.98
-    }
-    CameraHandlerItem {
-        id: cameraHandlerItem
-        anchors.rightMargin: itemMargin
-        y: parent.height / 2
-        x: parent.width - itemPositionFactor * (width + itemMargin)
-        onBtnHomeClicked: function () {
-            map.home()
-        }
-        onBtnProjectionClicked: function () {
-            map.changeMode()
-        }
-    }
+//        easing.type: Easing.OutQuint
+//    }
+//    PropertyAnimation {
+//        id: itemsHideAnimation
+//        target: map
+//        property: "itemPositionFactor"
+//        from: map.itemPositionFactor
+//        to: 0.0
+//        duration: 200 * Math.abs(map.itemPositionFactor)
+
+//        easing.type: Easing.InQuint
+//    }
+//    Label {
+//        id: fpsLabel
+//        text: map.fps.toLocaleString(Qt.locale(), 'f', 2)
+//        color: 'springgreen'
+//        style: Text.Outline
+//        styleColor: "black"
+//        font.pointSize: 20
+//        font.weight: Font.Bold
+//        anchors.left: parent.left
+//        anchors.top: parent.top
+//        anchors.topMargin: 20
+//        anchors.leftMargin: 80
+//    }
+//    SearchBar {
+//        id: searcbar
+//        x: parent.width - itemPositionFactor * (width + itemMargin)
+//        anchors.top: parent.top
+//        anchors.topMargin: itemMargin + 3
+//        //        model: map.searchNodeProxyModel()
+//        model: SearchNodeManagerInstance.searchNodeProxyModel()
+//        //        model: map.searchNodeManager().searchNodeProxyModel()
+//        filterManager: map.filterManager()
+//    }
+
+//    MultiEffect {
+//        source: searcbar
+//        enabled: true
+//        anchors.fill: searcbar
+//        shadowColor: "black"
+//        shadowEnabled: true
+//        shadowBlur: 0.6
+//        shadowHorizontalOffset: 3.5
+//        shadowVerticalOffset: 2.5
+//        shadowOpacity: 0.25
+//        shadowScale: 1.04
+//    }
+//    Compass {
+//        id: compassItem
+//        anchors.left: parent.left
+//        anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
+//        anchors.bottomMargin: itemMargin
+//        y: parent.height - itemPositionFactor
+//           * (compassItem.height + (itemMargin) + statusBar.height)
+//        headingAngle: map.compassDirection.x
+//        pitchAngle: map.compassDirection.y + 90
+//        color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
+//        MouseArea {
+//            id: mouseArea
+//            anchors.fill: parent
+//            onDoubleClicked: {
+//                map.setHeadingToNorth()
+//            }
+//            hoverEnabled: true
+//            property bool hovered: false
+//            onEntered: hovered = true
+//            onExited: hovered = false
+//        }
+//    }
+//    MultiEffect {
+//        source: compassItem
+//        enabled: true
+//        anchors.fill: compassItem
+//        shadowColor: "black"
+//        shadowEnabled: true
+//        shadowBlur: 0.6
+//        shadowHorizontalOffset: 3.5
+//        shadowVerticalOffset: 2.5
+//        shadowOpacity: 0.35
+//        shadowScale: 0.98
+//    }
+//    CameraHandlerItem {
+//        id: cameraHandlerItem
+//        anchors.rightMargin: itemMargin
+//        y: parent.height / 2
+//        x: parent.width - itemPositionFactor * (width + itemMargin)
+//        onBtnHomeClicked: function () {
+//            map.home()
+//        }
+//        onBtnProjectionClicked: function () {
+//            map.changeMode()
+//        }
+//    }
 
     //    Rectangle {
     //        id: recct
@@ -186,46 +192,45 @@ MapController {
     //                }
     //            }
     //        }
-//    SmallMap {
-//        id: miniMap
-//        objectName: "SmallMap"
-//        //        x: map.width - 100-21
-//        //        y: map.height - 120-20
-//        anchors.right: cameraHandlerItem.right
-//        anchors.bottom: compassItem.bottom
-//        width: 110
-//        height: 110
-//        Component.onCompleted: {
-//            setMainMapItem(map)
-//        }
-//        Rectangle {
-//            anchors.centerIn: parent
-//            width: parent.width / 15
-//            height: width
-//            color: "transparent"
-//            border.color: "#01AED6"
-//            border.width: 2
-//        }
+    //    SmallMap {
+    //        id: miniMap
+    //        objectName: "SmallMap"
+    //        //        x: map.width - 100-21
+    //        //        y: map.height - 120-20
+    //        anchors.right: cameraHandlerItem.right
+    //        anchors.bottom: compassItem.bottom
+    //        width: 110
+    //        height: 110
+    //        Component.onCompleted: {
+    //            setMainMapItem(map)
+    //        }
+    //        Rectangle {
+    //            anchors.centerIn: parent
+    //            width: parent.width / 15
+    //            height: width
+    //            color: "transparent"
+    //            border.color: "#01AED6"
+    //            border.width: 2
+    //        }
+    //    }
+//    StatusBar {
+//        id: statusBar
+//        anchors.bottom: parent.bottom
+//        anchors.left: parent.left
+//        anchors.right: parent.right
+//        anchors.leftMargin: 75 / Style.monitorRatio
+//        anchors.rightMargin: 0
+//        width: parent.width
+//        height: 22 / Style.monitorRatio
+//        latitude: map.mapMouseGeoLocation.x
+//        longitude: map.mapMouseGeoLocation.y
+//        altitude: map.mapMouseGeoLocation.z
+//        coordinate1: map.mapMouseLocation.x
+//        coordinate2: map.mapMouseLocation.y
+//        coordinate3: map.mapMouseLocation.z
+//        message: "Ready"
+//        timer: -1
+//        model: map.statusBar()
+//        sourceModel: map.statusBar().getSourceModel()
 //    }
-
-    StatusBar {
-        id: statusBar
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: 75 / Style.monitorRatio
-        anchors.rightMargin: 0
-        width: parent.width
-        height: 22 / Style.monitorRatio
-        latitude: map.mapMouseGeoLocation.x
-        longitude: map.mapMouseGeoLocation.y
-        altitude: map.mapMouseGeoLocation.z
-        coordinate1: map.mapMouseLocation.x
-        coordinate2: map.mapMouseLocation.y
-        coordinate3: map.mapMouseLocation.z
-        message: "Ready"
-        timer: -1
-        model: map.statusBar()
-        sourceModel: map.statusBar().getSourceModel()
-    }
 }

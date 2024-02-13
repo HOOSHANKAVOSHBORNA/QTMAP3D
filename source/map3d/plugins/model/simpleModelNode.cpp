@@ -32,7 +32,7 @@ SimpleModelNode::SimpleModelNode(MapItem *mapItem, const std::string &url3D, con
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
 
-    mEnigine = QQmlEngine::contextForObject(mMapItem)->engine();
+    mEnigine = QQmlEngine::contextForObject(mMapItem->parentItem())->engine();
     compile();
     //--circle menu-------------------------------------------------------------
     createCircularMenu();

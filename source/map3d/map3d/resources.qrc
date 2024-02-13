@@ -540,6 +540,8 @@
         <file>Resources/radioButtonCircleEmpty.png</file>
         <file>Resources/plugged.png</file>
         <file>Resources/unplugged.png</file>
+        <file>Resources/tick7.png</file>
+        <file>Resources/tick8.png</file>
         <file>Resources/back.png</file>
         <file>Resources/loading.gif</file>
     </qresource>
