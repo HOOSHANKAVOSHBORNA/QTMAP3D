@@ -8,6 +8,7 @@ Window {
     id: applicationWindow
 
     property var loginPageCpp: undefined
+    property var connectionConfigCpp: undefined
     property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
 
@@ -39,7 +40,7 @@ Window {
                 text: 'Map Page'
 
                 onClicked: {
-                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem();
+                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem()
                 }
             }
         }
@@ -53,25 +54,24 @@ Window {
 
             LoginPage {
                 loginPageCpp: applicationWindow.loginPageCpp
+                connectionConfigCpp: applicationWindow.connectionConfigCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
 
-            LoadingInfo {
+            LoadingPage {
                 loadingPageCpp: applicationWindow.loadingPageCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-
             }
 
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
-//                mapItem: applicationWindow.mapItem
+                //                mapItem: applicationWindow.mapItem
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
-
         }
     }
 }

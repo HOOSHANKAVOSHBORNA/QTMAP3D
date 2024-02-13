@@ -50,6 +50,6 @@
         <file>RoleSelectPage.qml</file>
         <file>Resources/back.png</file>
         <file>ApplicationWindow.qml</file>
-        <file>LoadingInfo.qml</file>
+        <file>LoadingPage.qml</file>
     </qresource>
 </RCC>
