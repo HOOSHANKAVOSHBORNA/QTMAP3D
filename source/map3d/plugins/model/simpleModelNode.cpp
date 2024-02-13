@@ -355,14 +355,14 @@ void SimpleModelNode::compile()
         createOutlineImage();
     }
     setCullingActive(false);
-    mAutoScaler = new ModelAutoScaler(scaleRatio, 1, 1000);
+    mAutoScaler = new AutoScaler(scaleRatio, 1, 1000);
     setCullCallback(mAutoScaler);
     //--root node--------------------------------------------------------
     mSwitchMode = new osg::Switch;
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
-    m3DNode->addChild(m3DBaseNode, 0 , 100);
     if(m3DLowNode){
+        m3DNode->addChild(m3DBaseNode, 0 , 100);
         m3DNode->addChild(m3DLowNode , 100 , std::numeric_limits<float>::max() );
     }else{
         m3DNode->addChild(m3DBaseNode , 0 , std::numeric_limits<float>::max() );

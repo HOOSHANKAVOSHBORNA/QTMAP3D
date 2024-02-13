@@ -5,12 +5,12 @@
 
 #include "highlightOutline.h"
 #include "mapItem.h"
+#include "autoScaler.h"
 #include <QObject>
 #include <osg/CullFace>
 #include <osg/PolygonMode>
 #include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
-#include "modelAutoScaler.h"
 #include "nodeInformation.h"
 #include <osgFX/Outline>
 #include <osgFX/Scribe>
@@ -113,7 +113,7 @@ private:
 //    osg::ref_ptr<Circle> mCircleHighlightNode;
 
     CircularMenuItem *mAttackerMenuItem;
-    osg::ref_ptr<ModelAutoScaler> mAutoScaler;
+    osg::ref_ptr<AutoScaler> mAutoScaler;
     std::string mUrl2D;
     std::string mUrl3D;
     MapItem *mMapItem;
