@@ -133,7 +133,7 @@ void PluginManager::setup()
     for (auto item : qAsConst(mPluginsMap)) {
         item->setup();
     }
-    emit pluginsLoaded();
+//    emit pluginsLoaded();
 }
 
 void PluginManager::parsePlugin(const QString &pluginFileName, const QDir &pluginsDir)
@@ -185,6 +185,7 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
     if ((pluginFileName.split('.').back() == "so") || (pluginFileName.split('.').back() == "dll"))
     {
         qDebug() << pluginFileName;
+        emit pluginLoading(pluginFileName);
 
         const QString filePath = pluginsDir.absoluteFilePath(pluginFileName);
         QPluginLoader pluginLoader(filePath);
@@ -196,6 +197,7 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
             //                QString errStr = pluginLoader.errorString();
             qWarning() << "Plugin loading failed: [" << pluginFileName
                        << "] " << pluginLoader.errorString();
+            emit pluginLoadError(pluginLoader.errorString());
             return;
         }
 

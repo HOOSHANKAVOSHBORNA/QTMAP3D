@@ -42,7 +42,17 @@ void Application::initialize()
 
     //--qml--------------------------------------------------
     initializeQmlEngine();
+    //--create models----------------------------------------
+    mMainWindow = new MainWindow();
+    mMainWindow->initComponent();
 
+    LoginPage *loginPage = new LoginPage(mServiceManager, mQmlEngine);
+    ConnectionConfiguration *connectionConfiguration = new ConnectionConfiguration;
+    LoadingInfo *loadingPage = new LoadingInfo();
+    mQmlEngine->setInitialProperties({{"loginPageCpp", QVariant::fromValue(loginPage)},
+                                      {"connectionConfigCpp", QVariant::fromValue(connectionConfiguration)},
+                                      {"loadingPageCpp", QVariant::fromValue(loadingPage)},
+                                      {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
     mNetworkManager->start();
@@ -54,9 +64,10 @@ void Application::initialize()
 
     //    connect(mPluginManager, &PluginManager::pluginsLoaded, this, &Application::ready);
     //    connect(this, &Application::ready, this, &Application::createApplicationQml);
-    createApplicationQml();
+    //createApplicationQml();
     //    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
     //    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
+    mQmlEngine->load(QUrl("qrc:/ApplicationWindow.qml"));
 }
 
 void Application::initializeQmlEngine()
@@ -75,12 +86,20 @@ void Application::initializeQmlEngine()
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
-    //    if (!obj) {
-    //        qDebug() << "Can not create: " << objUrl.toString();
-    //        QCoreApplication::exit(-1);
-    //        return;
-    //    }
+        if (!obj) {
+            qDebug() << "Can not create: " << objUrl.toString();
+            QCoreApplication::exit(-1);
+            return;
+        }
+        mApplicationQml = qobject_cast<QQuickWindow *>(obj);
 
+        if(!mApplicationQml){
+            qDebug() << "Can not create application window";
+            QCoreApplication::exit(-1);
+            return;
+        }
+        mPluginManager->loadPlugins();
+        mPluginManager->setup();
     //    MainWindow *mainWnd = qobject_cast<MainWindow *>(obj);
     //    ListWindow *listWnd = qobject_cast<ListWindow *>(obj);
 
