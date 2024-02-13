@@ -135,6 +135,7 @@ ApplicationWindow {
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
+
                 loginPage.signIn(signInPage.usernameTxt.text,
                                  signInPage.passwordTxt.text)
             }
@@ -171,43 +172,77 @@ ApplicationWindow {
         }
     }
 
-    //    Rectangle {
-    //        id: loadingContainer
-    //        width: parent.width
-    //        height: 0.1 * parent.height
-    //        y: 0.75 * parent.height
-    //        color: "transparent"
-    //        clip: true
+    Rectangle {
+        id: loadingContainer
+        width: parent.width
+        height: 0.1 * parent.height
+        y: 0.75 * parent.height
+        color: "transparent"
+        clip: true
 
-    //        ScrollView {
-    //            anchors.horizontalCenter: parent.horizontalCenter
-    //            height: parent.height
-    //            width: 200 / Style.monitorRatio
+        ListView {
+            id: listView
+            model: loadingInfo
+            height: parent.height
+            width: 0.05 * parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            delegate: Text {
+                id: loadingText
+                font.pixelSize: 20 / Style.monitorRatio
+                color: acceptionState ? "white" : "red"
+                text: display
+            }
 
-    //            ListView {
-    //                model: loadingInfo
+            populate: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 10000
+                }
+            }
 
-    //                delegate: Text {
-    //                    id: loadingText
-    //                    font.pixelSize: 20 / Style.monitorRatio
-    //                    color: acceptionState ? "white" : "red"
-    //                    text: display
-    //                    leftPadding: 40 / Style.monitorRatio
+            add: Transition {
+                NumberAnimation {
+                    property: "opacity"
+                    from: 0
+                    to: 1.0
+                    duration: 200
+                }
+                NumberAnimation {
+                    property: "scale"
+                    from: 0
+                    to: 1.0
+                    duration: 200
+                }
+            }
 
-    //                    //                    PropertyAnimation {
-    //                    //                        id: textAnimation
-    //                    //                        target: loadingText
-    //                    //                        property: "y"
-    //                    //                        loops: Animation.Infinite
-    //                    //                        from: 1000
-    //                    //                        to: -1000
-    //                    //                        duration: 5000
-    //                    //                        running: true
-    //                    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
+            move: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 200
+                }
+            }
+
+            remove: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 200
+                }
+            }
+
+            removeDisplaced: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 200
+                }
+            }
+            displaced: Transition {
+                NumberAnimation {
+                    properties: "x,y"
+                    duration: 200
+                }
+            }
+        }
+    }
     AnimatedImage {
         source: "qrc:/Resources/loading.gif"
         anchors.bottom: parent.bottom
