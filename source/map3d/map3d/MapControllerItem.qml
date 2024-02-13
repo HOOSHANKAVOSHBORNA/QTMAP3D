@@ -21,7 +21,6 @@ Item {
             itemsHideAnimation.start()
             mapItem.itemVisible = false
         } else {
-
             itemsHideAnimation.stop()
             itemsShowAnimation.start()
             mapItem.itemVisible = true
@@ -37,8 +36,9 @@ Item {
     }
 
     StackLayout {
+        id: mapContainer
         anchors.fill: parent
-        data: mapItem ?? []
+        data: mapItem
     }
 
     Item {
@@ -46,7 +46,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
-        visible: topMenuVisible
+        //        visible: topMenuVisible
         width: 706
         height: 75
 
@@ -174,6 +174,7 @@ Item {
         onBtnHomeClicked: function () {
             mapItem.home()
         }
+
         onBtnProjectionClicked: function () {
             mapItem.changeMode()
         }

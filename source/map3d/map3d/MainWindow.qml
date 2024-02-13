@@ -14,6 +14,7 @@ Item {
     //--properties--------------------------------------
     property var mainPageCpp
     property var mapItem
+
     //--------------------------------------------------
     // visible: true
     property real widgetsPositionFactor: 1.0
@@ -66,7 +67,6 @@ Item {
 
             MapControllerItem {
                 mapItem: mainItem.mapItem
-
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
             }
