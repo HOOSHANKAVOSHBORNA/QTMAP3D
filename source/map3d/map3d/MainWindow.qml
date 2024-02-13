@@ -8,9 +8,13 @@ import Crystal 1.0
 
 import "style"
 
-CMainWindow {
-    id: mainWindow
+Item {
+    id: mainItem
 
+    //--properties--------------------------------------
+    property var mainPageCpp
+    property var mapItem
+    //--------------------------------------------------
     // visible: true
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
@@ -34,7 +38,7 @@ CMainWindow {
             anchors.margins: 5 / Style.monitorRatio
             z: 1
             width: sideBar.minWidth
-            height: mainWindow.height - (25 + 10) / Style.monitorRatio
+            height: mainItem.height - (25 + 10) / Style.monitorRatio
 
             SideBar {
                 id: sideBar
@@ -54,7 +58,7 @@ CMainWindow {
             }
         }
         SplitView {
-            id: mainWindowSplitter
+            id: mainItemSplitter
             anchors.fill: parent
 
             Item {
@@ -65,8 +69,12 @@ CMainWindow {
                 visible: false
             }
 
-            StackLayout {
-                id: centerCenterContainer
+//            StackLayout {
+//                id: centerCenterContainer
+//                SplitView.fillWidth: true
+//            }
+            MapControllerItem{
+                mapItem: mainItem.mapItem
                 SplitView.fillWidth: true
             }
         }

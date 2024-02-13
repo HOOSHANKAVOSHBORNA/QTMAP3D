@@ -18,7 +18,7 @@ class ListWindow;
 class LayerModel;
 
 Q_DECLARE_METATYPE(MapItem)
-class MainWindow : public QQuickItem
+class MainWindow : public QObject
 {
     Q_OBJECT
 //    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
@@ -42,7 +42,8 @@ public:
     ~MainWindow();
     void initComponent();
     QQmlEngine *getQmlEngine();
-    MapControllerItem *getMapItem();
+    Q_INVOKABLE MapControllerItem *getMapItem();
+    Q_INVOKABLE QVariant getMapItem1();
     ToolboxManager *getToolboxManager() const;
     LayerManager *getLayerManager() const;
     BookmarkManager *getBookmarkManager() const;

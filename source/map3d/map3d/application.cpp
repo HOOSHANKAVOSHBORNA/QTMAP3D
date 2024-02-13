@@ -14,6 +14,7 @@
 #include "mainwindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
+#include "qquickview.h"
 
 Application::Application() :
     mPluginManager(new PluginManager)
@@ -35,7 +36,7 @@ void Application::performStartupConfiguration()
 
 void Application::initialize()
 {
-    qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
+    //    qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
     qmlRegisterType<Splash>("Crystal", 1, 0, "CSplash");
 
@@ -51,11 +52,11 @@ void Application::initialize()
     //--user manger------------------------------------------
     mUserManager = new UserManager(mServiceManager, mQmlEngine);
 
-    connect(mPluginManager, &PluginManager::pluginsLoaded, this, &Application::ready);
-    connect(this, &Application::ready, this, &Application::createApplicationQml);
-
-    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
-    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
+    //    connect(mPluginManager, &PluginManager::pluginsLoaded, this, &Application::ready);
+    //    connect(this, &Application::ready, this, &Application::createApplicationQml);
+    createApplicationQml();
+    //    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
+    //    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
 }
 
 void Application::initializeQmlEngine()
@@ -74,29 +75,33 @@ void Application::initializeQmlEngine()
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
-    if (!obj) {
-        qDebug() << "Can not create: " << objUrl.toString();
-        QCoreApplication::exit(-1);
-        return;
-    }
+    //    if (!obj) {
+    //        qDebug() << "Can not create: " << objUrl.toString();
+    //        QCoreApplication::exit(-1);
+    //        return;
+    //    }
 
-    MainWindow *mainWnd = qobject_cast<MainWindow *>(obj);
-    ListWindow *listWnd = qobject_cast<ListWindow *>(obj);
+    //    MainWindow *mainWnd = qobject_cast<MainWindow *>(obj);
+    //    ListWindow *listWnd = qobject_cast<ListWindow *>(obj);
 
-    if (mainWnd) {
-        qDebug() << "Load: " << objUrl.toString();
-        mMainWindow = mainWnd;
-        mMainWindow->initComponent();
+    //    if (mainWnd) {
+    //        auto mapItem = new MapControllerItem();
+    //        qDebug() << "Load: " << objUrl.toString();
+    //        mMainWindow = mainWnd;
+    //        mMainWindow->setProperty("mapItem", QVariant::fromValue(mapItem));
+    //        mMainWindow->initComponent(mapItem);
 
-        mPluginManager->loadPlugins();
-        mPluginManager->setup();
-    } else if (listWnd) {
-        qDebug() << "Load: " << objUrl.toString();
-        mListWindow = listWnd;
-        mMainWindow->setListWindow(mListWindow);
-    } else {
-        qDebug() << "qml object created not found!";
-    }
+
+    ////        mPluginManager->loadPlugins();
+    ////        mPluginManager->setup();
+    //        emit ready();
+    //    } else if (listWnd) {
+    //        qDebug() << "Load: " << objUrl.toString();
+    //        mListWindow = listWnd;
+    //        mMainWindow->setListWindow(mListWindow);
+    //    } else {
+    //        qDebug() << "qml object created not found!";
+    //    }
 }
 
 void Application::createApplicationQml()
@@ -109,34 +114,53 @@ void Application::createApplicationQml()
         }
 
         if (status == QQmlComponent::Ready) {
-            mApplicationQml = qobject_cast<QQuickWindow *>(comp->create());
 
-            qDebug() << "application window loaded";
-            qDebug() << mMainWindow;
-            mApplicationQml->setProperty("mainWindow", QVariant::fromValue(mMainWindow));
+
+
+            mMainWindow = new MainWindow();
+            //            mMainWindow->setProperty("mapItem", QVariant::fromValue(mapItem));
+            mMainWindow->initComponent();
+
+            //            qDebug() << "application window loaded";
+            //            qDebug() << mMainWindow;
+            //            mApplicationQml->setProperty("mainPageCpp", QVariant::fromValue(mMainWindow));
+            mApplicationQml = qobject_cast<QQuickWindow *>(comp->createWithInitialProperties({{"mainPageCpp", QVariant::fromValue(mMainWindow)}}));
+            //            mApplicationQml->setProperty("mapItem", QVariant::fromValue(mapItem));
+            mPluginManager->loadPlugins();
+            mPluginManager->setup();
         }
     });
-
     comp->loadUrl(QUrl("qrc:/ApplicationWindow.qml"));
+
+    //    auto mapItem = new MapControllerItem();
+    //    mMainWindow = new MainWindow();
+    //    mMainWindow->initComponent(mapItem);
+
+    //    QQuickView view;
+    //    view.setResizeMode(QQuickView::SizeRootObjectToView);
+    //    view.setInitialProperties({{"mainPageCpp", QVariant::fromValue(&mMainWindow)}});
+    //    //![0]
+    //    view.setSource(QUrl("qrc:/ApplicationWindow.qml"));
+    //    view.show();
 }
 
 void Application::createMainWindowQml()
 {
-    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    //    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
 
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-        if (status == QQmlComponent::Error) {
-            qDebug() << "Can not load this: " << comp->errorString();
-        }
+    //    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+    //        if (status == QQmlComponent::Error) {
+    //            qDebug() << "Can not load this: " << comp->errorString();
+    //        }
 
-        if (status == QQmlComponent::Ready) {
-            mMainWindow = static_cast<MainWindow *>(qobject_cast<QQuickItem *>(comp->create()));
+    //        if (status == QQmlComponent::Ready) {
+    //            mMainWindow = static_cast<MainWindow *>(qobject_cast<QQuickItem *>(comp->create()));
 
-            qDebug() << "main window loaded";
-        }
-    });
+    //            qDebug() << "main window loaded";
+    //        }
+    //    });
 
-    comp->loadUrl(QUrl("qrc:/MainWindow.qml"));
+    //    comp->loadUrl(QUrl("qrc:/MainWindow.qml"));
 }
 
 void Application::show()

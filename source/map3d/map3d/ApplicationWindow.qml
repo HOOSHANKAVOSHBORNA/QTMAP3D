@@ -7,7 +7,7 @@ import "Components"
 Window {
     id: applicationWindow
 
-    property var mainWindow: undefined
+    property var mainPageCpp: undefined
 
     width: 800
     height: 800
@@ -45,7 +45,7 @@ Window {
                 text: 'Map Page'
 
                 onClicked: {
-                    something.data.push(mainWindow)
+                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem();
                 }
             }
         }
@@ -109,27 +109,26 @@ Window {
                 }
             }
 
-            StackLayout {
-                id: something
+//            StackLayout {
+//                id: something
+//                Layout.fillWidth: true
+//                Layout.fillHeight: true
+
+////                data: applicationWindow.mainWindow ?? []
+
+//                //                Text {
+//                //                    text: qsTr("Map Page")
+//                //                    anchors.centerIn: parent
+//                //                }
+//            }
+            MainWindow {
+                id: mapPage
+                mainPageCpp: applicationWindow.mainPageCpp
+//                mapItem: applicationWindow.mapItem
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-
-                //                data: applicationWindow.mainWindow ?? []
-
-                //                Text {
-                //                    text: qsTr("Map Page")
-                //                    anchors.centerIn: parent
-                //                }
             }
-            //            MainWindow {
-            //                id: mapPage
-            //                Layout.fillWidth: true
-            //                Layout.fillHeight: true
-            //            }
-            //            MapControllerItem {
-            //                Layout.fillWidth: true
-            //                Layout.fillHeight: true
-            //            }
+
         }
     }
 }

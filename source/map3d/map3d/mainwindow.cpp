@@ -50,31 +50,40 @@ MainWindow::~MainWindow()
 void MainWindow::initComponent()
 {
     QQmlEngine *engine = qmlEngine(this);
+    mMapItem = new MapControllerItem();;
+    mMapItem->setQmlEngine(engine);
+    LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
+    locationManager->initialize(mMapItem);
 
-    QQmlComponent* comp = new QQmlComponent(engine);
-    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-        if (status == QQmlComponent::Error) {
-            qDebug() << "Can not load MapControllerItem: " << comp->errorString();
-        }
+    ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
 
-        if (status == QQmlComponent::Ready) {
-            QQuickItem *item = qobject_cast<QQuickItem *>(comp->create());
-            mMapItem = static_cast<MapControllerItem *>(item);
-            //            //            mMapItem->initializeOsgEarth();
-            mMapItem->setQmlEngine(engine);
-            addToCenterCenterContainer(mMapItem);
+    LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
+    layerManager->setMapItem(mMapItem);
 
-            // --------------------------------------------------------- model settings
-            LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
-            locationManager->initialize(mMapItem);
+//    QQmlComponent* comp = new QQmlComponent(engine);
+//    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+//        if (status == QQmlComponent::Error) {
+//            qDebug() << "Can not load MapControllerItem: " << comp->errorString();
+//        }
 
-            ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
+//        if (status == QQmlComponent::Ready) {
+//            QQuickItem *item = qobject_cast<QQuickItem *>(comp->create());
+//            mMapItem = static_cast<MapControllerItem *>(item);
+//            //            //            mMapItem->initializeOsgEarth();
+//            mMapItem->setQmlEngine(engine);
+//            addToCenterCenterContainer(mMapItem);
 
-            LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
-            layerManager->setMapItem(mMapItem);
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
+//            // --------------------------------------------------------- model settings
+//            LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
+//            locationManager->initialize(mMapItem);
+
+//            ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
+
+//            LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
+//            layerManager->setMapItem(mMapItem);
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
 }
 
 QQmlEngine *MainWindow::getQmlEngine()
@@ -86,6 +95,11 @@ QQmlEngine *MainWindow::getQmlEngine()
 MapControllerItem *MainWindow::getMapItem()
 {
     return mMapItem;
+}
+
+QVariant MainWindow::getMapItem1()
+{
+    return QVariant::fromValue(&mMapItem);
 }
 
 ToolboxManager *MainWindow::getToolboxManager() const
@@ -200,6 +214,6 @@ void MainWindow::addToRightContainer(QQuickItem *item, QString title)
 
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
-    mListWindow = listWindow;
+//    mListWindow = listWindow;
     //    mUIHandle->setListWindow(listWindow);
 }
