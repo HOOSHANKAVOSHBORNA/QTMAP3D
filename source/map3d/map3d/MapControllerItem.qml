@@ -7,169 +7,177 @@ import Crystal 1.0
 import "style"
 
 Item {
+    id: map
+
     property var mapItem
 
-    id: map
-//    zoomInButtonPressed: cameraHandlerItem.zoomInButtonPressed
-//    zoomOutButtonPressed: cameraHandlerItem.zoomOutButtonPressed
+    property bool itemVisible: true
+    readonly property int iconSize: 26 / Style.monitorRatio
+    readonly property real itemMargin: 10
 
-//    movePosition: cameraHandlerItem.movePosition
-//    rotatePosition: cameraHandlerItem.rotatePositon
+    function toggleItemsVisible() {
+        if (mapItem.itemVisible === true) {
+            itemsShowAnimation.stop()
+            itemsHideAnimation.start()
+            mapItem.itemVisible = false
+        } else {
 
-//    anchors.fill: parent
-//    objectName: "MainMap"
-//    property real itemPositionFactor: 1.0
-//    property bool itemVisible: true
-//    readonly property int iconSize: 26 / Style.monitorRatio
-//    readonly property real itemMargin: 10
+            itemsHideAnimation.stop()
+            itemsShowAnimation.start()
+            mapItem.itemVisible = true
+        }
+    }
 
-    //    onClicked: function() {
-    //        toggleItemsVisible();
-    //    }
+    MouseArea {
+        anchors.fill: parent
 
-    //    Rectangle {
-    //        anchors.fill: parent
-    //        color: Qt.rgba(1, 0, 0, .5)
-    //    }
-//    function toggleItemsVisible() {
-//        if (map.itemVisible === true) {
-//            itemsShowAnimation.stop()
-//            itemsHideAnimation.start()
-//            map.itemVisible = false
-//        } else {
+        onClicked: function () {
+            toggleItemsVisible()
+        }
+    }
 
-//            itemsHideAnimation.stop()
-//            itemsShowAnimation.start()
-//            map.itemVisible = true
-//        }
-//    }
-    StackLayout{
+    StackLayout {
         anchors.fill: parent
         data: mapItem ?? []
     }
 
-//    Item {
-//        id: topMenuContainer
-//        anchors.top: parent.top
-//        anchors.topMargin: 10
-//        anchors.horizontalCenter: parent.horizontalCenter
-//        visible: topMenuVisible
-//        width: 706
-//        height: 75
+    Item {
+        id: topMenuContainer
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+        visible: topMenuVisible
+        width: 706
+        height: 75
 
-//        // just for test
-//        //        Rectangle {
-//        //            anchors.horizontalCenter: parent.horizontalCenter
-//        //            width: 300
-//        //            height: 60
-//        //            color: 'blue'
-//        //        }
-//        children: topMenuItem ?? []
-//        //                    children: TestItem { title: 'test item' }
-//    }
+        children: mapItem.topMenuItem ?? []
+    }
 
-//    PropertyAnimation {
-//        id: itemsShowAnimation
-//        target: map
-//        property: "itemPositionFactor"
-//        from: map.itemPositionFactor
-//        to: 1.0
-//        duration: 200 * Math.abs(1.0 - map.itemPositionFactor)
+    //    PropertyAnimation {
+    //        id: itemsShowAnimation
+    //        target: map
+    //        property: "mapItem.itemPositionFactor"
+    //        from: mapItem.itemPositionFactor
+    //        to: 1.0
+    //        duration: 200 * Math.abs(1.0 - mapItem.itemPositionFactor)
 
-//        easing.type: Easing.OutQuint
-//    }
-//    PropertyAnimation {
-//        id: itemsHideAnimation
-//        target: map
-//        property: "itemPositionFactor"
-//        from: map.itemPositionFactor
-//        to: 0.0
-//        duration: 200 * Math.abs(map.itemPositionFactor)
+    //        easing.type: Easing.OutQuint
+    //    }
 
-//        easing.type: Easing.InQuint
-//    }
-//    Label {
-//        id: fpsLabel
-//        text: map.fps.toLocaleString(Qt.locale(), 'f', 2)
-//        color: 'springgreen'
-//        style: Text.Outline
-//        styleColor: "black"
-//        font.pointSize: 20
-//        font.weight: Font.Bold
-//        anchors.left: parent.left
-//        anchors.top: parent.top
-//        anchors.topMargin: 20
-//        anchors.leftMargin: 80
-//    }
-//    SearchBar {
-//        id: searcbar
-//        x: parent.width - itemPositionFactor * (width + itemMargin)
-//        anchors.top: parent.top
-//        anchors.topMargin: itemMargin + 3
-//        //        model: map.searchNodeProxyModel()
-//        model: SearchNodeManagerInstance.searchNodeProxyModel()
-//        //        model: map.searchNodeManager().searchNodeProxyModel()
-//        filterManager: map.filterManager()
-//    }
+    //    PropertyAnimation {
+    //        id: itemsHideAnimation
+    //        target: map
+    //        property: "mapItem.itemPositionFactor"
+    //        from: mapItem.itemPositionFactor
+    //        to: 0.0
+    //        duration: 200 * Math.abs(mapItem.itemPositionFactor)
 
-//    MultiEffect {
-//        source: searcbar
-//        enabled: true
-//        anchors.fill: searcbar
-//        shadowColor: "black"
-//        shadowEnabled: true
-//        shadowBlur: 0.6
-//        shadowHorizontalOffset: 3.5
-//        shadowVerticalOffset: 2.5
-//        shadowOpacity: 0.25
-//        shadowScale: 1.04
-//    }
-//    Compass {
-//        id: compassItem
-//        anchors.left: parent.left
-//        anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
-//        anchors.bottomMargin: itemMargin
-//        y: parent.height - itemPositionFactor
-//           * (compassItem.height + (itemMargin) + statusBar.height)
-//        headingAngle: map.compassDirection.x
-//        pitchAngle: map.compassDirection.y + 90
-//        color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
-//        MouseArea {
-//            id: mouseArea
-//            anchors.fill: parent
-//            onDoubleClicked: {
-//                map.setHeadingToNorth()
-//            }
-//            hoverEnabled: true
-//            property bool hovered: false
-//            onEntered: hovered = true
-//            onExited: hovered = false
-//        }
-//    }
-//    MultiEffect {
-//        source: compassItem
-//        enabled: true
-//        anchors.fill: compassItem
-//        shadowColor: "black"
-//        shadowEnabled: true
-//        shadowBlur: 0.6
-//        shadowHorizontalOffset: 3.5
-//        shadowVerticalOffset: 2.5
-//        shadowOpacity: 0.35
-//        shadowScale: 0.98
-//    }
-//    CameraHandlerItem {
-//        id: cameraHandlerItem
-//        anchors.rightMargin: itemMargin
-//        y: parent.height / 2
-//        x: parent.width - itemPositionFactor * (width + itemMargin)
-//        onBtnHomeClicked: function () {
-//            map.home()
-//        }
-//        onBtnProjectionClicked: function () {
-//            map.changeMode()
-//        }
-//    }
+    //        easing.type: Easing.InQuint
+    //    }
+    Label {
+        id: fpsLabel
+        text: mapItem.fps.toLocaleString(Qt.locale(), 'f', 2)
+        color: 'springgreen'
+        style: Text.Outline
+        styleColor: "black"
+        font.pointSize: 20
+        font.weight: Font.Bold
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.leftMargin: 80
+    }
+
+    SearchBar {
+        id: searcbar
+
+        anchors.right: parent.right
+        anchors.rightMargin: itemMargin
+        anchors.top: parent.top
+        anchors.topMargin: itemMargin + 3
+        model: SearchNodeManagerInstance.searchNodeProxyModel()
+        filterManager: mapItem.filterManager()
+    }
+
+    MultiEffect {
+        source: searcbar
+        enabled: true
+        anchors.fill: searcbar
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 0.6
+        shadowHorizontalOffset: 3.5
+        shadowVerticalOffset: 2.5
+        shadowOpacity: 0.25
+        shadowScale: 1.04
+    }
+
+    Compass {
+        id: compassItem
+        anchors.left: parent.left
+        anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: itemMargin
+        headingAngle: mapItem.compassDirection.x
+        pitchAngle: mapItem.compassDirection.y + 90
+        color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
+
+        MouseArea {
+            id: mouseArea
+            anchors.fill: parent
+            onDoubleClicked: {
+                mapItem.setHeadingToNorth()
+            }
+            hoverEnabled: true
+            property bool hovered: false
+            onEntered: hovered = true
+            onExited: hovered = false
+        }
+    }
+
+    MultiEffect {
+        source: compassItem
+        enabled: true
+        anchors.fill: compassItem
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 0.6
+        shadowHorizontalOffset: 3.5
+        shadowVerticalOffset: 2.5
+        shadowOpacity: 0.35
+        shadowScale: 0.98
+    }
+
+    //  zoomInButtonPressed: cameraHandlerItem.zoomInButtonPressed
+    //    zoomOutButtonPressed: cameraHandlerItem.zoomOutButtonPressed
+
+    //    movePosition: cameraHandlerItem.movePosition
+    //    rotatePosition: cameraHandlerItem.rotatePositon
+    CameraHandlerItem {
+        id: cameraHandlerItem
+        //        anchors.fill: parent
+        //        anchors.rightMargin: itemMargin
+        //        y: parent.height / 2
+        //        x: parent.width - mapItem.itemPositionFactor * (width + itemMargin)
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+
+        onZoomInButtonPressedChanged: mapItem.zoomInButtonPressed = zoomInButtonPressed
+        onZoomOutButtonPressedChanged: mapItem.zoomOutButtonPressed = zoomOutButtonPressed
+
+        onMovePositionChanged: mapItem.movePosition = movePosition
+        onRotatePositonChanged: mapItem.rotatePosition = rotatePositon
+
+        width: 300
+        height: 200
+
+        onBtnHomeClicked: function () {
+            mapItem.home()
+        }
+        onBtnProjectionClicked: function () {
+            mapItem.changeMode()
+        }
+    }
 
     //    Rectangle {
     //        id: recct
@@ -195,8 +203,8 @@ Item {
     //    SmallMap {
     //        id: miniMap
     //        objectName: "SmallMap"
-    //        //        x: map.width - 100-21
-    //        //        y: map.height - 120-20
+    //        //        x: mapItem.width - 100-21
+    //        //        y: mapItem.height - 120-20
     //        anchors.right: cameraHandlerItem.right
     //        anchors.bottom: compassItem.bottom
     //        width: 110
@@ -213,24 +221,24 @@ Item {
     //            border.width: 2
     //        }
     //    }
-//    StatusBar {
-//        id: statusBar
-//        anchors.bottom: parent.bottom
-//        anchors.left: parent.left
-//        anchors.right: parent.right
-//        anchors.leftMargin: 75 / Style.monitorRatio
-//        anchors.rightMargin: 0
-//        width: parent.width
-//        height: 22 / Style.monitorRatio
-//        latitude: map.mapMouseGeoLocation.x
-//        longitude: map.mapMouseGeoLocation.y
-//        altitude: map.mapMouseGeoLocation.z
-//        coordinate1: map.mapMouseLocation.x
-//        coordinate2: map.mapMouseLocation.y
-//        coordinate3: map.mapMouseLocation.z
-//        message: "Ready"
-//        timer: -1
-//        model: map.statusBar()
-//        sourceModel: map.statusBar().getSourceModel()
-//    }
+    StatusBar {
+        id: statusBar
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.leftMargin: 75 / Style.monitorRatio
+        anchors.rightMargin: 0
+        width: parent.width
+        height: 22 / Style.monitorRatio
+        latitude: mapItem.mapMouseGeoLocation.x
+        longitude: mapItem.mapMouseGeoLocation.y
+        altitude: mapItem.mapMouseGeoLocation.z
+        coordinate1: mapItem.mapMouseLocation.x
+        coordinate2: mapItem.mapMouseLocation.y
+        coordinate3: mapItem.mapMouseLocation.z
+        message: "Ready"
+        timer: -1
+        model: mapItem.statusBar()
+        sourceModel: mapItem.statusBar().getSourceModel()
+    }
 }
