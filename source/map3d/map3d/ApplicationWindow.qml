@@ -7,6 +7,8 @@ import "Components"
 Window {
     id: applicationWindow
 
+    property var loginPageCpp: undefined
+    property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
 
     width: 800
@@ -69,20 +71,16 @@ Window {
             //            }
             //        }
             LoginPage {
+                loginPageCpp: applicationWindow.loginPageCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
 
-            Rectangle {
+            LoadingInfo {
+                loadingPageCpp: applicationWindow.loadingPageCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                color: 'royalblue'
-
-                Text {
-                    text: qsTr("Splash Page")
-                    anchors.centerIn: parent
-                }
             }
 
             Rectangle {

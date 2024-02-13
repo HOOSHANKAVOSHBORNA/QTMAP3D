@@ -14,7 +14,6 @@
 #include "mainwindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
-#include "qquickview.h"
 
 Application::Application() :
     mPluginManager(new PluginManager)
@@ -121,10 +120,15 @@ void Application::createApplicationQml()
             //            mMainWindow->setProperty("mapItem", QVariant::fromValue(mapItem));
             mMainWindow->initComponent();
 
+            LoginPage *loginPage = new LoginPage(mServiceManager, mQmlEngine);
+            LoadingInfo *loadingPage = new LoadingInfo();
+
             //            qDebug() << "application window loaded";
             //            qDebug() << mMainWindow;
             //            mApplicationQml->setProperty("mainPageCpp", QVariant::fromValue(mMainWindow));
-            mApplicationQml = qobject_cast<QQuickWindow *>(comp->createWithInitialProperties({{"mainPageCpp", QVariant::fromValue(mMainWindow)}}));
+            mApplicationQml = qobject_cast<QQuickWindow *>(comp->createWithInitialProperties({{"loginPageCpp", QVariant::fromValue(loginPage)},
+                                                                                              {"loadingPageCpp", QVariant::fromValue(loadingPage)},
+                                                                                              {"mainPageCpp", QVariant::fromValue(mMainWindow)}}));
             //            mApplicationQml->setProperty("mapItem", QVariant::fromValue(mapItem));
             mPluginManager->loadPlugins();
             mPluginManager->setup();

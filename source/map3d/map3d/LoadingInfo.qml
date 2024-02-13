@@ -1,6 +1,8 @@
 import QtQuick 2.13
 
 Item {
+    property var loadingPageCpp: undefined
+
     Rectangle {
         id: loadingContainer
         width: parent.width

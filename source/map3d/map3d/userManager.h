@@ -3,7 +3,6 @@
 #include "qqmlapplicationengine.h"
 #include "serviceManager.h"
 #include "loadingInfo.h"
-#include "connectionConfiguration.h"
 #include <QQuickItem>
 #include <QQuickWindow>
 

@@ -6,6 +6,9 @@ import "style"
 
 Item {
     id: signUpWindow
+
+    property var loginPageCpp: undefined
+
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
     visible: !loginPage.windowHidden
