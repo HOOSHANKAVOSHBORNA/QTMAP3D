@@ -43,7 +43,6 @@ public:
     void initComponent();
     QQmlEngine *getQmlEngine();
     Q_INVOKABLE MapControllerItem *getMapItem();
-    Q_INVOKABLE QVariant getMapItem1();
     ToolboxManager *getToolboxManager() const;
     LayerManager *getLayerManager() const;
     BookmarkManager *getBookmarkManager() const;

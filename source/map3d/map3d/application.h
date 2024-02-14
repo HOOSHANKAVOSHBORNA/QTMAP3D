@@ -35,8 +35,6 @@ public:
 
     void initializeQmlEngine();
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
-    void createApplicationQml();
-    void createMainWindowQml();
 
 signals:
     void ready();
@@ -61,7 +59,7 @@ private:
 
     bool mIsReady{false};
 
-    QQuickWindow *mApplicationQml = nullptr;
+    QQuickWindow *mApplicationWindow = nullptr;
 };
 
 #endif // Application_H

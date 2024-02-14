@@ -93,15 +93,9 @@ QQmlEngine *MainWindow::getQmlEngine()
     return qmlEngine(this);
 }
 
-
 MapControllerItem *MainWindow::getMapItem()
 {
     return mMapItem;
-}
-
-QVariant MainWindow::getMapItem1()
-{
-    return QVariant::fromValue(&mMapItem);
 }
 
 ToolboxManager *MainWindow::getToolboxManager() const
