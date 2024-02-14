@@ -25,6 +25,7 @@ public:
 
 public:
     void extracted(QDir &pluginsDir);
+    void setQmlEngine(QQmlEngine *engine);
     void loadPlugins();
     void setup();
 
@@ -39,6 +40,7 @@ private:
 
 private:
     friend EventHandler;
+
     QMap<QString, PluginInterface*> mPluginsMap;
     QStringList mPluginFileNameList;
     QStringList mLoadedPluginList;

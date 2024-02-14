@@ -153,7 +153,7 @@ class NodeList : public QObject
     Q_PROPERTY(QQuickItem *qmlItem READ qmlItem WRITE setQmlItem NOTIFY qmlItemChanged FINAL)
 
 public:
-    explicit NodeList(MapControllerItem *mapItem, DataManager *dataManager);
+    explicit NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *dataManager);
 
     QQuickItem *qmlItem() const;
     void setQmlItem(QQuickItem *newQmlItem);
@@ -168,6 +168,7 @@ private:
     void createQml();
 
 private:
+    QQmlEngine *mQmlEngine = nullptr;
     MapControllerItem *mMapItem = nullptr;
     QQuickItem *mQmlItem = nullptr;
     DataManager *mDataManager = nullptr;

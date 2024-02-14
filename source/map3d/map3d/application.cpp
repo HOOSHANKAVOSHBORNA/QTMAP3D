@@ -37,12 +37,12 @@ void Application::performStartupConfiguration()
 
 void Application::initialize()
 {
-    //    qmlRegisterType<MainWindow>("Crystal", 1, 0, "CMainWindow");
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
     qmlRegisterType<Splash>("Crystal", 1, 0, "CSplash");
 
     //--qml--------------------------------------------------
     initializeQmlEngine();
+    mPluginManager->setQmlEngine(mQmlEngine);
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
     mNetworkManager->start();

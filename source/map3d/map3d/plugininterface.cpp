@@ -21,6 +21,11 @@ MapControllerItem *PluginInterface::mapItem() const
     return mMapItem;
 }
 
+void PluginInterface::setQmlEngine(QQmlEngine *engine)
+{
+    mQmlEngine = engine;
+}
+
 QQmlEngine *PluginInterface::qmlEngine() const
 {
     return mQmlEngine;
@@ -35,7 +40,6 @@ void PluginInterface::setMainWindow(MainWindow *mainWindow)
 {
     mMainWindow = mainWindow;
     mMapItem = mainWindow->getMapItem();
-    mQmlEngine = mainWindow->getQmlEngine();
     mToolbox = dynamic_cast<Toolbox*>(mainWindow->getToolboxManager()->getToolboxProxyModel()->sourceModel());
     mBookmarkManager = mainWindow->getBookmarkManager();
 }

@@ -19,6 +19,7 @@ void UserTest::onUserDataReceived(const UserData &userData)
         mUserData.response.status = Response::Status::Success;
         mUserData.response.message = "";
         if(userData.command == UserData::UserCommand::Login){
+            mUserData.roles.clear();
             mUserData.roles.append("Admin");
             mUserData.roles.append("User");
             mUserData.roles.append("Reviewer");

@@ -76,9 +76,14 @@ void FmodelAnimationPathCallback::operator()(osg::Node *node, osg::NodeVisitor *
     NodeCallback::traverse(node,nv);
 }
 
-FlyableModelNode::FlyableModelNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl, QObject *parent):
-    MoveableModelNode(mapControler, modelUrl, iconUrl, parent)
+FlyableModelNode::FlyableModelNode(QQmlEngine *engine,
+                                   MapItem *mapControler,
+                                   const std::string &modelUrl,
+                                   const std::string &iconUrl,
+                                   QObject *parent)
+    : MoveableModelNode(engine, mapControler, modelUrl, iconUrl, parent)
 {
+    setQmlEngine(engine);
     mMoveAnimationPathCallback = new FmodelAnimationPathCallback(mapItem(), this);
     osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath();
     path->setLoopMode(osg::AnimationPath::NO_LOOPING);

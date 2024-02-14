@@ -1,11 +1,12 @@
-#include "combatMenu.h"
-#include "qqmlcomponent.h"
 #include <QQmlContext>
 #include <utility.h>
 
+#include "combatMenu.h"
+#include "qqmlcomponent.h"
+
 AssignmentListModel::AssignmentListModel(CombatManager *combatManager, QObject *parent)
-    :QAbstractListModel(parent),
-    mCombatManager(combatManager)
+    : QAbstractListModel(parent)
+    , mCombatManager(combatManager)
 {
     QObject::connect(combatManager, &CombatManager::dataChanged,[&]{
         beginResetModel();
@@ -323,30 +324,31 @@ void OperatorListModel::setOperatorIsAttacker(bool attacker)
 
 
 //-----------------------------------------------------------------------------
-CombatMenu::CombatMenu(CombatManager *combatManager, MapControllerItem *map)
+CombatMenu::CombatMenu(CombatManager *combatManager, QQmlEngine *engine, MapControllerItem *map)
 {
-//    QQmlEngine *engine = QQmlEngine::contextForObject(map)->engine();
-//    mMapItem = map;
-//    mAssignmentListModel = new AssignmentListModel(combatManager);
-//    mOperatorListModel = new OperatorListModel(mAssignmentListModel);
-//    QQmlComponent* comp = new QQmlComponent(engine);
+    mMapItem = map;
+    mAssignmentListModel = new AssignmentListModel(combatManager);
+    mOperatorListModel = new OperatorListModel(mAssignmentListModel);
+    QQmlComponent *comp = new QQmlComponent(engine);
 
-//    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-//        if(status == QQmlComponent::Error) {
-//            qDebug() << "Can not load this: " << comp->errorString();
-//        }
-//        if(status == QQmlComponent::Ready) {
-//            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-//            item->setProperty("assignmentListModel", QVariant::fromValue<AssignmentListModel*>(mAssignmentListModel));
-//            item->setProperty("operatorListModel", QVariant::fromValue<OperatorListModel*>(mOperatorListModel));
-//            map->setTopMenuItem(item);
-//        }
-//    });
-//    comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));
+    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+        if (status == QQmlComponent::Error) {
+            qDebug() << "Can not load this: " << comp->errorString();
+        }
+
+        if (status == QQmlComponent::Ready) {
+            QQuickItem *item = qobject_cast<QQuickItem *>(comp->create());
+            item->setProperty("assignmentListModel",
+                              QVariant::fromValue<AssignmentListModel *>(mAssignmentListModel));
+            item->setProperty("operatorListModel",
+                              QVariant::fromValue<OperatorListModel *>(mOperatorListModel));
+            map->setTopMenuItem(item);
+        }
+    });
+    comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));
 }
 
-
-CombatMenu::~CombatMenu(){}
+CombatMenu::~CombatMenu() {}
 
 void CombatMenu::selectAttacker(SimpleModelNode *node)
 {

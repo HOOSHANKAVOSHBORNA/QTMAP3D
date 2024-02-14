@@ -544,5 +544,6 @@
         <file>Resources/tick8.png</file>
         <file>Resources/back.png</file>
         <file>Resources/loading.gif</file>
+        <file>Resources/tick6.png</file>
     </qresource>
 </RCC>

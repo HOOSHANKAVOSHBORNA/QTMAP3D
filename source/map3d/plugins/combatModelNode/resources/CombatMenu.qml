@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
-//import "style"
 Item {
     id: root
     anchors.fill: parent
@@ -29,7 +28,6 @@ Item {
 
     RowLayout {
         id: mainRow
-        //        anchors.centerIn: parent
         anchors.left: parent.left
         anchors.leftMargin: 110
         Rectangle {
@@ -68,7 +66,6 @@ Item {
                     source: operatorListModel ? operatorListModel.operatorIcon : ""
                     Layout.preferredHeight: 55 / 1.3 /*Style.monitorRatio*/
                     Layout.preferredWidth: 55 / 1.3 /*Style.monitorRatio*/
-                    Layout.leftMargin: 10 / 1.3 /*Style.monitorRatio*/
                     color: backgroundColor/*operatorListModel ? operatorListModel.operatorColor : "black"*/
                 }
 
@@ -135,20 +132,25 @@ Item {
                 }
                 Rectangle {
                     id: attackholder
-//                    Layout.leftMargin: -15
-                    width: 75 / 1.3 /*Style.monitorRatio*/
+                    Layout.leftMargin: -10
+                    width: 77 / 1.3 /*Style.monitorRatio*/
                     height: 75 / 1.3 /*Style.monitorRatio*/
                     color: "transparent"
-                    //                    border.width: 2
-                    //                    border.color: "gold"
+
                     Rectangle{
                         id:attack
+                        property color rd85: Qt.rgba("red".r,"red".g,"red".b,.15)
+
                         anchors.top: parent.top
-                        anchors.topMargin: 2
+                        anchors.topMargin: 6 / 1.3
                         anchors.left: parent.left
-                        width: attackMA.containsMouse ? parent.width + 5 : parent.width
-                        height: attackMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
-                        color: "#119cbf"
+                        width: attackMA.containsMouse ? 82 / 1.3 : 77 / 1.3
+                        height: attackMA.containsMouse ?  32 / 1.3 : 27 / 1.3
+                        gradient: Gradient {
+                            orientation: Gradient.Horizontal
+                            GradientStop { position: 0.0; color: "red" }
+                            GradientStop { position: 1.0; color: attack.rd85}
+                        }
                         radius: 15
 
                         Text {
@@ -157,7 +159,6 @@ Item {
                             text: qsTr("Assign")
                             font.family: "Roboto"
                             font.pixelSize: attackMA.containsMouse ? 15 / 1.3 : 13/1.3
-                            //                            font.weight: Font.Bold
                             color: "white"
                         }
                         MouseArea {
@@ -168,55 +169,61 @@ Item {
 
                         }
                     }
+                    //                    Rectangle{
+                    //                        anchors.centerIn: parent
+                    //                        width: selectMA.containsMouse ? parent.width + 5 : parent.width
+                    //                        height: selectMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
+                    //                        color:"#0b42b0"
+                    //                        radius: 15
+                    //                        Text {
+                    //                            id: nameSelect
+                    //                            anchors.centerIn: parent
+                    //                            text: qsTr("Select All")
+                    //                            font.family: "Roboto"
+                    //                            font.pixelSize: selectMA.containsMouse ? 15 / 1.3 : 13/1.3
+                    //                            //                            font.weight: Font.Bold
+                    //                            color: "white"
+                    //                        }
+                    //                        MouseArea {
+                    //                            id:selectMA
+                    //                            anchors.fill: parent
+                    //                            onClicked: {
+                    //                                assignmentListModel.selectAll(selectall)
+
+                    //                                for (var i = 0; i < modelDataContainer.count; ++i) {
+                    //                                    var item = modelDataContainer.itemAt(i);
+                    //                                    if (item !== null && selectall) {
+                    //                                        item.color =  bg20
+                    //                                    }
+                    //                                    else
+                    //                                        item.color =  "transparent"
+
+                    //                                }
+                    //                                selectall =! selectall
+                    //                            }
+                    //                            hoverEnabled: true
+
+                    //                        }
+                    //                    }
                     Rectangle{
-                        anchors.centerIn: parent
-                        width: selectMA.containsMouse ? parent.width + 5 : parent.width
-                        height: selectMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
-                        color:"#0b42b0"
-                        radius: 15
-                        Text {
-                            id: nameSelect
-                            anchors.centerIn: parent
-                            text: qsTr("Select All")
-                            font.family: "Roboto"
-                            font.pixelSize: selectMA.containsMouse ? 15 / 1.3 : 13/1.3
-                            //                            font.weight: Font.Bold
-                            color: "white"
-                        }
-                        MouseArea {
-                            id:selectMA
-                            anchors.fill: parent
-                            onClicked: {
-                                assignmentListModel.selectAll(selectall)
-
-                                for (var i = 0; i < modelDataContainer.count; ++i) {
-                                    var item = modelDataContainer.itemAt(i);
-                                    if (item !== null && selectall) {
-                                        item.color =  bg20
-                                    }
-                                    else
-                                        item.color =  "transparent"
-
-                                }
-                                selectall =! selectall
-                            }
-                            hoverEnabled: true
-
-                        }
-                    }
-                    Rectangle{
+                        id:cancel
+                        property color blue65: Qt.rgba(backgroundColor.r,backgroundColor.g,backgroundColor.b,.35)
                         anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 1
-                        width: closeMA.containsMouse ? parent.width + 5 : parent.width
-                        height: closeMA.containsMouse ? parent.height / 3 :  parent.height / 3 - 3
-                        color:"#2fde78"
+                        anchors.bottomMargin: 7 / 1.3
+                        width: closeMA.containsMouse ?  82 / 1.3 : 77 / 1.3
+                        height: closeMA.containsMouse ? 32 / 1.3 : 27 / 1.3
+                        gradient: Gradient {
+                            orientation: Gradient.Horizontal
+                            GradientStop { position: 0.0; color: root.backgroundColor }
+                            GradientStop { position: 1.0; color: cancel.blue65}
+                        }
                         radius: 15
                         Text {
                             id: nameClose
                             anchors.centerIn: parent
                             text: qsTr("Cancel")
                             font.family: "Roboto"
-                            font.pixelSize: closeMA.containsMouse ? 15 / 1.3 : 13/1.3
+                            font.pixelSize: closeMA.containsMouse ? 15 / 1.3 : 13 / 1.3
                             color: "white"
                         }
                         MouseArea {
@@ -234,7 +241,7 @@ Item {
         Flickable {
             id: flickable
             width: rowLay.width > 425 ?425 : rowLay.width  ; height: rowLay.height
-            Layout.leftMargin: 8
+            Layout.leftMargin: 25
             Layout.bottomMargin: nodeInfoHolder.height - 5 / 1.3
             contentWidth: rowLay.width; contentHeight:  rowLay.height
             flickableDirection : Flickable.HorizontalFlick
@@ -252,13 +259,13 @@ Item {
                 onWidthChanged: {
                     if(width > 420){
                         rightMotionOpen.running = true
-                        leftMotionOpen.running = true
-                        marginMotionOp.running = true
+//                        leftMotionOpen.running = true
+
                     }
                     else{
                         rightMotionClose.running = true
-                        leftMotionClose.running = true
-                        marginMotionCl.running = true
+//                        leftMotionClose.running = true
+
                     }
                 }
 
@@ -344,10 +351,112 @@ Item {
                 }
             }
         }
-        //        }
-        //        }
     }
-    /////   nodeholderbackground
+    // ------- == == == ------
+    //    Rectangle{
+
+    //        id:left
+    //        height: 75 / 1.3 /*Style.monitorRatio*/
+    //        width: 0
+    //        color: "transparent" /*Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)*/
+    //        radius: 20
+
+    //        IconImage {
+    //            id:leftIcon
+    //            anchors.right: parent.right
+    //            anchors.verticalCenter: parent.verticalCenter
+    //            anchors.rightMargin: -5
+    //            source: "qrc:/Resources/down"
+    //            height: 30 / 1.3 /*Style.monitorRatio*/
+    //            width: 30 / 1.3 /*Style.monitorRatio*/
+
+    //            rotation: -90
+    //            MouseArea{
+    //                anchors.fill: parent
+    //                hoverEnabled: true
+    //                propagateComposedEvents: true
+    //                onClicked:{
+    //                              flickable.contentX += 131 / 1.3
+
+    //                          }
+    //                onEntered: leftIcon.width = leftIcon.width * 1.3
+    //                onExited: leftIcon.width = 30 / 1.3
+    //            }
+    //        }
+
+
+    //    }
+    Rectangle{
+        width:55 / 1.3
+        height: 75 / 1.3
+        color: "transparent"
+        anchors.right: mainRow.right
+        anchors.rightMargin: -6
+        anchors.verticalCenter: mainRow.verticalCenter
+        IconImage {
+            id:leftIcon
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.rightMargin: -5
+            source: "qrc:/Resources/down"
+            height: 30 / 1.3 /*Style.monitorRatio*/
+            width: 30 / 1.3 /*Style.monitorRatio*/
+visible: rowLay.width > 430
+            rotation: -90
+            MouseArea{
+                anchors.fill: parent
+                hoverEnabled: true
+                propagateComposedEvents: true
+                onClicked:{
+                    flickable.contentX += 131 / 1.3
+
+                }
+                onEntered: leftIcon.width = leftIcon.width * 1.3
+                onExited: leftIcon.width = 30 / 1.3
+            }
+        }
+        ColumnLayout{
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            IconImage {
+                property bool flag: false
+                id: tick
+                sourceSize:flag ? "15x15" : "11x11"
+                source: flag ? "qrc:/Resources/tick7" : "qrc:/Resources/tick6"
+                width: 15 / 1.3 /*Style.monitorRatio*/
+                height: 15 / 1.3 /*Style.monitorRatio*/
+                color: backgroundColor/*objectColor*/
+                Layout.alignment:  Qt.AlignHCenter
+                MouseArea{
+                    anchors.fill : parent
+                    onClicked:{ tick.flag = !tick.flag
+
+                        assignmentListModel.selectAll(selectall)
+
+                        for (var i = 0; i < modelDataContainer.count; ++i) {
+                            var item = modelDataContainer.itemAt(i);
+                            if (item !== null && selectall) {
+                                item.color =  bg20
+                            }
+                            else
+                                item.color =  "transparent"
+
+                        }
+                        selectall =! selectall
+
+                    }
+
+                }
+            }
+            Label{
+                text: "All"
+                font.pixelSize: 15 / 1.3
+                Layout.alignment: Qt.AlignHCenter
+                color: backgroundColor
+            }
+        }
+    }
     Rectangle {
 
         id: nodesBackground
@@ -357,10 +466,10 @@ Item {
         radius: 20
         color: fg75
 
-        width: (rowLay.childrenRect.width  > 420 ? 524 : (rowLay.childrenRect.width  +  90))
-        //                / 1.3) ? 645 / 1.3  : */rowLay.childrenRect.width  +  80
+        width: (rowLay.childrenRect.width  > 420 ? 534 : (rowLay.childrenRect.width  +  100))
         height: 75 / 1.3 /*Style.monitorRatio*/
         z: -2
+
         Rectangle{
             id:right
             anchors.right: parent.right
@@ -384,7 +493,6 @@ Item {
                 MouseArea{
                     anchors.fill: parent
                     hoverEnabled: true
-//                    propagateComposedEvents: true
                     onClicked:{
                         flickable.contentX -= 131 / 1.3
 
@@ -394,40 +502,9 @@ Item {
                 }
             }
         }
-        Rectangle{
-
-            id:left
-            height: 75 / 1.3 /*Style.monitorRatio*/
-            width: /*55 / 1.3 /*Style.monitorRatio*/ 0
-            color: Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)
-            radius: 20
-
-            IconImage {
-                id:leftIcon
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: -5
-                source: "qrc:/Resources/down"
-                height: 30 / 1.3 /*Style.monitorRatio*/
-                width: 30 / 1.3 /*Style.monitorRatio*/
-
-                rotation: -90
-                MouseArea{
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    propagateComposedEvents: true
-                    onClicked:{
-                                  print(flickable.contentX)
-                                  flickable.contentX += 131 / 1.3
-
-                              }
-                    onEntered: leftIcon.width = leftIcon.width * 1.3
-                    onExited: leftIcon.width = 30 / 1.3
-                }
-            }
 
 
-        }
+
 
         Rectangle{
             height: 75 / 1.3 /*Style.monitorRatio*/
@@ -458,11 +535,11 @@ Item {
 
                     MouseArea {
                         anchors.fill: parent
-//                        hoverEnabled:true
+                        //                        hoverEnabled:true
                         onEntered: addbtn.color = root.bg20
                         onExited: {if(!addCheck)
                                 addbtn.color = "transparent"
-                                print(addCheck)
+                            print(addCheck)
                         }
                         z:3
                         onClicked: {
@@ -502,16 +579,16 @@ Item {
                         propagateComposedEvents: true
                         onExited: {if(!removeCheck)
                                 deletebtn.color = "transparent"
-                        print(removeCheck)}
+                            print(removeCheck)}
                         onClicked:(mouse)=> {
-                            removeCheck = !removeCheck
-                            addCheck = false
-                            assignmentListModel.onRemoveButtonChecked(removeCheck)
-                            if(removeCheck){
-                                addbtn.color = "transparent"
+                                      removeCheck = !removeCheck
+                                      addCheck = false
+                                      assignmentListModel.onRemoveButtonChecked(removeCheck)
+                                      if(removeCheck){
+                                          addbtn.color = "transparent"
                                       }
 
-                        }
+                                  }
                     }
                 }
             }
@@ -535,23 +612,23 @@ Item {
             easing.type: Easing.OutQuint
         }
 
-        PropertyAnimation {
-            id: leftMotionOpen
-            target: left
-            properties: "width"
-            to: 55 / 1.3
-            from: 0
-            duration: 200
-            easing.type: Easing.OutQuint
-        }
-        PropertyAnimation {
-            id: leftMotionClose
-            target: left
-            properties: "width"
-            to: 0
-            duration: 200
-            easing.type: Easing.OutQuint
-        }
+        //        PropertyAnimation {
+        //            id: leftMotionOpen
+        //            target: left
+        //            properties: "width"
+        //            to: 55 / 1.3
+        //            from: 0
+        //            duration: 200
+        //            easing.type: Easing.OutQuint
+        //        }
+        //        PropertyAnimation {
+        //            id: leftMotionClose
+        //            target: left
+        //            properties: "width"
+        //            to: 0
+        //            duration: 200
+        //            easing.type: Easing.OutQuint
+        //        }
 
     }
 
@@ -640,7 +717,7 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {battleLocationIcons.flag= !battleLocationIcons.flag
-                                operatorListModel.operatorToggle(true)
+                        operatorListModel.operatorToggle(true)
                     }
                 }
             }
@@ -667,8 +744,8 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {battleLocationIcons.flag= !battleLocationIcons.flag
-                    operatorListModel.operatorToggle(false)
-                }
+                        operatorListModel.operatorToggle(false)
+                    }
 
                 }
             }
@@ -769,20 +846,4 @@ Item {
         easing.type: Easing.OutQuint
     }
 
-    PropertyAnimation {
-        id: marginMotionOp
-        target: attackholder
-        properties: "Layout.leftMargin"
-        to: -15
-        duration: 200
-        easing.type: Easing.OutQuint
-    }
-    PropertyAnimation {
-        id: marginMotionCl
-        target: attackholder
-        properties: "Layout.leftMargin"
-        to:0
-        duration: 200
-        easing.type: Easing.OutQuint
-    }
 }
