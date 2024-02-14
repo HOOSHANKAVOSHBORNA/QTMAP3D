@@ -103,8 +103,8 @@ Item {
                 heightIncrease.start()
             }
             signInBtn.onClicked: {
-                userManager.signIn(signInPage.usernameTxt.text,
-                                    signInPage.passwordTxt.text)
+                userManager.signIn(signInPage.usernameTxt,
+                                   signInPage.passwordTxt)
 
                 logInPageVisible = false
                 signInPage.visible = false

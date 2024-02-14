@@ -24,6 +24,10 @@ class UserManager : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
+    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
+
 public:
     UserManager(ServiceManager *serviceManager, QObject *parent = nullptr);
 
@@ -36,9 +40,27 @@ public:
 
     Q_INVOKABLE RoleSelectionModel *roleSelectionModel() const;
 
+
+    QString name() const;
+    void setName(const QString &newName);
+
+    QString userName() const;
+    void setUserName(const QString &newUserName);
+
+    QString message() const;
+    void setMessage(const QString &newMessage);
+
 signals:
     void signedIn();
     void selectRole();
+
+    void userDataChanged();
+
+    void nameChanged();
+
+    void userNameChanged();
+
+    void messageChanged();
 
 private slots:
     void onUserDataReceived(const UserData &userData);
@@ -47,6 +69,9 @@ private:
     ServiceManager* mServiceManager{nullptr};
     UserData mUserData;
     RoleSelectionModel* mRoleSelectionModel;
+    QString mName;
+    QString mUserName;
+    QString mMessage;
 };
 
 //class Profile:public QObject

@@ -55,11 +55,13 @@ void UserManager::signIn(const QString username, const QString password)
     userData.command = UserData::UserCommand::Login;
     mServiceManager->sendUser(userData);
 
+    setUserName(username);
+
     //--test------
-//    QVector<QString> testvec;
-//    testvec.append("Admin");
-//    testvec.append("User");
-//    mRoleSelectionModel->setRolse(testvec);
+    QVector<QString> testvec;
+    testvec.append("Admin");
+    testvec.append("User");
+    mRoleSelectionModel->setRolse(testvec);
 }
 
 void UserManager::signIn(int selectRoleIndex)
@@ -75,6 +77,7 @@ UserData UserManager::userData() const
 {
     return mUserData;
 }
+
 
 void UserManager::setServiceManager(ServiceManager *newServiceManager)
 {
@@ -154,3 +157,42 @@ RoleSelectionModel *UserManager::roleSelectionModel() const
 //}
 
 
+
+QString UserManager::name() const
+{
+    return mName;
+}
+
+void UserManager::setName(const QString &newName)
+{
+    if (mName == newName)
+        return;
+    mName = newName;
+    emit nameChanged();
+}
+
+QString UserManager::userName() const
+{
+    return mUserName;
+}
+
+void UserManager::setUserName(const QString &newUserName)
+{
+    if (mUserName == newUserName)
+        return;
+    mUserName = newUserName;
+    emit userNameChanged();
+}
+
+QString UserManager::message() const
+{
+    return mMessage;
+}
+
+void UserManager::setMessage(const QString &newMessage)
+{
+    if (mMessage == newMessage)
+        return;
+    mMessage = newMessage;
+    emit messageChanged();
+}
