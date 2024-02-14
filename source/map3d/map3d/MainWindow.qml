@@ -14,6 +14,7 @@ Item {
     //--properties--------------------------------------
     property var mainPageCpp
     property var mapItem
+
     //--------------------------------------------------
     // visible: true
     property real widgetsPositionFactor: 1.0
@@ -22,14 +23,8 @@ Item {
     readonly property color _colorHover: "#01AED6"
     readonly property color _colorPresed: "#003569"
 
-    function addToCenterCenterContainer(item) {
-        centerCenterContainer.data.push(item)
-    }
-
     Rectangle {
         anchors.fill: parent
-
-        color: 'purple'
 
         Item {
             id: unPinContainer
@@ -57,6 +52,7 @@ Item {
                 }
             }
         }
+
         SplitView {
             id: mainItemSplitter
             anchors.fill: parent
@@ -69,13 +65,10 @@ Item {
                 visible: false
             }
 
-//            StackLayout {
-//                id: centerCenterContainer
-//                SplitView.fillWidth: true
-//            }
-            MapControllerItem{
+            MapControllerItem {
                 mapItem: mainItem.mapItem
                 SplitView.fillWidth: true
+                SplitView.fillHeight: true
             }
         }
     }

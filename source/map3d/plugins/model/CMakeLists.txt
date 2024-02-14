@@ -21,8 +21,8 @@ add_library(model SHARED
     moveableModelNode.cpp
     flyableModelNode.h
     flyableModelNode.cpp
-    modelAutoScaler.h
-    modelautoscaler.cpp
+
+
     model.json
     model.qrc
     nodeInformation.h

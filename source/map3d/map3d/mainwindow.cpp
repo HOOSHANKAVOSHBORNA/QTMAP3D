@@ -12,20 +12,16 @@
 #include <QQmlEngine>
 #include <QJSEngine>
 
-#include "mainwindow.h"
-#include "mapItem.h"
-#include "listWindow.h"
-#include "qqmlcontext.h"
-#include "mapControllerItem.h"
-#include "layerManager.h"
-#include "locationManager.h"
-//#include "settings.h"
-#include "qmlNode.h"
-#include "filterManager.h"
-#include "userManager.h"
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QQuickOpenGLUtils>
+#include "layerManager.h"
+#include "listWindow.h"
+#include "locationManager.h"
+#include "mainwindow.h"
+#include "mapControllerItem.h"
+#include "mapItem.h"
+#include "qmlNode.h"
 #include "smallMap.h"
 
 MainWindow::MainWindow(QWindow *parent)
@@ -50,7 +46,13 @@ MainWindow::~MainWindow()
 void MainWindow::initComponent()
 {
     QQmlEngine *engine = qmlEngine(this);
-    mMapItem = new MapControllerItem();;
+    mMapItem = new MapControllerItem();
+
+    // --------------------- don't touch 2 below lines!!!!!!! ------------------------------------
+    mMapItem->setWidth(300);
+    mMapItem->setHeight(300);
+    // --------------------- I don't know why anyway :) ------------------------------------------
+
     mMapItem->setQmlEngine(engine);
     LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
     locationManager->initialize(mMapItem);

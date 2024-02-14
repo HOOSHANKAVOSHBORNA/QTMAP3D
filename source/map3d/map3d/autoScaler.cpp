@@ -47,7 +47,7 @@ void AutoScaler::operator()(osg::Node *node, osg::NodeVisitor *nv)
                 osg::Vec3d centerClip = centerView * cam->getProjectionMatrix();
 
                 // caluclate meters per pixel:
-                double mpp = (centerClip.x()*0.5) * cam->getViewport()->width();
+                double mpp = (centerClip.x()*1.7) * cam->getViewport()->width();
 
                 // and the resulting scale we need to auto-scale.
                 double scale = bs.radius() / mpp;

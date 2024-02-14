@@ -221,7 +221,7 @@ void Model::onTreeItemCheck(bool check)
         mNodeData.type = NodeType::Fixed;
         mNodeData.category = "User";
         mNodeData.url2D = "../data/models/tree/tree.png";
-        mNodeData.url3D = "../data/models/tree/tree.osgb";
+        mNodeData.url3D = "../data/models/station/station.osgb";
         mNodeData.imgInfoUrl = "qrc:/resources/tree.png";
         mNodeData.iconInfoUrl = "qrc:/resources/tree.png";
         mNodeData.color = QColorConstants::Green.name();
