@@ -224,29 +224,7 @@ Item {
                                 rotation: treeDelegate.expanded ? 180 : 0
                                 anchors.verticalCenter: parent.verticalCenter
                             }
-                            /// -----------  inja
-//                            Rectangle{
-//                                id:chk
-//                                width: 12
-//                                height: 12
-//                                anchors.verticalCenter: parent.verticalCenter
-//                                radius: 15
-//                                anchors.right: indicator.left
-//                                color:LayerManagerInstance.propertyInterface.name === display ?(propertySection.visible === true ?Style.backgroundColor : Style.foregroundColor) : Style.foregroundColor
-//                                MouseArea{
-//                                    anchors.fill: parent
-//                                    onClicked:{
 
-//                                        if (LayerManagerInstance.propertyInterface.name === display) {
-//                                            propertySection.visible = !propertySection.visible
-//                                        } else {
-//                                            propertySection.visible = true
-//                                        }
-//                                        rootItem.layerModel.onItemLeftClicked(
-//                                                    treeView.index(row, column))
-//                                    }
-//                                }
-//                            }
                             IconImage {
                                 id: tick
                                 anchors.verticalCenter: parent.verticalCenter
