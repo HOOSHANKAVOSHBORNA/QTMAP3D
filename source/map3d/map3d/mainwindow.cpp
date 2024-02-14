@@ -118,41 +118,6 @@ LocationProxyModel *MainWindow::getLocationManager() const
     return LocationManager::createSingletonInstance(nullptr, nullptr)->locationProxyModel();
 }
 
-void MainWindow::addToMenuItemContainer(QQuickItem *item, QString title)
-{
-    QMetaObject::invokeMethod(this, "addToMenuItemContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
-                              );
-}
-
-void MainWindow::removeFromMenuItemContainer(QQuickItem *item)
-{
-    QMetaObject::invokeMethod(this, "removeFromMenuItemContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
-                              );
-}
-
-void MainWindow::addToCenterCenterContainer(QQuickItem *item)
-{
-    QMetaObject::invokeMethod(this, "addToCenterCenterContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
-                              );
-}
-
-void MainWindow::removeFromRightContainer(QQuickItem *item)
-{
-    QMetaObject::invokeMethod(this, "removeFromRightContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
-                              );
-}
-
-void MainWindow::removeFromLeftContainer(QQuickItem *item)
-{
-    QMetaObject::invokeMethod(this, "removeFromLeftContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item))
-                              );
-}
-
 void MainWindow::showListWindow()
 {
     if (mListWindow) {
@@ -163,49 +128,13 @@ void MainWindow::showListWindow()
     }
 }
 
-
-
-void MainWindow::showInfoItem(QQuickItem *item, QString title)
-{
-    QMetaObject::invokeMethod(this,
-                              "showInfoView",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
-                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
-                              );
-}
-
-void MainWindow::hideInfoItem(QQuickItem *item)
-{
-    removeFromLeftContainer(item);
-}
-
 void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 {
     if (mListWindow) {
-//        QMetaObject::invokeMethod(mListWindow,
-//                                  "addTab",
-//                                  Q_ARG(QVariant, QVariant::fromValue<QString>(tabTitle)),
-//                                  Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(tabItem))
-//                                  );
         mListWindow->appendItem(tabTitle, tabItem);
+    } else {
+        qDebug() << "-- mListWindow is nullptr";
     }
-}
-
-
-void MainWindow::addToLeftContainer(QQuickItem *item, QString title)
-{
-    QMetaObject::invokeMethod(this, "addToLeftContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
-                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
-                              );
-}
-
-void MainWindow::addToRightContainer(QQuickItem *item, QString title)
-{
-    QMetaObject::invokeMethod(this, "addToRightContainer",
-                              Q_ARG(QVariant, QVariant::fromValue<QQuickItem*>(item)),
-                              Q_ARG(QVariant, QVariant::fromValue<QString>(title))
-                              );
 }
 
 void MainWindow::setListWindow(ListWindow *listWindow)
