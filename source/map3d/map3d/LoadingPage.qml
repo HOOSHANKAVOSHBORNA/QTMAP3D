@@ -14,7 +14,7 @@ Item {
 
         ListView {
             id: listView
-            model: loadingInfo
+            model: loadingPageCpp
             height: parent.height
             width: 0.05 * parent.width
             anchors.horizontalCenter: parent.horizontalCenter

@@ -1,5 +1,5 @@
-#ifndef LOADINGINFO_H
-#define LOADINGINFO_H
+#ifndef LOADINGPAGE_H
+#define LOADINGPAGE_H
 #include <QAbstractListModel>
 #include <QTimer>
 struct LoadingInfoItem
@@ -16,14 +16,14 @@ struct LoadingInfoItem
     }
 };
 
-class LoadingInfo : public QAbstractListModel
+class LoadingPage : public QAbstractListModel
 {
     Q_OBJECT
     enum CustomRoles {
        acceptionState = Qt::UserRole,
     };
 public:
-   explicit LoadingInfo(QObject* parent = nullptr);
+   explicit LoadingPage(QObject* parent = nullptr);
 
    virtual int rowCount(const QModelIndex &parent) const override;
    virtual QVariant data(const QModelIndex &index, int role) const override;
@@ -39,4 +39,4 @@ private:
     QTimer* mTimer;
 };
 
-#endif // LOADINGINFO_H
+#endif // LOADINGPAGE_H

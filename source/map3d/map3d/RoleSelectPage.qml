@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import "style"
 
 ColumnLayout {
+    property var roleSelectionCpp: undefined
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
     property alias backBtn: backBtn
@@ -58,7 +59,6 @@ ColumnLayout {
         }
 
         Text {
-            text: "sdfgsdfgsdfgsdg"
             id: usernameTxt
             font.pixelSize: 23 / Style.monitorRatio
             color: Style.foregroundColor
@@ -73,66 +73,36 @@ ColumnLayout {
         color: Style.foregroundColor
     }
 
-    RadioButton {
-        id: administrator
-        text: "Administrator"
+    ListView {
+        id: roleSelectionView
+        model: roleSelectionModel
         Layout.topMargin: 12 / Style.monitorRatio
-        Layout.preferredHeight: 20 / Style.monitorRatio
+        Layout.preferredHeight: 90 / Style.monitorRatio
         Layout.fillWidth: true
-        opacity: checked ? 1 : 0.75
-        contentItem: Text {
-            text: parent.text
-            font.pixelSize: 20 / Style.monitorRatio
-            color: Style.foregroundColor
-            leftPadding: 20 / Style.monitorRatio
-            verticalAlignment: Text.AlignVCenter
-        }
-        indicator: Image {
-            width: 20 / Style.monitorRatio
+        spacing: 10 / Style.monitorRatio
+        interactive: false
+        delegate: RadioButton {
+            id: radioButton
+            text: model.display
             height: 20 / Style.monitorRatio
-            source: administrator.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
-        }
-    }
+            opacity: checked ? 1 : 0.75
+            contentItem: Text {
+                text: parent.text
+                font.pixelSize: 20 / Style.monitorRatio
+                color: Style.foregroundColor
+                leftPadding: 20 / Style.monitorRatio
+                verticalAlignment: Text.AlignVCenter
+            }
+            indicator: Image {
+                width: 20 / Style.monitorRatio
+                height: 20 / Style.monitorRatio
+                source: radioButton.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
+            }
 
-    RadioButton {
-        id: admin
-        text: "Admin"
-        Layout.topMargin: 10 / Style.monitorRatio
-        Layout.preferredHeight: 20 / Style.monitorRatio
-        Layout.fillWidth: true
-        opacity: checked ? 1 : 0.75
-        contentItem: Text {
-            text: parent.text
-            font.pixelSize: 20 / Style.monitorRatio
-            color: Style.foregroundColor
-            leftPadding: 20 / Style.monitorRatio
-            verticalAlignment: Text.AlignVCenter
-        }
-        indicator: Image {
-            width: 20 / Style.monitorRatio
-            height: 20 / Style.monitorRatio
-            source: admin.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
-        }
-    }
-
-    RadioButton {
-        id: reviewer
-        text: "Reviewer"
-        Layout.topMargin: 10 / Style.monitorRatio
-        Layout.preferredHeight: 20 / Style.monitorRatio
-        Layout.fillWidth: true
-        opacity: checked ? 1 : 0.75
-        contentItem: Text {
-            text: parent.text
-            font.pixelSize: 20 / Style.monitorRatio
-            color: Style.foregroundColor
-            leftPadding: 20 / Style.monitorRatio
-            verticalAlignment: Text.AlignVCenter
-        }
-        indicator: Image {
-            width: 20 / Style.monitorRatio
-            height: 20 / Style.monitorRatio
-            source: reviewer.checked ? "qrc:/Resources/radioButtonCircle.png" : "qrc:/Resources/radioButtonCircleEmpty.png"
+            onCheckedChanged: {
+                if (radioButton.checked)
+                    roleSelectionModel.getSelectedRoleIndex(index)
+            }
         }
     }
 

@@ -9,7 +9,6 @@ Item {
 
     property var connectionConfigCpp: undefined
 
-    property var model: ConnectionConfigurationInstance.getConnectionConfiguration()
     readonly property color foregroundColorTextBox: Qt.rgba(
                                                         Style.foregroundColor.r,
                                                         Style.foregroundColor.g,
@@ -25,7 +24,6 @@ Item {
 
     height: parent ? parent.height : 0
     width: parent ? parent.width : 0
-
 
     ColumnLayout {
         spacing: 0
@@ -84,7 +82,7 @@ Item {
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
             placeholderText: "Username"
-            text: rootItem.model ? rootItem.model.username : ""
+            text: rootItem.connectionConfigCpp ? rootItem.connectionConfigCpp.username : ""
             background: Rectangle {
                 color: foregroundColorTextBox
                 radius: height / 2
@@ -109,7 +107,7 @@ Item {
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
             placeholderText: "Password"
-            text: rootItem.model ? rootItem.model.password : ""
+            text: rootItem.connectionConfigCpp ? rootItem.connectionConfigCpp.password : ""
             background: Rectangle {
                 color: foregroundColorTextBox
                 radius: height / 2
@@ -134,7 +132,7 @@ Item {
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
             placeholderText: "IP"
-            text: rootItem.model ? rootItem.model.ip : ""
+            text: rootItem.connectionConfigCpp ? rootItem.connectionConfigCpp.ip : ""
             background: Rectangle {
                 color: foregroundColorTextBox
                 radius: height / 2
@@ -159,7 +157,7 @@ Item {
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
             placeholderText: "port"
-            text: rootItem.model ? rootItem.model.port : ""
+            text: rootItem.connectionConfigCpp ? rootItem.connectionConfigCpp.port : ""
             background: Rectangle {
                 color: foregroundColorTextBox
                 radius: height / 2
@@ -187,11 +185,11 @@ Item {
                 color: Style.foregroundColor
             }
             onClicked: {
-                rootItem.model.setIp(ip.text)
-                rootItem.model.setPort(port.text)
-                rootItem.model.setUsername(username.text)
-                rootItem.model.setPassword(password.text)
-                rootItem.model.saveSettings()
+                rootItem.connectionConfigCpp.setIp(ip.text)
+                rootItem.connectionConfigCpp.setPort(port.text)
+                rootItem.connectionConfigCpp.setUsername(username.text)
+                rootItem.connectionConfigCpp.setPassword(password.text)
+                rootItem.connectionConfigCpp.saveSettings()
             }
         }
     }

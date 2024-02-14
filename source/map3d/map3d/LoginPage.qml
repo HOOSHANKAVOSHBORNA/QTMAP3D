@@ -103,6 +103,9 @@ Item {
                 heightIncrease.start()
             }
             signInBtn.onClicked: {
+                loginPageCpp.signIn(signInPage.usernameTxt.text,
+                                    signInPage.passwordTxt.text)
+
                 logInPageVisible = false
                 signInPage.visible = false
                 rolePage.visible = true
@@ -131,9 +134,8 @@ Item {
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
-
-                loginPageCpp.signIn(signInPage.usernameTxt.text,
-                                 signInPage.passwordTxt.text)
+                roleSelectionModel.signIn(signInPage.usernameTxt.text,
+                                    signInPage.passwordTxt.text)
             }
             backBtn.onClicked: {
                 rolePage.visible = false
@@ -168,5 +170,4 @@ Item {
             }
         }
     }
-
 }
