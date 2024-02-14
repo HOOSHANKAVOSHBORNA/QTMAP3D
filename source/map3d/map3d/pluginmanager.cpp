@@ -105,6 +105,11 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
 }
 
+void PluginManager::setQmlEngine(QQmlEngine *engine)
+{
+    PluginInterface::setQmlEngine(engine);
+}
+
 void PluginManager::loadPlugins()
 {
     QDir pluginsDir = QCoreApplication::applicationDirPath();

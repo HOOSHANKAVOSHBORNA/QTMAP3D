@@ -36,7 +36,7 @@ class CombatManager: public QObject
     Q_OBJECT
 
 public:
-    CombatManager(MapItem *map);
+    CombatManager(QQmlEngine *engine, MapItem *map);
     //--setupFunctions-----------------------------------------------------------------------
     void setCombatLayer(ParenticAnnotationLayer* layer);
     ParenticAnnotationLayer *getCombatLayer();
@@ -64,6 +64,7 @@ signals:
     void dataChanged();
 
 private:
+    QQmlEngine *mQmlEngine = nullptr;
     MapItem *mMapItem{nullptr};
     osg::ref_ptr<ParenticAnnotationLayer> mCombatLayer;
     QList<osg::ref_ptr<BulletNode>> *mBulletList;

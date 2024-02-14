@@ -36,12 +36,18 @@ public:
     };
 
 public:
-    SimpleModelNode(MapItem* mapItem, const std::string& url3D, const std::string& url2D, QObject *parent = nullptr);
+    SimpleModelNode(QQmlEngine *engine,
+                    MapItem *mapItem,
+                    const std::string &url3D,
+                    const std::string &url2D,
+                    QObject *parent = nullptr);
     ~SimpleModelNode();
 
     virtual SimpleModelNode* asSimpleModelNode(){return this;}
     virtual MoveableModelNode* asMoveableModelNode(){return nullptr;}
-    virtual FlyableModelNode* asFlyableModelNode(){return nullptr;}
+    virtual FlyableModelNode *asFlyableModelNode() { return nullptr; }
+
+    void setQmlEngine(QQmlEngine *engine);
 
     MapItem *mapItem() const;
 
@@ -98,7 +104,6 @@ private:
 //    void setOutline(bool state);
 
 private:
-
     osg::ref_ptr<osg::Switch> mSwitchMode;
     osg::ref_ptr<osg::LOD> m3DNode;
     osg::ref_ptr<HighlightOutline> mOutlineNode;
@@ -130,7 +135,7 @@ private:
     osgEarth::Color mHighliteColor{osg::Vec4(0.8, 0.3, 0.87, 0.5)};
     NodeInformation* mNodeInformation{nullptr};
     bool mIsBookmarked{false};
-    QQmlEngine *mEnigine{nullptr};
+    QQmlEngine *mEngine{nullptr};
     BookmarkManager *mBookmarkManager;
     BookmarkItem *mBookmarkItem{nullptr};
     CircularMenu *mCircularMenu{nullptr};

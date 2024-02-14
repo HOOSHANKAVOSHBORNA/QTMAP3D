@@ -21,18 +21,21 @@ const float RANGE3D = 835;
 QMap<std::string, osg::ref_ptr<osg::Node>> SimpleModelNode::mNodes3D;
 QMap<std::string, osg::ref_ptr<osg::Image>> SimpleModelNode::mImages2D;
 
-
-SimpleModelNode::SimpleModelNode(MapItem *mapItem, const std::string &url3D, const std::string &url2D, QObject *parent)
-    : QObject{parent},
-    osgEarth::Annotation::ModelNode(mapItem->getMapNode(), Utility::getDefaultStyle()),
-    mUrl3D(url3D),
-    mMapItem(mapItem),
-    mUrl2D(url2D)
+SimpleModelNode::SimpleModelNode(QQmlEngine *engine,
+                                 MapItem *mapItem,
+                                 const std::string &url3D,
+                                 const std::string &url2D,
+                                 QObject *parent)
+    : QObject{parent}
+    , mEngine(engine)
+    , osgEarth::Annotation::ModelNode(mapItem->getMapNode(), Utility::getDefaultStyle())
+    , mUrl3D(url3D)
+    , mMapItem(mapItem)
+    , mUrl2D(url2D)
 {
     connect(mMapItem, &MapItem::modeChanged, this, &SimpleModelNode::onModeChanged);
     mIs3D = mMapItem->getMode();
 
-    mEnigine = QQmlEngine::contextForObject(mMapItem->parentItem())->engine();
     compile();
     //--circle menu-------------------------------------------------------------
     createCircularMenu();
@@ -47,6 +50,11 @@ SimpleModelNode::~SimpleModelNode()
 {
     delete mNodeInformation;
     delete mCircularMenu;
+}
+
+void SimpleModelNode::setQmlEngine(QQmlEngine *engine)
+{
+    mEngine = engine;
 }
 
 MapItem *SimpleModelNode::mapItem() const
@@ -477,7 +485,7 @@ void SimpleModelNode::createCircularMenu()
 
 void SimpleModelNode::createNodeInformation()
 {
-    mNodeInformation = new NodeInformation(mEnigine, mMapItem->window());
+    mNodeInformation = new NodeInformation(mEngine, mMapItem->window());
 
     connect(mNodeInformation,&NodeInformation::goToPosition, this, &SimpleModelNode::onGoToPosition);
     connect(mNodeInformation,&NodeInformation::track, this, &SimpleModelNode::onTrack);

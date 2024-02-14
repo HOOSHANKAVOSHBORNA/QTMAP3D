@@ -8,8 +8,9 @@
 #include "nodeList.h"
 
 //--------------------------------NodeList-----------------------
-NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
+NodeList::NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *dataManager)
 {
+    mQmlEngine = engine;
     mMapItem = mapItem;
     mDataManager = dataManager;
 
@@ -72,19 +73,19 @@ NodeList::NodeList(MapControllerItem *mapItem, DataManager *dataManager)
 
 void NodeList::createQml()
 {
-//    QQmlComponent *comp = new QQmlComponent(qmlEngine(mMapItem->parentItem()));
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
 
-//    connect(comp, &QQmlComponent::statusChanged, [&] {
-//        if (comp->status() == QQmlComponent::Status::Error) {
-//            qDebug() << comp->errorString();
-//        }
+    connect(comp, &QQmlComponent::statusChanged, [&] {
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
 
-//        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
-//        mQmlItem->setProperty("tableModel", QVariant::fromValue(mProxyModel));
-//        mQmlItem->setProperty("filterManager", QVariant::fromValue(mDataManager->filterManager()));
-//    });
+        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
+        mQmlItem->setProperty("tableModel", QVariant::fromValue(mProxyModel));
+        mQmlItem->setProperty("filterManager", QVariant::fromValue(mDataManager->filterManager()));
+    });
 
-//    comp->loadUrl(QUrl("qrc:/NodeListItem.qml"));
+    comp->loadUrl(QUrl("qrc:/NodeListItem.qml"));
 }
 
 NodeProxyModel *NodeList::proxyModel() const

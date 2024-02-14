@@ -22,6 +22,7 @@ class MainWindow;
 class ListWindow;
 class QQuickItem;
 class BookmarkManager;
+
 namespace osgViewer {
     class Viewer;
 };
@@ -37,6 +38,7 @@ public:
     static void setMainWindow(MainWindow* mainWindow);
     MainWindow *mainWindow() const;
     MapControllerItem *mapItem() const;
+    static void setQmlEngine(QQmlEngine *engine);
     QQmlEngine *qmlEngine() const;
     Toolbox *toolbox() const;
     BookmarkManager *bookmarkManager() const;

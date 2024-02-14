@@ -6,8 +6,9 @@
 #include "utility.h"
 
 // ---------------------------------------------------------------------- manager
-Property::Property(MapControllerItem *mapItem)
+Property::Property(QQmlEngine *engine, MapControllerItem *mapItem)
 {
+    mQmlEngine = engine;
     mMapItem = mapItem;
     mPropertyItem = new PropertyItem(mapItem);
 //    qmlEngine(mMapItem)->rootContext()->setContextProperty("modelPropertyInterface", mPropertyItem);
@@ -52,17 +53,17 @@ void Property::flyTo(const osgEarth::GeoPoint &positon)
 
 void Property::createQML()
 {
-//    QQmlComponent *comp = new QQmlComponent(qmlEngine(mMapItem));
-//    connect(comp, &QQmlComponent::statusChanged, [&] {
-//        if (comp->status() == QQmlComponent::Status::Error) {
-//            qDebug() << comp->errorString();
-//        }
+    QQmlComponent *comp = new QQmlComponent(mQmlEngine);
+    connect(comp, &QQmlComponent::statusChanged, [&] {
+        if (comp->status() == QQmlComponent::Status::Error) {
+            qDebug() << comp->errorString();
+        }
 
-//        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
-//        mQmlItem->setProperty("cppInterface", QVariant::fromValue(mPropertyItem));
-//    });
+        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
+        mQmlItem->setProperty("cppInterface", QVariant::fromValue(mPropertyItem));
+    });
 
-//    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
+    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
 }
 
 QQuickItem *Property::qmlItem() const

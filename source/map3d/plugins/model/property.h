@@ -17,7 +17,7 @@ class PropertyItem;
 class Property : public QObject
 {
 public:
-    Property(MapControllerItem *mapItem);
+    explicit Property(QQmlEngine *engine, MapControllerItem *mapItem);
 
     osg::ref_ptr<SimpleModelNode> modelNode() const;
     void setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNode);
@@ -31,10 +31,12 @@ public:
 
 private:
     void createQML();
+
 private:
-    MapControllerItem *mMapItem;
-    PropertyItem *mPropertyItem;
-    QQuickItem *mQmlItem;
+    QQmlEngine *mQmlEngine = nullptr;
+    MapControllerItem *mMapItem = nullptr;
+    PropertyItem *mPropertyItem = nullptr;
+    QQuickItem *mQmlItem = nullptr;
 };
 
 // ---------------------------------------------------------------------- interface for qml
