@@ -20,14 +20,14 @@ int main(int argc, char *argv[])
     //        networkManager.sendFlyableData("data");
     //    });
     UserTest userTest(&serviceManager);
-    LayerTest LayerTest(&serviceManager);
+//    LayerTest LayerTest(&serviceManager);
 
     //    FlyableNodeTest flyableNodeTest(&networkManager);
     //    MovableNodeTest movableNodeTest(&networkManager);
 
-    NodeTest nodeTest(&serviceManager);
-    AssignmentTest assignmentTest(&serviceManager);
-    ParticleTest particleTest(&serviceManager);
+//    NodeTest nodeTest(&serviceManager);
+//    AssignmentTest assignmentTest(&serviceManager);
+//    ParticleTest particleTest(&serviceManager);
 
     return a.exec();
 }

@@ -12,6 +12,7 @@
 #include "application.h"
 #include "connectionConfiguration.h"
 #include "listWindow.h"
+#include "loadingPage.h"
 #include "mainwindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
@@ -42,25 +43,26 @@ void Application::initialize()
 
     //--qml--------------------------------------------------
     initializeQmlEngine();
-    //--create models----------------------------------------
-    mMainWindow = new MainWindow();
-    mMainWindow->initComponent();
-
-    LoginPage *loginPage = new LoginPage(mServiceManager, mQmlEngine);
-    ConnectionConfiguration *connectionConfiguration = new ConnectionConfiguration;
-    LoadingInfo *loadingPage = new LoadingInfo();
-    mQmlEngine->setInitialProperties({{"loginPageCpp", QVariant::fromValue(loginPage)},
-                                      {"connectionConfigCpp", QVariant::fromValue(connectionConfiguration)},
-                                      {"loadingPageCpp", QVariant::fromValue(loadingPage)},
-                                      {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
     mNetworkManager->start();
 
     mServiceManager = new ServiceManager(mNetworkManager);
+    //--create models----------------------------------------
+    mMainWindow = new MainWindow();
+    mMainWindow->initComponent();
+
+    UserManager *userManager = new UserManager(mServiceManager);
+    ConnectionConfiguration *connectionConfiguration = new ConnectionConfiguration;
+    LoadingPage *loadingPage = new LoadingPage();
+    mQmlEngine->setInitialProperties({{"userManager", QVariant::fromValue(userManager)},
+                                      {"connectionConfigCpp", QVariant::fromValue(connectionConfiguration)},
+                                      {"loadingPageCpp", QVariant::fromValue(loadingPage)},
+                                      {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
+
 
     //--user manger------------------------------------------
-    mUserManager = new UserManager(mServiceManager, mQmlEngine);
+//    mUserManager = new UserManager(mServiceManager, mQmlEngine);
 
     //    connect(mPluginManager, &PluginManager::pluginsLoaded, this, &Application::ready);
     //    connect(this, &Application::ready, this, &Application::createApplicationQml);

@@ -7,7 +7,7 @@ import "style"
 Item {
     id: loginPage
 
-    property var loginPageCpp: undefined
+    property var userManager: undefined
     property var connectionConfigCpp: undefined
 
     width: 1920 / Style.monitorRatio
@@ -103,6 +103,9 @@ Item {
                 heightIncrease.start()
             }
             signInBtn.onClicked: {
+                userManager.signIn(signInPage.usernameTxt.text,
+                                    signInPage.passwordTxt.text)
+
                 logInPageVisible = false
                 signInPage.visible = false
                 rolePage.visible = true
@@ -115,6 +118,7 @@ Item {
 
         RoleSelectPage {
             id: rolePage
+            roleSelectionModel: userManager.roleSelectionModel()
             visible: false
             usernameTxt: signInPage.usernameTxt
             anchors.left: parent.left
@@ -131,9 +135,7 @@ Item {
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
-
-                loginPageCpp.signIn(signInPage.usernameTxt.text,
-                                 signInPage.passwordTxt.text)
+                userManager.signIn(selectRole)
             }
             backBtn.onClicked: {
                 rolePage.visible = false
@@ -168,5 +170,4 @@ Item {
             }
         }
     }
-
 }

@@ -1,7 +1,7 @@
-#include "loadingInfo.h"
+#include "loadingPage.h"
 
 
-LoadingInfo::LoadingInfo(QObject *parent):QAbstractListModel(parent)
+LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
 {
     for(int x = 0 ; x < 10 ; ++x)
         addItem("this is test " + QString::number(x), false );
@@ -17,13 +17,13 @@ LoadingInfo::LoadingInfo(QObject *parent):QAbstractListModel(parent)
     });
 }
 
-int LoadingInfo::rowCount(const QModelIndex &parent) const
+int LoadingPage::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return mLoadingDataItem.size();
 }
 
-QVariant LoadingInfo::data(const QModelIndex &index, int role) const
+QVariant LoadingPage::data(const QModelIndex &index, int role) const
 {
     const int row = index.row();
 
@@ -41,22 +41,21 @@ QVariant LoadingInfo::data(const QModelIndex &index, int role) const
 
 }
 
-QHash<int, QByteArray> LoadingInfo::roleNames() const
+QHash<int, QByteArray> LoadingPage::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
     hash[acceptionState] = "acceptionState";
     return hash;
 }
 
-void LoadingInfo::addItem( const QString& loadingData, bool acceptionState)
+void LoadingPage::addItem( const QString& loadingData, bool acceptionState)
 {
-
     emit beginInsertRows(QModelIndex(), mLoadingDataItem.size(), mLoadingDataItem.size());
     mLoadingDataItem.push_back({loadingData,acceptionState});
     emit endInsertRows();
 }
 
-void LoadingInfo::removeItem(int index)
+void LoadingPage::removeItem(int index)
 {
     if(index < mLoadingDataItem.size()){
         emit beginRemoveRows(QModelIndex(),index,index);
@@ -67,7 +66,7 @@ void LoadingInfo::removeItem(int index)
         return;
 }
 
-void LoadingInfo::swapItem(int sourceIndex, int destinationIndex)
+void LoadingPage::swapItem(int sourceIndex, int destinationIndex)
 {
     if(sourceIndex < mLoadingDataItem.size() && destinationIndex < mLoadingDataItem.size()){
         emit beginMoveRows(QModelIndex(),sourceIndex,sourceIndex,QModelIndex(),destinationIndex);
@@ -79,7 +78,7 @@ void LoadingInfo::swapItem(int sourceIndex, int destinationIndex)
 
 }
 
-void LoadingInfo::changeAcceptionState(int index, bool state)
+void LoadingPage::changeAcceptionState(int index, bool state)
 {
     if(index < mLoadingDataItem.size()){
         mLoadingDataItem[index].acceptionState = state;
@@ -92,7 +91,7 @@ void LoadingInfo::changeAcceptionState(int index, bool state)
 
 }
 
-void LoadingInfo::updateData(int index)
+void LoadingPage::updateData(int index)
 {
     for(int m=index;m>0;m--)
         if(mLoadingDataItem[m].acceptionState && !mLoadingDataItem[m-1].acceptionState)

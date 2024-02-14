@@ -53,7 +53,7 @@ private:
     PluginManager *mPluginManager = nullptr;
     ServiceManager *mServiceManager{nullptr};
 
-    UserManager *mUserManager{nullptr};
+//    UserManager *mUserManager{nullptr};
     Splash *mSplash{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 

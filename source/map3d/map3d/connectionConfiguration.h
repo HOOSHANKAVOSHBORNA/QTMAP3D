@@ -4,10 +4,6 @@
 #include <QObject>
 #include <QQuickItem>
 #include <QSettings>
-//#include <QJsonObject>
-//#include <QJsonDocument>
-//#include <QStandardPaths>
-//#include <QDir>
 
 class ConnectionConfiguration:public QObject
 {
@@ -34,8 +30,6 @@ public:
     Q_INVOKABLE void setPassword(const QString &newPassword);
     Q_INVOKABLE void saveSettings();
 
-//    QJsonObject toJson();
-    bool writeToFile();
 
 signals:
     void ipChanged();
@@ -49,25 +43,22 @@ private:
     QString mUsername;
     QString mPassword;
     QSettings* mSettings;
-//    QString appDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-//    const QString savedDir = QString("saved");
-//    const QString savedFileName = QString("settings.json");
 };
 
-class ConnectionConfigurationManager:public QObject
-{
-    Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-public:
-    static ConnectionConfigurationManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
-    ~ConnectionConfigurationManager();
-    Q_INVOKABLE ConnectionConfiguration *getConnectionConfiguration();
-protected:
-    ConnectionConfigurationManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
-private:
-    static inline ConnectionConfigurationManager* mInstance{nullptr};
-    ConnectionConfiguration *mConnectionConfiguration;
-};
+//class ConnectionConfigurationManager:public QObject
+//{
+//    Q_OBJECT
+//    QML_ELEMENT
+//    QML_SINGLETON
+//public:
+//    static ConnectionConfigurationManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+//    ~ConnectionConfigurationManager();
+//    Q_INVOKABLE ConnectionConfiguration *getConnectionConfiguration();
+//protected:
+//    ConnectionConfigurationManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
+//private:
+//    static inline ConnectionConfigurationManager* mInstance{nullptr};
+//    ConnectionConfiguration *mConnectionConfiguration;
+//};
 
 #endif // CONNECTIONCONFIGURATION_H

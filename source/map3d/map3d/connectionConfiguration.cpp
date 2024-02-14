@@ -77,60 +77,27 @@ void ConnectionConfiguration::saveSettings()
     mSettings->setValue("configs/password", mPassword);
 }
 
-//QJsonObject Settings::toJson()
+
+//ConnectionConfigurationManager *ConnectionConfigurationManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 //{
-//    QJsonObject json;
-
-//    json["ip"] = mIp;
-//    json["port"] = mPort;
-//    json["username"] = mUsername;
-//    json["password"] = mPassword;
-
-//    return json;
+//    Q_UNUSED(engine);
+//    Q_UNUSED(scriptEngine);
+//    if(mInstance == nullptr){ mInstance = new ConnectionConfigurationManager(); }
+//    return mInstance;
 //}
 
-bool ConnectionConfiguration::writeToFile()
-{
+//ConnectionConfigurationManager::~ConnectionConfigurationManager()
+//{
+//    delete mConnectionConfiguration;
+//}
 
+//ConnectionConfiguration* ConnectionConfigurationManager::getConnectionConfiguration()
+//{
+//    return mConnectionConfiguration;
+//}
 
-//    QDir dir;
-//    if (!dir.exists(appDir + "/" + savedDir)) {
-//        dir.mkpath(savedDir);
-//    }
-
-//    QFile settingsFile(appDir + "/" + savedDir + "/" + savedFileName);
-
-//    if (!settingsFile.open(QIODevice::WriteOnly)) {
-//        return false;
-//    }
-
-//    QJsonObject jsonObject = this->toJson();
-//    settingsFile.write(QJsonDocument(jsonObject).toJson());
-
-   //    return true;
-}
-
-
-ConnectionConfigurationManager *ConnectionConfigurationManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new ConnectionConfigurationManager(); }
-    return mInstance;
-}
-
-ConnectionConfigurationManager::~ConnectionConfigurationManager()
-{
-    delete mConnectionConfiguration;
-}
-
-ConnectionConfiguration* ConnectionConfigurationManager::getConnectionConfiguration()
-{
-    return mConnectionConfiguration;
-}
-
-ConnectionConfigurationManager::ConnectionConfigurationManager(QObject *parent):QObject(parent)
-{
-    mConnectionConfiguration = new ConnectionConfiguration();
-}
+//ConnectionConfigurationManager::ConnectionConfigurationManager(QObject *parent):QObject(parent)
+//{
+//    mConnectionConfiguration = new ConnectionConfiguration();
+//}
 

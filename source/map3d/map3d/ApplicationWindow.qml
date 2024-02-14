@@ -7,7 +7,7 @@ import "Components"
 Window {
     id: applicationWindow
 
-    property var loginPageCpp: undefined
+    property var userManager: undefined
     property var connectionConfigCpp: undefined
     property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
@@ -53,7 +53,7 @@ Window {
             currentIndex: debugTabbar.currentIndex
 
             LoginPage {
-                loginPageCpp: applicationWindow.loginPageCpp
+                userManager: applicationWindow.userManager
                 connectionConfigCpp: applicationWindow.connectionConfigCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
