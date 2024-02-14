@@ -21,21 +21,6 @@ Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QObject
 {
     Q_OBJECT
-//    Q_PROPERTY(BookmarkProxyModel* bookmark READ bookmark /*WRITE setLayersModel NOTIFY layersModelChanged*/)
-
-public:
-    enum class InfoWidgetType {
-        Airplane,
-        Station,
-        System
-    };
-
-    enum DockPosition{
-        Left = 0x1,
-        Right,
-        Top,
-        Bottom
-    };
 
 public:
     MainWindow(QWindow *parent = nullptr);
@@ -49,18 +34,6 @@ public:
     LocationProxyModel *getLocationManager() const;
 
 public:
-    void addToMenuItemContainer(QQuickItem *item, QString title);
-    void removeFromMenuItemContainer(QQuickItem *item);
-
-    void addToLeftContainer(QQuickItem *item, QString title);
-    void addToRightContainer(QQuickItem *item, QString title);
-    void addToCenterCenterContainer(QQuickItem *item);
-    void removeFromRightContainer(QQuickItem *item);
-    void removeFromLeftContainer(QQuickItem *item);
-
-    void showInfoItem(QQuickItem* item, QString title);
-    void hideInfoItem(QQuickItem* item);
-    void hideProperty(QQuickItem* item);
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
 
 public slots:
