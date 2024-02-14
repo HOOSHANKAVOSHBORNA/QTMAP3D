@@ -325,24 +325,24 @@ void OperatorListModel::setOperatorIsAttacker(bool attacker)
 //-----------------------------------------------------------------------------
 CombatMenu::CombatMenu(CombatManager *combatManager, MapControllerItem *map)
 {
-    QQmlEngine *engine = QQmlEngine::contextForObject(map)->engine();
-    mMapItem = map;
-    mAssignmentListModel = new AssignmentListModel(combatManager);
-    mOperatorListModel = new OperatorListModel(mAssignmentListModel);
-    QQmlComponent* comp = new QQmlComponent(engine);
+//    QQmlEngine *engine = QQmlEngine::contextForObject(map)->engine();
+//    mMapItem = map;
+//    mAssignmentListModel = new AssignmentListModel(combatManager);
+//    mOperatorListModel = new OperatorListModel(mAssignmentListModel);
+//    QQmlComponent* comp = new QQmlComponent(engine);
 
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-        if(status == QQmlComponent::Error) {
-            qDebug() << "Can not load this: " << comp->errorString();
-        }
-        if(status == QQmlComponent::Ready) {
-            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-            item->setProperty("assignmentListModel", QVariant::fromValue<AssignmentListModel*>(mAssignmentListModel));
-            item->setProperty("operatorListModel", QVariant::fromValue<OperatorListModel*>(mOperatorListModel));
-            map->setTopMenuItem(item);
-        }
-    });
-    comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));
+//    QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
+//        if(status == QQmlComponent::Error) {
+//            qDebug() << "Can not load this: " << comp->errorString();
+//        }
+//        if(status == QQmlComponent::Ready) {
+//            QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
+//            item->setProperty("assignmentListModel", QVariant::fromValue<AssignmentListModel*>(mAssignmentListModel));
+//            item->setProperty("operatorListModel", QVariant::fromValue<OperatorListModel*>(mOperatorListModel));
+//            map->setTopMenuItem(item);
+//        }
+//    });
+//    comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));
 }
 
 

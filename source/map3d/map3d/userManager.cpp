@@ -1,4 +1,5 @@
 #include "userManager.h"
+#include "connectionConfiguration.h"
 //#include "qcryptographichash.h"
 #include <QQmlContext>
 #include <QApplication>
@@ -9,7 +10,8 @@
 LoginPage::LoginPage(ServiceManager* serviceManager, QQmlApplicationEngine *qmlEngine, QObject *parent):
     QObject(parent), mServiceManager{serviceManager},mQmlEngine{qmlEngine}
 {
-
+    mRoleSelectionModel = new RoleSelectionModel(serviceManager);
+    mQmlEngine->rootContext()->setContextProperty("roleSelectionModel",mRoleSelectionModel);
 }
 
 void LoginPage::signIn(const QString username, const QString password)
@@ -24,8 +26,6 @@ void LoginPage::signIn(const QString username, const QString password)
 //    QByteArray pswNsalt (password.toStdString().c_str()) ;
 //    pswNsalt = QCryptographicHash::hash(pswNsalt, QCryptographicHash::Md5).toHex();
 
-    setWindowHidden(true);
-    emit signedIn();
 }
 
 void LoginPage::onWindowClosed()
@@ -38,7 +38,6 @@ void LoginPage::onUserDataReceived(const UserData &userData)
     qDebug()<<userData.response.message;
     if(userData.response.status == Response::Status::Success){
         mLoginUserData = userData;
-        setWindowHidden(true);
         emit signedIn();
     }
 }
@@ -56,17 +55,12 @@ UserManager::UserManager(ServiceManager *serviceManager, QQmlApplicationEngine *
     mServiceManager(serviceManager),
     mQmlEngine(qmlEngine)
 {
-    qmlRegisterSingletonType<ConnectionConfigurationManager>("Crystal", 1, 0,
-                                   "ConnectionConfigurationInstance", ConnectionConfigurationManager::createSingletonInstance);
     mProfile = new Profile(serviceManager);
     qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
     mLoginPage = new LoginPage(serviceManager,qmlEngine);
     qmlEngine->rootContext()->setContextProperty("loginPage", mLoginPage);
-    mLoadingInfo = new LoadingInfo();
+    mLoadingInfo = new LoadingPage();
     qmlEngine->rootContext()->setContextProperty("loadingInfo", mLoadingInfo);
-
-    connect(mLoginPage, &LoginPage::signedIn, this, &UserManager::signedIn);
-    mQmlEngine->load(QStringLiteral("qrc:///LoginPage.qml"));
 }
 
 
@@ -114,17 +108,51 @@ void Profile::logOut()
   mServiceManager->sendUser(userData);
 }
 
-
-
-bool LoginPage::windowHidden() const
+RoleSelectionModel::RoleSelectionModel(ServiceManager *serviceManager, QObject *parent):
+QAbstractListModel(parent), mServiceManager{serviceManager}
 {
-  return mWindowHidden;
+  mRoleNames.push_back("Admin");
+  mRoleNames.push_back("Administrator");
+  mRoleNames.push_back("Reviewer");
 }
 
-void LoginPage::setWindowHidden(bool newWindowHidden)
+int RoleSelectionModel::rowCount(const QModelIndex &parent) const
 {
-  if (mWindowHidden == newWindowHidden)
-        return;
-  mWindowHidden = newWindowHidden;
-  emit windowHiddenChanged();
+  return mRoleNames.size();
+}
+
+QVariant RoleSelectionModel::data(const QModelIndex &index, int role) const
+{
+  const int row = index.row();
+
+  switch(role) {
+  case Qt::DisplayRole:
+        return mRoleNames[row];
+  default:
+        break;
+  }
+
+  return QVariant(false);
+}
+
+
+
+void RoleSelectionModel::signIn(const QString username, const QString password)
+{
+  qDebug()<<"signIn";
+  UserData userData;
+  userData.userName = username;
+  userData.password = password;
+  userData.command = UserData::UserCommand::Login;
+  mServiceManager->sendUser(userData);
+
+  //    QByteArray pswNsalt (password.toStdString().c_str()) ;
+  //    pswNsalt = QCryptographicHash::hash(pswNsalt, QCryptographicHash::Md5).toHex();
+
+  emit signedIn();
+}
+
+int RoleSelectionModel::getSelectedRoleIndex(int index)
+{
+  return index;
 }

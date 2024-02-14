@@ -2,30 +2,44 @@
 #define USERMANAGER_H
 #include "qqmlapplicationengine.h"
 #include "serviceManager.h"
-#include "loadingInfo.h"
+#include "loadingPage.h"
 #include "connectionConfiguration.h"
 #include <QQuickItem>
 #include <QQuickWindow>
 
 class QQmlEngine;
+
+class RoleSelectionModel: public QAbstractListModel
+{
+    Q_OBJECT
+public:
+    explicit RoleSelectionModel(ServiceManager *serviceManager, QObject *parent = nullptr);
+    virtual int rowCount(const QModelIndex &parent) const override;
+    virtual QVariant data(const QModelIndex &index, int role) const override;
+
+    Q_INVOKABLE void signIn(const QString username, const QString password);
+    Q_INVOKABLE int getSelectedRoleIndex(int index);
+
+signals:
+    void signedIn();
+
+private:
+    std::vector<QString> mRoleNames;
+    ServiceManager* mServiceManager{nullptr};
+};
+
 class LoginPage : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool windowHidden READ windowHidden WRITE setWindowHidden NOTIFY windowHiddenChanged)
 
 public:
     LoginPage(ServiceManager *serviceManager,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
 
     void setServiceManager(ServiceManager *newServiceManager);
-
-   Q_INVOKABLE void signIn(const QString username, const QString password);
-
-   bool windowHidden() const;
-   void setWindowHidden(bool newWindowHidden);
+    Q_INVOKABLE void signIn(const QString username, const QString password);
 
    signals:
     void signedIn();
-    void windowHiddenChanged();
 
    protected:
    Q_INVOKABLE  void onWindowClosed();
@@ -35,9 +49,7 @@ private:
     QQmlEngine* mQmlEngine{nullptr};
     ServiceManager* mServiceManager{nullptr};
     UserData mLoginUserData;
-    QQuickWindow* mSettingsWindow;
-
-    bool mWindowHidden{false};
+    RoleSelectionModel* mRoleSelectionModel;
 };
 
 class Profile:public QObject
@@ -70,8 +82,6 @@ private:
 };
 
 
-
-
 class UserManager: public QObject
 {
     Q_OBJECT
@@ -88,7 +98,7 @@ private:
     QQmlApplicationEngine *mQmlEngine{nullptr};
     LoginPage *mLoginPage{nullptr};
     Profile *mProfile;
-    LoadingInfo *mLoadingInfo;
+    LoadingPage *mLoadingInfo;
 };
 
 

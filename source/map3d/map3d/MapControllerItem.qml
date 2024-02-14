@@ -2,44 +2,43 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
-//import Qt5Compat.GraphicalEffects
 import Crystal 1.0
+
 import "style"
 
-MapController {
+Item {
     id: map
-    zoomInButtonPressed: cameraHandlerItem.zoomInButtonPressed
-    zoomOutButtonPressed: cameraHandlerItem.zoomOutButtonPressed
 
-    movePosition: cameraHandlerItem.movePosition
-    rotatePosition: cameraHandlerItem.rotatePositon
+    property var mapItem
 
-    anchors.fill: parent
-    objectName: "MainMap"
-    property real itemPositionFactor: 1.0
     property bool itemVisible: true
     readonly property int iconSize: 26 / Style.monitorRatio
     readonly property real itemMargin: 10
 
-    //    onClicked: function() {
-    //        toggleItemsVisible();
-    //    }
-
-    //    Rectangle {
-    //        anchors.fill: parent
-    //        color: Qt.rgba(1, 0, 0, .5)
-    //    }
     function toggleItemsVisible() {
-        if (map.itemVisible === true) {
+        if (mapItem.itemVisible === true) {
             itemsShowAnimation.stop()
             itemsHideAnimation.start()
-            map.itemVisible = false
+            mapItem.itemVisible = false
         } else {
-
             itemsHideAnimation.stop()
             itemsShowAnimation.start()
-            map.itemVisible = true
+            mapItem.itemVisible = true
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+
+        onClicked: function () {
+            toggleItemsVisible()
+        }
+    }
+
+    StackLayout {
+        id: mapContainer
+        anchors.fill: parent
+        data: mapItem
     }
 
     Item {
@@ -47,44 +46,37 @@ MapController {
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
-        visible: topMenuVisible
+        //        visible: topMenuVisible
         width: 706
         height: 75
 
-        // just for test
-        //        Rectangle {
-        //            anchors.horizontalCenter: parent.horizontalCenter
-        //            width: 300
-        //            height: 60
-        //            color: 'blue'
-        //        }
-        children: topMenuItem ?? []
-        //                    children: TestItem { title: 'test item' }
+        children: mapItem.topMenuItem ?? []
     }
 
-    PropertyAnimation {
-        id: itemsShowAnimation
-        target: map
-        property: "itemPositionFactor"
-        from: map.itemPositionFactor
-        to: 1.0
-        duration: 200 * Math.abs(1.0 - map.itemPositionFactor)
+    //    PropertyAnimation {
+    //        id: itemsShowAnimation
+    //        target: map
+    //        property: "mapItem.itemPositionFactor"
+    //        from: mapItem.itemPositionFactor
+    //        to: 1.0
+    //        duration: 200 * Math.abs(1.0 - mapItem.itemPositionFactor)
 
-        easing.type: Easing.OutQuint
-    }
-    PropertyAnimation {
-        id: itemsHideAnimation
-        target: map
-        property: "itemPositionFactor"
-        from: map.itemPositionFactor
-        to: 0.0
-        duration: 200 * Math.abs(map.itemPositionFactor)
+    //        easing.type: Easing.OutQuint
+    //    }
 
-        easing.type: Easing.InQuint
-    }
+    //    PropertyAnimation {
+    //        id: itemsHideAnimation
+    //        target: map
+    //        property: "mapItem.itemPositionFactor"
+    //        from: mapItem.itemPositionFactor
+    //        to: 0.0
+    //        duration: 200 * Math.abs(mapItem.itemPositionFactor)
+
+    //        easing.type: Easing.InQuint
+    //    }
     Label {
         id: fpsLabel
-        text: map.fps.toLocaleString(Qt.locale(), 'f', 2)
+        text: mapItem.fps.toLocaleString(Qt.locale(), 'f', 2)
         color: 'springgreen'
         style: Text.Outline
         styleColor: "black"
@@ -95,15 +87,16 @@ MapController {
         anchors.topMargin: 20
         anchors.leftMargin: 80
     }
+
     SearchBar {
         id: searcbar
-        x: parent.width - itemPositionFactor * (width + itemMargin)
+
+        anchors.right: parent.right
+        anchors.rightMargin: itemMargin
         anchors.top: parent.top
         anchors.topMargin: itemMargin + 3
-        //        model: map.searchNodeProxyModel()
         model: SearchNodeManagerInstance.searchNodeProxyModel()
-        //        model: map.searchNodeManager().searchNodeProxyModel()
-        filterManager: map.filterManager()
+        filterManager: mapItem.filterManager()
     }
 
     MultiEffect {
@@ -118,21 +111,22 @@ MapController {
         shadowOpacity: 0.25
         shadowScale: 1.04
     }
+
     Compass {
         id: compassItem
         anchors.left: parent.left
         anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
+        anchors.bottom: parent.bottom
         anchors.bottomMargin: itemMargin
-        y: parent.height - itemPositionFactor
-           * (compassItem.height + (itemMargin) + statusBar.height)
-        headingAngle: map.compassDirection.x
-        pitchAngle: map.compassDirection.y + 90
+        headingAngle: mapItem.compassDirection.x
+        pitchAngle: mapItem.compassDirection.y + 90
         color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
+
         MouseArea {
             id: mouseArea
             anchors.fill: parent
             onDoubleClicked: {
-                map.setHeadingToNorth()
+                mapItem.setHeadingToNorth()
             }
             hoverEnabled: true
             property bool hovered: false
@@ -140,6 +134,7 @@ MapController {
             onExited: hovered = false
         }
     }
+
     MultiEffect {
         source: compassItem
         enabled: true
@@ -152,16 +147,36 @@ MapController {
         shadowOpacity: 0.35
         shadowScale: 0.98
     }
+
+    //  zoomInButtonPressed: cameraHandlerItem.zoomInButtonPressed
+    //    zoomOutButtonPressed: cameraHandlerItem.zoomOutButtonPressed
+
+    //    movePosition: cameraHandlerItem.movePosition
+    //    rotatePosition: cameraHandlerItem.rotatePositon
     CameraHandlerItem {
         id: cameraHandlerItem
-        anchors.rightMargin: itemMargin
-        y: parent.height / 2
-        x: parent.width - itemPositionFactor * (width + itemMargin)
+        //        anchors.fill: parent
+        //        anchors.rightMargin: itemMargin
+        //        y: parent.height / 2
+        //        x: parent.width - mapItem.itemPositionFactor * (width + itemMargin)
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+
+        onZoomInButtonPressedChanged: mapItem.zoomInButtonPressed = zoomInButtonPressed
+        onZoomOutButtonPressedChanged: mapItem.zoomOutButtonPressed = zoomOutButtonPressed
+
+        onMovePositionChanged: mapItem.movePosition = movePosition
+        onRotatePositonChanged: mapItem.rotatePosition = rotatePositon
+
+        width: 300
+        height: 200
+
         onBtnHomeClicked: function () {
-            map.home()
+            mapItem.home()
         }
+
         onBtnProjectionClicked: function () {
-            map.changeMode()
+            mapItem.changeMode()
         }
     }
 
@@ -186,28 +201,27 @@ MapController {
     //                }
     //            }
     //        }
-//    SmallMap {
-//        id: miniMap
-//        objectName: "SmallMap"
-//        //        x: map.width - 100-21
-//        //        y: map.height - 120-20
-//        anchors.right: cameraHandlerItem.right
-//        anchors.bottom: compassItem.bottom
-//        width: 110
-//        height: 110
-//        Component.onCompleted: {
-//            setMainMapItem(map)
-//        }
-//        Rectangle {
-//            anchors.centerIn: parent
-//            width: parent.width / 15
-//            height: width
-//            color: "transparent"
-//            border.color: "#01AED6"
-//            border.width: 2
-//        }
-//    }
-
+    //    SmallMap {
+    //        id: miniMap
+    //        objectName: "SmallMap"
+    //        //        x: mapItem.width - 100-21
+    //        //        y: mapItem.height - 120-20
+    //        anchors.right: cameraHandlerItem.right
+    //        anchors.bottom: compassItem.bottom
+    //        width: 110
+    //        height: 110
+    //        Component.onCompleted: {
+    //            setMainMapItem(map)
+    //        }
+    //        Rectangle {
+    //            anchors.centerIn: parent
+    //            width: parent.width / 15
+    //            height: width
+    //            color: "transparent"
+    //            border.color: "#01AED6"
+    //            border.width: 2
+    //        }
+    //    }
     StatusBar {
         id: statusBar
         anchors.bottom: parent.bottom
@@ -217,15 +231,15 @@ MapController {
         anchors.rightMargin: 0
         width: parent.width
         height: 22 / Style.monitorRatio
-        latitude: map.mapMouseGeoLocation.x
-        longitude: map.mapMouseGeoLocation.y
-        altitude: map.mapMouseGeoLocation.z
-        coordinate1: map.mapMouseLocation.x
-        coordinate2: map.mapMouseLocation.y
-        coordinate3: map.mapMouseLocation.z
+        latitude: mapItem.mapMouseGeoLocation.x
+        longitude: mapItem.mapMouseGeoLocation.y
+        altitude: mapItem.mapMouseGeoLocation.z
+        coordinate1: mapItem.mapMouseLocation.x
+        coordinate2: mapItem.mapMouseLocation.y
+        coordinate3: mapItem.mapMouseLocation.z
         message: "Ready"
         timer: -1
-        model: map.statusBar()
-        sourceModel: map.statusBar().getSourceModel()
+        model: mapItem.statusBar()
+        sourceModel: mapItem.statusBar().getSourceModel()
     }
 }

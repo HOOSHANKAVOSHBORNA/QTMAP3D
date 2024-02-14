@@ -49,5 +49,7 @@
         <file>SignInPage.qml</file>
         <file>RoleSelectPage.qml</file>
         <file>Resources/back.png</file>
+        <file>ApplicationWindow.qml</file>
+        <file>LoadingPage.qml</file>
     </qresource>
 </RCC>

@@ -52,17 +52,17 @@ void Property::flyTo(const osgEarth::GeoPoint &positon)
 
 void Property::createQML()
 {
-    QQmlComponent *comp = new QQmlComponent(qmlEngine(mMapItem));
-    connect(comp, &QQmlComponent::statusChanged, [&] {
-        if (comp->status() == QQmlComponent::Status::Error) {
-            qDebug() << comp->errorString();
-        }
+//    QQmlComponent *comp = new QQmlComponent(qmlEngine(mMapItem));
+//    connect(comp, &QQmlComponent::statusChanged, [&] {
+//        if (comp->status() == QQmlComponent::Status::Error) {
+//            qDebug() << comp->errorString();
+//        }
 
-        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
-        mQmlItem->setProperty("cppInterface", QVariant::fromValue(mPropertyItem));
-    });
+//        mQmlItem = qobject_cast<QQuickItem *>(comp->create());
+//        mQmlItem->setProperty("cppInterface", QVariant::fromValue(mPropertyItem));
+//    });
 
-    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
+//    comp->loadUrl(QUrl("qrc:/PropertyItem.qml"));
 }
 
 QQuickItem *Property::qmlItem() const

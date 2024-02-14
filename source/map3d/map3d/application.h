@@ -32,17 +32,19 @@ public:
     inline PluginManager *pluginManager() const { return mPluginManager; }
 
     ServiceManager *serviceManager() const;
-    void showSplash();
+
+    void initializeQmlEngine();
+    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
+    void createApplicationQml();
+    void createMainWindowQml();
 
 signals:
     void ready();
 
 private:
     static void initializeSurfaceFormat();
-    void initializeQmlEngine();
 
 private slots:
-    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
     void onUICreated();
 
 private:
@@ -58,6 +60,8 @@ private:
     NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};
+
+    QQuickWindow *mApplicationQml = nullptr;
 };
 
 #endif // Application_H

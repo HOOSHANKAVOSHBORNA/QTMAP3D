@@ -4,14 +4,14 @@ import QtQuick.Layouts
 import Crystal
 import "style"
 
-ApplicationWindow {
-    id: signUpWindow
+Item {
+    id: loginPage
+
+    property var loginPageCpp: undefined
+    property var connectionConfigCpp: undefined
+
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
-    minimumHeight: 600
-    minimumWidth: 800
-    visible: !loginPage.windowHidden
-    title: qsTr("SignIn/SignUp")
 
     readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
                                                      Style.backgroundColor.g,
@@ -23,10 +23,6 @@ ApplicationWindow {
     //    onSignedIn: (status)=>{
 
     //    }
-    onClosing: {
-        loginPage.onWindowClosed()
-    }
-
     Image {
         id: backGroundImage
         source: "qrc:/Resources/login-earth.jpg"
@@ -107,6 +103,9 @@ ApplicationWindow {
                 heightIncrease.start()
             }
             signInBtn.onClicked: {
+                loginPageCpp.signIn(signInPage.usernameTxt.text,
+                                    signInPage.passwordTxt.text)
+
                 logInPageVisible = false
                 signInPage.visible = false
                 rolePage.visible = true
@@ -135,8 +134,8 @@ ApplicationWindow {
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
-                loginPage.signIn(signInPage.usernameTxt.text,
-                                 signInPage.passwordTxt.text)
+                roleSelectionModel.signIn(signInPage.usernameTxt.text,
+                                    signInPage.passwordTxt.text)
             }
             backBtn.onClicked: {
                 rolePage.visible = false
@@ -150,6 +149,7 @@ ApplicationWindow {
 
         ConnectionConfiguration {
             id: connectionPage
+            connectionConfigCpp: loginPage.connectionConfigCpp
             visible: false
             backBtn.onClicked: {
                 if (logInPageVisible) {
@@ -169,51 +169,5 @@ ApplicationWindow {
                 }
             }
         }
-    }
-
-    //    Rectangle {
-    //        id: loadingContainer
-    //        width: parent.width
-    //        height: 0.1 * parent.height
-    //        y: 0.75 * parent.height
-    //        color: "transparent"
-    //        clip: true
-
-    //        ScrollView {
-    //            anchors.horizontalCenter: parent.horizontalCenter
-    //            height: parent.height
-    //            width: 200 / Style.monitorRatio
-
-    //            ListView {
-    //                model: loadingInfo
-
-    //                delegate: Text {
-    //                    id: loadingText
-    //                    font.pixelSize: 20 / Style.monitorRatio
-    //                    color: acceptionState ? "white" : "red"
-    //                    text: display
-    //                    leftPadding: 40 / Style.monitorRatio
-
-    //                    //                    PropertyAnimation {
-    //                    //                        id: textAnimation
-    //                    //                        target: loadingText
-    //                    //                        property: "y"
-    //                    //                        loops: Animation.Infinite
-    //                    //                        from: 1000
-    //                    //                        to: -1000
-    //                    //                        duration: 5000
-    //                    //                        running: true
-    //                    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    AnimatedImage {
-        source: "qrc:/Resources/loading.gif"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 100 / Style.monitorRatio
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: 40 / Style.monitorRatio
-        height: 40 / Style.monitorRatio
     }
 }

@@ -43,7 +43,7 @@ QmlNode *CircularMenu::qmlNode() const
 
 void CircularMenu::createQML()
 {
-    QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem)->engine());
+    QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem->parentItem())->engine());
     QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status) {
         if(status == QQmlComponent::Error) {
             qDebug() << "Can not load this: " << comp->errorString();
