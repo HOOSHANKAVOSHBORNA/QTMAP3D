@@ -3,8 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
 
-import Crystal
-
 import "style"
 
 Rectangle {
@@ -184,6 +182,8 @@ Rectangle {
                         display: AbstractButton.IconOnly
                         checkable: true
                         checked: false
+
+                        // TODO: listWindow creating
                         onToggled: mainWindow.showListWindow()
 
                         ToolTip {
@@ -277,13 +277,6 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             sideModel: sideBarModel
-
-            locationCpp: rootRect.locationCpp
-            toolboxCpp: rootRect.toolboxCpp
-            connectionConfigurationCpp: rootRect.connectionConfigurationCpp
-            profileCpp: rootRect.profileCpp
-            bookmarkCpp: rootRect.bookmarkCpp
-            layerCpp: rootRect.layerCpp
         }
     }
 

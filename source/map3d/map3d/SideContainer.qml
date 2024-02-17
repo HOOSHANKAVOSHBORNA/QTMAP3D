@@ -227,7 +227,7 @@ Item {
                 //                isWindow: sideModel.get(2).isWindow
                 containerItem: LayerManagerItem {
                     id: layers
-                    layerModel: LayerManagerInstance.layerModel()
+                    layerCpp: rootItem.layerCpp
                 }
 
                 onWindowClose: {

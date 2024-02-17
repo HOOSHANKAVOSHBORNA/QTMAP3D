@@ -3,11 +3,15 @@ import Crystal 1.0
 import QtQuick
 import QtQuick.Controls 2.15
 import QtQuick.Effects
+
 import "style"
 
 Item {
     id: rootItem
-    property var layerModel
+
+    property var layerCpp
+    property var layerModel: layerCpp.layerModel()
+
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
@@ -16,6 +20,7 @@ Item {
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 20 / Style.monitorRatio
+
         Rectangle {
             id: search
             Layout.fillWidth: true
@@ -52,6 +57,7 @@ Item {
                 font.family: Style.fontFamily
                 font.pixelSize: 17 / Style.monitorRatio
                 color: Style.foregroundColor
+
                 background: Rectangle {
                     color: "transparent"
                     radius: height / 2
@@ -80,7 +86,7 @@ Item {
 
                 TreeView {
                     id: treeView
-                    property string s :""
+                    property string s: ""
                     anchors.fill: parent
                     clip: true
                     rowSpacing: 5 / Style.monitorRatio
@@ -233,17 +239,20 @@ Item {
                                 width: 24 / Style.monitorRatio
                                 height: 24 / Style.monitorRatio
                                 color: Style.foregroundColor
-                                visible: !(LayerManagerInstance.propertyInterface.name === display ?(propertySection.visible === false ?true : false) : true)
-                                MouseArea{
+                                visible: !(rootItem.layerCpp.propertyInterface.name
+                                           === display ? (propertySection.visible
+                                                          === false ? true : false) : true)
+                                MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                    if (LayerManagerInstance.propertyInterface.name === display) {
-                                        propertySection.visible = !propertySection.visible
-                                    } else {
-                                        propertySection.visible = true
-                                    }
-                                    rootItem.layerModel.onItemLeftClicked(
-                                                treeView.index(row, column))
+                                        if (LayerManagerInstance.propertyInterface.name
+                                                === display) {
+                                            propertySection.visible = !propertySection.visible
+                                        } else {
+                                            propertySection.visible = true
+                                        }
+                                        rootItem.layerModel.onItemLeftClicked(
+                                                    treeView.index(row, column))
                                     }
                                 }
                             }
@@ -484,7 +493,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
-                        cppInterface: LayerManagerInstance.propertyInterface
+                        cppInterface: rootItem.layerCpp.propertyInterface
                     }
                 }
             }

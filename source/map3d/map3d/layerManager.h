@@ -15,23 +15,17 @@ class LayerModel;
 class LayerManager : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
+
     Q_PROPERTY(LayerPropertyItem *propertyInterface READ propertyInterface WRITE
                    setPropertyInterface NOTIFY propertyInterfaceChanged FINAL)
     Q_PROPERTY(QString propertyItemTitle READ propertyItemTitle WRITE setPropertyItemTitle NOTIFY
                    propertyItemTitleChanged FINAL)
 
 public:
-    static LayerManager *createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
-
+    explicit LayerManager(MapItem *mapItem);
     ~LayerManager() override;
 
-    void setMapItem(MapItem *mapItem);
-
     Q_INVOKABLE LayerModel *layerModel() const;
-
-
 
     QString propertyItemTitle() const;
     void setPropertyItemTitle(const QString &newPropertyItemTitle);
@@ -42,14 +36,9 @@ public:
 signals:
     void propertyItemChanged();
     void propertyItemTitleChanged();
-
     void propertyInterfaceChanged();
 
 private:
-    explicit LayerManager();
-
-private:
-    inline static LayerManager *mInstance;
     LayerModel *mLayerModel = nullptr;
     LayerPropertyItem *mPropertyInterface = nullptr;
     QString mPropertyItemTitle;

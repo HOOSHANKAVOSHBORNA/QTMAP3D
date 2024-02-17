@@ -19,14 +19,6 @@ Item {
     ColumnLayout {
         anchors.fill: parent
 
-        //        Button {
-        //            text: 'remove property'
-        //            Layout.fillWidth: true
-        //            Layout.preferredHeight: 50
-        //            onClicked: {
-        //                toolboxCpp.removePropertyItem()
-        //            }
-        //        }
         Rectangle {
             Layout.fillWidth: true
             height: 30 / Style.monitorRatio

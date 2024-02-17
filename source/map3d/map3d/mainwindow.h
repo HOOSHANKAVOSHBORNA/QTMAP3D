@@ -30,7 +30,7 @@ public:
     QQmlEngine *getQmlEngine();
     Q_INVOKABLE MapControllerItem *getMapItem();
     Q_INVOKABLE ToolboxManager *getToolboxManager() const;
-    LayerManager *getLayerManager() const;
+    Q_INVOKABLE LayerManager *getLayerManager() const;
     BookmarkManager *getBookmarkManager() const;
     Q_INVOKABLE LocationProxyModel *getLocationManager() const;
 
@@ -46,8 +46,7 @@ private:
     ListWindow *mListWindow = nullptr;
     LocationManager *mLocationManager = nullptr;
     ToolboxManager *mToolboxManager = nullptr;
-    //    LayersModel *mLayersModel = nullptr;
-    //    BookmarkProxyModel *mBookmark = nullptr;
+    LayerManager *mLayerManager = nullptr;
 };
 
 #endif // MainWindow_H

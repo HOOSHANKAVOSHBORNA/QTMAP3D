@@ -41,6 +41,7 @@ Item {
 
                 sideContainer.locationCpp: mainItem.mainPageCpp.getLocationManager()
                 sideContainer.toolboxCpp: mainItem.mainPageCpp.getToolboxManager()
+                sideContainer.layerCpp: mainItem.mainPageCpp.getLayerManager()
 
                 //                pin: true
                 onPinChanged: {

@@ -13,9 +13,15 @@
 //LayerModel *LayerModel::mInstance = nullptr;
 
 // ----------------------------------------------------------------- model manager
-LayerManager::LayerManager()
+LayerManager::LayerManager(MapItem *mapItem)
 {
     mLayerModel = new LayerModel();
+
+    mLayerModel->setMapItem(mapItem);
+
+    mPropertyInterface = new LayerPropertyItem;
+    mLayerModel->setPropertyInterface(mPropertyInterface);
+    setPropertyInterface(mPropertyInterface);
 }
 
 LayerModel *LayerManager::layerModel() const
@@ -23,27 +29,9 @@ LayerModel *LayerManager::layerModel() const
     return mLayerModel;
 }
 
-
-LayerManager *LayerManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new LayerManager(); }
-    return mInstance;
-}
-
 LayerManager::~LayerManager()
 {
     delete mLayerModel;
-}
-
-void LayerManager::setMapItem(MapItem *mapItem)
-{
-    mLayerModel->setMapItem(mapItem);
-
-    mPropertyInterface = new LayerPropertyItem;
-    mLayerModel->setPropertyInterface(mPropertyInterface);
-    setPropertyInterface(mPropertyInterface);
 }
 
 QString LayerManager::propertyItemTitle() const
