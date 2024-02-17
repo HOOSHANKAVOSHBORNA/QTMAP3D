@@ -52,9 +52,13 @@ MapControllerItem::MapControllerItem():
 
     mStatusBar->addMessage("Wellcome To QARCH 2023");
 
-//    setTopMenuVisible(false);
-   // setTopMenuVisible(true);
+    setTopMenuVisible(false);
+    // setTopMenuVisible(true);
 
+    // --------------------- don't touch 2 below lines!!!!!!! ------------------------------------
+    this->setWidth(300);
+    this->setHeight(300);
+    // --------------------- I don't know why anyway :) ------------------------------------------
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)

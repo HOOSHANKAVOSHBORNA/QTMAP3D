@@ -25,13 +25,14 @@ class MainWindow : public QObject
 public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
+
     void initComponent();
     QQmlEngine *getQmlEngine();
     Q_INVOKABLE MapControllerItem *getMapItem();
-    ToolboxManager *getToolboxManager() const;
-    LayerManager *getLayerManager() const;
-    BookmarkManager *getBookmarkManager() const;
-    LocationProxyModel *getLocationManager() const;
+    Q_INVOKABLE ToolboxManager *getToolboxManager() const;
+    Q_INVOKABLE LayerManager *getLayerManager() const;
+    Q_INVOKABLE BookmarkManager *getBookmarkManager() const;
+    Q_INVOKABLE LocationProxyModel *getLocationManager() const;
 
 public:
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
@@ -43,8 +44,10 @@ public slots:
 private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
-//    LayersModel *mLayersModel = nullptr;
-//    BookmarkProxyModel *mBookmark = nullptr;
+    LocationManager *mLocationManager = nullptr;
+    ToolboxManager *mToolboxManager = nullptr;
+    LayerManager *mLayerManager = nullptr;
+    BookmarkManager *mBookmarkManager = nullptr;
 };
 
 #endif // MainWindow_H

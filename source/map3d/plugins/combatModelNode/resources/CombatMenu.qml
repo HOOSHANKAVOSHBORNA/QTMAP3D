@@ -26,6 +26,7 @@ Item {
                                           backgroundColor.b, 0.8)
 
 
+
     RowLayout {
         id: mainRow
         anchors.left: parent.left
@@ -383,9 +384,8 @@ Item {
     //                onExited: leftIcon.width = 30 / 1.3
     //            }
     //        }
-
-
     //    }
+
     Rectangle{
         width:55 / 1.3
         height: 75 / 1.3
@@ -539,7 +539,6 @@ visible: rowLay.width > 430
                         onEntered: addbtn.color = root.bg20
                         onExited: {if(!addCheck)
                                 addbtn.color = "transparent"
-                            print(addCheck)
                         }
                         z:3
                         onClicked: {
@@ -716,8 +715,16 @@ visible: rowLay.width > 430
                     id:mouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: {battleLocationIcons.flag= !battleLocationIcons.flag
+                    onClicked: {
+                        battleLocationIcons.flag= !battleLocationIcons.flag
                         operatorListModel.operatorToggle(true)
+                        root.addCheck = false
+                        root.removeCheck = false
+                        assignmentListModel.onRemoveButtonChecked(false)
+                        assignmentListModel.onAddButtonChecked(false)
+                        addbtn.color = "transparent"
+                        deletebtn.color = "transparent"
+                        operatorListModel.select(operatorListModel.index(0 , 0).row)
                     }
                 }
             }
@@ -743,8 +750,16 @@ visible: rowLay.width > 430
                     id:mouseA
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: {battleLocationIcons.flag= !battleLocationIcons.flag
+                    onClicked: {
+                        battleLocationIcons.flag= !battleLocationIcons.flag
                         operatorListModel.operatorToggle(false)
+                        root.addCheck = false
+                        root.removeCheck = false
+                        assignmentListModel.onRemoveButtonChecked(false)
+                        assignmentListModel.onAddButtonChecked(false)
+                        addbtn.color = "transparent"
+                        deletebtn.color = "transparent"
+                        operatorListModel.select(operatorListModel.index(0, 0).row)
                     }
 
                 }
@@ -760,7 +775,7 @@ visible: rowLay.width > 430
             RowLayout {
                 id: operatorLayout
                 Layout.alignment: Qt.AlignVCenter
-                //            anchors.left: battleLocationIcons.right
+//              anchors.left: battleLocationIcons.right
                 Layout.maximumWidth: 450
                 Layout.topMargin: 5 / 1.3
                 spacing: 0

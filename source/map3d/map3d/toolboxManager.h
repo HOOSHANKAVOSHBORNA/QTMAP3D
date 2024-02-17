@@ -2,17 +2,17 @@
 #define TOOLBOXMANAGER_H
 
 #include <QAbstractItemModel>
-#include <QQmlEngine>
-#include <QStandardItemModel>
+#include <QList>
 #include <QMap>
+#include <QQmlEngine>
+#include <QQuickItem>
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QVariant>
+#include <QtQml>
+
 struct ItemDesc;
 struct ToolboxItem;
-
-#include <QVariant>
-#include <QList>
-#include <QSortFilterProxyModel>
-#include <QtQml>
-#include <QQuickItem>
 
 class TreeItem
 {
@@ -100,6 +100,7 @@ public:
 
 public slots:
     void onItemClicked(const QModelIndex &current);
+
 private:
     QMap<QString, QStandardItem*> mItems;
     QModelIndex previous;
@@ -112,11 +113,8 @@ class ToolboxProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
-private:
-    explicit ToolboxProxyModel();
-
 public:
-    static ToolboxProxyModel* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+    explicit ToolboxProxyModel();
 
     Q_INVOKABLE int childCount(QModelIndex index);
     QString filterString() const;
@@ -139,16 +137,14 @@ private:
 class ToolboxManager : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-    Q_PROPERTY(QQuickItem *propertyItem READ propertyItem WRITE setPropertyItem NOTIFY propertyItemChanged FINAL)
-    Q_PROPERTY(QString propertyItemTitle READ propertyItemTitle WRITE setPropertyItemTitle NOTIFY propertyItemTitleChanged FINAL)
 
-private:
-    explicit ToolboxManager();
+    Q_PROPERTY(QQuickItem *propertyItem READ propertyItem WRITE setPropertyItem NOTIFY
+                   propertyItemChanged FINAL)
+    Q_PROPERTY(QString propertyItemTitle READ propertyItemTitle WRITE setPropertyItemTitle NOTIFY
+                   propertyItemTitleChanged FINAL)
 
 public:
-    static ToolboxManager* createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+    explicit ToolboxManager();
 
     Q_INVOKABLE ToolboxProxyModel *toolboxProxyModel() const;
 
@@ -170,8 +166,7 @@ signals:
     void propertyItemTitleChanged();
 
 private:
-    inline static ToolboxManager* mInstance;
-    ToolboxProxyModel *mToolboxModel;
+    ToolboxProxyModel *mToolboxModel = nullptr;
     QQuickItem *mPropertyItem = nullptr;
     QString mPropertyItemTitle;
 };
