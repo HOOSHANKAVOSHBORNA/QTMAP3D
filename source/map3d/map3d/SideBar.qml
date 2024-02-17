@@ -10,6 +10,8 @@ import "style"
 Rectangle {
     id: rootRect
 
+    property alias sideContainer: sideContainer
+
     property int minWidth
 
     property var toolboxCpp

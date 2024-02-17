@@ -208,7 +208,7 @@ Item {
                 isWindow: sideModel.get(1).isWindow
                 containerItem: ToolboxManagerItem {
                     id: toolbox
-                    listModel: ToolboxManagerInstance.toolboxProxyModel()
+                    toolboxCpp: rootItem.toolboxCpp
                 }
 
                 onWindowClose: {

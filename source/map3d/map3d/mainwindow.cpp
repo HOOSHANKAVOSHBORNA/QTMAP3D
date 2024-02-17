@@ -1,20 +1,19 @@
-
-#include <osgEarthUtil/EarthManipulator>
-#include <osgEarthDrivers/gdal/GDALOptions>
-#include <osgEarth/ImageLayer>
-#include <osgGA/GUIEventAdapter>
-#include <iostream>
-#include <QTimer>
-#include <QWindow>
-#include <QOpenGLFunctions_2_0>
-#include <chrono>
-#include <bookmark.h>
-#include <QQmlEngine>
 #include <QJSEngine>
-
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QOpenGLFunctions_2_0>
+#include <QQmlEngine>
 #include <QQuickOpenGLUtils>
+#include <QTimer>
+#include <QWindow>
+#include <chrono>
+#include <iostream>
+#include <osgEarth/ImageLayer>
+#include <osgEarthDrivers/gdal/GDALOptions>
+#include <osgEarthUtil/EarthManipulator>
+#include <osgGA/GUIEventAdapter>
+
+#include "bookmark.h"
 #include "layerManager.h"
 #include "listWindow.h"
 #include "locationManager.h"
@@ -27,7 +26,6 @@
 MainWindow::MainWindow(QWindow *parent)
 {
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
-    qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxManagerInstance", ToolboxManager::createSingletonInstance);
     qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
 
@@ -46,9 +44,10 @@ void MainWindow::initComponent()
     mMapItem = new MapControllerItem();
 
     mMapItem->setQmlEngine(engine);
+
     mLocationManager = new LocationManager(mMapItem);
 
-    ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
+    mToolboxManager = new ToolboxManager();
 
     LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
     layerManager->setMapItem(mMapItem);
@@ -91,7 +90,7 @@ MapControllerItem *MainWindow::getMapItem()
 
 ToolboxManager *MainWindow::getToolboxManager() const
 {
-    return ToolboxManager::createSingletonInstance(nullptr, nullptr);
+    return mToolboxManager;
 }
 
 LayerManager *MainWindow::getLayerManager() const

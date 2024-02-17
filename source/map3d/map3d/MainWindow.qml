@@ -39,7 +39,9 @@ Item {
                 id: sideBar
                 anchors.fill: parent
 
-                locationCpp: mainItem.mainPageCpp.getLocationManager()
+                sideContainer.locationCpp: mainItem.mainPageCpp.getLocationManager()
+                sideContainer.toolboxCpp: mainItem.mainPageCpp.getToolboxManager()
+
                 //                pin: true
                 onPinChanged: {
                     if (pin) {

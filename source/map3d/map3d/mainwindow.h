@@ -25,10 +25,11 @@ class MainWindow : public QObject
 public:
     MainWindow(QWindow *parent = nullptr);
     ~MainWindow();
+
     void initComponent();
     QQmlEngine *getQmlEngine();
     Q_INVOKABLE MapControllerItem *getMapItem();
-    ToolboxManager *getToolboxManager() const;
+    Q_INVOKABLE ToolboxManager *getToolboxManager() const;
     LayerManager *getLayerManager() const;
     BookmarkManager *getBookmarkManager() const;
     Q_INVOKABLE LocationProxyModel *getLocationManager() const;
@@ -44,6 +45,7 @@ private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
     LocationManager *mLocationManager = nullptr;
+    ToolboxManager *mToolboxManager = nullptr;
     //    LayersModel *mLayersModel = nullptr;
     //    BookmarkProxyModel *mBookmark = nullptr;
 };
