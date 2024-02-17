@@ -1,6 +1,8 @@
 #include "connectionConfiguration.h"
 
-ConnectionConfiguration::ConnectionConfiguration(QObject *parent):QObject(parent)
+ConnectionConfiguration::ConnectionConfiguration(NetworkManager *networkManager, QObject *parent)
+    :QObject(parent),
+    mNetworkManager(networkManager)
 {
     mSettings = new QSettings("MySettings","Configuration");
 
@@ -8,13 +10,16 @@ ConnectionConfiguration::ConnectionConfiguration(QObject *parent):QObject(parent
     mIp = data;
 
     data = mSettings->value("configs/port", "").toString();
-    mPort = data;
+    mPort = data.toInt();
 
     data = mSettings->value("configs/username", "").toString();
     mUsername = data;
 
     data = mSettings->value("configs/password", "").toString();
     mPassword = data;
+
+    if(mNetworkManager)
+        mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
 }
 
 QString ConnectionConfiguration::getIp() const
@@ -30,12 +35,12 @@ void ConnectionConfiguration::setIp(const QString &newIp)
     emit ipChanged();
 }
 
-QString ConnectionConfiguration::getPort() const
+int ConnectionConfiguration::getPort() const
 {
     return mPort;
 }
 
-void ConnectionConfiguration::setPort(const QString &newPort)
+void ConnectionConfiguration::setPort(int newPort)
 {
     if (mPort == newPort)
         return;
@@ -75,29 +80,9 @@ void ConnectionConfiguration::saveSettings()
     mSettings->setValue("configs/port", mPort);
     mSettings->setValue("configs/username", mUsername);
     mSettings->setValue("configs/password", mPassword);
+
+    if(mNetworkManager)
+        mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
+//    mNetworkManager->isConnected();
 }
-
-
-//ConnectionConfigurationManager *ConnectionConfigurationManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-//{
-//    Q_UNUSED(engine);
-//    Q_UNUSED(scriptEngine);
-//    if(mInstance == nullptr){ mInstance = new ConnectionConfigurationManager(); }
-//    return mInstance;
-//}
-
-//ConnectionConfigurationManager::~ConnectionConfigurationManager()
-//{
-//    delete mConnectionConfiguration;
-//}
-
-//ConnectionConfiguration* ConnectionConfigurationManager::getConnectionConfiguration()
-//{
-//    return mConnectionConfiguration;
-//}
-
-//ConnectionConfigurationManager::ConnectionConfigurationManager(QObject *parent):QObject(parent)
-//{
-//    mConnectionConfiguration = new ConnectionConfiguration();
-//}
 

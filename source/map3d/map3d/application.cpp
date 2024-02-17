@@ -10,7 +10,6 @@
 #include <QSplashScreen>
 
 #include "application.h"
-#include "connectionConfiguration.h"
 #include "listWindow.h"
 #include "loadingPage.h"
 #include "mainwindow.h"
@@ -38,26 +37,28 @@ void Application::performStartupConfiguration()
 void Application::initialize()
 {
     qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
-    qmlRegisterType<Splash>("Crystal", 1, 0, "CSplash");
 
     //--qml--------------------------------------------------
     initializeQmlEngine();
     mPluginManager->setQmlEngine(mQmlEngine);
+
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
-    mNetworkManager->start();
+//    mNetworkManager->start();
 
     mServiceManager = new ServiceManager(mNetworkManager);
     //--create models----------------------------------------
     mMainWindow = new MainWindow();
     mMainWindow->initComponent();
 
-    UserManager *userManager = new UserManager(mServiceManager);
-    ConnectionConfiguration *connectionConfiguration = new ConnectionConfiguration;
-    LoadingPage *loadingPage = new LoadingPage();
-    mQmlEngine->setInitialProperties({{"userManager", QVariant::fromValue(userManager)},
-                                      {"connectionConfigCpp", QVariant::fromValue(connectionConfiguration)},
-                                      {"loadingPageCpp", QVariant::fromValue(loadingPage)},
+    mUserManager = new UserManager(mServiceManager);
+    mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
+    mLoadingPage = new LoadingPage();
+
+
+    mQmlEngine->setInitialProperties({{"userManager", QVariant::fromValue(mUserManager)},
+                                      {"connectionConfigCpp", QVariant::fromValue(mConnectionConfig)},
+                                      {"loadingPageCpp", QVariant::fromValue(mLoadingPage)},
                                       {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
 
 
@@ -80,10 +81,6 @@ void Application::initializeQmlEngine()
                      this,
                      &Application::onQmlObjectCreated,
                      Qt::DirectConnection);
-
-    QObject::connect(mQmlEngine, &QQmlApplicationEngine::objectCreationFailed, [](const QUrl &url) {
-        qDebug() << "Can not create: " << url.toString();
-    });
 }
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
