@@ -14,7 +14,7 @@ AssignLine::AssignLine(MapItem *mapItem, SimpleModelNode* attacker, SimpleModelN
 {
     setWidth(3);
     setPointVisible(true);
-    setPointWidth(20);
+    setPointWidth(10);
     update();
     addCullCallback(new AssignLineCallback);
 }

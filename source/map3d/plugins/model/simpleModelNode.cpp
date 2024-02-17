@@ -48,8 +48,12 @@ SimpleModelNode::SimpleModelNode(QQmlEngine *engine,
 
 SimpleModelNode::~SimpleModelNode()
 {
-    delete mNodeInformation;
-    delete mCircularMenu;
+    if(mNodeInformation){
+        delete mNodeInformation;
+    }
+    if(mCircularMenu){
+        delete mCircularMenu;
+    }
 }
 
 void SimpleModelNode::setQmlEngine(QQmlEngine *engine)
@@ -133,7 +137,7 @@ void SimpleModelNode::highlight(bool isHighlight, osgEarth::Color highliteColor)
     else{
         mOutlineNode->setEnabled(false);
     }
-//    mSwitchMode->setValue(Highlight, isHighlight);
+    //    mSwitchMode->setValue(Highlight, isHighlight);
 }
 
 bool SimpleModelNode::isAutoScale() const
@@ -144,8 +148,8 @@ bool SimpleModelNode::isAutoScale() const
 void SimpleModelNode::setAutoScale(bool newIsAutoScale)
 {
     mIsAutoScale = newIsAutoScale;
-//    mAutoScaler->setScaled(newIsAutoScale);
-//    getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
+    //    mAutoScaler->setScaled(newIsAutoScale);
+    //    getPositionAttitudeTransform()->setScale(osg::Vec3d(1,1,1));
     //    if (mIsAutoScale){
     //        setCullCallback(mAutoScaler);
     //    }
@@ -163,8 +167,8 @@ NodeData SimpleModelNode::nodeData() const
 void SimpleModelNode::setNodeData(const NodeData &nodeData)
 {
     mNodeData = nodeData;
-//    updateUrl(mNodeData->url3D, mNodeData->url2D);
-//    setColor(osgEarth::Color(mNodeData->color));
+    //    updateUrl(mNodeData->url3D, mNodeData->url2D);
+    //    setColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
         mNodeInformation->setNodeData(nodeData);
     if (mBookmarkItem)
@@ -214,12 +218,12 @@ void SimpleModelNode::setAttacker(bool attacker)
 {
     mIsAttacker = attacker;
 
-//    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
-//        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
-//        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
+    //    if(attacker && !mCircularMenu->children().contains(mAttackerMenuItem)){
+    //        mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
+    //        QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
 
-//        mCircularMenu->appendMenuItem(mAttackerMenuItem);
-//    }
+    //        mCircularMenu->appendMenuItem(mAttackerMenuItem);
+    //    }
     if(mIsAttacker)
         mCircularMenu->appendMenuItem(mAttackerMenuItem);
     else
@@ -233,9 +237,9 @@ bool SimpleModelNode::is3D() const
 
 void SimpleModelNode::set2DHeaing(double heading)
 {
-//    auto style = m2DNode->getStyle();
-//    style.getOrCreate<osgEarth::Symbology::IconSymbol>()->heading() = heading;
-//    m2DNode->setStyle(style);
+    //    auto style = m2DNode->getStyle();
+    //    style.getOrCreate<osgEarth::Symbology::IconSymbol>()->heading() = heading;
+    //    m2DNode->setStyle(style);
 }
 
 void SimpleModelNode::onModeChanged(bool is3DView)
@@ -246,12 +250,12 @@ void SimpleModelNode::onModeChanged(bool is3DView)
     if(mIs3D){
         mSwitchMode->setValue(Mode3D,true);
         mSwitchMode->setValue(Mode2D, false);
-//        setAutoScale(true);
+        //        setAutoScale(true);
     }
     else{
         mSwitchMode->setValue(Mode3D, false);
         mSwitchMode->setValue(Mode2D,true);
-//        setAutoScale(false);
+        //        setAutoScale(false);
     }
 
     //    mCircleSelectNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
@@ -357,7 +361,7 @@ void SimpleModelNode::compile()
     //        mImage->scaleImage(392, 392, mImage->r());
     //    }
     //    if(mImage) mImage->setOrigin(osg::Image::TOP_LEFT);
-//    qDebug()<<"iconSize: "<<iconSize;
+    //    qDebug()<<"iconSize: "<<iconSize;
     if(mImage){
         mImage->scaleImage(iconSize, iconSize, mImage->r());
         createOutlineImage();
@@ -381,41 +385,41 @@ void SimpleModelNode::compile()
     mOutlineNode->setEnabled(false);
     mOutlineNode->addChild(m3DNode);
 
-//    osgEarth::Symbology::Style  modelStyle ;
-//    modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mHighlightOutline);
-//    osg::ref_ptr<osgEarth::Annotation::ModelNode> transform3D = new osgEarth::Annotation::ModelNode(mMapItem->getMapNode(), Utility::getDefaultStyle());
-//    transform3D->setCullingActive(false);
-//    transform3D->setCullCallback(mAutoScaler);
-//    transform3D->setStyle(modelStyle);
+    //    osgEarth::Symbology::Style  modelStyle ;
+    //    modelStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mHighlightOutline);
+    //    osg::ref_ptr<osgEarth::Annotation::ModelNode> transform3D = new osgEarth::Annotation::ModelNode(mMapItem->getMapNode(), Utility::getDefaultStyle());
+    //    transform3D->setCullingActive(false);
+    //    transform3D->setCullCallback(mAutoScaler);
+    //    transform3D->setStyle(modelStyle);
 
     //--2D node---------------------------------------------------------
-        m2DNode = new osg::Geode();
-        osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
-        osgEarth::ScreenSpaceLayoutOptions option;
-        option.technique() = osgEarth::ScreenSpaceLayoutOptions::TECHNIQUE_LABELS;
-        option.leaderLineMaxLength() = 64;
-        option.leaderLineWidth() = 32;
-        osgEarth::ScreenSpaceLayout::setOptions(option);
-//        osgEarth::ScreenSpaceLayout::activate(geodeStateSet.get());
-        geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
-//        geodeStateSet->setRenderBinDetails(
-//            13,
-//            OSGEARTH_SCREEN_SPACE_LAYOUT_BIN,
-//            osg::StateSet::OVERRIDE_PROTECTED_RENDERBIN_DETAILS);
-//        geodeStateSet->setNestRenderBins( false );
-        osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);
-        m2DNode->setStateSet(geodeStateSet);
-        m2DNode->addDrawable(imgGeom);
+    m2DNode = new osg::Geode();
+    osg::ref_ptr<osg::StateSet> geodeStateSet = new osg::StateSet();
+    osgEarth::ScreenSpaceLayoutOptions option;
+    option.technique() = osgEarth::ScreenSpaceLayoutOptions::TECHNIQUE_LABELS;
+    option.leaderLineMaxLength() = 64;
+    option.leaderLineWidth() = 32;
+    osgEarth::ScreenSpaceLayout::setOptions(option);
+    //        osgEarth::ScreenSpaceLayout::activate(geodeStateSet.get());
+    geodeStateSet->setAttributeAndModes(new osg::Depth(osg::Depth::ALWAYS, 0, 1, false), 1);
+    //        geodeStateSet->setRenderBinDetails(
+    //            13,
+    //            OSGEARTH_SCREEN_SPACE_LAYOUT_BIN,
+    //            osg::StateSet::OVERRIDE_PROTECTED_RENDERBIN_DETAILS);
+    //        geodeStateSet->setNestRenderBins( false );
+    osg::ref_ptr<osg::Geometry> imgGeom = osgEarth::Annotation::AnnotationUtils::createImageGeometry(mImage, osg::Vec2s(0,0), 0, 0, 0.2);
+    m2DNode->setStateSet(geodeStateSet);
+    m2DNode->addDrawable(imgGeom);
 
-//    m3DNode->addChild(_imageDrawable, 0, std::numeric_limits<float>::max());
-//    osgEarth::Symbology::Style st;
-//    st.getOrCreate<osgEarth::Symbology::IconSymbol>()->alignment() = osgEarth::Symbology::IconSymbol::ALIGN_CENTER_CENTER;
-//    st.getOrCreate<osgEarth::Symbology::TextSymbol>()->onScreenRotation() = 90;
-////    st.getOrCreate<osgEarth::Symbology::BBoxSymbol>()->fill()->color() = osgEarth::Color::Green;
-//    m2DNode = new osgEarth::Annotation::PlaceNode("", st, mImage);
-//    m2DNode->setDynamic(true);
-//    m2DNode->setPriority(-1);
-//    m2DNode->setOcclusionCulling(true);
+    //    m3DNode->addChild(_imageDrawable, 0, std::numeric_limits<float>::max());
+    //    osgEarth::Symbology::Style st;
+    //    st.getOrCreate<osgEarth::Symbology::IconSymbol>()->alignment() = osgEarth::Symbology::IconSymbol::ALIGN_CENTER_CENTER;
+    //    st.getOrCreate<osgEarth::Symbology::TextSymbol>()->onScreenRotation() = 90;
+    ////    st.getOrCreate<osgEarth::Symbology::BBoxSymbol>()->fill()->color() = osgEarth::Color::Green;
+    //    m2DNode = new osgEarth::Annotation::PlaceNode("", st, mImage);
+    //    m2DNode->setDynamic(true);
+    //    m2DNode->setPriority(-1);
+    //    m2DNode->setOcclusionCulling(true);
     //--set Highlite Node---------------------------------------------------
     //    osg::ref_ptr<osg::Group> selectGroup = new osg::Group;
     osg::ComputeBoundsVisitor cbv;
@@ -424,10 +428,10 @@ void SimpleModelNode::compile()
     else{
         m2DNode->accept(cbv);
     }
-//    mConeHighliteNode = new Cone();
-//    mConeHighliteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
-//    mConeHighliteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
-//    mConeHighliteNode->setHeight(osgEarth::Distance(0, osgEarth::Units::METERS));
+    //    mConeHighliteNode = new Cone();
+    //    mConeHighliteNode->setFillColor(osg::Vec4f(0.00392156862745098, 0.6823529411764706, 0.8392156862745098,0.15));
+    //    mConeHighliteNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
+    //    mConeHighliteNode->setHeight(osgEarth::Distance(0, osgEarth::Units::METERS));
     //        mConeSelecteNode->setLocalRotation(osg::Quat(osg::PI,osg::Vec3d(1,1,0)));
     //        mConeSelecteNode->setCenter(osg::Vec3d(0,0,-mConeSelecteNode->getHeight().as(osgEarth::Units::METERS)/2));
     //        mConeSelecteNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,cbv.getBoundingBox().zMax()));
@@ -438,7 +442,7 @@ void SimpleModelNode::compile()
     // mCircleHighlightNode->setStrokeWidth(2);
     // mCircleHighlightNode->setRadius(osgEarth::Distance(cbv.getBoundingBox().radius() - 0.1*cbv.getBoundingBox().radius(), osgEarth::Units::METERS));
     // mCircleHighlightNode->getPositionAttitudeTransform()->setPosition(osg::Vec3d(0,0,0.5));
-//    m2DNode->addChild(mConeHighliteNode);
+    //    m2DNode->addChild(mConeHighliteNode);
     //--setting--------------------------------------------------------
     if(mIs3D){
         mSwitchMode->insertChild(Mode3D, mOutlineNode, true);
@@ -447,9 +451,9 @@ void SimpleModelNode::compile()
     else{
         mSwitchMode->insertChild(Mode3D, mOutlineNode, false);
         mSwitchMode->insertChild(Mode2D, m2DNode, true);
-//        setAutoScale(false);
+        //        setAutoScale(false);
     }
-//    mSwitchMode->insertChild(Highlight, mConeHighliteNode, false);
+    //    mSwitchMode->insertChild(Highlight, mConeHighliteNode, false);
     //--------------------------------------------------------------------------
     // this.
     osgEarth::Symbology::Style  rootStyle ;
@@ -545,7 +549,7 @@ void SimpleModelNode::createOutlineImage()
             }
         }
     }
-//    bool resultSnap = osgDB::writeImageFile(*mOutlineImage, "/home/client110/Pictures/mOutlineImage.png");
+    //    bool resultSnap = osgDB::writeImageFile(*mOutlineImage, "/home/client110/Pictures/mOutlineImage.png");
 }
 
 

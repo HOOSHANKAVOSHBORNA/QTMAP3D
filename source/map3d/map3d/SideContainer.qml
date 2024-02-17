@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
+
 import Crystal
+
 import "style"
 
 Item {
@@ -11,6 +13,13 @@ Item {
     property ListModel sideModel: ListModel {}
     property alias currentItemIndex: tabBar.currentIndex
     property int visibleCount: 0
+
+    property var toolboxCpp
+    property var locationCpp
+    property var connectionConfigurationCpp
+    property var profileCpp
+    property var bookmarkCpp
+    property var layerCpp
 
     Connections {
         target: sideModel
@@ -199,7 +208,7 @@ Item {
                 isWindow: sideModel.get(1).isWindow
                 containerItem: ToolboxManagerItem {
                     id: toolbox
-                    listModel: ToolboxManagerInstance.toolboxProxyModel()
+                    toolboxCpp: rootItem.toolboxCpp
                 }
 
                 onWindowClose: {
@@ -218,7 +227,7 @@ Item {
                 //                isWindow: sideModel.get(2).isWindow
                 containerItem: LayerManagerItem {
                     id: layers
-                    layerModel: LayerManagerInstance.layerModel()
+                    layerCpp: rootItem.layerCpp
                 }
 
                 onWindowClose: {
@@ -256,7 +265,7 @@ Item {
                 //                isWindow: sideModel.get(4).isWindow
                 containerItem: LocationManagerItem {
                     id: locationManager
-                    listModel: LocatoinManagerInstance.locationProxyModel()
+                    listModel: rootItem.locationCpp
                 }
 
                 onWindowClose: {

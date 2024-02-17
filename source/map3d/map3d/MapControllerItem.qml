@@ -46,7 +46,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
-        //        visible: topMenuVisible
+        visible: mapItem.topMenuVisible
         width: 706
         height: 75
 
