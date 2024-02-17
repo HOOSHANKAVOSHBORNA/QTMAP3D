@@ -41,6 +41,8 @@ MainWindow::~MainWindow()
 {
     //    cleanup();
     //    mMapItem->deleteLater();
+    delete mMapItem;
+    delete mListWindow;
 }
 
 void MainWindow::initComponent()

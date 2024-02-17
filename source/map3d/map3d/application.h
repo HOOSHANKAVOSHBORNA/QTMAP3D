@@ -44,6 +44,7 @@ private:
 
 private slots:
     void onUICreated();
+    void clearMainWindow();
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;

@@ -60,7 +60,7 @@ void Application::initialize()
                                       {"loadingPageCpp", QVariant::fromValue(loadingPage)},
                                       {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
 
-
+    connect(userManager, &UserManager::signedOut, this, &Application::clearMainWindow);
     //--user manger------------------------------------------
 //    mUserManager = new UserManager(mServiceManager, mQmlEngine);
 
@@ -155,6 +155,12 @@ void Application::onUICreated()
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
     mIsReady = true;
     emit ready();
+}
+
+void Application::clearMainWindow()
+{
+    qDebug() << "logout----------------";
+    delete mMainWindow;
 }
 
 ServiceManager *Application::serviceManager() const
