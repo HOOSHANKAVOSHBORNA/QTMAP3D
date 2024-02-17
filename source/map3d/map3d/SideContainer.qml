@@ -16,10 +16,10 @@ Item {
 
     property var toolboxCpp
     property var locationCpp
+    property var layerCpp
     property var connectionConfigurationCpp
     property var profileCpp
     property var bookmarkCpp
-    property var layerCpp
 
     Connections {
         target: sideModel
@@ -246,7 +246,7 @@ Item {
                 //                isWindow: sideModel.get(3).isWindow
                 containerItem: BookmarkItem {
                     id: bookmark
-                    model: BookmarkInstance.getBookmarkProxyModel()
+                    bookmarkCpp: rootItem.bookmarkCpp.getBookmarkProxyModel()
                 }
 
                 onWindowClose: {

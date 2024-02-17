@@ -31,7 +31,7 @@ public:
     Q_INVOKABLE MapControllerItem *getMapItem();
     Q_INVOKABLE ToolboxManager *getToolboxManager() const;
     Q_INVOKABLE LayerManager *getLayerManager() const;
-    BookmarkManager *getBookmarkManager() const;
+    Q_INVOKABLE BookmarkManager *getBookmarkManager() const;
     Q_INVOKABLE LocationProxyModel *getLocationManager() const;
 
 public:
@@ -47,6 +47,7 @@ private:
     LocationManager *mLocationManager = nullptr;
     ToolboxManager *mToolboxManager = nullptr;
     LayerManager *mLayerManager = nullptr;
+    BookmarkManager *mBookmarkManager = nullptr;
 };
 
 #endif // MainWindow_H

@@ -26,8 +26,6 @@
 MainWindow::MainWindow(QWindow *parent)
 {
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
-    qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
-
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 }
 
@@ -45,10 +43,9 @@ void MainWindow::initComponent()
     mMapItem->setQmlEngine(engine);
 
     mLocationManager = new LocationManager(mMapItem);
-
     mToolboxManager = new ToolboxManager;
-
     mLayerManager = new LayerManager(mMapItem);
+    mBookmarkManager = new BookmarkManager;
 
     //    QQmlComponent* comp = new QQmlComponent(engine);
     //    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
@@ -98,7 +95,7 @@ LayerManager *MainWindow::getLayerManager() const
 
 BookmarkManager *MainWindow::getBookmarkManager() const
 {
-    return BookmarkManager::createSingletonInstance(nullptr, nullptr);
+    return mBookmarkManager;
 }
 
 LocationProxyModel *MainWindow::getLocationManager() const
