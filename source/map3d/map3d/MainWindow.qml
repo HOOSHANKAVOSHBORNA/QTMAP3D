@@ -38,6 +38,8 @@ Item {
             SideBar {
                 id: sideBar
                 anchors.fill: parent
+
+                locationCpp: mainItem.mainPageCpp.getLocationManager()
                 //                pin: true
                 onPinChanged: {
                     if (pin) {

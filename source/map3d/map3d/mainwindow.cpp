@@ -26,15 +26,12 @@
 
 MainWindow::MainWindow(QWindow *parent)
 {
-    qmlRegisterType<MapControllerItem>("Crystal", 1, 0, "MapController");
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterSingletonType<ToolboxManager>("Crystal", 1, 0, "ToolboxManagerInstance", ToolboxManager::createSingletonInstance);
     qmlRegisterSingletonType<LayerManager>("Crystal", 1, 0, "LayerManagerInstance", LayerManager::createSingletonInstance);
-    qmlRegisterSingletonType<LocationManager>("Crystal", 1, 0, "LocatoinManagerInstance", LocationManager::createSingletonInstance);
     qmlRegisterSingletonType<BookmarkManager>("Crystal", 1, 0, "BookmarkInstance", BookmarkManager::createSingletonInstance);
 
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
-    //    setColor(Qt::black);
 }
 
 MainWindow::~MainWindow()
@@ -48,14 +45,8 @@ void MainWindow::initComponent()
     QQmlEngine *engine = qmlEngine(this);
     mMapItem = new MapControllerItem();
 
-    // --------------------- don't touch 2 below lines!!!!!!! ------------------------------------
-    mMapItem->setWidth(300);
-    mMapItem->setHeight(300);
-    // --------------------- I don't know why anyway :) ------------------------------------------
-
     mMapItem->setQmlEngine(engine);
-    LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
-    locationManager->initialize(mMapItem);
+    mLocationManager = new LocationManager(mMapItem);
 
     ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
 
@@ -115,7 +106,7 @@ BookmarkManager *MainWindow::getBookmarkManager() const
 
 LocationProxyModel *MainWindow::getLocationManager() const
 {
-    return LocationManager::createSingletonInstance(nullptr, nullptr)->locationProxyModel();
+    return mLocationManager->locationProxyModel();
 }
 
 void MainWindow::showListWindow()
@@ -133,7 +124,8 @@ void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
     if (mListWindow) {
         mListWindow->appendItem(tabTitle, tabItem);
     } else {
-        qDebug() << "-- mListWindow is nullptr";
+        qInfo() << "info - fail: "
+                << "mListWindow is nullptr";
     }
 }
 

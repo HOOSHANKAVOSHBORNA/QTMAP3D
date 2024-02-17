@@ -31,7 +31,7 @@ public:
     ToolboxManager *getToolboxManager() const;
     LayerManager *getLayerManager() const;
     BookmarkManager *getBookmarkManager() const;
-    LocationProxyModel *getLocationManager() const;
+    Q_INVOKABLE LocationProxyModel *getLocationManager() const;
 
 public:
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
@@ -43,8 +43,9 @@ public slots:
 private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;
-//    LayersModel *mLayersModel = nullptr;
-//    BookmarkProxyModel *mBookmark = nullptr;
+    LocationManager *mLocationManager = nullptr;
+    //    LayersModel *mLayersModel = nullptr;
+    //    BookmarkProxyModel *mBookmark = nullptr;
 };
 
 #endif // MainWindow_H

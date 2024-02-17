@@ -2,27 +2,32 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
+
 import Crystal
+
 import "style"
 
 Rectangle {
     id: rootRect
 
     property int minWidth
-    //    property alias sideContainerWidth: leftContainer.implicitWidth
 
-    //    // TODO: you should not pass mainwindow to here :)
-    //    required property var mainWindow
-    //    required property var unpinContainer
-    //    required property var pinContainer
+    property var toolboxCpp
+    property var locationCpp
+    property var connectionConfigurationCpp
+    property var profileCpp
+    property var bookmarkCpp
+    property var layerCpp
 
-    //    readonly property color _colorHover: "#01AED6"
-    //    readonly property color _colorPresed: "#003569"
-
-    readonly property color fg50: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
-    readonly property color bg50: Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.50)
+    readonly property color fg50: Qt.rgba(Style.foregroundColor.r,
+                                          Style.foregroundColor.g,
+                                          Style.foregroundColor.b, 0.50)
+    readonly property color bg50: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.50)
 
     property bool pin: btnPin.checked
+
     //    property var bookmarkItem: null
 
     //        state: btnPin.checked? "pin": "unpin"
@@ -56,8 +61,6 @@ Rectangle {
     //        GradientStop { position: 0.0; color: Style.topGradient }
     //        GradientStop { position: 1.0; color: Style.bottomGradient }
     //    }
-
-
     border {
         color: "white"
         width: 3
@@ -65,16 +68,18 @@ Rectangle {
     radius: Math.ceil(15 / Style.monitorRatio)
     color: bg50
 
-    minWidth: sideContainer.visibleCount? Math.ceil((360+75) / Style.monitorRatio): Math.ceil(75 / Style.monitorRatio)
+    minWidth: sideContainer.visibleCount ? Math.ceil(
+                                               (360 + 75) / Style.monitorRatio) : Math.ceil(
+                                               75 / Style.monitorRatio)
 
     RowLayout {
-        id:rowLayout
+        id: rowLayout
         anchors.fill: parent
         Item {
             Layout.preferredWidth: Math.ceil(65 / Style.monitorRatio)
             Layout.minimumWidth: Math.ceil(65 / Style.monitorRatio)
             Layout.maximumWidth: Math.ceil(65 / Style.monitorRatio)
-            Layout.margins: Math.ceil(5/Style.monitorRatio)
+            Layout.margins: Math.ceil(5 / Style.monitorRatio)
             Layout.fillHeight: true
             Rectangle {
                 id: toolBar
@@ -159,7 +164,6 @@ Rectangle {
                                 }
                             }
                         }
-
                     }
 
                     Button {
@@ -251,7 +255,6 @@ Rectangle {
                         }
                     }
                 }
-
             }
             MultiEffect {
                 source: toolBar
@@ -273,6 +276,12 @@ Rectangle {
             Layout.fillHeight: true
             sideModel: sideBarModel
 
+            locationCpp: rootRect.locationCpp
+            toolboxCpp: rootRect.toolboxCpp
+            connectionConfigurationCpp: rootRect.connectionConfigurationCpp
+            profileCpp: rootRect.profileCpp
+            bookmarkCpp: rootRect.bookmarkCpp
+            layerCpp: rootRect.layerCpp
         }
     }
 
@@ -321,6 +330,5 @@ Rectangle {
             checked: false
             isWindow: false
         }
-
     }
 }
