@@ -31,16 +31,9 @@ enum {
 class LocationManager : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
-
-private:
-    explicit LocationManager();
 
 public:
-    static LocationManager *createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
-
-    void initialize(MapItem *mapItem);
+    explicit LocationManager(MapItem *mapItem);
     void myRemoveRow(int index);
     void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
     void editLocation(int index, QString newName, QString newDescription, QString newImageSource, QString newColor);
@@ -51,7 +44,6 @@ public:
     Q_INVOKABLE void loadModelFromFile();
 
 private:
-    inline static LocationManager* mInstance;
     LocationProxyModel* mLocationProxyModel;
 };
 
@@ -81,7 +73,6 @@ signals:
     void searchedNameChanged();
 
 private:
-    static LocationProxyModel* mInstance;
     QString mSearchedWord;
 };
 
