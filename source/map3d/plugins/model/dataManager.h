@@ -9,7 +9,7 @@ class DataManager : public QObject
 {
     Q_OBJECT
 public:
-    DataManager(MapItem *mapItem, MainWindow *mainWindow);
+    DataManager(QQmlEngine *engine, MapItem *mapItem, MainWindow *mainWindow);
     ~DataManager();
 //    void removeFlyableNodeData(NodeData *nodeData);
 //    void removeMovableNodeData(NodeData *nodeData);
@@ -75,6 +75,7 @@ private:
     void removeNode(const NodeData &nodeData);
 
 private:
+    QQmlEngine *mQmlEngine = nullptr;
     MapItem* mMapItem;
 
 //    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;

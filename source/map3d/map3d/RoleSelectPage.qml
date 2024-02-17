@@ -4,11 +4,12 @@ import QtQuick.Layouts
 import "style"
 
 ColumnLayout {
-    property var roleSelectionCpp: undefined
+    property var roleSelectionModel: undefined
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
     property alias backBtn: backBtn
     property alias usernameTxt: usernameTxt.text
+    property alias selectRole: roleSelectionView.currentIndex
 
     spacing: 0
 
@@ -76,6 +77,7 @@ ColumnLayout {
     ListView {
         id: roleSelectionView
         model: roleSelectionModel
+        currentIndex: 0
         Layout.topMargin: 12 / Style.monitorRatio
         Layout.preferredHeight: 90 / Style.monitorRatio
         Layout.fillWidth: true
@@ -83,6 +85,7 @@ ColumnLayout {
         interactive: false
         delegate: RadioButton {
             id: radioButton
+            checked: roleSelectionView.currentIndex === index
             text: model.display
             height: 20 / Style.monitorRatio
             opacity: checked ? 1 : 0.75
@@ -101,7 +104,7 @@ ColumnLayout {
 
             onCheckedChanged: {
                 if (radioButton.checked)
-                    roleSelectionModel.getSelectedRoleIndex(index)
+                    roleSelectionView.currentIndex = index
             }
         }
     }

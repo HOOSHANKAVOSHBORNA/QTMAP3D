@@ -186,7 +186,6 @@ Item {
 
                 containerItem: ProfileItem {
                     id: profile
-                    model: UserInfo
                 }
 
                 onWindowClose: {

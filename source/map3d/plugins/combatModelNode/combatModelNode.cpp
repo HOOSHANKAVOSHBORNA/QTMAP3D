@@ -22,8 +22,8 @@ bool CombatModelNode::setup()
 {
     auto modelPlugin = getPlugin("libmodel.so");
     auto *model = dynamic_cast<Model*>(modelPlugin);
-    mCombatManager = new CombatManager(mapItem());
-    mCombatMenu = new CombatMenu(mCombatManager, mapItem());
+    mCombatManager = new CombatManager(qmlEngine(), mapItem());
+    mCombatMenu = new CombatMenu(mCombatManager, qmlEngine(), mapItem());
     mDataManager = new AssignDataManager(mCombatManager,model,serviceManager());
 
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
@@ -39,12 +39,30 @@ bool CombatModelNode::setup()
     mCombatManager->setCombatLayer(mAttackNodeLayer);
     mCombatModelNodeLayer->addLayer(mAttackNodeLayer);
 
-//    QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::addAssignmentChecked, this, &CombatModelNode::onAddAssignmentChecked);
-//    QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::removeAssignmentChecked, this, &CombatModelNode::onRemoveAssignmentChecked);
-//    QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::onCloseMenuClicked, this, &CombatModelNode::onCloseMenuClicked);
-//    QObject::connect(serviceManager(), &ServiceManager::assignmentDataReceived, mDataManager, &AssignDataManager::assignDataReceived);
-//    QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::sendAssignRequested, mDataManager, &AssignDataManager::onSendAssignRequest);
-//    QObject::connect(mCombatMenu->assignmentListModel(), &AssignmentListModel::cancelAssignRequested, mDataManager, &AssignDataManager::onSendCancelRequest);
+    QObject::connect(mCombatMenu->assignmentListModel(),
+                     &AssignmentListModel::addAssignmentChecked,
+                     this,
+                     &CombatModelNode::onAddAssignmentChecked);
+    QObject::connect(mCombatMenu->assignmentListModel(),
+                     &AssignmentListModel::removeAssignmentChecked,
+                     this,
+                     &CombatModelNode::onRemoveAssignmentChecked);
+    QObject::connect(mCombatMenu->assignmentListModel(),
+                     &AssignmentListModel::onCloseMenuClicked,
+                     this,
+                     &CombatModelNode::onCloseMenuClicked);
+    QObject::connect(serviceManager(),
+                     &ServiceManager::assignmentDataReceived,
+                     mDataManager,
+                     &AssignDataManager::assignDataReceived);
+    QObject::connect(mCombatMenu->assignmentListModel(),
+                     &AssignmentListModel::sendAssignRequested,
+                     mDataManager,
+                     &AssignDataManager::onSendAssignRequest);
+    QObject::connect(mCombatMenu->assignmentListModel(),
+                     &AssignmentListModel::cancelAssignRequested,
+                     mDataManager,
+                     &AssignDataManager::onSendCancelRequest);
 
     return true;
 

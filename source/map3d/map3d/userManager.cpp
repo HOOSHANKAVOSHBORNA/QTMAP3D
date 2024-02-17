@@ -1,81 +1,169 @@
 #include "userManager.h"
-#include "connectionConfiguration.h"
-//#include "qcryptographichash.h"
-#include <QQmlContext>
-#include <QApplication>
-#include <QQmlComponent>
-#include <QQuickWindow>
-#include <QJsonObject>
 
-LoginPage::LoginPage(ServiceManager* serviceManager, QQmlApplicationEngine *qmlEngine, QObject *parent):
-    QObject(parent), mServiceManager{serviceManager},mQmlEngine{qmlEngine}
+RoleSelectionModel::RoleSelectionModel(QObject *parent):
+    QAbstractListModel(parent)
 {
-    mRoleSelectionModel = new RoleSelectionModel(serviceManager);
-    mQmlEngine->rootContext()->setContextProperty("roleSelectionModel",mRoleSelectionModel);
 }
 
-void LoginPage::signIn(const QString username, const QString password)
+int RoleSelectionModel::rowCount(const QModelIndex &parent) const
 {
-    qDebug()<<"signIn";
+    return mRoles.size();
+}
+
+QVariant RoleSelectionModel::data(const QModelIndex &index, int role) const
+{
+    const int row = index.row();
+
+    switch(role) {
+    case Qt::DisplayRole:
+        return mRoles[row];
+    default:
+        break;
+    }
+
+    return QVariant(false);
+}
+
+void RoleSelectionModel::setRolse(QVector<QString> roles)
+{
+    beginResetModel();
+    mRoles = roles;
+    endResetModel();
+}
+
+void RoleSelectionModel::clear()
+{
+    beginResetModel();
+    mRoles.clear();
+    endResetModel();
+}
+
+//--user manager----------------------------------------------------------------------
+UserManager::UserManager(ServiceManager* serviceManager, QObject *parent):
+    QObject(parent), mServiceManager{serviceManager}
+{
+    mRoleSelectionModel = new RoleSelectionModel(serviceManager);
+    connect(mServiceManager, &ServiceManager::userDataReceived, this, &UserManager::onUserDataReceived);
+}
+
+void UserManager::signIn(const QString username, const QString password)
+{
+    qDebug()<<"signIn LoginPage";
     UserData userData;
     userData.userName = username;
     userData.password = password;
     userData.command = UserData::UserCommand::Login;
     mServiceManager->sendUser(userData);
 
-//    QByteArray pswNsalt (password.toStdString().c_str()) ;
-//    pswNsalt = QCryptographicHash::hash(pswNsalt, QCryptographicHash::Md5).toHex();
+    setUserName(username);
 
+    //--test------
+    QVector<QString> testvec;
+    testvec.append("Admin");
+    testvec.append("User");
+    mRoleSelectionModel->setRolse(testvec);
 }
 
-void LoginPage::onWindowClosed()
+void UserManager::signIn(int selectRoleIndex)
 {
-    QCoreApplication::exit(-1);
+    qDebug()<<"signIn Select Role: "<<selectRoleIndex;
+    mUserData.selectRoleIndex = selectRoleIndex;
+    mUserData.command = UserData::UserCommand::SelectRole;
+    mServiceManager->sendUser(mUserData);
+
 }
 
-void LoginPage::onUserDataReceived(const UserData &userData)
+UserData UserManager::userData() const
 {
-    qDebug()<<userData.response.message;
-    if(userData.response.status == Response::Status::Success){
-        mLoginUserData = userData;
-        emit signedIn();
-    }
+    return mUserData;
 }
 
-void LoginPage::setServiceManager(ServiceManager *newServiceManager)
+
+void UserManager::setServiceManager(ServiceManager *newServiceManager)
 {
     if(mServiceManager)
         disconnect(mServiceManager, nullptr, this, nullptr);
     mServiceManager = newServiceManager;
-    connect(mServiceManager, &ServiceManager::userDataReceived, this, &LoginPage::onUserDataReceived);
+    connect(mServiceManager, &ServiceManager::userDataReceived, this, &UserManager::onUserDataReceived);
 }
 
-UserManager::UserManager(ServiceManager *serviceManager, QQmlApplicationEngine *qmlEngine, QObject *parent)
-    : QObject(parent),
-    mServiceManager(serviceManager),
-    mQmlEngine(qmlEngine)
+void UserManager::onUserDataReceived(const UserData &userData)
 {
-    mProfile = new Profile(serviceManager);
-    qmlEngine->rootContext()->setContextProperty("UserInfo", mProfile);
-    mLoginPage = new LoginPage(serviceManager,qmlEngine);
-    qmlEngine->rootContext()->setContextProperty("loginPage", mLoginPage);
-    mLoadingInfo = new LoadingPage();
-    qmlEngine->rootContext()->setContextProperty("loadingInfo", mLoadingInfo);
+    qDebug()<<"map3d received user: "<<userData.toJson();
+
+    if(userData.response.status == Response::Status::Success){
+        mUserData = userData;
+        if(userData.command == UserData::UserCommand::Login){
+            if(mUserData.roles.isEmpty())
+                emit signedIn();
+            else{
+                mRoleSelectionModel->setRolse(mUserData.roles);
+                emit selectRole();
+            }
+        }
+        else if(userData.command == UserData::UserCommand::SelectRole){
+            emit signedIn();
+        }
+    }
 }
 
-
-Profile::Profile(ServiceManager *serviceManager, QObject *parent)
-    : QObject(parent) , mServiceManager{serviceManager}
+RoleSelectionModel *UserManager::roleSelectionModel() const
 {
-
+    return mRoleSelectionModel;
 }
 
-QString Profile::getName() const
+//Profile::Profile(ServiceManager *serviceManager, QObject *parent)
+//    : QObject(parent) , mServiceManager{serviceManager}
+//{
+
+//}
+
+//QString Profile::getName() const
+//{
+//    return mName;
+//}
+
+//void Profile::setName(const QString &newName)
+//{
+//    if (mName == newName)
+//        return;
+//    mName = newName;
+//    emit nameChanged();
+//}
+
+//QString Profile::getUsername() const
+//{
+//    return mUsername;
+//}
+
+//void Profile::setUsername(const QString &newUsername)
+//{
+//    if (mUsername == newUsername)
+//        return;
+//    mUsername = newUsername;
+//    emit usernameChanged();
+//}
+
+//void Profile::logOut()
+//{
+//  UserData userData;
+
+//  userData.name = mName;
+//  userData.userName = mUsername;
+//  userData.command = UserData::UserCommand::Logout;
+
+
+//  mServiceManager->sendUser(userData);
+//}
+
+
+
+QString UserManager::name() const
 {
     return mName;
 }
 
-void Profile::setName(const QString &newName)
+void UserManager::setName(const QString &newName)
 {
     if (mName == newName)
         return;
@@ -83,76 +171,28 @@ void Profile::setName(const QString &newName)
     emit nameChanged();
 }
 
-QString Profile::getUsername() const
+QString UserManager::userName() const
 {
-    return mUsername;
+    return mUserName;
 }
 
-void Profile::setUsername(const QString &newUsername)
+void UserManager::setUserName(const QString &newUserName)
 {
-    if (mUsername == newUsername)
+    if (mUserName == newUserName)
         return;
-    mUsername = newUsername;
-    emit usernameChanged();
+    mUserName = newUserName;
+    emit userNameChanged();
 }
 
-void Profile::logOut()
+QString UserManager::message() const
 {
-  UserData userData;
-
-  userData.name = mName;
-  userData.userName = mUsername;
-  userData.command = UserData::UserCommand::Logout;
-
-
-  mServiceManager->sendUser(userData);
+    return mMessage;
 }
 
-RoleSelectionModel::RoleSelectionModel(ServiceManager *serviceManager, QObject *parent):
-QAbstractListModel(parent), mServiceManager{serviceManager}
+void UserManager::setMessage(const QString &newMessage)
 {
-  mRoleNames.push_back("Admin");
-  mRoleNames.push_back("Administrator");
-  mRoleNames.push_back("Reviewer");
-}
-
-int RoleSelectionModel::rowCount(const QModelIndex &parent) const
-{
-  return mRoleNames.size();
-}
-
-QVariant RoleSelectionModel::data(const QModelIndex &index, int role) const
-{
-  const int row = index.row();
-
-  switch(role) {
-  case Qt::DisplayRole:
-        return mRoleNames[row];
-  default:
-        break;
-  }
-
-  return QVariant(false);
-}
-
-
-
-void RoleSelectionModel::signIn(const QString username, const QString password)
-{
-  qDebug()<<"signIn";
-  UserData userData;
-  userData.userName = username;
-  userData.password = password;
-  userData.command = UserData::UserCommand::Login;
-  mServiceManager->sendUser(userData);
-
-  //    QByteArray pswNsalt (password.toStdString().c_str()) ;
-  //    pswNsalt = QCryptographicHash::hash(pswNsalt, QCryptographicHash::Md5).toHex();
-
-  emit signedIn();
-}
-
-int RoleSelectionModel::getSelectedRoleIndex(int index)
-{
-  return index;
+    if (mMessage == newMessage)
+        return;
+    mMessage = newMessage;
+    emit messageChanged();
 }

@@ -45,9 +45,10 @@ QColor Assignment::getColor()
 
 }
 //---------------------------------------------------------------------------------
-CombatManager::CombatManager(MapItem *map)
+CombatManager::CombatManager(QQmlEngine *engine, MapItem *map)
 {
     // mEdgeDataList = new QList<assignmentData>;
+    mQmlEngine = engine;
     mBulletList = new QList<osg::ref_ptr<BulletNode>>;
     mMapItem = map;
 }
@@ -113,7 +114,7 @@ void CombatManager::removeTargetAssignments(SimpleModelNode *target)
 
 int CombatManager::readyBulletFor(SimpleModelNode *attacker, const std::string &url3D, const std::string &url2D)
 {
-    osg::ref_ptr<BulletNode> bulletnode = new BulletNode(mMapItem, url3D, url2D);
+    osg::ref_ptr<BulletNode> bulletnode = new BulletNode(mQmlEngine, mMapItem, url3D, url2D);
     mCombatLayer->addChild(bulletnode);
     bulletnode->setPosition(attacker->getPosition());
     mBulletList->push_back(bulletnode);

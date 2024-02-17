@@ -39,7 +39,10 @@ bool Model::setup()
     connect(mapItem(), &MapItem::modeChanged, this, &Model::onModeChanged);
     mIs3D = mapItem()->getMode();
 
-    mDataManager = new DataManager(mapItem(), mainWindow());
+
+    mDataManager = new DataManager(qmlEngine(), mapItem(), mainWindow());
+    //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+
     connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::onNodeDataReceived);
 
     //--toolbox item---------------------------------------------------------------------
@@ -94,10 +97,10 @@ bool Model::setup()
     mLayerData.children.push_back(layerDataFlyable);
 
     // property item setup
-    mProperty = new Property(mapItem());
+    mProperty = new Property(qmlEngine(), mapItem());
 
     // list window setup
-    mNodeList = new NodeList(mapItem(), mDataManager);
+    mNodeList = new NodeList(qmlEngine(), mapItem(), mDataManager);
     mainWindow()->addTabToListWindow("Allllll", mNodeList->qmlItem());
 
     return true;

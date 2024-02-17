@@ -2,9 +2,11 @@
 #include "flyableModelNode.h"
 #include "moveableModelNode.h"
 #include "mainwindow.h"
-DataManager::DataManager(MapItem *mapItem, MainWindow *mainWindow)
-    : mMapItem(mapItem), mMainWindow(mainWindow)
+DataManager::DataManager(QQmlEngine *engine, MapItem *mapItem, MainWindow *mainWindow)
+    : mMapItem(mapItem)
+    , mMainWindow(mainWindow)
 {
+    mQmlEngine = engine;
     mFilterManager = new FilterManager();
 }
 
@@ -69,30 +71,22 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
         //add new Category Tag Names
         QString categoryTag = nodeData.category;
         if (!mCategoryTagNames.contains(categoryTag)) {
-//            emit categoryTagAppendingStart(QModelIndex(),
-//                                           mCategoryTagNames.size(),
-//                                           mCategoryTagNames.size());
             mCategoryTagNames.append(categoryTag);
-//            emit categoryTagAppendingEnd();
         }
 
-        // DEBUG
-        //        qDebug() << "debug: " << mUniqueTabNames.size();
-        //        for (int i = 0; i < mUniqueTabNames.size(); ++i) {
-        //            qDebug() << "debug: " << mUniqueTabNames.at(i);
-        //        }
-        // ENDDEBUG
-
         if (nodeData.type == NodeType::Movable)
-            node = new MoveableModelNode(mMapItem,
+            node = new MoveableModelNode(mQmlEngine,
+                                         mMapItem,
                                          nodeData.url3D.toStdString(),
                                          nodeData.url2D.toStdString());
         else if (nodeData.type == NodeType::Flyable)
-            node = new FlyableModelNode(mMapItem,
+            node = new FlyableModelNode(mQmlEngine,
+                                        mMapItem,
                                         nodeData.url3D.toStdString(),
                                         nodeData.url2D.toStdString());
         else
-            node = new SimpleModelNode(mMapItem,
+            node = new SimpleModelNode(mQmlEngine,
+                                       mMapItem,
                                        nodeData.url3D.toStdString(),
                                        nodeData.url2D.toStdString());
 

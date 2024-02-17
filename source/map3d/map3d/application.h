@@ -35,8 +35,6 @@ public:
 
     void initializeQmlEngine();
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
-    void createApplicationQml();
-    void createMainWindowQml();
 
 signals:
     void ready();
@@ -55,13 +53,13 @@ private:
     PluginManager *mPluginManager = nullptr;
     ServiceManager *mServiceManager{nullptr};
 
-    UserManager *mUserManager{nullptr};
+//    UserManager *mUserManager{nullptr};
     Splash *mSplash{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};
 
-    QQuickWindow *mApplicationQml = nullptr;
+    QQuickWindow *mApplicationWindow = nullptr;
 };
 
 #endif // Application_H

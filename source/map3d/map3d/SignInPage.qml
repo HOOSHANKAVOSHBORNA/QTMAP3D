@@ -16,7 +16,7 @@ ColumnLayout {
                                                      Style.foregroundColor.b,
                                                      0.50)
     property alias usernameTxt: usernameTxt.text
-    property alias passwordTxt: passwordTxt
+    property alias passwordTxt: passwordTxt.text
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
 

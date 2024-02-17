@@ -25,18 +25,22 @@ public:
 
 public:
     void extracted(QDir &pluginsDir);
+    void setQmlEngine(QQmlEngine *engine);
     void loadPlugins();
     void setup();
 
     QMap<QString, PluginInterface *> pluginsMap() const;
 signals:
-    void pluginsLoaded();
+    void pluginLoading(QString pluginName);
+    void pluginLoadError(QString errorStr);
+//    void pluginsLoaded();
 private:
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
     void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);
 
 private:
     friend EventHandler;
+
     QMap<QString, PluginInterface*> mPluginsMap;
     QStringList mPluginFileNameList;
     QStringList mLoadedPluginList;
