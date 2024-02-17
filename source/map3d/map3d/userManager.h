@@ -27,6 +27,7 @@ class UserManager : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
     Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
+    Q_PROPERTY(bool rolePageVisible READ rolePageVisible WRITE setRolePageVisible NOTIFY selectRole)
 
 public:
     UserManager(ServiceManager *serviceManager, QObject *parent = nullptr);
@@ -50,6 +51,9 @@ public:
     QString message() const;
     void setMessage(const QString &newMessage);
 
+    bool rolePageVisible() const;
+    Q_INVOKABLE void setRolePageVisible(bool newRolePageVisible);
+
 signals:
     void signedIn();
     void selectRole();
@@ -72,6 +76,7 @@ private:
     QString mName;
     QString mUserName;
     QString mMessage;
+    bool mRolePageVisible;
 };
 
 //class Profile:public QObject

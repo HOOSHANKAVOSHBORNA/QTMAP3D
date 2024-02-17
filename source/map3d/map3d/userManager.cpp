@@ -56,6 +56,7 @@ void UserManager::signIn(const QString username, const QString password)
     mServiceManager->sendUser(userData);
 
     setUserName(username);
+    setRolePageVisible(true);
 
     //--test------
     QVector<QString> testvec;
@@ -195,4 +196,17 @@ void UserManager::setMessage(const QString &newMessage)
         return;
     mMessage = newMessage;
     emit messageChanged();
+}
+
+bool UserManager::rolePageVisible() const
+{
+    return mRolePageVisible;
+}
+
+void UserManager::setRolePageVisible(bool newRolePageVisible)
+{
+    if (mRolePageVisible == newRolePageVisible)
+        return;
+    mRolePageVisible = newRolePageVisible;
+    emit selectRole();
 }

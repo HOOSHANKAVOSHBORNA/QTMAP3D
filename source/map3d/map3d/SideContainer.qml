@@ -277,7 +277,7 @@ Item {
                 containerItem: ConnectionConfiguration {
                     id: settingsItem
 
-                    backBtn.visible: false
+                    closeBtn.visible: false
                 }
 
                 onWindowClose: {
