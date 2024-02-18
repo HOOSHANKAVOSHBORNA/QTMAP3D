@@ -26,29 +26,6 @@ Item {
         fillMode: Image.PreserveAspectCrop
     }
 
-    Rectangle {
-        id: connectionPopUp
-        visible: false
-        x: 0.5 * parent.width
-        //        y: 0.2 * parent.height
-        width: 440 / Style.monitorRatio
-        height: 687 / Style.monitorRatio
-        radius: 20 / Style.monitorRatio
-        color: Style.backgroundColor
-        MouseArea {
-            anchors.fill: parent
-            drag.target: connectionPopUp
-        }
-        ConnectionConfiguration {
-            id: connectionPage
-            anchors.fill: parent
-            connectionConfigCpp: loginPage.connectionConfigCpp
-            closeBtn.onClicked: {
-                connectionPopUp.visible = false
-            }
-        }
-    }
-
     PropertyAnimation {
         id: heightIncrease
         target: containerRect
@@ -74,7 +51,7 @@ Item {
         property: "y"
         from: -500
         to: 0
-        duration: 5000
+        duration: 500
     }
     PropertyAnimation {
         id: topToBottomSignIn
@@ -96,6 +73,34 @@ Item {
     }
 
     Rectangle {
+        id: connectionPopUp
+        visible: false
+        x: containerRect.x
+        y: containerRect.y
+        z: containerRect.z + 1
+        width: 440 / Style.monitorRatio
+        height: 687 / Style.monitorRatio
+        radius: 20 / Style.monitorRatio
+        color: Style.backgroundColor
+        MouseArea {
+            anchors.fill: parent
+            drag.target: connectionPopUp
+        }
+        ConnectionConfiguration {
+            id: connectionPage
+            anchors.left: parent.left
+            anchors.right: parent.right
+            connectionConfigCpp: loginPage.connectionConfigCpp
+            closeBtn.onClicked: {
+                connectionPopUp.visible = false
+            }
+            saveBtn.onClicked: {
+                connectionPopUp.visible = false
+            }
+        }
+    }
+
+    Rectangle {
         id: containerRect
         color: Style.backgroundColor
         width: 440 / Style.monitorRatio
@@ -113,8 +118,8 @@ Item {
             anchors.leftMargin: 50 / Style.monitorRatio
             anchors.rightMargin: 50 / Style.monitorRatio
             connectionStatus.onClicked: {
-                connectionPopUp.visible = true
                 topToBottomConnection.start()
+                connectionPopUp.visible = true
             }
             signInBtn.onClicked: {
                 userManager.signIn(signInPage.usernameTxt,
@@ -124,7 +129,7 @@ Item {
                     signInPage.visible = false
                     rolePage.visible = true
                     heightIncrease.from = 464 / Style.monitorRatio
-                    heightIncrease.to = 504 / Style.monitorRatio
+                    heightIncrease.to = 525 / Style.monitorRatio
                     heightIncrease.start()
                     topToBottomRole.start()
                 }
@@ -142,11 +147,7 @@ Item {
             anchors.rightMargin: 50 / Style.monitorRatio
 
             connectionStatus.onClicked: {
-                //                rolePage.visible = false
                 connectionPopUp.visible = true
-                //                heightIncrease.from = 504 / Style.monitorRatio
-                //                heightIncrease.to = 687 / Style.monitorRatio
-                //                heightIncrease.start()
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
@@ -155,34 +156,11 @@ Item {
             backBtn.onClicked: {
                 rolePage.visible = false
                 signInPage.visible = true
-                heightDecrease.from = 504 / Style.monitorRatio
+                heightDecrease.from = 525 / Style.monitorRatio
                 heightDecrease.to = 464 / Style.monitorRatio
                 heightDecrease.start()
                 topToBottomSignIn.start()
             }
         }
-
-        //        ConnectionConfiguration {
-        //            id: connectionPage
-        //            connectionConfigCpp: loginPage.connectionConfigCpp
-        //            visible: false
-        //            backBtn.onClicked: {
-        //                if (logInPageVisible) {
-        //                    connectionPage.visible = false
-        //                    signInPage.visible = true
-        //                    heightDecrease.from = 687 / Style.monitorRatio
-        //                    heightDecrease.to = 464 / Style.monitorRatio
-        //                    heightDecrease.start()
-        //                    topToBottomSignIn.start()
-        //                } else {
-        //                    connectionPage.visible = false
-        //                    heightDecrease.from = 687 / Style.monitorRatio
-        //                    heightDecrease.to = 504 / Style.monitorRatio
-        //                    heightDecrease.start()
-        //                    rolePage.visible = true
-        //                    topToBottomRole.start()
-        //                }
-        //            }
-        //        }
     }
 }

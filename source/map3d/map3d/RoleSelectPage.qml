@@ -39,7 +39,7 @@ ColumnLayout {
         Button {
             id: connectionStatus
             background: Image {
-                source: "qrc:/Resources/unplugged.png"
+                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             }
             Layout.preferredHeight: 39 / Style.monitorRatio
             Layout.preferredWidth: 39 / Style.monitorRatio
@@ -109,11 +109,27 @@ ColumnLayout {
         }
     }
 
+    RowLayout {
+        spacing: 0
+        Layout.topMargin: 12 / Style.monitorRatio
+        opacity: 0
+        Image {
+            source: "qrc:/Resources/error.png"
+            Layout.preferredHeight: 20 / Style.monitorRatio
+            Layout.preferredWidth: 20 / Style.monitorRatio
+        }
+        Text {
+            text: userManager.roleMessage
+            font.pixelSize: 17 / Style.monitorRatio
+            color: "#ED4337"
+            Layout.leftMargin: 5 / Style.monitorRatio
+        }
+    }
     Button {
         id: signInBtn
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
-        Layout.topMargin: 23 / Style.monitorRatio
+        Layout.topMargin: 15 / Style.monitorRatio
         hoverEnabled: true
         background: Rectangle {
             color: Style.foregroundColor

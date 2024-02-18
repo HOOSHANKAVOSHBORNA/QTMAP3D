@@ -26,8 +26,11 @@ class UserManager : public QObject
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
-    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
+    Q_PROPERTY(QString loginMessage READ loginMessage WRITE setLoginMessage NOTIFY loginMessageChanged)
+    Q_PROPERTY(QString roleMessage READ roleMessage WRITE setRoleMessage NOTIFY roleMessageChanged)
     Q_PROPERTY(bool rolePageVisible READ rolePageVisible WRITE setRolePageVisible NOTIFY selectRole)
+    Q_PROPERTY(bool isConnected READ isConnected WRITE setIsConnected NOTIFY isConnectedChanged)
+
 
 public:
     UserManager(ServiceManager *serviceManager, QObject *parent = nullptr);
@@ -48,11 +51,17 @@ public:
     QString userName() const;
     void setUserName(const QString &newUserName);
 
-    QString message() const;
-    void setMessage(const QString &newMessage);
+    QString loginMessage() const;
+    void setLoginMessage(const QString &newMessage);
 
     bool rolePageVisible() const;
     Q_INVOKABLE void setRolePageVisible(bool newRolePageVisible);
+
+    QString roleMessage() const;
+    void setRoleMessage(const QString &newRoleMessage);
+
+    bool isConnected() const;
+    void setIsConnected(bool newIsConnected);
 
 signals:
     void signedIn();
@@ -64,7 +73,11 @@ signals:
 
     void userNameChanged();
 
-    void messageChanged();
+    void loginMessageChanged();
+
+    void roleMessageChanged();
+
+    void isConnectedChanged();
 
 private slots:
     void onUserDataReceived(const UserData &userData);
@@ -75,8 +88,10 @@ private:
     RoleSelectionModel* mRoleSelectionModel;
     QString mName;
     QString mUserName;
-    QString mMessage;
+    QString mLoginMessage;
     bool mRolePageVisible;
+    QString mRoleMessage;
+    bool mIsConnected;
 };
 
 //class Profile:public QObject

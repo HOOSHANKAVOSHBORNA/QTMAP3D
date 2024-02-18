@@ -21,6 +21,8 @@ Item {
                                                      0.50)
     property alias connectionStatus: connectionStatus
     property alias closeBtn: closeBtn
+    property alias saveBtn: saveBtn
+
 
     height: parent ? parent.height : 0
     width: parent ? parent.width : 0
@@ -59,7 +61,7 @@ Item {
 
             IconImage {
                 id: connectionStatus
-                source: "qrc:/Resources/unplugged.png"
+                source: userManager.isConnected ? "qrc:/Resources/plugged.png" :"qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
             }

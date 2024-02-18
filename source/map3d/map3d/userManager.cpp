@@ -57,6 +57,7 @@ void UserManager::signIn(const QString username, const QString password)
 
     setUserName(username);
     setRolePageVisible(true);
+    setLoginMessage("Wrong username or password");
 
     //--test------
     QVector<QString> testvec;
@@ -185,17 +186,17 @@ void UserManager::setUserName(const QString &newUserName)
     emit userNameChanged();
 }
 
-QString UserManager::message() const
+QString UserManager::loginMessage() const
 {
-    return mMessage;
+    return mLoginMessage;
 }
 
-void UserManager::setMessage(const QString &newMessage)
+void UserManager::setLoginMessage(const QString &newMessage)
 {
-    if (mMessage == newMessage)
+    if (mLoginMessage == newMessage)
         return;
-    mMessage = newMessage;
-    emit messageChanged();
+    mLoginMessage = newMessage;
+    emit loginMessageChanged();
 }
 
 bool UserManager::rolePageVisible() const
@@ -209,4 +210,30 @@ void UserManager::setRolePageVisible(bool newRolePageVisible)
         return;
     mRolePageVisible = newRolePageVisible;
     emit selectRole();
+}
+
+QString UserManager::roleMessage() const
+{
+    return mRoleMessage;
+}
+
+void UserManager::setRoleMessage(const QString &newRoleMessage)
+{
+    if (mRoleMessage == newRoleMessage)
+        return;
+    mRoleMessage = newRoleMessage;
+    emit roleMessageChanged();
+}
+
+bool UserManager::isConnected() const
+{
+    return mIsConnected;
+}
+
+void UserManager::setIsConnected(bool newIsConnected)
+{
+    if (mIsConnected == newIsConnected)
+        return;
+    mIsConnected = newIsConnected;
+    emit isConnectedChanged();
 }
