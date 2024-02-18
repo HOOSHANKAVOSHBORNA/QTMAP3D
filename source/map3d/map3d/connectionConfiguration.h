@@ -1,6 +1,7 @@
 #ifndef CONNECTIONCONFIGURATION_H
 #define CONNECTIONCONFIGURATION_H
 
+#include "networkManager.h"
 #include <QObject>
 #include <QQuickItem>
 #include <QSettings>
@@ -10,18 +11,18 @@ class ConnectionConfiguration:public QObject
     Q_OBJECT
 
     Q_PROPERTY(QString ip READ getIp  WRITE setIp NOTIFY ipChanged)
-    Q_PROPERTY(QString port READ getPort  WRITE setPort NOTIFY portChanged)
+    Q_PROPERTY(int port READ getPort  WRITE setPort NOTIFY portChanged)
     Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
 
 public:
-   explicit ConnectionConfiguration(QObject *parent = nullptr);
+   explicit ConnectionConfiguration(NetworkManager *networkManager, QObject *parent = nullptr);
 
     Q_INVOKABLE QString getIp() const;
     Q_INVOKABLE void setIp(const QString &newIp);
 
-    Q_INVOKABLE QString getPort() const;
-    Q_INVOKABLE void setPort(const QString &newPort);
+    Q_INVOKABLE int getPort() const;
+    Q_INVOKABLE void setPort(int newPort);
 
     Q_INVOKABLE QString getUsername() const;
     Q_INVOKABLE void setUsername(const QString &newUsername);
@@ -39,26 +40,11 @@ signals:
 
 private:
     QString mIp;
-    QString mPort;
+    int mPort;
     QString mUsername;
     QString mPassword;
     QSettings* mSettings;
+    NetworkManager *mNetworkManager{nullptr};
 };
-
-//class ConnectionConfigurationManager:public QObject
-//{
-//    Q_OBJECT
-//    QML_ELEMENT
-//    QML_SINGLETON
-//public:
-//    static ConnectionConfigurationManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
-//    ~ConnectionConfigurationManager();
-//    Q_INVOKABLE ConnectionConfiguration *getConnectionConfiguration();
-//protected:
-//    ConnectionConfigurationManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
-//private:
-//    static inline ConnectionConfigurationManager* mInstance{nullptr};
-//    ConnectionConfiguration *mConnectionConfiguration;
-//};
 
 #endif // CONNECTIONCONFIGURATION_H

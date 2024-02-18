@@ -136,13 +136,6 @@ Explosion::Explosion(MapItem *map, double duration):
 Explosion::~Explosion()
 {
     delete mTimerDuration;
-//    mRoot->removeChild(mExplosion1->getParticleSystem());
-//    mRoot->removeChild(mExplosion2->getParticleSystem());
-//    mRoot->removeChild(mExplosion3->getParticleSystem());
-//    mRoot->removeChild(mExplosion4->getParticleSystem());
-//    mRoot->removeChild(mDebris->getParticleSystem());
-//    mRoot->removeChild(mSmoke->getParticleSystem());
-//    mRoot->removeChild(mFire->getParticleSystem());
 }
 
 void Explosion::setScaleRatio(double ratio)

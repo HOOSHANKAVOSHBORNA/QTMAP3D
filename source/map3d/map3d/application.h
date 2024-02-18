@@ -5,10 +5,11 @@
 #include <QUrl>
 #include <list>
 
+#include "connectionConfiguration.h"
+#include "loadingPage.h"
 #include "userManager.h"
 #include "pluginmanager.h"
 #include "networkManager.h"
-#include "splash.h"
 
 
 class MainWindow;
@@ -43,7 +44,7 @@ private:
     static void initializeSurfaceFormat();
 
 private slots:
-    void onUICreated();
+    // void onUICreated();
     void clearMainWindow();
 
 private:
@@ -54,8 +55,9 @@ private:
     PluginManager *mPluginManager = nullptr;
     ServiceManager *mServiceManager{nullptr};
 
-//    UserManager *mUserManager{nullptr};
-    Splash *mSplash{nullptr};
+    UserManager *mUserManager{nullptr};
+    ConnectionConfiguration *mConnectionConfig{nullptr};
+    LoadingPage *mLoadingPage{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};

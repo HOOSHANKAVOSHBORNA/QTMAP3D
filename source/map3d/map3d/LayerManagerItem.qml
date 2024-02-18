@@ -207,7 +207,7 @@ Item {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.RightButton
                                 onClicked: function (mouse) {
-                                    if (LayerManagerInstance.propertyInterface.name === display) {
+                                    if (rootItem.layerCpp.propertyInterface.name === display) {
                                         propertySection.visible = !propertySection.visible
                                     } else {
                                         propertySection.visible = true
@@ -245,8 +245,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        if (LayerManagerInstance.propertyInterface.name
-                                                === display) {
+                                        if (rootItem.layerCpp.propertyInterface.name === display) {
                                             propertySection.visible = !propertySection.visible
                                         } else {
                                             propertySection.visible = true
