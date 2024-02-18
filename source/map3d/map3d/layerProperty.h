@@ -22,6 +22,7 @@ class LayerPropertyItem : public QObject
     Q_PROPERTY(bool isVisible READ isVisible WRITE setIsVisible NOTIFY isVisibleChanged FINAL)
 
 public:
+    LayerPropertyItem(QObject* parent = nullptr);
     osg::ref_ptr<osgEarth::Layer> modelNodeLayer() const;
     void setModelNodeLayer(const osg::ref_ptr<osgEarth::Layer> &newModelNodeLayer);
 

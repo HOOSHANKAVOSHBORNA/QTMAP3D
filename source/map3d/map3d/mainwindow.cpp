@@ -33,10 +33,7 @@ MainWindow::MainWindow(QWindow *parent)
 
 MainWindow::~MainWindow()
 {
-    //    cleanup();
-    //    mMapItem->deleteLater();
     delete mMapItem;
-    delete mListWindow;
 }
 
 void MainWindow::initComponent()
@@ -46,11 +43,11 @@ void MainWindow::initComponent()
 
     mMapItem->setQmlEngine(engine);
 
-    mLocationManager = new LocationManager(mMapItem);
+    mLocationManager = new LocationManager(mMapItem, this);
 
-    mToolboxManager = new ToolboxManager;
+    mToolboxManager = new ToolboxManager(this);
 
-    mLayerManager = new LayerManager(mMapItem);
+    mLayerManager = new LayerManager(mMapItem, this);
 
     //    QQmlComponent* comp = new QQmlComponent(engine);
     //    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
