@@ -50,6 +50,7 @@ void Application::initialize()
     //--create models----------------------------------------
     mMainWindow = new MainWindow();
     mMainWindow->initComponent();
+    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
 
     mUserManager = new UserManager(mServiceManager);
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
@@ -142,17 +143,17 @@ void Application::initializeSurfaceFormat()
     QSurfaceFormat::setDefaultFormat(fmt);
 }
 
-void Application::onUICreated()
-{
-    //    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
-    // connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
-    // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
-    // });
-    // connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
-    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
-    mIsReady = true;
-    emit ready();
-}
+//void Application::onUICreated()
+//{
+//    //    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
+//    // connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
+//    // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
+//    // });
+//    // connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
+//    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
+//    mIsReady = true;
+//    emit ready();
+//}
 
 ServiceManager *Application::serviceManager() const
 {
