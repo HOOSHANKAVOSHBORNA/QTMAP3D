@@ -26,6 +26,10 @@ Rectangle {
     property var timer: 0
     property var message: ""
 
+    readonly property color bg50: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.50)
+
     property var fe: ["f", modeMap == "geocentric" ? "f" : "E", modeMap == "geocentric" ? "f" : "E"]
 
     function showMessage(messages, timerr){
@@ -84,7 +88,7 @@ Rectangle {
             anchors.left: messageLogo.right
             anchors.verticalCenter: parent.verticalCenter
             implicitWidth:messegeLogoItem.width - messageTextField.x
-            placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100) : ""
+            placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100)? root.model.data(root.model.index(0, 0), Qt.UserRole + 100): "Messages" : "Messages"
             color: Style.backgroundColor
             font.family: Style.fontFamily
             font.pointSize: 11 / Style.monitorRatio
@@ -405,7 +409,7 @@ height: control.displayText !== name?implicitHeight : 1
         x: 3
         width: 670 / Style.monitorRatio
         height: 288/Style.monitorRatio * heightFactor
-        color:Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.80)
+        color:Qt.rgba(Style.backgroundColor.r, Style.backgroundColor.g, Style.backgroundColor.b, 0.50)
         radius:10
         Item {
             id: heading

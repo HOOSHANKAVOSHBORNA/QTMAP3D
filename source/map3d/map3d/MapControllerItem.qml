@@ -163,13 +163,14 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.rightMargin: itemMargin
 
+
         onZoomInButtonPressedChanged: mapItem.zoomInButtonPressed = zoomInButtonPressed
         onZoomOutButtonPressedChanged: mapItem.zoomOutButtonPressed = zoomOutButtonPressed
 
         onMovePositionChanged: mapItem.movePosition = movePosition
         onRotatePositonChanged: mapItem.rotatePosition = rotatePositon
 
-        width: 300
+        width: 160
         height: 200
 
         onBtnHomeClicked: function () {

@@ -8,7 +8,7 @@ Item {
     id: rootItem
     property real positionFactor: 1.0
     property bool showRecMov: true
-    property real animationDuration: 350.0
+    property real animationDuration: 250.0
     property int iconSize: 26 / Style.monitorRatio
 
     property string mode: "geocentric"
@@ -27,6 +27,7 @@ Item {
         Rectangle{
             id:zoomContainer
             Layout.alignment: Qt.AlignRight
+            Layout.topMargin: 220 / Style.monitorRatio
             width : 40 / Style.monitorRatio
             height: 80 / Style.monitorRatio
             color: Style.backgroundColor
@@ -78,8 +79,8 @@ Item {
             id: directionBtn
 
             Layout.alignment: Qt.AlignCenter
-            width: 40 / Style.monitorRatio
-            height: 40 / Style.monitorRatio
+            width: 26 / Style.monitorRatio
+            height: 26 / Style.monitorRatio
 
             hoverEnabled: true
             display: AbstractButton.IconOnly
@@ -148,29 +149,28 @@ Item {
             }
         }
     }
-            RowLayout {
-                id: cameraPositionLayout
-                spacing: 5
-                clip: true
-                anchors.verticalCenter: parent.verticalCenter
-//                anchors.horizontalCenter:  parent.horizontalCenter
-                opacity: 1 - 1.7 * positionFactor
-                x: width
-                CameraPositionHandlerItem {
-                    id: rotateCameraHandler
-                    width: 80 / Style.monitorRatio
-                    height: 80 / Style.monitorRatio
-                    source: "qrc:/Resources/eye.png"
-                    visible: false
-                }
-                CameraPositionHandlerItem {
-                    id: moveCameraHandler
-                    width: 80 / Style.monitorRatio
-                    height: 80 / Style.monitorRatio
-                    source: "qrc:/Resources/hand.png"
-                    visible: false
-                }
-            }
+    RowLayout {
+        id: cameraPositionLayout
+        spacing: 5
+        clip: true
+        y : 205 / Style.monitorRatio
+        opacity: 1 - 1.7 * positionFactor
+        x: width * positionFactor
+        CameraPositionHandlerItem {
+            id: rotateCameraHandler
+            width: 80 / Style.monitorRatio
+            height: 80 / Style.monitorRatio
+            source: "qrc:/Resources/eye.png"
+            visible: false
+        }
+        CameraPositionHandlerItem {
+            id: moveCameraHandler
+            width: 80 / Style.monitorRatio
+            height: 80 / Style.monitorRatio
+            source: "qrc:/Resources/hand.png"
+            visible: false
+        }
+    }
     MultiEffect {
         source: mainColumn
         enabled: true

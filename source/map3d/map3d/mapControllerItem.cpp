@@ -46,11 +46,6 @@ MapControllerItem::MapControllerItem():
     mStatusBar->setSourceModel(status);
 
 
-    mStatusBar->addMessage("Also is based on \"OpenSceneGraph\" and \"OSG Earth !!!\" ");
-
-    mStatusBar->addMessage("This application Works on Qt Framwork");
-
-    mStatusBar->addMessage("Wellcome To QARCH 2023");
 
     setTopMenuVisible(false);
     // setTopMenuVisible(true);
