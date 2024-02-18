@@ -137,7 +137,8 @@ ColumnLayout {
         }
         contentItem: Text {
             text: "Sign in"
-            color: parent.hovered ? "#01AED6" : Style.backgroundColor
+            color: parent.hovered
+                   && parent.enabled ? "#01AED6" : Style.backgroundColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }

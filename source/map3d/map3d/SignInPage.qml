@@ -39,7 +39,7 @@ ColumnLayout {
         Button {
             id: connectionStatus
             background: Image {
-                source: userManager.isConnected ? "qrc:/Resources/plugged.png" :"qrc:/Resources/unplugged.png"
+                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             }
             Layout.preferredHeight: 39 / Style.monitorRatio
             Layout.preferredWidth: 39 / Style.monitorRatio
@@ -80,6 +80,8 @@ ColumnLayout {
         background: Rectangle {
             color: foregroundColorTextBox
             radius: height / 2
+            //            border.width: 1
+            //            border.color: "#66ED4337"
         }
     }
     RowLayout {
@@ -113,6 +115,8 @@ ColumnLayout {
         background: Rectangle {
             color: foregroundColorTextBox
             radius: height / 2
+            //            border.width: 1
+            //            border.color: "#66ED4337"
         }
     }
 
@@ -120,6 +124,7 @@ ColumnLayout {
         spacing: 0
         opacity: 0
         Layout.topMargin: 14 / Style.monitorRatio
+
         Image {
             source: "qrc:/Resources/error.png"
             Layout.preferredHeight: 20 / Style.monitorRatio
@@ -146,7 +151,8 @@ ColumnLayout {
         }
         contentItem: Text {
             text: "Sign in"
-            color: parent.hovered ? "#01AED6" : Style.backgroundColor
+            color: parent.hovered
+                   && parent.enabled ? "#01AED6" : Style.backgroundColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
