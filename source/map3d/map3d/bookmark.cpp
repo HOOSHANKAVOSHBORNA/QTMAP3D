@@ -153,13 +153,9 @@ void BookmarkProxyModel::removeItem(QStandardItem *item)
 }
 
 //--bookmark manager----------------------------------------------------------------------------
-
-BookmarkManager *BookmarkManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+BookmarkManager::BookmarkManager()
 {
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new BookmarkManager(); }
-    return mInstance;
+    mBookmarkProxyModel = new BookmarkProxyModel();
 }
 
 BookmarkManager::~BookmarkManager()
@@ -191,9 +187,4 @@ QItemSelectionModel *BookmarkManager::getSelectioModel() const
 BookmarkProxyModel *BookmarkManager::getBookmarkProxyModel() const
 {
     return mBookmarkProxyModel;
-}
-
-BookmarkManager::BookmarkManager(QObject *parent): QObject(parent)
-{
-    mBookmarkProxyModel= new BookmarkProxyModel();
 }

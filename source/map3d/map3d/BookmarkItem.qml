@@ -2,12 +2,16 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Effects
+
 import "style"
-import Crystal
 
 Item {
     id: rootItem
-    property var model
+
+    property var bookmarkCpp
+    //    property var bookmarkModel: bookmarkCpp.getBookmarkProxyModel()
+    property var bookmarkSelectionModel: bookmarkCpp.selectioModel()
+
     readonly property color hoverColor: Qt.rgba(Style.foregroundColor.r,
                                                 Style.foregroundColor.g,
                                                 Style.foregroundColor.b, 0.20)
@@ -49,7 +53,7 @@ Item {
                     radius: height / 2
                 }
                 onTextChanged: function () {
-                    rootItem.model.setSearchedText(text)
+                    rootItem.bookmarkCpp.setSearchedText(text)
                 }
                 placeholderText: "Search ..."
                 placeholderTextColor: Style.disableColor
@@ -65,11 +69,10 @@ Item {
                 id: treeView
                 anchors.fill: parent
                 anchors.centerIn: parent
-                model: rootItem.model
+                model: rootItem.bookmarkCpp
                 rowSpacing: 5 / Style.monitorRatio
 
-                selectionModel: rootItem.model ? rootItem.model.selectioModel(
-                                                     ) : null
+                selectionModel: rootItem.bookmarkCpp.selectioModel()
 
                 MouseArea {
                     anchors.fill: parent
@@ -143,8 +146,8 @@ Item {
                                             window.show()
                                             window.requestActivate()
                                         }
-                                        rootItem.model.select(treeView.index(
-                                                                  row, column))
+                                        rootItem.bookmarkCpp.select(
+                                                    treeView.index(row, column))
                                     }
                                 }
                             }
@@ -159,8 +162,8 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    rootItem.model.trackItem(treeView.index(
-                                                                 row, column))
+                                    rootItem.bookmarkCpp.trackItem(
+                                                treeView.index(row, column))
                                 }
                             }
                             Button {
@@ -174,7 +177,7 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    rootItem.model.goToPosition(
+                                    rootItem.bookmarkCpp.goToPosition(
                                                 treeView.index(row, column))
                                 }
                             }
@@ -190,7 +193,7 @@ Item {
                                     height: 20
                                 }
                                 onClicked: {
-                                    rootItem.model.removeBookmarkItem(
+                                    rootItem.bookmarkCpp.removeBookmarkItem(
                                                 treeView.index(row, column))
                                 }
                             }
@@ -212,7 +215,7 @@ Item {
                             hoverEnabled: true
                             propagateComposedEvents: true
                             onPressed: mouse => {
-                                           rootItem.model.select(
+                                           rootItem.bookmarkCpp.select(
                                                treeView.index(row, column))
                                            treeView.toggleExpanded(row)
                                            mouse.accepted = false

@@ -4,25 +4,33 @@
 #include <QObject>
 #include "mapItem.h"
 #include <osgEarthAnnotation/GeoPositionNode>
+#include <osgEarthAnnotation/ModelNode>
 #include <osgEarthAnnotation/PlaceNode>
 #include <osgParticle/SmokeEffect>
 
+class AutoScaler;
 
-class WindEffect :public QObject, public osgEarth::Annotation::GeoPositionNode
+class WindEffect :public QObject, public osgEarth::Annotation::ModelNode
 {
     Q_OBJECT
 public:
-    WindEffect(MapItem *map);
-    osg::ref_ptr<osgParticle::SmokeEffect> getWind();
+    WindEffect(MapItem *map, double duration = 30);
+    ~WindEffect();
+    void setScaleRatio(double ratio);
+
 public slots:
     void onModeChanged(bool is3DView);
 private:
-    osg::ref_ptr<osgParticle::SmokeEffect> mWind;
+    osg::ref_ptr<osg::Group> mRoot{nullptr};
     osg::ref_ptr<osg::Switch> mSwitchNode{nullptr};
-    osg::ref_ptr<osgEarth::Annotation::PlaceNode> m2DNode ;
+    osg::ref_ptr<osg::Geode> m2DNode;
+    osg::ref_ptr<osg::Image> mImage;
+    osg::ref_ptr<osgParticle::SmokeEffect> mWind{nullptr};
 
 
-    bool is3D;
+    bool mIs3D;
+    AutoScaler* mAutoScaler;
+    QTimer *mTimerDuration{nullptr};
 };
 
 #endif // WIND_H

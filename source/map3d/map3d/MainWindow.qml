@@ -38,6 +38,12 @@ Item {
             SideBar {
                 id: sideBar
                 anchors.fill: parent
+
+                sideContainer.locationCpp: mainItem.mainPageCpp.getLocationManager()
+                sideContainer.toolboxCpp: mainItem.mainPageCpp.getToolboxManager()
+                sideContainer.layerCpp: mainItem.mainPageCpp.getLayerManager()
+                sideContainer.bookmarkCpp: mainItem.mainPageCpp.getBookmarkManager()
+
                 //                pin: true
                 onPinChanged: {
                     if (pin) {
