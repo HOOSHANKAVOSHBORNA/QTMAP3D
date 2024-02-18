@@ -23,8 +23,25 @@ Item {
     property alias closeBtn: closeBtn
     property alias saveBtn: saveBtn
 
-    //    height: parent ? parent.height : 0
-    //    width: parent ? parent.width : 0
+    SequentialAnimation {
+        id: testConnectionAnimation
+
+        PropertyAnimation {
+            target: testConnectionBtn
+            property: "buttonColorOpacity"
+            from: 0
+            to: 0.2
+            duration: 2000
+        }
+        PropertyAnimation {
+            target: testConnectionBtn
+            property: "buttonColorOpacity"
+            from: 0.2
+            to: 0
+            duration: 2000
+        }
+    }
+
     ColumnLayout {
         spacing: 0
 
@@ -166,6 +183,8 @@ Item {
         }
 
         Button {
+            id: testConnectionBtn
+            property alias buttonColorOpacity: backgroundRec.color.a
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 340 / Style.monitorRatio
@@ -181,8 +200,12 @@ Item {
                 verticalAlignment: Text.AlignVCenter
             }
             background: Rectangle {
+                id: backgroundRec
                 radius: width / (Style.monitorRatio * 2)
                 color: Style.foregroundColor
+            }
+            onClicked: {
+                testConnectionAnimation.start()
             }
         }
         Button {

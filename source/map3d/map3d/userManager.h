@@ -26,9 +26,7 @@ class UserManager : public QObject
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
-    Q_PROPERTY(QString loginMessage READ loginMessage WRITE setLoginMessage NOTIFY loginMessageChanged)
-    Q_PROPERTY(QString roleMessage READ roleMessage WRITE setRoleMessage NOTIFY roleMessageChanged)
-    Q_PROPERTY(bool rolePageVisible READ rolePageVisible WRITE setRolePageVisible NOTIFY selectRole)
+    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
     Q_PROPERTY(bool isConnected READ isConnected WRITE setIsConnected NOTIFY isConnectedChanged)
 
 
@@ -51,14 +49,8 @@ public:
     QString userName() const;
     void setUserName(const QString &newUserName);
 
-    QString loginMessage() const;
-    void setLoginMessage(const QString &newMessage);
-
-    bool rolePageVisible() const;
-    Q_INVOKABLE void setRolePageVisible(bool newRolePageVisible);
-
-    QString roleMessage() const;
-    void setRoleMessage(const QString &newRoleMessage);
+    QString message() const;
+    void setMessage(const QString &newMessage);
 
     bool isConnected() const;
     void setIsConnected(bool newIsConnected);
@@ -74,9 +66,8 @@ signals:
 
     void userNameChanged();
 
-    void loginMessageChanged();
+    void messageChanged();
 
-    void roleMessageChanged();
 
     void isConnectedChanged();
 
@@ -89,9 +80,8 @@ private:
     RoleSelectionModel* mRoleSelectionModel;
     QString mName;
     QString mUserName;
-    QString mLoginMessage;
+    QString mMessage;
     bool mRolePageVisible;
-    QString mRoleMessage;
     bool mIsConnected;
 };
 

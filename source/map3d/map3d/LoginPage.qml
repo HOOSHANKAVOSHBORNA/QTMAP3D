@@ -15,9 +15,6 @@ Item {
 
     property bool logInPageVisible: true
 
-    //    onSignedIn: (status)=>{
-
-    //    }
     Image {
         id: backGroundImage
         source: "qrc:/Resources/login-earth.jpg"
@@ -129,15 +126,15 @@ Item {
             signInBtn.onClicked: {
                 userManager.signIn(signInPage.usernameTxt,
                                    signInPage.passwordTxt)
-                if (userManager.rolePageVisible) {
-                    logInPageVisible = false
-                    signInPage.visible = false
-                    rolePage.visible = true
-                    heightIncrease.from = 464 / Style.monitorRatio
-                    heightIncrease.to = 525 / Style.monitorRatio
-                    heightIncrease.start()
-                    topToBottomRole.start()
-                }
+                //                if (userManager.rolePageVisible) {
+                //                    logInPageVisible = false
+                //                    signInPage.visible = false
+                //                    rolePage.visible = true
+                //                    heightIncrease.from = 464 / Style.monitorRatio
+                //                    heightIncrease.to = 525 / Style.monitorRatio
+                //                    heightIncrease.start()
+                //                    topToBottomRole.start()
+                //                }
             }
         }
 
@@ -167,6 +164,19 @@ Item {
                 heightDecrease.start()
                 topToBottomSignIn.start()
             }
+        }
+    }
+
+    Connections {
+        target: userManager
+        function onSelectRole() {
+            logInPageVisible = false
+            signInPage.visible = false
+            rolePage.visible = true
+            heightIncrease.from = 464 / Style.monitorRatio
+            heightIncrease.to = 525 / Style.monitorRatio
+            heightIncrease.start()
+            topToBottomRole.start()
         }
     }
 }
