@@ -50,6 +50,7 @@ void Application::initialize()
     //--create models----------------------------------------
     mMainWindow = new MainWindow();
     mMainWindow->initComponent();
+    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
 
     mUserManager = new UserManager(mServiceManager);
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
@@ -61,7 +62,7 @@ void Application::initialize()
                                       {"loadingPageCpp", QVariant::fromValue(mLoadingPage)},
                                       {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
 
-
+    connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
     //--user manger------------------------------------------
 //    mUserManager = new UserManager(mServiceManager, mQmlEngine);
 
@@ -142,16 +143,22 @@ void Application::initializeSurfaceFormat()
     QSurfaceFormat::setDefaultFormat(fmt);
 }
 
-void Application::onUICreated()
+//void Application::onUICreated()
+//{
+//    //    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
+//    // connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
+//    // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
+//    // });
+//    // connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
+//    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
+//    mIsReady = true;
+//    emit ready();
+//}
+
+void Application::clearMainWindow()
 {
-    //    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
-    // connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
-    // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
-    // });
-    // connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
-    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
-    mIsReady = true;
-    emit ready();
+    qDebug() << "logout----------------";
+    // delete mMainWindow;
 }
 
 ServiceManager *Application::serviceManager() const

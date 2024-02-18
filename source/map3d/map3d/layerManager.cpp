@@ -13,13 +13,13 @@
 //LayerModel *LayerModel::mInstance = nullptr;
 
 // ----------------------------------------------------------------- model manager
-LayerManager::LayerManager(MapItem *mapItem)
+LayerManager::LayerManager(MapItem *mapItem, QObject *parent) : QObject(parent)
 {
     mLayerModel = new LayerModel();
 
     mLayerModel->setMapItem(mapItem);
 
-    mPropertyInterface = new LayerPropertyItem;
+    mPropertyInterface = new LayerPropertyItem(this);
     mLayerModel->setPropertyInterface(mPropertyInterface);
     setPropertyInterface(mPropertyInterface);
 }
@@ -57,11 +57,19 @@ void LayerManager::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
 }
 
 // ----------------------------------------------------------------- model
-LayerModel::LayerModel()
+LayerModel::LayerModel(QObject *parent): QSortFilterProxyModel(parent)
 {
 
-    mSourceModel = new QStandardItemModel;
+    mSourceModel = new QStandardItemModel(this);
     setSourceModel(mSourceModel);
+}
+
+LayerModel::~LayerModel()
+{
+    delete mSourceModel;
+    for (auto &[key, value]: mLayerToItemMap) {
+        delete value;
+    }
 }
 
 void LayerModel::setMapItem(MapItem *mapItem)

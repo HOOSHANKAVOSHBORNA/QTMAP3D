@@ -82,6 +82,13 @@ Toolbox::Toolbox(QObject *parent):
     rootItem = new TreeItem({tr("Title")});
 }
 
+Toolbox::~Toolbox()
+{
+    for (auto &i: mItems)
+        delete i;
+    delete rootItem;
+}
+
 void Toolbox::addItem(ToolboxItem *toolboxItem)
 {
     beginResetModel();
@@ -227,13 +234,14 @@ void Toolbox::onItemClicked(const QModelIndex &current)
         previous = current;
 }
 
-ToolboxProxyModel::ToolboxProxyModel()
+ToolboxProxyModel::ToolboxProxyModel(QObject *parent): QSortFilterProxyModel(parent)
 {
     setDynamicSortFilter(true);
 
-    Toolbox *myModel = new Toolbox();
+    Toolbox *myModel = new Toolbox(this);
     setSourceModel(myModel);
 }
+
 
 int ToolboxProxyModel::childCount(QModelIndex index)
 {
@@ -275,9 +283,15 @@ void ToolboxProxyModel::onItemClicked(const QModelIndex &current)
 }
 
 // ----------------------------------------------------------------------------- manager
-ToolboxManager::ToolboxManager()
+ToolboxManager::ToolboxManager(QObject *parent) : QObject(parent)
 {
-    mToolboxModel = new ToolboxProxyModel;
+    mToolboxModel = new ToolboxProxyModel(this);
+}
+
+ToolboxManager::~ToolboxManager()
+{
+    delete mToolboxModel;
+    delete mPropertyItem;
 }
 
 ToolboxProxyModel *ToolboxManager::toolboxProxyModel() const

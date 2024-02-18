@@ -78,8 +78,9 @@ Item {
         x: containerRect.x
         y: containerRect.y
         z: containerRect.z + 1
+        clip: true
         width: 440 / Style.monitorRatio
-        height: 687 / Style.monitorRatio
+        height: 745 / Style.monitorRatio
         radius: 20 / Style.monitorRatio
         color: Style.backgroundColor
         MouseArea {
@@ -93,15 +94,18 @@ Item {
             connectionConfigCpp: loginPage.connectionConfigCpp
             closeBtn.onClicked: {
                 connectionPopUp.visible = false
+                containerRect.enabled = true
             }
             saveBtn.onClicked: {
                 connectionPopUp.visible = false
+                containerRect.enabled = true
             }
         }
     }
 
     Rectangle {
         id: containerRect
+        z: 1
         color: Style.backgroundColor
         width: 440 / Style.monitorRatio
         height: 464 / Style.monitorRatio
@@ -120,6 +124,7 @@ Item {
             connectionStatus.onClicked: {
                 topToBottomConnection.start()
                 connectionPopUp.visible = true
+                containerRect.enabled = false
             }
             signInBtn.onClicked: {
                 userManager.signIn(signInPage.usernameTxt,
@@ -149,6 +154,7 @@ Item {
             connectionStatus.onClicked: {
                 connectionPopUp.visible = true
                 topToBottomConnection.start()
+                containerRect.enabled = false
             }
             signInBtn.onClicked: {
                 userManager.signIn(selectRole)
