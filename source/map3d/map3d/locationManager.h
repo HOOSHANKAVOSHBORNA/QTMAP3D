@@ -33,7 +33,8 @@ class LocationManager : public QObject
     Q_OBJECT
 
 public:
-    explicit LocationManager(MapItem *mapItem);
+    explicit LocationManager(MapItem *mapItem, QObject *parent = nullptr);
+    ~LocationManager();
     void myRemoveRow(int index);
     void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
     void editLocation(int index, QString newName, QString newDescription, QString newImageSource, QString newColor);
@@ -45,6 +46,7 @@ public:
 
 private:
     LocationProxyModel* mLocationProxyModel;
+    LocationModel *mLocationModel;
 };
 
 // ------------------------------------------------------------ proxy model
@@ -82,7 +84,8 @@ class LocationModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit LocationModel(MapItem *mapItem);
+    explicit LocationModel(MapItem *mapItem, QObject* parent = nullptr);
+    ~LocationModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -122,6 +125,7 @@ private:
 struct LocationItem
 {
 public:
+    ~LocationItem();
     osgEarth::Viewpoint *viewpoint;
     QString description;
     QString imageSource;

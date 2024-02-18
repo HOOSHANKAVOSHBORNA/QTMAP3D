@@ -58,6 +58,11 @@ void LayerPropertyItem::setIsVisible(bool newIsVisible)
     emit isVisibleChanged();
 }
 
+LayerPropertyItem::LayerPropertyItem(QObject *parent) : QObject(parent)
+{
+
+}
+
 osg::ref_ptr<osgEarth::Layer> LayerPropertyItem::modelNodeLayer() const
 {
     return mModelNodeLayer;

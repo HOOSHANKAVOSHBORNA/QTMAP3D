@@ -56,6 +56,8 @@ void UserManager::signIn(const QString username, const QString password)
     mServiceManager->sendUser(userData);
 
     setUserName(username);
+    emit selectRole();
+    setMessage("Wrong username or password");
 
     //--test------
     QVector<QString> testvec;
@@ -195,4 +197,17 @@ void UserManager::setMessage(const QString &newMessage)
         return;
     mMessage = newMessage;
     emit messageChanged();
+}
+
+bool UserManager::isConnected() const
+{
+    return mIsConnected;
+}
+
+void UserManager::setIsConnected(bool newIsConnected)
+{
+    if (mIsConnected == newIsConnected)
+        return;
+    mIsConnected = newIsConnected;
+    emit isConnectedChanged();
 }

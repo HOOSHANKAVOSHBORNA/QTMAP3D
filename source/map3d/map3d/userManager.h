@@ -27,6 +27,8 @@ class UserManager : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
     Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
+    Q_PROPERTY(bool isConnected READ isConnected WRITE setIsConnected NOTIFY isConnectedChanged)
+
 
 public:
     UserManager(ServiceManager *serviceManager, QObject *parent = nullptr);
@@ -50,8 +52,12 @@ public:
     QString message() const;
     void setMessage(const QString &newMessage);
 
+    bool isConnected() const;
+    void setIsConnected(bool newIsConnected);
+
 signals:
     void signedIn();
+    void signedOut();
     void selectRole();
 
     void userDataChanged();
@@ -61,6 +67,9 @@ signals:
     void userNameChanged();
 
     void messageChanged();
+
+
+    void isConnectedChanged();
 
 private slots:
     void onUserDataReceived(const UserData &userData);
@@ -72,6 +81,8 @@ private:
     QString mName;
     QString mUserName;
     QString mMessage;
+    bool mRolePageVisible;
+    bool mIsConnected;
 };
 
 //class Profile:public QObject

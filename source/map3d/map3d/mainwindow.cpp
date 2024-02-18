@@ -31,8 +31,7 @@ MainWindow::MainWindow(QWindow *parent)
 
 MainWindow::~MainWindow()
 {
-    //    cleanup();
-    //    mMapItem->deleteLater();
+    delete mMapItem;
 }
 
 void MainWindow::initComponent()
@@ -42,9 +41,11 @@ void MainWindow::initComponent()
 
     mMapItem->setQmlEngine(engine);
 
-    mLocationManager = new LocationManager(mMapItem);
-    mToolboxManager = new ToolboxManager;
-    mLayerManager = new LayerManager(mMapItem);
+    mLocationManager = new LocationManager(mMapItem, this);
+
+    mToolboxManager = new ToolboxManager(this);
+
+    mLayerManager = new LayerManager(mMapItem, this);
     mBookmarkManager = new BookmarkManager;
 
     //    QQmlComponent* comp = new QQmlComponent(engine);

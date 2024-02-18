@@ -8,12 +8,12 @@
 #include "locationManager.h"
 
 // ----------------------------------------------------- model manager
-LocationManager::LocationManager(MapItem *mapItem)
+LocationManager::LocationManager(MapItem *mapItem, QObject *parent): QObject(parent)
 {
-    LocationModel *myModel = new LocationModel(mapItem);
+    mLocationModel = new LocationModel(mapItem);
 
     // ------------------------------------------------- loading models from file
-    if (myModel->readFromFile()) {
+    if (mLocationModel->readFromFile()) {
         qInfo() << "info - success: "
                 << "locations loaded from file";
     } else {
@@ -22,7 +22,11 @@ LocationManager::LocationManager(MapItem *mapItem)
     }
 
     mLocationProxyModel = new LocationProxyModel;
-    mLocationProxyModel->setSourceModel(myModel);
+    mLocationProxyModel->setSourceModel(mLocationModel);
+}
+
+LocationManager::~LocationManager()
+{
 }
 
 void LocationManager::myRemoveRow(int index)
@@ -150,7 +154,7 @@ void LocationProxyModel::setSearchedName(const QString &newSearchedName)
 }
 
 // ------------------------------------------------------------ model
-LocationModel::LocationModel(MapItem *mapItem)
+LocationModel::LocationModel(MapItem *mapItem, QObject *parent): QAbstractListModel(parent)
 {
     mMapItem = mapItem;
 
@@ -164,6 +168,12 @@ LocationModel::LocationModel(MapItem *mapItem)
     vp->focalPoint() = gp;
 
     mLocations.append(new LocationItem{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"});
+}
+
+LocationModel::~LocationModel()
+{
+    for (auto & it: mLocations)
+        delete it;
 }
 
 int LocationModel::rowCount(const QModelIndex &parent) const
@@ -345,6 +355,11 @@ bool LocationModel::writeToFile()
 }
 
 // ---------------------------------------------------------------------- structs
+LocationItem::~LocationItem()
+{
+    delete viewpoint;
+}
+
 LocationItem *LocationItem::fromJson(const QJsonObject &json)
 {
     LocationItem *result = new LocationItem;

@@ -22,7 +22,7 @@ class LayerManager : public QObject
                    propertyItemTitleChanged FINAL)
 
 public:
-    explicit LayerManager(MapItem *mapItem);
+    explicit LayerManager(MapItem *mapItem, QObject *parent = nullptr);
     ~LayerManager() override;
 
     Q_INVOKABLE LayerModel *layerModel() const;
@@ -57,7 +57,8 @@ class LayerModel : public QSortFilterProxyModel
     };
 
 public:
-    explicit LayerModel();
+    explicit LayerModel(QObject *parent = nullptr);
+    ~LayerModel();
 
     void setMapItem(MapItem *mapItem);
     MapItem *getMapItem();
