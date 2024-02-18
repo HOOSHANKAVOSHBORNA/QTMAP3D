@@ -44,7 +44,7 @@ Rectangle {
     // --------------  ---      ---
     Item {
         id: messegeLogoItem
-        implicitWidth: Math.max(root.width-(theRowLayout.width), 270)
+        implicitWidth: Math.max(root.width-(theRowLayout.width), 270 /Style.monitorRatio)
         height: parent.height
         visible: true
 
@@ -87,7 +87,7 @@ Rectangle {
             placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100) : ""
             color: Style.backgroundColor
             font.family: Style.fontFamily
-            font.pointSize: Style.fontPointSize
+            font.pointSize: 11 / Style.monitorRatio
             selectedTextColor: Style.backgroundColor
             selectionColor: Style.selectColor
             placeholderTextColor: Style.foregroundColor
@@ -511,7 +511,7 @@ height: control.displayText !== name?implicitHeight : 1
                     placeholderText: implicitWidth? qsTr("Search ..." ) : ""
                     color: Style.foregroundColor
                     font.family: Style.fontFamily
-                    font.pointSize: Style.fontPointSize
+                    font.pointSize: 11/Style.monitorRatio
                     selectByMouse: true
                     selectedTextColor: Style.foregroundColor
                     selectionColor: Style.selectColor

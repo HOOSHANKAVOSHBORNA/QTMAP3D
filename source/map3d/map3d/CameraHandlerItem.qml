@@ -6,10 +6,9 @@ import "style"
 
 Item {
     id: rootItem
-
     property real positionFactor: 1.0
     property bool showRecMov: true
-    property real animationDuration: 500.0
+    property real animationDuration: 350.0
     property int iconSize: 26 / Style.monitorRatio
 
     property string mode: "geocentric"
@@ -17,169 +16,165 @@ Item {
     property bool zoomOutButtonPressed: zoomOutBtn.pressed
     property vector2d movePosition: moveCameraHandler.position
     property vector2d rotatePositon: rotateCameraHandler.position
-
     signal btnHomeClicked
     signal btnProjectionClicked
 
-    smooth: true
+    ColumnLayout{
+        id:mainColumn
+        spacing: 5 / Style.monitorRatio
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        Rectangle{
+            id:zoomContainer
+            Layout.alignment: Qt.AlignRight
+            width : 40 / Style.monitorRatio
+            height: 80 / Style.monitorRatio
+            color: Style.backgroundColor
+            radius: 30 / Style.monitorRatio
 
-    RowLayout {
-        id: mainRowLayout
-        anchors.fill: parent
-        spacing: 5
+            Button {
+                id: zoomInBtn
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 40 / Style.monitorRatio
+                height: 40 / Style.monitorRatio
 
-        RowLayout {
-            id: cameraPositionLayout
-            spacing: 5
-            clip: true
-            opacity: 1 - 1.7 * positionFactor
-            x: positionFactor * width
-            CameraPositionHandlerItem {
-                id: rotateCameraHandler
-                width: 80 / Style.monitorRatio
-                height: 80 / Style.monitorRatio
-                source: "qrc:/Resources/eye.png"
-                visible: false
+                icon.source: "qrc:/Resources/add.png"
+                icon.width: iconSize
+                icon.height: iconSize
+                icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                background: Rectangle {
+                    color: "transparent"
+                }
             }
-            CameraPositionHandlerItem {
-                id: moveCameraHandler
-                width: 80 / Style.monitorRatio
-                height: 80 / Style.monitorRatio
-                source: "qrc:/Resources/hand.png"
-                visible: false
+            Rectangle {
+                id: seperator
+                anchors.top: zoomInBtn.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: zoomContainer.width * 3 / 4
+                color: "black"
+                opacity: 0.3
+                height: 2 / Style.monitorRatio
+            }
+
+            Button {
+                id: zoomOutBtn
+                anchors.top: seperator.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 40 / Style.monitorRatio
+                height: 40 / Style.monitorRatio
+
+                icon.source: "qrc:/Resources/minus.png"
+                icon.width: iconSize
+                icon.height: iconSize
+                icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                background: Rectangle {
+                    color: "transparent"
+                }
             }
         }
 
-        ColumnLayout {
-            spacing: 4
-            Rectangle {
-                id: zoomBtnContainer
-                Layout.alignment: Qt.AlignCenter
-                width: 40 / Style.monitorRatio
-                height: 82 / Style.monitorRatio
+        Button {
+            id: directionBtn
+
+            Layout.alignment: Qt.AlignCenter
+            width: 40 / Style.monitorRatio
+            height: 40 / Style.monitorRatio
+
+            hoverEnabled: true
+            display: AbstractButton.IconOnly
+            icon.source: "qrc:/Resources/direction.png"
+            icon.width: iconSize
+            icon.height: iconSize
+            icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+
+            background: Rectangle {
                 color: Style.backgroundColor
-                radius: width / 2
-                Button {
-                    id: zoomInBtn
-                    anchors.top: parent.top
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: 40 / Style.monitorRatio
-                    height: 40 / Style.monitorRatio
+                radius: 30 / Style.monitorRatio
+            }
+            onClicked: {
+                rotateCameraHandler.visible = true
+                moveCameraHandler.visible = true
 
-                    icon.source: "qrc:/Resources/add.png"
-                    icon.width: iconSize
-                    icon.height: iconSize
-                    icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-                }
-                Rectangle {
-                    id: seperator
-                    anchors.top: zoomInBtn.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: (zoomBtnContainer.width * 3 / 4) / Style.monitorRatio
-                    color: "black"
-                    opacity: 0.3
-                    height: 2 / Style.monitorRatio
-                }
+                if (rootItem.positionFactor) {
 
-                Button {
-                    id: zoomOutBtn
-
-                    anchors.top: seperator.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: 40 / Style.monitorRatio
-                    height: 40 / Style.monitorRatio
-
-                    icon.source: "qrc:/Resources/minus.png"
-                    icon.width: iconSize
-                    icon.height: iconSize
-                    icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-                    background: Rectangle {
-                        color: "transparent"
-                    }
+                    showSlider.stop()
+                    hideSlider.start()
+                } else {
+                    hideSlider.stop()
+                    showSlider.start()
                 }
             }
-            Button {
-                id: directionBtn
-                rotation: 0 /*-90 - 180*(positionFactor)*/
-                Layout.alignment: Qt.AlignCenter
-                width: 40 / Style.monitorRatio
-                height: 40 / Style.monitorRatio
-
-                hoverEnabled: true
-                display: AbstractButton.IconOnly
-                icon.source: "qrc:/Resources/direction.png"
-                icon.width: iconSize
-                icon.height: iconSize
-                icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-
-                background: Rectangle {
-                    color: Style.backgroundColor
-                    radius: width / 2
-                }
-                onClicked: {
-                    rotateCameraHandler.visible = true
-                    moveCameraHandler.visible = true
-
-                    if (rootItem.positionFactor) {
-
-                        showSlider.stop()
-                        hideSlider.start()
-                    } else {
-                        hideSlider.stop()
-                        showSlider.start()
-                    }
-                }
+        }
+        Button {
+            id: homeBtn
+            width: 40 / Style.monitorRatio
+            height: 40 / Style.monitorRatio
+            Layout.alignment: Qt.AlignCenter
+            hoverEnabled: true
+            display: AbstractButton.IconOnly
+            icon.source: "qrc:/Resources/home.png"
+            icon.width: iconSize
+            icon.height: iconSize
+            icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+            background: Rectangle {
+                color: Style.uiWhite
+                radius: 30 / Style.monitorRatio
             }
-            Button {
-                id: homeBtn
-                width: 40 / Style.monitorRatio
-                height: 40 / Style.monitorRatio
-                Layout.alignment: Qt.AlignCenter
-                hoverEnabled: true
-                display: AbstractButton.IconOnly
-                icon.source: "qrc:/Resources/home.png"
-                icon.width: iconSize
-                icon.height: iconSize
-                icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-                background: Rectangle {
-                    color: Style.uiWhite
-                    radius: height / 2
-                }
-                onClicked: btnHomeClicked()
+            onClicked: btnHomeClicked()
+        }
+        Button {
+            id: modeBtn
+            Layout.alignment: Qt.AlignCenter
+            width: 40 / Style.monitorRatio
+            height: 40 / Style.monitorRatio
+            display: AbstractButton.IconOnly
+            icon.source: mode === "projection" ? "qrc:///Resources/threeD.png" : "qrc:/Resources/twoD.png"
+            icon.width: iconSize
+            icon.height: iconSize
+            icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+            background: Rectangle {
+                color: Style.backgroundColor
+                radius:30 / Style.monitorRatio
             }
-            Button {
-                id: modeBtn
-                Layout.alignment: Qt.AlignCenter
-                width: 40 / Style.monitorRatio
-                height: 40 / Style.monitorRatio
-                display: AbstractButton.IconOnly
-                icon.source: mode === "projection" ? "qrc:///Resources/threeD.png" : "qrc:/Resources/twoD.png"
-                icon.width: iconSize
-                icon.height: iconSize
-                icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-                background: Rectangle {
-                    color: Style.backgroundColor
-                    radius: height / 2
-                }
-                smooth: true
+            smooth: true
 
-                onClicked: {
-                    if (mode === "projection")
-                        mode = "geocentric"
-                    else
-                        mode = "projection"
-                    btnProjectionClicked()
-                }
+            onClicked: {
+                if (mode === "projection")
+                    mode = "geocentric"
+                else
+                    mode = "projection"
+                btnProjectionClicked()
             }
         }
     }
+            RowLayout {
+                id: cameraPositionLayout
+                spacing: 5
+                clip: true
+                anchors.verticalCenter: parent.verticalCenter
+//                anchors.horizontalCenter:  parent.horizontalCenter
+                opacity: 1 - 1.7 * positionFactor
+                x: width
+                CameraPositionHandlerItem {
+                    id: rotateCameraHandler
+                    width: 80 / Style.monitorRatio
+                    height: 80 / Style.monitorRatio
+                    source: "qrc:/Resources/eye.png"
+                    visible: false
+                }
+                CameraPositionHandlerItem {
+                    id: moveCameraHandler
+                    width: 80 / Style.monitorRatio
+                    height: 80 / Style.monitorRatio
+                    source: "qrc:/Resources/hand.png"
+                    visible: false
+                }
+            }
     MultiEffect {
-        source: mainRowLayout
+        source: mainColumn
         enabled: true
-        anchors.fill: mainRowLayout
+        anchors.fill: mainColumn
         shadowColor: "black"
         shadowEnabled: true
         shadowBlur: 1
