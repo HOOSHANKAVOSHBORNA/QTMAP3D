@@ -98,7 +98,9 @@ class CombatMenu:public QObject
 {
     Q_OBJECT
 public:
-    explicit CombatMenu(CombatManager *combatManager, MapControllerItem *map = nullptr);
+    explicit CombatMenu(CombatManager *combatManager,
+                        QQmlEngine *engine,
+                        MapControllerItem *map = nullptr);
     ~CombatMenu();
     void selectAttacker(SimpleModelNode* node);
     void selectTarget(SimpleModelNode* node);

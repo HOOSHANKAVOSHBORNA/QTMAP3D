@@ -227,21 +227,12 @@ void Toolbox::onItemClicked(const QModelIndex &current)
         previous = current;
 }
 
-ToolboxProxyModel* ToolboxProxyModel::mInstance = nullptr;
-
 ToolboxProxyModel::ToolboxProxyModel()
 {
     setDynamicSortFilter(true);
+
     Toolbox *myModel = new Toolbox();
     setSourceModel(myModel);
-}
-
-ToolboxProxyModel *ToolboxProxyModel::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-    if(mInstance == nullptr){ mInstance = new ToolboxProxyModel(); }
-    return mInstance;
 }
 
 int ToolboxProxyModel::childCount(QModelIndex index)
@@ -283,18 +274,10 @@ void ToolboxProxyModel::onItemClicked(const QModelIndex &current)
     static_cast<Toolbox*>(sourceModel())->onItemClicked(index);
 }
 
+// ----------------------------------------------------------------------------- manager
 ToolboxManager::ToolboxManager()
 {
-    mToolboxModel = ToolboxProxyModel::createSingletonInstance(nullptr, nullptr);
-}
-
-ToolboxManager *ToolboxManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-
-    if(mInstance == nullptr){ mInstance = new ToolboxManager(); }
-    return mInstance;
+    mToolboxModel = new ToolboxProxyModel;
 }
 
 ToolboxProxyModel *ToolboxManager::toolboxProxyModel() const

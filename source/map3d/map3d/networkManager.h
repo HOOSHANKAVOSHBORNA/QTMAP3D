@@ -10,8 +10,11 @@ class NetworkManager: public QObject
     Q_OBJECT
 public:
     NetworkManager(QObject *parent = nullptr);
-    void start();
+//    void start();
+    void setConfig(QString ip, int port, QString username, QString pass);
     void sendMessage(const QString &message);
+    bool isConnected();
+    bool isConsuming();
 private slots:
     void clientConnected();
     void clientError(QAMQP::Error error);
@@ -24,6 +27,7 @@ signals:
 
 private:
     QAmqpClient mClient;
+    QAmqpQueue *mMap3dQueue{nullptr};
 };
 
 #endif // NETWORKMANAGER_H

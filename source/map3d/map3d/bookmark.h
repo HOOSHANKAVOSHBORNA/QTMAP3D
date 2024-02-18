@@ -10,8 +10,10 @@
 
 struct BookmarkItem: public QObject {
     Q_OBJECT
+
 public:
     BookmarkItem(){};
+
     void setInfo(QString category, QString text, QQuickWindow *window, QString categoryIconUrl)
     {
         this->category = category;
@@ -19,10 +21,12 @@ public:
         this->categoryIconUrl = categoryIconUrl;
         this->window = window;
     }
+
     QString category;
     QString text;
     QQuickWindow *window;
     QString categoryIconUrl;
+
 signals:
     void fromBookmarkRemoved();
     void goToPosition();
@@ -32,12 +36,11 @@ signals:
 class BookmarkProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_PROPERTY(QString searchedText READ searchedText WRITE setSearchedText NOTIFY searchedTextChanged)
-    enum CustomRoles {
-        CategoryIconRole = Qt::UserRole + 1,
-        WindowRole,
-        BookmarkItemRole
-    };
+    Q_PROPERTY(
+        QString searchedText READ searchedText WRITE setSearchedText NOTIFY searchedTextChanged)
+
+    enum CustomRoles { CategoryIconRole = Qt::UserRole + 1, WindowRole, BookmarkItemRole };
+
 public:
     BookmarkProxyModel(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
@@ -55,12 +58,15 @@ public:
     Q_INVOKABLE void goToPosition(const QModelIndex index);
     Q_INVOKABLE void trackItem(const QModelIndex index);
 
-//    void select(BookmarkItem *bookmarkItem);
+    //    void select(BookmarkItem *bookmarkItem);
+
 signals:
     void searchedTextChanged();
+
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
     void removeItem(QStandardItem *item);
+
 private:
     QString mSearchedText;
     QStandardItem *rootItem;
@@ -71,11 +77,9 @@ private:
 class BookmarkManager : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
+
 public:
-    // --------------- create singelton instance -----------------
-    static BookmarkManager *createSingletonInstance(QQmlEngine *engine,  QJSEngine *scriptEngine);
+    explicit BookmarkManager();
     ~BookmarkManager();
 
     void addBookmarkItem(BookmarkItem *bookmarkItem);
@@ -85,13 +89,8 @@ public:
     Q_INVOKABLE QItemSelectionModel *getSelectioModel() const;
     Q_INVOKABLE BookmarkProxyModel *getBookmarkProxyModel() const;
 
-protected:
-    BookmarkManager(QObject *parent = nullptr); // -------------- protected constructor for singelton
-
 private:
-    static inline BookmarkManager* mInstance{nullptr};
     BookmarkProxyModel *mBookmarkProxyModel;
-
 };
 
 #endif // BOOKMARK_H

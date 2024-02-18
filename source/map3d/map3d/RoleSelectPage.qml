@@ -4,11 +4,12 @@ import QtQuick.Layouts
 import "style"
 
 ColumnLayout {
-    property var roleSelectionCpp: undefined
+    property var roleSelectionModel: undefined
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
     property alias backBtn: backBtn
     property alias usernameTxt: usernameTxt.text
+    property alias selectRole: roleSelectionView.currentIndex
 
     spacing: 0
 
@@ -38,7 +39,7 @@ ColumnLayout {
         Button {
             id: connectionStatus
             background: Image {
-                source: "qrc:/Resources/unplugged.png"
+                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             }
             Layout.preferredHeight: 39 / Style.monitorRatio
             Layout.preferredWidth: 39 / Style.monitorRatio
@@ -76,6 +77,7 @@ ColumnLayout {
     ListView {
         id: roleSelectionView
         model: roleSelectionModel
+        currentIndex: 0
         Layout.topMargin: 12 / Style.monitorRatio
         Layout.preferredHeight: 90 / Style.monitorRatio
         Layout.fillWidth: true
@@ -83,6 +85,7 @@ ColumnLayout {
         interactive: false
         delegate: RadioButton {
             id: radioButton
+            checked: roleSelectionView.currentIndex === index
             text: model.display
             height: 20 / Style.monitorRatio
             opacity: checked ? 1 : 0.75
@@ -101,16 +104,32 @@ ColumnLayout {
 
             onCheckedChanged: {
                 if (radioButton.checked)
-                    roleSelectionModel.getSelectedRoleIndex(index)
+                    roleSelectionView.currentIndex = index
             }
         }
     }
 
+    RowLayout {
+        spacing: 0
+        Layout.topMargin: 12 / Style.monitorRatio
+        opacity: 0
+        Image {
+            source: "qrc:/Resources/error.png"
+            Layout.preferredHeight: 20 / Style.monitorRatio
+            Layout.preferredWidth: 20 / Style.monitorRatio
+        }
+        Text {
+            text: userManager.roleMessage
+            font.pixelSize: 17 / Style.monitorRatio
+            color: "#ED4337"
+            Layout.leftMargin: 5 / Style.monitorRatio
+        }
+    }
     Button {
         id: signInBtn
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
-        Layout.topMargin: 23 / Style.monitorRatio
+        Layout.topMargin: 15 / Style.monitorRatio
         hoverEnabled: true
         background: Rectangle {
             color: Style.foregroundColor

@@ -7,7 +7,10 @@
 class BulletNode : public FlyableModelNode
 {
 public:
-    BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl);
+    BulletNode(QQmlEngine *engine,
+               MapItem *mapControler,
+               const std::string &modelUrl,
+               const std::string &iconUrl);
     void attackTo(osgEarth::GeoPoint position);
     Explosion* explode();
     SimpleModelNode* getTargetModel();

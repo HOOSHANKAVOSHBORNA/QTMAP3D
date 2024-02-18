@@ -1,14 +1,16 @@
-import QtQuick.Layouts 1.13
+import QtQuick.Layouts
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
-import Crystal 1.0
+
 import "style"
 
 Item {
     id: rootItem
 
-    property var listModel
+    property var toolboxCpp
+    property var toolboxModel: toolboxCpp.toolboxProxyModel()
+
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
@@ -17,14 +19,6 @@ Item {
     ColumnLayout {
         anchors.fill: parent
 
-        //        Button {
-        //            text: 'remove property'
-        //            Layout.fillWidth: true
-        //            Layout.preferredHeight: 50
-        //            onClicked: {
-        //                ToolboxManagerInstance.removePropertyItem()
-        //            }
-        //        }
         Rectangle {
             Layout.fillWidth: true
             height: 30 / Style.monitorRatio
@@ -44,7 +38,7 @@ Item {
 
             TextField {
                 function sendToSearch() {
-                    rootItem.listModel.setFilterString(text)
+                    rootItem.toolboxCpp.setFilterString(text)
                     if (text.length === 0) {
                         treeView.collapseRecursively()
                     }
@@ -87,7 +81,7 @@ Item {
                     id: treeView
                     anchors.fill: parent
                     clip: true
-                    model: rootItem.listModel
+                    model: rootItem.toolboxModel
                     rowSpacing: 5 / Style.monitorRatio
 
                     selectionModel: ItemSelectionModel {
@@ -224,7 +218,7 @@ Item {
                         color: Style.foregroundColor
                         Layout.fillWidth: true
                         Layout.preferredHeight: contentHeight
-                        text: ToolboxManagerInstance.propertyItemTitle
+                        text: toolboxCpp.propertyItemTitle
                         font.family: Style.fontFamily
                         font.pixelSize: 20 / Style.monitorRatio
 
@@ -255,7 +249,7 @@ Item {
                             clip: true
 
                             anchors.fill: parent
-                            data: ToolboxManagerInstance.propertyItem
+                            data: toolboxCpp.propertyItem
                         }
                     }
                 }

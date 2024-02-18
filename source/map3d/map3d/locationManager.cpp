@@ -8,30 +8,20 @@
 #include "locationManager.h"
 
 // ----------------------------------------------------- model manager
-LocationManager::LocationManager()
-{
-    mLocationProxyModel = new LocationProxyModel;
-}
-
-LocationManager *LocationManager::createSingletonInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(engine);
-    Q_UNUSED(scriptEngine);
-
-    if(mInstance == nullptr){ mInstance = new LocationManager(); }
-    return mInstance;
-}
-
-void LocationManager::initialize(MapItem *mapItem)
+LocationManager::LocationManager(MapItem *mapItem)
 {
     LocationModel *myModel = new LocationModel(mapItem);
 
+    // ------------------------------------------------- loading models from file
     if (myModel->readFromFile()) {
-        qDebug() << "locations loaded from file";
+        qInfo() << "info - success: "
+                << "locations loaded from file";
     } else {
-        qDebug() << "some error in reading location file";
+        qInfo() << "info - fail: "
+                << "some error in reading location file";
     }
 
+    mLocationProxyModel = new LocationProxyModel;
     mLocationProxyModel->setSourceModel(myModel);
 }
 
@@ -222,7 +212,7 @@ void LocationModel::myRemoveRow(QModelIndex index)
 
 void LocationModel::goToLocation(QModelIndex index)
 {
-    mMapItem->getCameraController()->setViewpoint(*(mLocations.at(index.row())->viewpoint), 0);
+    mMapItem->getCameraController()->setViewpoint(*(mLocations.at(index.row())->viewpoint), 1);
 }
 
 void LocationModel::myAppendRow(const LocationItem &newLocationItem)

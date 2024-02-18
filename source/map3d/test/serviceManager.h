@@ -323,26 +323,21 @@ struct UserData
     {
         static inline const QString Login{"Login"};
         static inline const QString Logout{"Logout"};
-        static inline const QString Update{"Update"};
+        static inline const QString SelectRole{"SelectRole"};
     };
     QString name;
     QString userName;
     QString password;
-    QString newPassword;
-    QString confirmPassword;
-    QString token;
     Response response;
     QString command;
-    std::vector<QString> roles;
+    QVector<QString> roles;
+    int selectRoleIndex;
 
     QJsonObject toJson() const{
         QJsonObject jsonObject;
         jsonObject.insert("Name", name);
         jsonObject.insert("UserName", userName);
         jsonObject.insert("Password", password);
-        jsonObject.insert("NewPassword", newPassword);
-        jsonObject.insert("ConfirmPassword", confirmPassword);
-        jsonObject.insert("Token", token);
         jsonObject.insert("Response", response.toJson());
         jsonObject.insert("Command", command);
         QJsonArray roleArray;
@@ -350,6 +345,7 @@ struct UserData
             roleArray.push_back(role);
         }
         jsonObject.insert("Roles", roleArray);
+        jsonObject.insert("SelectRoleIndex", selectRoleIndex);
         return jsonObject;
     }
 
@@ -358,9 +354,6 @@ struct UserData
         name = json["Name"].toString();
         userName = json["UserName"].toString();
         password = json["Password"].toString();
-        newPassword = json["NewPassword"].toString();
-        confirmPassword = json["ConfirmPassword"].toString();
-        token = json["Token"].toString();
         Response res;
         res.fromJson(json["Response"].toObject());
         response = res;
@@ -370,6 +363,7 @@ struct UserData
         for (const QJsonValue &role : roleArray) {
             roles.push_back(role.toString());
         }
+        selectRoleIndex = json["SelectRoleIndex"].toInt();
     }
 
 };

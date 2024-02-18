@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
+
 import Crystal
+
 import "style"
 
 Item {
@@ -11,6 +13,13 @@ Item {
     property ListModel sideModel: ListModel {}
     property alias currentItemIndex: tabBar.currentIndex
     property int visibleCount: 0
+
+    property var toolboxCpp
+    property var locationCpp
+    property var layerCpp
+    property var connectionConfigurationCpp
+    property var profileCpp
+    property var bookmarkCpp
 
     Connections {
         target: sideModel
@@ -186,7 +195,6 @@ Item {
 
                 containerItem: ProfileItem {
                     id: profile
-                    model: UserInfo
                 }
 
                 onWindowClose: {
@@ -200,7 +208,7 @@ Item {
                 isWindow: sideModel.get(1).isWindow
                 containerItem: ToolboxManagerItem {
                     id: toolbox
-                    listModel: ToolboxManagerInstance.toolboxProxyModel()
+                    toolboxCpp: rootItem.toolboxCpp
                 }
 
                 onWindowClose: {
@@ -219,7 +227,7 @@ Item {
                 //                isWindow: sideModel.get(2).isWindow
                 containerItem: LayerManagerItem {
                     id: layers
-                    layerModel: LayerManagerInstance.layerModel()
+                    layerCpp: rootItem.layerCpp
                 }
 
                 onWindowClose: {
@@ -238,7 +246,7 @@ Item {
                 //                isWindow: sideModel.get(3).isWindow
                 containerItem: BookmarkItem {
                     id: bookmark
-                    model: BookmarkInstance.getBookmarkProxyModel()
+                    bookmarkCpp: rootItem.bookmarkCpp.getBookmarkProxyModel()
                 }
 
                 onWindowClose: {
@@ -257,7 +265,7 @@ Item {
                 //                isWindow: sideModel.get(4).isWindow
                 containerItem: LocationManagerItem {
                     id: locationManager
-                    listModel: LocatoinManagerInstance.locationProxyModel()
+                    listModel: rootItem.locationCpp
                 }
 
                 onWindowClose: {
@@ -278,7 +286,7 @@ Item {
                 containerItem: ConnectionConfiguration {
                     id: settingsItem
 
-                    backBtn.visible: false
+                    closeBtn.visible: false
                 }
 
                 onWindowClose: {

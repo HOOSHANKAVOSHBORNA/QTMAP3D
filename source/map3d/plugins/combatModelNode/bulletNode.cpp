@@ -1,8 +1,11 @@
 #include "bulletNode.h"
 
-BulletNode::BulletNode(MapItem *mapControler, const std::string &modelUrl, const std::string &iconUrl):
-    FlyableModelNode(mapControler, modelUrl, iconUrl),
-    mMapItem(mapControler)
+BulletNode::BulletNode(QQmlEngine *engine,
+                       MapItem *mapControler,
+                       const std::string &modelUrl,
+                       const std::string &iconUrl)
+    : FlyableModelNode(engine, mapControler, modelUrl, iconUrl)
+    , mMapItem(mapControler)
 {
 }
 

@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
     //    MovableNodeTest movableNodeTest(&networkManager);
 
     NodeTest nodeTest(&serviceManager);
-    AssignmentTest assignmentTest(&serviceManager);
-    ParticleTest particleTest(&serviceManager);
+//    AssignmentTest assignmentTest(&serviceManager);
+//    ParticleTest particleTest(&serviceManager);
 
     return a.exec();
 }

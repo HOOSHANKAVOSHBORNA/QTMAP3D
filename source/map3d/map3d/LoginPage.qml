@@ -7,16 +7,11 @@ import "style"
 Item {
     id: loginPage
 
-    property var loginPageCpp: undefined
+    property var userManager: undefined
     property var connectionConfigCpp: undefined
 
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
-
-    readonly property color backgroundColor: Qt.rgba(Style.backgroundColor.r,
-                                                     Style.backgroundColor.g,
-                                                     Style.backgroundColor.b,
-                                                     0.60)
 
     property bool logInPageVisible: true
 
@@ -78,8 +73,36 @@ Item {
     }
 
     Rectangle {
+        id: connectionPopUp
+        visible: false
+        x: containerRect.x
+        y: containerRect.y
+        z: containerRect.z + 1
+        width: 440 / Style.monitorRatio
+        height: 687 / Style.monitorRatio
+        radius: 20 / Style.monitorRatio
+        color: Style.backgroundColor
+        MouseArea {
+            anchors.fill: parent
+            drag.target: connectionPopUp
+        }
+        ConnectionConfiguration {
+            id: connectionPage
+            anchors.left: parent.left
+            anchors.right: parent.right
+            connectionConfigCpp: loginPage.connectionConfigCpp
+            closeBtn.onClicked: {
+                connectionPopUp.visible = false
+            }
+            saveBtn.onClicked: {
+                connectionPopUp.visible = false
+            }
+        }
+    }
+
+    Rectangle {
         id: containerRect
-        color: backgroundColor
+        color: Style.backgroundColor
         width: 440 / Style.monitorRatio
         height: 464 / Style.monitorRatio
         anchors.verticalCenter: parent.verticalCenter
@@ -95,29 +118,27 @@ Item {
             anchors.leftMargin: 50 / Style.monitorRatio
             anchors.rightMargin: 50 / Style.monitorRatio
             connectionStatus.onClicked: {
-                signInPage.visible = false
-                connectionPage.visible = true
                 topToBottomConnection.start()
-                heightIncrease.from = 464 / Style.monitorRatio
-                heightIncrease.to = 687 / Style.monitorRatio
-                heightIncrease.start()
+                connectionPopUp.visible = true
             }
             signInBtn.onClicked: {
-                loginPageCpp.signIn(signInPage.usernameTxt.text,
-                                    signInPage.passwordTxt.text)
-
-                logInPageVisible = false
-                signInPage.visible = false
-                rolePage.visible = true
-                heightIncrease.from = 464 / Style.monitorRatio
-                heightIncrease.to = 504 / Style.monitorRatio
-                heightIncrease.start()
-                topToBottomRole.start()
+                userManager.signIn(signInPage.usernameTxt,
+                                   signInPage.passwordTxt)
+                if (userManager.rolePageVisible) {
+                    logInPageVisible = false
+                    signInPage.visible = false
+                    rolePage.visible = true
+                    heightIncrease.from = 464 / Style.monitorRatio
+                    heightIncrease.to = 525 / Style.monitorRatio
+                    heightIncrease.start()
+                    topToBottomRole.start()
+                }
             }
         }
 
         RoleSelectPage {
             id: rolePage
+            roleSelectionModel: userManager.roleSelectionModel()
             visible: false
             usernameTxt: signInPage.usernameTxt
             anchors.left: parent.left
@@ -126,47 +147,19 @@ Item {
             anchors.rightMargin: 50 / Style.monitorRatio
 
             connectionStatus.onClicked: {
-                rolePage.visible = false
-                connectionPage.visible = true
-                heightIncrease.from = 504 / Style.monitorRatio
-                heightIncrease.to = 687 / Style.monitorRatio
-                heightIncrease.start()
+                connectionPopUp.visible = true
                 topToBottomConnection.start()
             }
             signInBtn.onClicked: {
-                roleSelectionModel.signIn(signInPage.usernameTxt.text,
-                                    signInPage.passwordTxt.text)
+                userManager.signIn(selectRole)
             }
             backBtn.onClicked: {
                 rolePage.visible = false
                 signInPage.visible = true
-                heightDecrease.from = 504 / Style.monitorRatio
+                heightDecrease.from = 525 / Style.monitorRatio
                 heightDecrease.to = 464 / Style.monitorRatio
                 heightDecrease.start()
                 topToBottomSignIn.start()
-            }
-        }
-
-        ConnectionConfiguration {
-            id: connectionPage
-            connectionConfigCpp: loginPage.connectionConfigCpp
-            visible: false
-            backBtn.onClicked: {
-                if (logInPageVisible) {
-                    connectionPage.visible = false
-                    signInPage.visible = true
-                    heightDecrease.from = 687 / Style.monitorRatio
-                    heightDecrease.to = 464 / Style.monitorRatio
-                    heightDecrease.start()
-                    topToBottomSignIn.start()
-                } else {
-                    connectionPage.visible = false
-                    heightDecrease.from = 687 / Style.monitorRatio
-                    heightDecrease.to = 504 / Style.monitorRatio
-                    heightDecrease.start()
-                    rolePage.visible = true
-                    topToBottomRole.start()
-                }
             }
         }
     }

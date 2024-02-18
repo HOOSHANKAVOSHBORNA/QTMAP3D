@@ -39,8 +39,10 @@ bool Model::setup()
     connect(mapItem(), &MapItem::modeChanged, this, &Model::onModeChanged);
     mIs3D = mapItem()->getMode();
 
-    mDataManager = new DataManager(mapItem(), mainWindow());
+
+    mDataManager = new DataManager(qmlEngine(), mapItem(), mainWindow());
     //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+
     connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::onNodeDataReceived);
 
     //--toolbox item---------------------------------------------------------------------
@@ -95,10 +97,10 @@ bool Model::setup()
     mLayerData.children.push_back(layerDataFlyable);
 
     // property item setup
-    mProperty = new Property(mapItem());
+    mProperty = new Property(qmlEngine(), mapItem());
 
     // list window setup
-    mNodeList = new NodeList(mapItem(), mDataManager);
+    mNodeList = new NodeList(qmlEngine(), mapItem(), mDataManager);
     mainWindow()->addTabToListWindow("Allllll", mNodeList->qmlItem());
 
     return true;
@@ -221,7 +223,7 @@ void Model::onTreeItemCheck(bool check)
         mNodeData.type = NodeType::Fixed;
         mNodeData.category = "User";
         mNodeData.url2D = "../data/models/tree/tree.png";
-        mNodeData.url3D = "../data/models/station/station.osgb";
+        mNodeData.url3D = "../data/models/tree/tree.osgb";
         mNodeData.imgInfoUrl = "qrc:/resources/tree.png";
         mNodeData.iconInfoUrl = "qrc:/resources/tree.png";
         mNodeData.color = QColorConstants::Green.name();
@@ -399,7 +401,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
 
     mapItem()->getMapObject()->onLayerDataReceived(mLayerData);
     mCurrentModel = mDataManager->onNodeDataReceived(mNodeData);
-    mProperty->setModelNode(mCurrentModel);
+    // mProperty->setModelNode(mCurrentModel);
     mState = State::MOVING;
     mCount++;
 }
@@ -410,13 +412,13 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
         if (mCurrentModel->asFlyableModelNode()) {
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
-            //            mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
+                       // mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
             mProperty->flyTo(geoPos);
             return;
         }
 
         if (mCurrentModel->asMoveableModelNode()) {
-            //            mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
+                       // mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
             mProperty->moveTo(geoPos);
             return;
         }

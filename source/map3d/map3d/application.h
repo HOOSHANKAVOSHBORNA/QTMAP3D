@@ -5,10 +5,11 @@
 #include <QUrl>
 #include <list>
 
+#include "connectionConfiguration.h"
+#include "loadingPage.h"
 #include "userManager.h"
 #include "pluginmanager.h"
 #include "networkManager.h"
-#include "splash.h"
 
 
 class MainWindow;
@@ -35,8 +36,6 @@ public:
 
     void initializeQmlEngine();
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
-    void createApplicationQml();
-    void createMainWindowQml();
 
 signals:
     void ready();
@@ -56,12 +55,13 @@ private:
     ServiceManager *mServiceManager{nullptr};
 
     UserManager *mUserManager{nullptr};
-    Splash *mSplash{nullptr};
+    ConnectionConfiguration *mConnectionConfig{nullptr};
+    LoadingPage *mLoadingPage{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 
     bool mIsReady{false};
 
-    QQuickWindow *mApplicationQml = nullptr;
+    QQuickWindow *mApplicationWindow = nullptr;
 };
 
 #endif // Application_H
