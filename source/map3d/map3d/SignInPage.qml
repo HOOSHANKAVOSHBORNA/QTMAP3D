@@ -131,7 +131,7 @@ ColumnLayout {
             Layout.preferredWidth: 20 / Style.monitorRatio
         }
         Text {
-            text: userManager.loginMessage
+            text: userManager.message
             font.pixelSize: 17 / Style.monitorRatio
             color: "#ED4337"
             Layout.leftMargin: 5 / Style.monitorRatio
