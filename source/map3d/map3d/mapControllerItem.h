@@ -31,7 +31,7 @@ class MapControllerItem : public MapItem
 
 public:
     explicit MapControllerItem();
-
+    ~MapControllerItem();
     QVector3D mapMouseGeoLocation() const;
     QVector3D mapMouseLocation() const;
     virtual void frame() override;
@@ -104,7 +104,7 @@ private:
     SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
     SearchNodeManager* mSearchNodeManager{nullptr};
 //    SearchNodeManager *getSearchNodeManager() const;
-    TypeListModel* mTypeListModel{nullptr};
+    // TypeListModel* mTypeListModel{nullptr};
     StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D mCompassDirection;
     SmallMap *mSmallMap{nullptr};

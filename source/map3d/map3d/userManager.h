@@ -57,6 +57,7 @@ public:
 
 signals:
     void signedIn();
+    void signedOut();
     void selectRole();
 
     void userDataChanged();

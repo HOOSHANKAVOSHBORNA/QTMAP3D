@@ -62,7 +62,7 @@ void Application::initialize()
                                       {"loadingPageCpp", QVariant::fromValue(mLoadingPage)},
                                       {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
 
-
+    connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
     //--user manger------------------------------------------
 //    mUserManager = new UserManager(mServiceManager, mQmlEngine);
 
@@ -154,6 +154,12 @@ void Application::initializeSurfaceFormat()
 //    mIsReady = true;
 //    emit ready();
 //}
+
+void Application::clearMainWindow()
+{
+    qDebug() << "logout----------------";
+    // delete mMainWindow;
+}
 
 ServiceManager *Application::serviceManager() const
 {

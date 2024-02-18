@@ -8,6 +8,12 @@ StatusBar::StatusBar(QObject *parent) : QAbstractListModel(parent)
 
 }
 
+StatusBar::~StatusBar()
+{
+    for (auto &i: mMessages)
+        delete i;
+}
+
 int StatusBar::rowCount(const QModelIndex &parent) const
 {
     return mMessages.size();

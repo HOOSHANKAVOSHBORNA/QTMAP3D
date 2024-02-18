@@ -83,6 +83,7 @@ class Toolbox : public QAbstractItemModel
 
 public:
     Toolbox(QObject *parent = nullptr);
+    ~Toolbox();
 
     void addItem(ToolboxItem *item);
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -114,7 +115,7 @@ class ToolboxProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    explicit ToolboxProxyModel();
+    explicit ToolboxProxyModel(QObject *parent = nullptr);
 
     Q_INVOKABLE int childCount(QModelIndex index);
     QString filterString() const;
@@ -144,7 +145,8 @@ class ToolboxManager : public QObject
                    propertyItemTitleChanged FINAL)
 
 public:
-    explicit ToolboxManager();
+    explicit ToolboxManager(QObject* parent = nullptr);
+    ~ToolboxManager();
 
     Q_INVOKABLE ToolboxProxyModel *toolboxProxyModel() const;
 

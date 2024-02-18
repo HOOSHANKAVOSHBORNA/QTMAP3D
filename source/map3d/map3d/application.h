@@ -44,7 +44,8 @@ private:
     static void initializeSurfaceFormat();
 
 private slots:
-//    void onUICreated();
+    // void onUICreated();
+    void clearMainWindow();
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
