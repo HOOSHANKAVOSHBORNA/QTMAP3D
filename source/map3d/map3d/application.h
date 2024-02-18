@@ -37,14 +37,8 @@ public:
     void initializeQmlEngine();
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
 
-signals:
-    void ready();
-
 private:
     static void initializeSurfaceFormat();
-
-private slots:
-    void onUICreated();
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;

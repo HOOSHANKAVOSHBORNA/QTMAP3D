@@ -9,15 +9,9 @@ Rectangle {
     id: rootRect
 
     property alias sideContainer: sideContainer
+    property bool listWindowVisible
 
     property int minWidth
-
-    property var toolboxCpp
-    property var locationCpp
-    property var connectionConfigurationCpp
-    property var profileCpp
-    property var bookmarkCpp
-    property var layerCpp
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
@@ -184,7 +178,9 @@ Rectangle {
                         checked: false
 
                         // TODO: listWindow creating
-                        onToggled: mainWindow.showListWindow()
+                        onToggled: {
+                            listWindowVisible = !listWindowVisible
+                        }
 
                         ToolTip {
                             y: 0

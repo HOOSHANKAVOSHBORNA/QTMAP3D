@@ -27,50 +27,18 @@ MainWindow::MainWindow(QWindow *parent)
 {
     qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
+
+    mMapItem = new MapControllerItem;
+    mLocationManager = new LocationManager(mMapItem);
+    mToolboxManager = new ToolboxManager;
+    mLayerManager = new LayerManager(mMapItem);
+    mBookmarkManager = new BookmarkManager;
 }
 
 MainWindow::~MainWindow()
 {
     //    cleanup();
     //    mMapItem->deleteLater();
-}
-
-void MainWindow::initComponent()
-{
-    QQmlEngine *engine = qmlEngine(this);
-    mMapItem = new MapControllerItem();
-
-    mMapItem->setQmlEngine(engine);
-
-    mLocationManager = new LocationManager(mMapItem);
-    mToolboxManager = new ToolboxManager;
-    mLayerManager = new LayerManager(mMapItem);
-    mBookmarkManager = new BookmarkManager;
-
-    //    QQmlComponent* comp = new QQmlComponent(engine);
-    //    connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-    //        if (status == QQmlComponent::Error) {
-    //            qDebug() << "Can not load MapControllerItem: " << comp->errorString();
-    //        }
-
-    //        if (status == QQmlComponent::Ready) {
-    //            QQuickItem *item = qobject_cast<QQuickItem *>(comp->create());
-    //            mMapItem = static_cast<MapControllerItem *>(item);
-    //            //            //            mMapItem->initializeOsgEarth();
-    //            mMapItem->setQmlEngine(engine);
-    //            addToCenterCenterContainer(mMapItem);
-
-    //            // --------------------------------------------------------- model settings
-    //            LocationManager* locationManager = LocationManager::createSingletonInstance(nullptr, nullptr);
-    //            locationManager->initialize(mMapItem);
-
-    //            ToolboxManager *toolboxManager = ToolboxManager::createSingletonInstance(nullptr, nullptr);
-
-    //            LayerManager *layerManager = LayerManager::createSingletonInstance(nullptr, nullptr);
-    //            layerManager->setMapItem(mMapItem);
-    //        }
-    //    });
-    //    comp->loadUrl(QUrl("qrc:/MapControllerItem.qml"));
 }
 
 QQmlEngine *MainWindow::getQmlEngine()

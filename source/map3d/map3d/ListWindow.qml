@@ -3,10 +3,12 @@ import QtQuick.Layouts 1.13
 import QtQuick.Controls 2.13
 import Crystal 1.0
 import QtQuick.Window 2.13
+
 import "style"
 
-CListWindow {
+Window {
     id: rootItem
+
     width: 1000
     height: 600
 

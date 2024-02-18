@@ -1,4 +1,3 @@
-
 #include <QSurfaceFormat>
 #include <QCoreApplication>
 #include <QApplication>
@@ -47,29 +46,20 @@ void Application::initialize()
 //    mNetworkManager->start();
 
     mServiceManager = new ServiceManager(mNetworkManager);
-    //--create models----------------------------------------
     mMainWindow = new MainWindow();
-    mMainWindow->initComponent();
-
     mUserManager = new UserManager(mServiceManager);
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
     mLoadingPage = new LoadingPage();
-
 
     mQmlEngine->setInitialProperties({{"userManager", QVariant::fromValue(mUserManager)},
                                       {"connectionConfigCpp", QVariant::fromValue(mConnectionConfig)},
                                       {"loadingPageCpp", QVariant::fromValue(mLoadingPage)},
                                       {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
 
-
+    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
     //--user manger------------------------------------------
 //    mUserManager = new UserManager(mServiceManager, mQmlEngine);
 
-    //    connect(mPluginManager, &PluginManager::pluginsLoaded, this, &Application::ready);
-    //    connect(this, &Application::ready, this, &Application::createApplicationQml);
-    //createApplicationQml();
-    //    mQmlEngine->load(QStringLiteral("qrc:///MainWindow.qml"));
-    //    mQmlEngine->load(QStringLiteral("qrc:///ListWindow.qml"));
     mQmlEngine->load(QUrl("qrc:/ApplicationWindow.qml"));
 }
 
@@ -101,27 +91,6 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 
         mPluginManager->loadPlugins();
         mPluginManager->setup();
-    //    MainWindow *mainWnd = qobject_cast<MainWindow *>(obj);
-    //    ListWindow *listWnd = qobject_cast<ListWindow *>(obj);
-
-    //    if (mainWnd) {
-    //        auto mapItem = new MapControllerItem();
-    //        qDebug() << "Load: " << objUrl.toString();
-    //        mMainWindow = mainWnd;
-    //        mMainWindow->setProperty("mapItem", QVariant::fromValue(mapItem));
-    //        mMainWindow->initComponent(mapItem);
-
-
-    ////        mPluginManager->loadPlugins();
-    ////        mPluginManager->setup();
-    //        emit ready();
-    //    } else if (listWnd) {
-    //        qDebug() << "Load: " << objUrl.toString();
-    //        mListWindow = listWnd;
-    //        mMainWindow->setListWindow(mListWindow);
-    //    } else {
-    //        qDebug() << "qml object created not found!";
-    //    }
 }
 
 void Application::show()
@@ -140,18 +109,6 @@ void Application::initializeSurfaceFormat()
     fmt.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
     fmt.setSamples(4);
     QSurfaceFormat::setDefaultFormat(fmt);
-}
-
-void Application::onUICreated()
-{
-    //    mServiceManager->setMapObject(mMainWindow->getMapItem()->getMapObject());
-    // connect(mServiceManager, &ServiceManager::layerDataReceived, [&](CompositeAnnotationLayer *layer){
-    // mMainWindow->getMapItem()->getMapObject()->addLayer(layer);
-    // });
-    // connect(mServiceManager, &ServiceManager::clearMap, mMainWindow->getMapItem()->getMapObject(), &MapObject::clearParenticLayers);
-    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
-    mIsReady = true;
-    emit ready();
 }
 
 ServiceManager *Application::serviceManager() const

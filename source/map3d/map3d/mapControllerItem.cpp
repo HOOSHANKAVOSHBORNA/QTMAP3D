@@ -1,10 +1,9 @@
-#include "mapControllerItem.h"
-#include "searchNodeModel.h"
-#include "smallMap.h"
-
 #include <QQmlComponent>
 #include <QTimer>
+
 #include "filterManager.h"
+#include "mapControllerItem.h"
+#include "searchNodeModel.h"
 
 MapControllerItem::MapControllerItem():
     MapItem()

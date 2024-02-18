@@ -16,7 +16,7 @@ Window {
     height: 800
     visible: true
 
-    color: 'red'
+    color: 'royalblue'
 
     ColumnLayout {
         anchors.fill: parent
