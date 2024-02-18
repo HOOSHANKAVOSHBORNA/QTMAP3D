@@ -2,7 +2,6 @@
 #define MODEL_H
 
 #include <QObject>
-#include <circle.h>
 #include <osg/PolygonMode>
 #include <osgEarthAnnotation/AnnotationLayer>
 #include <osgEarthAnnotation/ModelNode>
