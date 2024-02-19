@@ -285,7 +285,7 @@ Item {
                         Rectangle {
                             anchors.bottom: parent.bottom
                             anchors.left: parent.left
-                            anchors.leftMargin: -10
+                            anchors.leftMargin: -10/ Style.monitorRatio
                             anchors.bottomMargin: -3
                             height: parent.height / 2
                             width: parent.width
