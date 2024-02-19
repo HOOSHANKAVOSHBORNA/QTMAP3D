@@ -112,7 +112,7 @@ ColumnLayout {
     RowLayout {
         spacing: 0
         Layout.topMargin: 12 / Style.monitorRatio
-        opacity: 0
+        opacity: (userManager.message === "") ? 0 : 1
         Image {
             source: "qrc:/Resources/error.png"
             Layout.preferredHeight: 20 / Style.monitorRatio

@@ -57,7 +57,7 @@ void UserManager::signIn(const QString username, const QString password)
 
     setUserName(username);
     emit selectRole();
-    setMessage("Wrong username or password");
+    emit signedIn();
 
     //--test------
     QVector<QString> testvec;
