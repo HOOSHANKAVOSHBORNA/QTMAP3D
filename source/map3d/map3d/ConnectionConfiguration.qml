@@ -1,6 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQml
 import Crystal
 import "style"
 
@@ -22,23 +23,47 @@ Item {
     property alias connectionStatus: connectionStatus
     property alias closeBtn: closeBtn
     property alias saveBtn: saveBtn
+    property alias testConnectionBtn: testConnectionBtn
+    property alias testConnectionTxt: testConnectionTxt.text
+    property alias testConnectionTxtColor: testConnectionTxt.color
+    property alias buttonColor: backgroundRec.color
+    property alias testConnectionAnimationStatus: testConnectionAnimationStatus
+    property alias animationTimer: animationTimer
 
-    SequentialAnimation {
-        id: testConnectionAnimation
-
-        PropertyAnimation {
-            target: testConnectionBtn
-            property: "buttonColorOpacity"
-            from: 0
-            to: 0.2
-            duration: 2000
+    Timer {
+        id: animationTimer
+        interval: 2000
+        onTriggered: {
+            testConnectionTxt.text = "Test Connection"
+            testConnectionTxt.color = Style.backgroundColor
+            buttonColor = Style.foregroundColor
+            reverseAnimation.start()
+            animationTimer.stop()
         }
-        PropertyAnimation {
-            target: testConnectionBtn
-            property: "buttonColorOpacity"
-            from: 0.2
-            to: 0
-            duration: 2000
+    }
+
+    PropertyAnimation {
+        id: testConnectionAnimationStatus
+        target: testConnectionBtn
+        property: "backgroundColorOpacity"
+        from: 0
+        to: 0.2
+        duration: 100
+        onFinished: {
+            animationTimer.start()
+        }
+    }
+
+    PropertyAnimation {
+        id: reverseAnimation
+        target: testConnectionBtn
+        property: "backgroundColorOpacity"
+        from: 0.2
+        to: 1
+        duration: 100
+        onFinished: {
+            buttonColor.a = 1
+            testConnectionBtn.hoverEnabled = true
         }
     }
 
@@ -76,7 +101,7 @@ Item {
 
             IconImage {
                 id: connectionStatus
-                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
             }
@@ -184,7 +209,8 @@ Item {
 
         Button {
             id: testConnectionBtn
-            property alias buttonColorOpacity: backgroundRec.color.a
+            property alias backgroundColorOpacity: backgroundRec.color.a
+            property alias textColor: testConnectionTxt.color
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 340 / Style.monitorRatio
@@ -193,9 +219,10 @@ Item {
             hoverEnabled: true
 
             contentItem: Text {
+                id: testConnectionTxt
                 text: "Test Connection"
                 font.pixelSize: 15 / Style.monitorRatio
-                color: parent.hovered ? "#01AED6" : Style.backgroundColor
+                //                color:  testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -204,8 +231,16 @@ Item {
                 radius: width / (Style.monitorRatio * 2)
                 color: Style.foregroundColor
             }
-            onClicked: {
-                testConnectionAnimation.start()
+
+            Binding {
+                target: testConnectionTxt
+                property: "color"
+                value: {
+                    if (animationTimer.running)
+                        return connectionConfigCpp.isConnected ? "#206900" : "#690000"
+                     else
+                        return testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
+                }
             }
         }
         Button {
@@ -220,7 +255,7 @@ Item {
             contentItem: Text {
                 text: "Save changes"
                 font.pixelSize: 15 / Style.monitorRatio
-                color: parent.hovered ? "#01AED6" : Style.backgroundColor
+                color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }

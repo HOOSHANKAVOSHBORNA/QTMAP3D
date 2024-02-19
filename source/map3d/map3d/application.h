@@ -27,7 +27,6 @@ public:
     static Application *instance();
     static void performStartupConfiguration();
     void initialize();
-    void show();
     inline MainWindow *mainWindow() const { return mMainWindow; }
     inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
     inline PluginManager *pluginManager() const { return mPluginManager; }
@@ -37,20 +36,15 @@ public:
     void initializeQmlEngine();
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
 
-signals:
-    void ready();
-
 private:
     static void initializeSurfaceFormat();
 
 private slots:
-    // void onUICreated();
     void clearMainWindow();
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
     MainWindow *mMainWindow = nullptr;
-    ListWindow *mListWindow = nullptr;
 
     PluginManager *mPluginManager = nullptr;
     ServiceManager *mServiceManager{nullptr};
@@ -59,8 +53,6 @@ private:
     ConnectionConfiguration *mConnectionConfig{nullptr};
     LoadingPage *mLoadingPage{nullptr};
     NetworkManager *mNetworkManager{nullptr};
-
-    bool mIsReady{false};
 
     QQuickWindow *mApplicationWindow = nullptr;
 };

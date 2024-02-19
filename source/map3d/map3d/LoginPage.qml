@@ -29,7 +29,7 @@ Item {
         easing.type: Easing.OutCirc
         property: "height"
         from: 464 / Style.monitorRatio
-        to: 687 / Style.monitorRatio
+        to: 525 / Style.monitorRatio
         duration: 500
     }
     PropertyAnimation {
@@ -37,7 +37,7 @@ Item {
         target: containerRect
         easing.type: Easing.OutCirc
         property: "height"
-        from: 687 / Style.monitorRatio
+        from: 525 / Style.monitorRatio
         to: 464 / Style.monitorRatio
         duration: 500
     }
@@ -73,7 +73,7 @@ Item {
         id: connectionPopUp
         visible: false
         x: containerRect.x
-        y: containerRect.y
+        y: containerRect.y - 100
         z: containerRect.z + 1
         clip: true
         width: 440 / Style.monitorRatio
@@ -96,6 +96,29 @@ Item {
             saveBtn.onClicked: {
                 connectionPopUp.visible = false
                 containerRect.enabled = true
+            }
+            testConnectionBtn.onClicked: {
+
+                buttonColor.a = 0.5
+                connectionConfigCpp.setIsConnected(false)
+            }
+
+            Connections {
+                target: connectionConfigCpp
+
+                function onIsConnectedChanged() {
+                    if (connectionConfigCpp.isConnected) {
+                        connectionPage.testConnectionTxt = "Connected"
+                        connectionPage.testConnectionTxtColor = "#206900"
+                        connectionPage.buttonColor = "#206900"
+                        connectionPage.testConnectionAnimationStatus.start()
+                    } else {
+                        connectionPage.testConnectionTxt = "Disconnected"
+                        connectionPage.testConnectionTxtColor = "#690000"
+                        connectionPage.buttonColor = "#690000"
+                        connectionPage.testConnectionAnimationStatus.start()
+                    }
+                }
             }
         }
     }
@@ -126,15 +149,6 @@ Item {
             signInBtn.onClicked: {
                 userManager.signIn(signInPage.usernameTxt,
                                    signInPage.passwordTxt)
-                //                if (userManager.rolePageVisible) {
-                //                    logInPageVisible = false
-                //                    signInPage.visible = false
-                //                    rolePage.visible = true
-                //                    heightIncrease.from = 464 / Style.monitorRatio
-                //                    heightIncrease.to = 525 / Style.monitorRatio
-                //                    heightIncrease.start()
-                //                    topToBottomRole.start()
-                //                }
             }
         }
 
@@ -159,8 +173,6 @@ Item {
             backBtn.onClicked: {
                 rolePage.visible = false
                 signInPage.visible = true
-                heightDecrease.from = 525 / Style.monitorRatio
-                heightDecrease.to = 464 / Style.monitorRatio
                 heightDecrease.start()
                 topToBottomSignIn.start()
             }
@@ -173,8 +185,6 @@ Item {
             logInPageVisible = false
             signInPage.visible = false
             rolePage.visible = true
-            heightIncrease.from = 464 / Style.monitorRatio
-            heightIncrease.to = 525 / Style.monitorRatio
             heightIncrease.start()
             topToBottomRole.start()
         }
