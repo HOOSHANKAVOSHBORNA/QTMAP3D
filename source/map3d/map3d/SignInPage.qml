@@ -19,8 +19,12 @@ ColumnLayout {
     property alias passwordTxt: passwordTxt.text
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
-
+    signal uiSignedIn
     spacing: 0
+
+    onUiSignedIn: {
+        backgroundRec.color.a = 1
+    }
 
     RowLayout {
         id: header
@@ -122,7 +126,7 @@ ColumnLayout {
 
     RowLayout {
         spacing: 0
-        opacity: 0
+        opacity: (userManager.message === "") ? 0 : 1
         Layout.topMargin: 14 / Style.monitorRatio
 
         Image {
@@ -140,16 +144,17 @@ ColumnLayout {
 
     Button {
         id: signInBtn
-
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
         Layout.topMargin: 14 / Style.monitorRatio
         hoverEnabled: true
         background: Rectangle {
+            id: backgroundRec
             color: Style.foregroundColor
             radius: width / (Style.monitorRatio * 2)
         }
         contentItem: Text {
+            id: signInBtnTxt
             text: "Sign in"
             color: parent.hovered
                    && parent.enabled ? "#01AED6" : Style.backgroundColor
@@ -158,7 +163,7 @@ ColumnLayout {
         }
 
         onClicked: {
-
+            backgroundRec.color.a = 0.5
         }
     }
 }

@@ -13,8 +13,6 @@ Item {
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
 
-    property bool logInPageVisible: true
-
     Image {
         id: backGroundImage
         source: "qrc:/Resources/login-earth.jpg"
@@ -73,7 +71,7 @@ Item {
         id: connectionPopUp
         visible: false
         x: containerRect.x
-        y: containerRect.y - 100
+        y: (parent.height - connectionPopUp.height) / 2
         z: containerRect.z + 1
         clip: true
         width: 440 / Style.monitorRatio
@@ -98,7 +96,6 @@ Item {
                 containerRect.enabled = true
             }
             testConnectionBtn.onClicked: {
-
                 buttonColor.a = 0.5
                 connectionConfigCpp.setIsConnected(false)
             }
@@ -150,6 +147,19 @@ Item {
                 userManager.signIn(signInPage.usernameTxt,
                                    signInPage.passwordTxt)
             }
+
+            Connections {
+                target: userManager
+                function onSelectRole() {
+                    signInPage.visible = false
+                    rolePage.visible = true
+                    heightIncrease.start()
+                    topToBottomRole.start()
+                }
+                function onSignedIn() {
+                    signInPage.uiSignedIn()
+                }
+            }
         }
 
         RoleSelectPage {
@@ -179,14 +189,18 @@ Item {
         }
     }
 
-    Connections {
-        target: userManager
-        function onSelectRole() {
-            logInPageVisible = false
-            signInPage.visible = false
-            rolePage.visible = true
-            heightIncrease.start()
-            topToBottomRole.start()
-        }
-    }
+    //    Connections {
+    //        target: userManager
+    //        function onSelectRole() {
+    //            signInPage.visible = false
+    //            rolePage.visible = true
+    //            heightIncrease.start()
+    //            topToBottomRole.start()
+    //        }
+    //        function onSignedIn() {
+    //            // signInPage.signInBtn.opacity = 1
+    //            console.log("hello everybody")
+    //            console.log(signInPage.signInBtn.opacity)
+    //        }
+    //    }
 }
