@@ -285,8 +285,29 @@ Item {
 
                 containerItem: ConnectionConfiguration {
                     id: settingsItem
-
                     closeBtn.visible: false
+                    connectionConfigCpp: applicationWindow.connectionConfigCpp
+                    testConnectionBtn.onClicked: {
+                        connectionConfigCpp.setIsConnected(false)
+                    }
+
+                    Connections {
+                        target: connectionConfigCpp
+
+                        function onIsConnectedChanged() {
+                            if (connectionConfigCpp.isConnected) {
+                                settingsItem.testConnectionTxt = "Connected"
+                                settingsItem.testConnectionTxtColor = "#206900"
+                                settingsItem.buttonColor = "#206900"
+                                settingsItem.testConnectionAnimationStatus.start()
+                            } else {
+                                settingsItem.testConnectionTxt = "Disconnected"
+                                settingsItem.testConnectionTxtColor = "#690000"
+                                settingsItem.buttonColor = "#690000"
+                                settingsItem.testConnectionAnimationStatus.start()
+                            }
+                        }
+                    }
                 }
 
                 onWindowClose: {

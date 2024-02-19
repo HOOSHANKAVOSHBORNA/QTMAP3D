@@ -83,6 +83,19 @@ void ConnectionConfiguration::saveSettings()
 
     if(mNetworkManager)
         mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
-//    mNetworkManager->isConnected();
+    //    mNetworkManager->isConnected();
 }
 
+
+bool ConnectionConfiguration::isConnected() const
+{
+    return mIsConnected;
+}
+
+void ConnectionConfiguration::setIsConnected(bool newIsConnected)
+{
+    if (mIsConnected == newIsConnected)
+        return;
+    mIsConnected = newIsConnected;
+    emit isConnectedChanged();
+}

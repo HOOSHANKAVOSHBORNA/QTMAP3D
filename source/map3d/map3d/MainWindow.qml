@@ -4,7 +4,6 @@ import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import QtQuick.Controls.Material 2.12
 import QtQuick.Effects
-import Crystal 1.0
 
 import "style"
 
@@ -13,10 +12,8 @@ Item {
 
     //--properties--------------------------------------
     property var mainPageCpp
-    property var mapItem
+    property bool listWindowVisible: false
 
-    //--------------------------------------------------
-    // visible: true
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
@@ -37,12 +34,17 @@ Item {
 
             SideBar {
                 id: sideBar
+
                 anchors.fill: parent
 
                 sideContainer.locationCpp: mainItem.mainPageCpp.getLocationManager()
                 sideContainer.toolboxCpp: mainItem.mainPageCpp.getToolboxManager()
                 sideContainer.layerCpp: mainItem.mainPageCpp.getLayerManager()
                 sideContainer.bookmarkCpp: mainItem.mainPageCpp.getBookmarkManager()
+
+                listWindowVisible: mainItem.listWindowVisible
+
+                onListWindowVisibleChanged: mainItem.listWindowVisible = listWindowVisible
 
                 //                pin: true
                 onPinChanged: {
@@ -72,10 +74,19 @@ Item {
             }
 
             MapControllerItem {
-                mapItem: mainItem.mapItem
+                mapItem: mainItem.mainPageCpp.getMapItem()
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
             }
+        }
+    }
+
+    ListWindow {
+        visible: mainItem.listWindowVisible
+        listWindowCpp: mainItem.mainPageCpp.getListWindow()
+
+        onClosing: {
+            listWindowVisible = false
         }
     }
 }

@@ -27,18 +27,14 @@ public:
     ~MainWindow();
 
     void initComponent();
-    QQmlEngine *getQmlEngine();
     Q_INVOKABLE MapControllerItem *getMapItem();
     Q_INVOKABLE ToolboxManager *getToolboxManager() const;
     Q_INVOKABLE LayerManager *getLayerManager() const;
     Q_INVOKABLE BookmarkManager *getBookmarkManager() const;
     Q_INVOKABLE LocationProxyModel *getLocationManager() const;
+    Q_INVOKABLE ListWindow *getListWindow() const;
 
-public:
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
-
-public slots:
-    void showListWindow();
     void setListWindow(ListWindow *listWindow);
 
 private:
