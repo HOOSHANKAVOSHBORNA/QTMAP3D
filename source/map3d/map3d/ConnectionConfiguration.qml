@@ -1,6 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQml
 import Crystal
 import "style"
 
@@ -27,6 +28,19 @@ Item {
     property alias testConnectionTxtColor: testConnectionTxt.color
     property alias buttonColor: backgroundRec.color
     property alias testConnectionAnimationStatus: testConnectionAnimationStatus
+    property alias animationTimer: animationTimer
+
+    Timer {
+        id: animationTimer
+        interval: 2000
+        onTriggered: {
+            testConnectionTxt.text = "Test Connection"
+            testConnectionTxt.color = Style.backgroundColor
+            buttonColor = Style.foregroundColor
+            reverseAnimation.start()
+            animationTimer.stop()
+        }
+    }
 
     PropertyAnimation {
         id: testConnectionAnimationStatus
@@ -34,13 +48,9 @@ Item {
         property: "backgroundColorOpacity"
         from: 0
         to: 0.2
-        duration: 2000
+        duration: 100
         onFinished: {
-
-            testConnectionTxt.text = "Test Connection"
-            testConnectionTxt.color = Style.backgroundColor
-            backgroundRec.color = Style.foregroundColor
-            reverseAnimation.start()
+            animationTimer.start()
         }
     }
 
@@ -50,7 +60,11 @@ Item {
         property: "backgroundColorOpacity"
         from: 0.2
         to: 1
-        duration: 1000
+        duration: 100
+        onFinished: {
+            buttonColor.a = 1
+            testConnectionBtn.hoverEnabled = true
+        }
     }
 
     ColumnLayout {
@@ -196,6 +210,7 @@ Item {
         Button {
             id: testConnectionBtn
             property alias backgroundColorOpacity: backgroundRec.color.a
+            property alias textColor: testConnectionTxt.color
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 340 / Style.monitorRatio
@@ -207,8 +222,7 @@ Item {
                 id: testConnectionTxt
                 text: "Test Connection"
                 font.pixelSize: 15 / Style.monitorRatio
-                color: parent.hovered
-                       && (backgroundRec.opacity != 0.5) ? "#01AED6" : Style.backgroundColor
+                //                color:  testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -217,11 +231,17 @@ Item {
                 radius: width / (Style.monitorRatio * 2)
                 color: Style.foregroundColor
             }
-            //            onClicked: {
-            ////                backgroundRec.opacity = 0.5
-            ////                connectionConfigCpp.signalTest()
 
-            //            }
+            Binding {
+                target: testConnectionTxt
+                property: "color"
+                value: {
+                    if (animationTimer.running)
+                        return connectionConfigCpp.isConnected ? "#206900" : "#690000"
+                     else
+                        return testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
+                }
+            }
         }
         Button {
             id: saveBtn
@@ -235,7 +255,7 @@ Item {
             contentItem: Text {
                 text: "Save changes"
                 font.pixelSize: 15 / Style.monitorRatio
-                color: parent.hovered ? "#01AED6" : Style.backgroundColor
+                color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }

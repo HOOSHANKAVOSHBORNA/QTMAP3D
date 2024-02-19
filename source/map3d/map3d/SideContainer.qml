@@ -288,7 +288,7 @@ Item {
                     closeBtn.visible: false
                     connectionConfigCpp: applicationWindow.connectionConfigCpp
                     testConnectionBtn.onClicked: {
-                        connectionConfigCpp.setIsConnected(false)
+//                      connectionConfigCpp.setIsConnected(false)
                     }
 
                     Connections {
