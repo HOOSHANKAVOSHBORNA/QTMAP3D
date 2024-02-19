@@ -27,7 +27,6 @@ Item {
         Rectangle{
             id:zoomContainer
             Layout.alignment: Qt.AlignRight
-            Layout.topMargin: 220 / Style.monitorRatio
             width : 40 / Style.monitorRatio
             height: 80 / Style.monitorRatio
             color: Style.backgroundColor
@@ -153,7 +152,7 @@ Item {
         id: cameraPositionLayout
         spacing: 5
         clip: true
-        y : 205 / Style.monitorRatio
+        anchors.verticalCenter: rootItem.verticalCenter
         opacity: 1 - 1.7 * positionFactor
         x: width * positionFactor
         CameraPositionHandlerItem {
