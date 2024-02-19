@@ -16,7 +16,7 @@ Window {
     height: 800
     visible: true
 
-    color: 'red'
+    color: 'royalblue'
 
     ColumnLayout {
         anchors.fill: parent
@@ -68,7 +68,6 @@ Window {
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
-                mapItem: applicationWindow.mainPageCpp.getMapItem()
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }

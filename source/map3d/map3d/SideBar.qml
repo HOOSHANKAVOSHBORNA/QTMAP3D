@@ -10,14 +10,8 @@ Rectangle {
 
     property alias sideContainer: sideContainer
 
+    property bool listWindowVisible
     property int minWidth
-
-    property var toolboxCpp
-    property var locationCpp
-    property var connectionConfigurationCpp
-    property var profileCpp
-    property var bookmarkCpp
-    property var layerCpp
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
@@ -180,15 +174,18 @@ Rectangle {
                         }
 
                         display: AbstractButton.IconOnly
-                        checkable: true
-                        checked: false
 
-                        // TODO: listWindow creating
-                        onToggled: mainWindow.showListWindow()
+                        checkable: true
+                        checked: listWindowVisible
+
+                        onToggled: {
+                            listWindowVisible = !listWindowVisible
+                        }
 
                         ToolTip {
                             y: 0
                             x: 35
+
                             visible: btnList.hovered
 
                             contentItem: Text {

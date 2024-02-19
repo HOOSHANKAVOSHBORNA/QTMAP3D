@@ -1,13 +1,12 @@
 #include "listWindow.h"
-#include "application.h"
+
 #include <QTimer>
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 #include <QQuickItem>
 #include <QVariant>
 
-ListWindow::ListWindow(QQuickWindow *parent) :
-    QQuickWindow(parent)
+ListWindow::ListWindow(QQuickWindow *parent)
 {
     mTabbarModel = new TabbarModel();
 
