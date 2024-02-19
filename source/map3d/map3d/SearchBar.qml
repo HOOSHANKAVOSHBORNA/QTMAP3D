@@ -128,7 +128,7 @@ Item{
         shadowBlur: 1
         shadowHorizontalOffset: 1.5
         shadowVerticalOffset:.5
-        shadowOpacity:1
+        shadowOpacity:.7
         shadowScale: 0.7
 
     }
@@ -173,7 +173,7 @@ Item{
         id:filterRect
         anchors.top:  parent.top
         anchors.topMargin: 9 / Style.monitorRatio
-        color: Style.backgroundColor
+        color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,0.9)
         width:350 / Style.monitorRatio
         height:0
         radius: 20 / Style.monitorRatio

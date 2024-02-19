@@ -42,7 +42,7 @@ Rectangle {
         width: parent.width - 3/ Style.monitorRatio
         height: 20
         anchors.top: parent.top
-        color: Style.backgroundColor
+        color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,.5)
         z:2
         anchors.topMargin: mainColumn.height - 4 / Style.monitorRatio
         radius: 20
@@ -53,7 +53,7 @@ Rectangle {
         }
     }
 
-    color: "#DEE3E6"
+    color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,.5)
     width: parent.width
     radius: 15
 
@@ -214,7 +214,7 @@ Rectangle {
                     height: 28 / Style.monitorRatio - 3
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
-                    color: rootObj.backgroundColor
+                    color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,.6)
 
                     radius: 8
                     RowLayout {
@@ -383,7 +383,7 @@ Rectangle {
                     height: 28 / Style.monitorRatio - 3
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
-                    color: rootObj.backgroundColor
+                    color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,.6)
                     radius: 8
                     RowLayout {
                         anchors.left: parent.left

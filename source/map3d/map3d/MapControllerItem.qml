@@ -106,8 +106,8 @@ Item {
         shadowBlur: 0.6
         shadowHorizontalOffset: 3.5
         shadowVerticalOffset: 2.5
-        shadowOpacity: 0.25
-        shadowScale: 1.04
+        shadowOpacity: 0.1
+        shadowScale: 1
     }
 
     Compass {
