@@ -68,7 +68,6 @@ Window {
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
-                mapItem: applicationWindow.mainPageCpp.getMapItem()
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }

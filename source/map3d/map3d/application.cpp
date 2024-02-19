@@ -9,7 +9,6 @@
 #include <QSplashScreen>
 
 #include "application.h"
-#include "listWindow.h"
 #include "loadingPage.h"
 #include "mainwindow.h"
 #include "mapItem.h"
@@ -35,8 +34,6 @@ void Application::performStartupConfiguration()
 
 void Application::initialize()
 {
-    qmlRegisterType<ListWindow>("Crystal", 1, 0, "CListWindow");
-
     //--qml--------------------------------------------------
     initializeQmlEngine();
     mPluginManager->setQmlEngine(mQmlEngine);
@@ -87,19 +84,9 @@ void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
             QCoreApplication::exit(-1);
             return;
         }
-        emit ready();
 
         mPluginManager->loadPlugins();
         mPluginManager->setup();
-}
-
-void Application::show()
-{
-    if (mIsReady) {
-        mApplicationWindow->show();
-    } else {
-        QObject::connect(this, &Application::ready, [this]() { mApplicationWindow->show(); });
-    }
 }
 
 void Application::initializeSurfaceFormat()

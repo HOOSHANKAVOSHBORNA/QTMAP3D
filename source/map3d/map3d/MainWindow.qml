@@ -12,12 +12,8 @@ Item {
 
     //--properties--------------------------------------
     property var mainPageCpp
-    property var mapItem
-
     property bool listWindowVisible: false
 
-    //--------------------------------------------------
-    // visible: true
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
     property string modeMap: "geocentric"
@@ -78,7 +74,7 @@ Item {
             }
 
             MapControllerItem {
-                mapItem: mainItem.mapItem
+                mapItem: mainItem.mainPageCpp.getMapItem()
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
             }
@@ -87,5 +83,10 @@ Item {
 
     ListWindow {
         visible: mainItem.listWindowVisible
+        listWindowCpp: mainItem.mainPageCpp.getListWindow()
+
+        onClosing: {
+            listWindowVisible = false
+        }
     }
 }

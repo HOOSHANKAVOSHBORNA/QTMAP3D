@@ -33,17 +33,13 @@ MainWindow::MainWindow(QWindow *parent)
     mToolboxManager = new ToolboxManager;
     mLayerManager = new LayerManager(mMapItem);
     mBookmarkManager = new BookmarkManager;
+    mListWindow = new ListWindow;
 }
 
 MainWindow::~MainWindow()
 {
     //    cleanup();
     //    mMapItem->deleteLater();
-}
-
-QQmlEngine *MainWindow::getQmlEngine()
-{
-    return qmlEngine(this);
 }
 
 MapControllerItem *MainWindow::getMapItem()
@@ -71,18 +67,9 @@ LocationProxyModel *MainWindow::getLocationManager() const
     return mLocationManager->locationProxyModel();
 }
 
-void MainWindow::showListWindow()
-{
-    if (mListWindow) {
-        if (!mListWindow->isVisible())
-            mListWindow->showNormal();
-        else
-            mListWindow->hide();
-    }
-}
-
 void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 {
+    qDebug() << "ay-debug ------ " << mListWindow << ", " << tabItem;
     if (mListWindow) {
         mListWindow->appendItem(tabTitle, tabItem);
     } else {
@@ -93,6 +80,10 @@ void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
-//    mListWindow = listWindow;
-    //    mUIHandle->setListWindow(listWindow);
+    mListWindow = listWindow;
+}
+
+ListWindow *MainWindow::getListWindow() const
+{
+    return mListWindow;
 }

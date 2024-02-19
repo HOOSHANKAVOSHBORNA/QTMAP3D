@@ -9,6 +9,9 @@ import "style"
 Window {
     id: rootItem
 
+    property var listWindowCpp
+    property var tabbarModel: listWindowCpp.tabbarModel
+
     width: 1000
     height: 600
 
@@ -30,7 +33,7 @@ Window {
 
             Repeater {
                 id: rep
-                model: tabbarModel
+                model: rootItem.tabbarModel
 
                 Rectangle {
                     Layout.fillWidth: true
