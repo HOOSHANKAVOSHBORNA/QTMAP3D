@@ -20,10 +20,27 @@ Item {
                                                      Style.foregroundColor.b,
                                                      0.50)
     property alias connectionStatus: connectionStatus
-    property alias backBtn: backBtn
+    property alias closeBtn: closeBtn
+    property alias saveBtn: saveBtn
 
-    height: parent ? parent.height : 0
-    width: parent ? parent.width : 0
+    SequentialAnimation {
+        id: testConnectionAnimation
+
+        PropertyAnimation {
+            target: testConnectionBtn
+            property: "buttonColorOpacity"
+            from: 0
+            to: 0.2
+            duration: 2000
+        }
+        PropertyAnimation {
+            target: testConnectionBtn
+            property: "buttonColorOpacity"
+            from: 0.2
+            to: 0
+            duration: 2000
+        }
+    }
 
     ColumnLayout {
         spacing: 0
@@ -34,12 +51,13 @@ Item {
         anchors.rightMargin: 50 / Style.monitorRatio
 
         Button {
-            id: backBtn
+            id: closeBtn
             Layout.preferredHeight: 40 / Style.monitorRatio
             Layout.preferredWidth: 40 / Style.monitorRatio
             Layout.topMargin: 30 / Style.monitorRatio
+            Layout.alignment: Qt.AlignRight
             background: Image {
-                source: "qrc:/Resources/back.png"
+                source: "qrc:/Resources/close-icon.png"
             }
         }
 
@@ -58,7 +76,7 @@ Item {
 
             IconImage {
                 id: connectionStatus
-                source: "qrc:/Resources/unplugged.png"
+                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
             }
@@ -165,12 +183,38 @@ Item {
         }
 
         Button {
-            id: saveBtn
+            id: testConnectionBtn
+            property alias buttonColorOpacity: backgroundRec.color.a
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 340 / Style.monitorRatio
             Layout.fillWidth: true
             Layout.topMargin: 48 / Style.monitorRatio
+            hoverEnabled: true
+
+            contentItem: Text {
+                text: "Test Connection"
+                font.pixelSize: 15 / Style.monitorRatio
+                color: parent.hovered ? "#01AED6" : Style.backgroundColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            background: Rectangle {
+                id: backgroundRec
+                radius: width / (Style.monitorRatio * 2)
+                color: Style.foregroundColor
+            }
+            onClicked: {
+                testConnectionAnimation.start()
+            }
+        }
+        Button {
+            id: saveBtn
+            padding: 0
+            Layout.preferredHeight: 43 / Style.monitorRatio
+            Layout.preferredWidth: 340 / Style.monitorRatio
+            Layout.fillWidth: true
+            Layout.topMargin: 25 / Style.monitorRatio
             hoverEnabled: true
 
             contentItem: Text {

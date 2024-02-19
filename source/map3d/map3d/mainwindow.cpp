@@ -38,8 +38,7 @@ MainWindow::MainWindow(QWindow *parent)
 
 MainWindow::~MainWindow()
 {
-    //    cleanup();
-    //    mMapItem->deleteLater();
+    delete mMapItem;
 }
 
 MapControllerItem *MainWindow::getMapItem()
@@ -69,7 +68,6 @@ LocationProxyModel *MainWindow::getLocationManager() const
 
 void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 {
-    qDebug() << "ay-debug ------ " << mListWindow << ", " << tabItem;
     if (mListWindow) {
         mListWindow->appendItem(tabTitle, tabItem);
     } else {

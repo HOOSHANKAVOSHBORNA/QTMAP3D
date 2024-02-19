@@ -8,9 +8,23 @@
 
 ListWindow::ListWindow(QQuickWindow *parent)
 {
-    mTabbarModel = new TabbarModel;
+    mTabbarModel = new TabbarModel();
 
-//    mTabbarModel->appendRow(new TabbarItem{"something", nullptr});
+    //    mTabbarModel->appendRow(new TabbarItem{"something", nullptr});
+}
+
+ListWindow::~ListWindow()
+{
+}
+
+TabbarModel::TabbarModel(QObject *parent) : QAbstractListModel(parent)
+{
+
+}
+
+TabbarModel::~TabbarModel()
+{
+    qDeleteAll(mTabbarItems);
 }
 
 int TabbarModel::rowCount(const QModelIndex &parent) const

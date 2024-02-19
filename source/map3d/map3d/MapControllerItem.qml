@@ -12,7 +12,7 @@ Item {
 
     property bool itemVisible: true
     readonly property int iconSize: 26 / Style.monitorRatio
-    readonly property real itemMargin: 10
+    readonly property real itemMargin: 20 / Style.monitorRatio
 
     function toggleItemsVisible() {
         if (mapItem.itemVisible === true) {
@@ -116,7 +116,7 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: itemMargin
+        anchors.bottomMargin: 2*itemMargin
         headingAngle: mapItem.compassDirection.x
         pitchAngle: mapItem.compassDirection.y + 90
         color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
@@ -160,6 +160,8 @@ Item {
         //        x: parent.width - mapItem.itemPositionFactor * (width + itemMargin)
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
+        anchors.rightMargin: itemMargin
+
 
         onZoomInButtonPressedChanged: mapItem.zoomInButtonPressed = zoomInButtonPressed
         onZoomOutButtonPressedChanged: mapItem.zoomOutButtonPressed = zoomOutButtonPressed
@@ -167,7 +169,7 @@ Item {
         onMovePositionChanged: mapItem.movePosition = movePosition
         onRotatePositonChanged: mapItem.rotatePosition = rotatePositon
 
-        width: 300
+        width: 160
         height: 200
 
         onBtnHomeClicked: function () {

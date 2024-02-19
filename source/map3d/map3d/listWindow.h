@@ -27,6 +27,9 @@ class TabbarModel : public QAbstractListModel
     Q_OBJECT
 
 public:
+    TabbarModel(QObject *parent = nullptr);
+    ~TabbarModel();
+
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual QHash<int, QByteArray> roleNames() const override;
@@ -46,8 +49,10 @@ class ListWindow : public QObject
 
 public:
     ListWindow(QQuickWindow *parent = nullptr);
+    ~ListWindow();
 
     Q_INVOKABLE TabbarModel *tabbarModel() const;
+
     void setTabbarModel(TabbarModel *newTabbarModel);
     void appendItem(QString newTitle, QQuickItem *newItem);
 

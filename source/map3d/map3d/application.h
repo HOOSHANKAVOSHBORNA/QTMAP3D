@@ -39,6 +39,9 @@ public:
 private:
     static void initializeSurfaceFormat();
 
+private slots:
+    void clearMainWindow();
+
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
     MainWindow *mMainWindow = nullptr;

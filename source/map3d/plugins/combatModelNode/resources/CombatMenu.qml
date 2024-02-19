@@ -260,12 +260,12 @@ Item {
                 onWidthChanged: {
                     if(width > 420){
                         rightMotionOpen.running = true
-//                        leftMotionOpen.running = true
+                        //                        leftMotionOpen.running = true
 
                     }
                     else{
                         rightMotionClose.running = true
-//                        leftMotionClose.running = true
+                        //                        leftMotionClose.running = true
 
                     }
                 }
@@ -401,7 +401,7 @@ Item {
             source: "qrc:/Resources/down"
             height: 30 / 1.3 /*Style.monitorRatio*/
             width: 30 / 1.3 /*Style.monitorRatio*/
-visible: rowLay.width > 430
+            visible: rowLay.width > 430
             rotation: -90
             MouseArea{
                 anchors.fill: parent

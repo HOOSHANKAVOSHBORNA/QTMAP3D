@@ -98,7 +98,7 @@ Item {
             }
 
             onClicked: {
-
+                userManager.signedOut();
             }
         }
     }

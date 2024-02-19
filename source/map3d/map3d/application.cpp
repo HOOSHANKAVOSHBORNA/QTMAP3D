@@ -54,6 +54,7 @@ void Application::initialize()
                                       {"mainPageCpp", QVariant::fromValue(mMainWindow)}});
 
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
+    connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
     //--user manger------------------------------------------
 //    mUserManager = new UserManager(mServiceManager, mQmlEngine);
 
@@ -96,6 +97,12 @@ void Application::initializeSurfaceFormat()
     fmt.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
     fmt.setSamples(4);
     QSurfaceFormat::setDefaultFormat(fmt);
+}
+
+void Application::clearMainWindow()
+{
+    qDebug() << "logout----------------";
+    // delete mMainWindow;
 }
 
 ServiceManager *Application::serviceManager() const
