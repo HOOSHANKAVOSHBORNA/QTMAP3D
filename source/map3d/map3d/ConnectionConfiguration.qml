@@ -22,24 +22,35 @@ Item {
     property alias connectionStatus: connectionStatus
     property alias closeBtn: closeBtn
     property alias saveBtn: saveBtn
+    property alias testConnectionBtn: testConnectionBtn
+    property alias testConnectionTxt: testConnectionTxt.text
+    property alias testConnectionTxtColor: testConnectionTxt.color
+    property alias buttonColor: backgroundRec.color
+    property alias testConnectionAnimationStatus: testConnectionAnimationStatus
 
-    SequentialAnimation {
-        id: testConnectionAnimation
+    PropertyAnimation {
+        id: testConnectionAnimationStatus
+        target: testConnectionBtn
+        property: "backgroundColorOpacity"
+        from: 0
+        to: 0.2
+        duration: 2000
+        onFinished: {
 
-        PropertyAnimation {
-            target: testConnectionBtn
-            property: "buttonColorOpacity"
-            from: 0
-            to: 0.2
-            duration: 2000
+            testConnectionTxt.text = "Test Connection"
+            testConnectionTxt.color = Style.backgroundColor
+            backgroundRec.color = Style.foregroundColor
+            reverseAnimation.start()
         }
-        PropertyAnimation {
-            target: testConnectionBtn
-            property: "buttonColorOpacity"
-            from: 0.2
-            to: 0
-            duration: 2000
-        }
+    }
+
+    PropertyAnimation {
+        id: reverseAnimation
+        target: testConnectionBtn
+        property: "backgroundColorOpacity"
+        from: 0.2
+        to: 1
+        duration: 1000
     }
 
     ColumnLayout {
@@ -76,7 +87,7 @@ Item {
 
             IconImage {
                 id: connectionStatus
-                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
             }
@@ -184,7 +195,7 @@ Item {
 
         Button {
             id: testConnectionBtn
-            property alias buttonColorOpacity: backgroundRec.color.a
+            property alias backgroundColorOpacity: backgroundRec.color.a
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 340 / Style.monitorRatio
@@ -193,9 +204,11 @@ Item {
             hoverEnabled: true
 
             contentItem: Text {
+                id: testConnectionTxt
                 text: "Test Connection"
                 font.pixelSize: 15 / Style.monitorRatio
-                color: parent.hovered ? "#01AED6" : Style.backgroundColor
+                color: parent.hovered
+                       && (backgroundRec.opacity != 0.5) ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -204,9 +217,11 @@ Item {
                 radius: width / (Style.monitorRatio * 2)
                 color: Style.foregroundColor
             }
-            onClicked: {
-                testConnectionAnimation.start()
-            }
+            //            onClicked: {
+            ////                backgroundRec.opacity = 0.5
+            ////                connectionConfigCpp.signalTest()
+
+            //            }
         }
         Button {
             id: saveBtn

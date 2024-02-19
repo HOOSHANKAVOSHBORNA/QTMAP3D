@@ -14,6 +14,7 @@ class ConnectionConfiguration:public QObject
     Q_PROPERTY(int port READ getPort  WRITE setPort NOTIFY portChanged)
     Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ getPassword  WRITE setPassword NOTIFY passwordChanged)
+    Q_PROPERTY(bool isConnected READ isConnected WRITE setIsConnected NOTIFY isConnectedChanged)
 
 public:
    explicit ConnectionConfiguration(NetworkManager *networkManager, QObject *parent = nullptr);
@@ -32,11 +33,15 @@ public:
     Q_INVOKABLE void saveSettings();
 
 
+    bool isConnected() const;
+   Q_INVOKABLE void setIsConnected(bool newIsConnected);
+
 signals:
     void ipChanged();
     void portChanged();
     void usernameChanged();
     void passwordChanged();
+    void isConnectedChanged();
 
 private:
     QString mIp;
@@ -45,6 +50,7 @@ private:
     QString mPassword;
     QSettings* mSettings;
     NetworkManager *mNetworkManager{nullptr};
+    bool mIsConnected;
 };
 
 #endif // CONNECTIONCONFIGURATION_H
