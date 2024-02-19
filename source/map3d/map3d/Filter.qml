@@ -42,7 +42,7 @@ Rectangle {
         width: parent.width - 3/ Style.monitorRatio
         height: 20
         anchors.top: parent.top
-        color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,.5)
+        color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,.2)
         z:2
         anchors.topMargin: mainColumn.height - 4 / Style.monitorRatio
         radius: 20
@@ -255,6 +255,11 @@ Rectangle {
                                     font.pixelSize: 14 / Style.monitorRatio
                                 }
                             }
+                            onFocusChanged: {
+                                if (focus)
+                                    control.popup.open()
+                            }
+
                             indicator: Rectangle {}
                             contentItem: TextField {
                                 id: txtContentItem1
@@ -281,6 +286,7 @@ Rectangle {
                             background: Rectangle {
                                 color: "transparent"
                             }
+
                             popup: Popup {
                                 id: popupCombo1
                                 y: control.height - 1
@@ -313,7 +319,7 @@ Rectangle {
 
                                 background: Rectangle {
                                     border.color: Style.foregroundColor
-                                    radius: 2
+                                    radius: 8 * Style.monitorRatio
                                 }
                                 MouseArea {
                                     anchors.fill: parent
@@ -425,6 +431,10 @@ Rectangle {
                                     font.pixelSize: 14 / Style.monitorRatio
                                 }
                             }
+                            onFocusChanged: {
+                                if (focus)
+                                    control3.popup.open()
+                            }
                             indicator: Rectangle {}
                             contentItem: TextField {
                                 id: txtContentItem3
@@ -484,8 +494,7 @@ Rectangle {
 
                                 background: Rectangle {
                                     border.color: Style.foregroundColor
-                                    radius: 2
-                                }
+                                    radius: 8 * Style.monitorRatio                                }
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
@@ -521,19 +530,27 @@ Rectangle {
                                     }
                                     Menu {
                                         id: comparisonMenu
-                                        width: 30
-
+                                        width: 40
+                                        background: Rectangle {
+                                            width: 40
+                                            color: rootObj.backgroundColor
+                                            border.width: .3
+                                            border.color: Style.backgroundColor
+                                            radius: 8*Style.monitorRatio
+                                        }
                                         Repeater {
                                             id: repeaterMenu
+
                                             model: ["!=", "<", "<=", "=", ">=", ">"]
                                             MenuItem {
                                                 text: modelData
 
                                                 background: Rectangle {
-                                                    width: 30
+                                                    width: 40
                                                     color: rootObj.backgroundColor
                                                     border.width: .3
-                                                    border.color: "black"
+                                                    border.color: Style.backgroundColor
+                                                    radius: 8*Style.monitorRatio
                                                 }
                                                 contentItem: Text {
                                                     text: modelData
