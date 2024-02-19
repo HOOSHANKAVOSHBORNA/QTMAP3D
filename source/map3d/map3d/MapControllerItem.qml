@@ -89,7 +89,6 @@ Item {
 
     SearchBar {
         id: searcbar
-
         anchors.right: parent.right
         anchors.rightMargin: itemMargin
         anchors.top: parent.top
@@ -107,8 +106,8 @@ Item {
         shadowBlur: 0.6
         shadowHorizontalOffset: 3.5
         shadowVerticalOffset: 2.5
-        shadowOpacity: 0.25
-        shadowScale: 1.04
+        shadowOpacity: 0.1
+        shadowScale: 1
     }
 
     Compass {
@@ -154,12 +153,9 @@ Item {
     //    rotatePosition: cameraHandlerItem.rotatePositon
     CameraHandlerItem {
         id: cameraHandlerItem
-        //        anchors.fill: parent
-        //        anchors.rightMargin: itemMargin
-        //        y: parent.height / 2
-        //        x: parent.width - mapItem.itemPositionFactor * (width + itemMargin)
         anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.top: searcbar.bottom
+        anchors.topMargin: searcbar.maxheight
         anchors.rightMargin: itemMargin
 
 
@@ -169,8 +165,8 @@ Item {
         onMovePositionChanged: mapItem.movePosition = movePosition
         onRotatePositonChanged: mapItem.rotatePosition = rotatePositon
 
-        width: 160
-        height: 200
+        width: 211 / Style.monitorRatio
+        height: 200 / Style.monitorRatio
 
         onBtnHomeClicked: function () {
             mapItem.home()
@@ -181,48 +177,7 @@ Item {
         }
     }
 
-    //    Rectangle {
-    //        id: recct
-    //        width: 100
-    //        height: 100
-    //        x: parent.width - (100 + itemMargin)
-    //        y: parent.height - (100 + itemMargin + statusBar.height)
-    //        opacity: 0.5
-    //        radius: 50
-    ////        layer.enabled: true
-    //        layer.effect: OpacityMask {
-    //            maskSource: Item {
-    //                width: 100
-    //                height: 100
-    //                Rectangle {
-    //                    anchors.centerIn: parent
-    //                    width: recct.adapt ? recct.width : Math.min(recct.width, recct.height)
-    //                    height: recct.adapt ? recct.height : width
-    //                    radius: 50
-    //                }
-    //            }
-    //        }
-    //    SmallMap {
-    //        id: miniMap
-    //        objectName: "SmallMap"
-    //        //        x: mapItem.width - 100-21
-    //        //        y: mapItem.height - 120-20
-    //        anchors.right: cameraHandlerItem.right
-    //        anchors.bottom: compassItem.bottom
-    //        width: 110
-    //        height: 110
-    //        Component.onCompleted: {
-    //            setMainMapItem(map)
-    //        }
-    //        Rectangle {
-    //            anchors.centerIn: parent
-    //            width: parent.width / 15
-    //            height: width
-    //            color: "transparent"
-    //            border.color: "#01AED6"
-    //            border.width: 2
-    //        }
-    //    }
+
     StatusBar {
         id: statusBar
         anchors.bottom: parent.bottom
