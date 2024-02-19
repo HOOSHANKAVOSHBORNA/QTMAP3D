@@ -99,6 +99,8 @@ Item {
             }
             testConnectionBtn.onClicked: {
 
+                buttonColor.a = 0.5
+                connectionConfigCpp.setIsConnected(false)
             }
 
             Connections {
@@ -171,8 +173,6 @@ Item {
             backBtn.onClicked: {
                 rolePage.visible = false
                 signInPage.visible = true
-                //                heightDecrease.from = 525 / Style.monitorRatio
-                //                heightDecrease.to = 464 / Style.monitorRatio
                 heightDecrease.start()
                 topToBottomSignIn.start()
             }
@@ -185,8 +185,6 @@ Item {
             logInPageVisible = false
             signInPage.visible = false
             rolePage.visible = true
-            //            heightIncrease.from = 464 / Style.monitorRatio
-            //            heightIncrease.to = 525 / Style.monitorRatio
             heightIncrease.start()
             topToBottomRole.start()
         }

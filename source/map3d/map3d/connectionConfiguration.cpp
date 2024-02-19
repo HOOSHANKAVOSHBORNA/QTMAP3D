@@ -94,8 +94,6 @@ bool ConnectionConfiguration::isConnected() const
 
 void ConnectionConfiguration::setIsConnected(bool newIsConnected)
 {
-    if (mIsConnected == newIsConnected)
-        return;
     mIsConnected = newIsConnected;
     emit isConnectedChanged();
 }
