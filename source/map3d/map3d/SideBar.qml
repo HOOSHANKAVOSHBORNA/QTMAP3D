@@ -10,7 +10,7 @@ Rectangle {
 
     property alias sideContainer: sideContainer
 
-    property bool listWindowVisible
+    property alias listWindowVisible: btnList.checked
     property int minWidth
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r,
@@ -176,12 +176,11 @@ Rectangle {
                         display: AbstractButton.IconOnly
 
                         checkable: true
-                        checked: listWindowVisible
 
-                        onToggled: {
-                            listWindowVisible = !listWindowVisible
-                        }
-
+                        //                        checked: this take value by alias property
+                        //                        onToggled: {
+                        //                            listWindowVisible = !listWindowVisible
+                        //                        }
                         ToolTip {
                             y: 0
                             x: 35
