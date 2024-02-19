@@ -114,52 +114,6 @@ RoleSelectionModel *UserManager::roleSelectionModel() const
     return mRoleSelectionModel;
 }
 
-//Profile::Profile(ServiceManager *serviceManager, QObject *parent)
-//    : QObject(parent) , mServiceManager{serviceManager}
-//{
-
-//}
-
-//QString Profile::getName() const
-//{
-//    return mName;
-//}
-
-//void Profile::setName(const QString &newName)
-//{
-//    if (mName == newName)
-//        return;
-//    mName = newName;
-//    emit nameChanged();
-//}
-
-//QString Profile::getUsername() const
-//{
-//    return mUsername;
-//}
-
-//void Profile::setUsername(const QString &newUsername)
-//{
-//    if (mUsername == newUsername)
-//        return;
-//    mUsername = newUsername;
-//    emit usernameChanged();
-//}
-
-//void Profile::logOut()
-//{
-//  UserData userData;
-
-//  userData.name = mName;
-//  userData.userName = mUsername;
-//  userData.command = UserData::UserCommand::Logout;
-
-
-//  mServiceManager->sendUser(userData);
-//}
-
-
-
 QString UserManager::name() const
 {
     return mName;
@@ -199,15 +153,3 @@ void UserManager::setMessage(const QString &newMessage)
     emit messageChanged();
 }
 
-bool UserManager::isConnected() const
-{
-    return mIsConnected;
-}
-
-void UserManager::setIsConnected(bool newIsConnected)
-{
-    if (mIsConnected == newIsConnected)
-        return;
-    mIsConnected = newIsConnected;
-    emit isConnectedChanged();
-}

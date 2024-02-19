@@ -39,7 +39,7 @@ ColumnLayout {
         Button {
             id: connectionStatus
             background: Image {
-                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             }
             Layout.preferredHeight: 39 / Style.monitorRatio
             Layout.preferredWidth: 39 / Style.monitorRatio
