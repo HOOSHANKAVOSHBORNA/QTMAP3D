@@ -24,21 +24,16 @@ add_library(combatModelNode SHARED
     assignDataManager.h assignDataManager.cpp
 )
 
-target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
-target_include_directories(combatModelNode PUBLIC  "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d/style")
-target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawSphere")
+target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d"
+"${CMAKE_CURRENT_SOURCE_DIR}/../../map3d/style")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawAnnotation")
-target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCircle")
-target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../drawCone")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../particle")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../information")
 target_include_directories(combatModelNode PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
+# file(GLOB_RECURSE QML_FILES RELATIVE  "${CMAKE_CURRENT_SOURCE_DIR}" CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d/style/Style.qml")
 
 target_link_libraries(combatModelNode PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)
-target_link_libraries(combatModelNode PRIVATE drawSphere)
 target_link_libraries(combatModelNode PRIVATE drawAnnotation)
-target_link_libraries(combatModelNode PRIVATE drawCircle)
-target_link_libraries(combatModelNode PRIVATE drawCone)
 target_link_libraries(combatModelNode PRIVATE particle)
 target_link_libraries(combatModelNode PRIVATE information)
 target_link_libraries(combatModelNode PRIVATE model)
