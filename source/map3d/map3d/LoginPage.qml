@@ -13,6 +13,29 @@ Item {
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
 
+    Rectangle {
+        id: blueBackground
+        width: parent.width / 2
+        height: parent.height
+        z: backGroundImage.z + 1
+        //        color: "green"
+        gradient: Gradient {
+            GradientStop {
+                position: 0.0
+                color: Qt.rgba(Style.foregroundColor.r,
+                               Style.foregroundColor.g,
+                               Style.foregroundColor.b, 0.3)
+            }
+
+            GradientStop {
+                position: 1.0
+                color: Qt.rgba(Style.foregroundColor.r,
+                               Style.foregroundColor.g,
+                               Style.foregroundColor.b, 0.1)
+            }
+        }
+    }
+
     Image {
         id: backGroundImage
         source: "qrc:/Resources/login-earth.jpg"
@@ -20,7 +43,6 @@ Item {
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
     }
-
     PropertyAnimation {
         id: heightIncrease
         target: containerRect
@@ -126,9 +148,7 @@ Item {
         color: Style.backgroundColor
         width: 440 / Style.monitorRatio
         height: 464 / Style.monitorRatio
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: 0.2 * parent.width
+        anchors.centerIn: blueBackground
         radius: 20 / Style.monitorRatio
         clip: true
 
