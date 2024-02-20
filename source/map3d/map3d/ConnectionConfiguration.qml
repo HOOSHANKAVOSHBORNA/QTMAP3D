@@ -130,6 +130,9 @@ Item {
                 color: foregroundColorTextBox
                 radius: height / 2
             }
+            onTextChanged: {
+                rootItem.connectionConfigCpp.username = username.text
+            }
         }
 
         Text {
@@ -154,6 +157,9 @@ Item {
             background: Rectangle {
                 color: foregroundColorTextBox
                 radius: height / 2
+            }
+            onTextChanged: {
+                rootItem.connectionConfigCpp.password = password.text
             }
         }
 
@@ -180,6 +186,9 @@ Item {
                 color: foregroundColorTextBox
                 radius: height / 2
             }
+            onTextChanged: {
+                rootItem.connectionConfigCpp.ip = ip.text
+            }
         }
 
         Text {
@@ -204,6 +213,9 @@ Item {
             background: Rectangle {
                 color: foregroundColorTextBox
                 radius: height / 2
+            }
+            onTextChanged: {
+                rootItem.connectionConfigCpp.port = port.text
             }
         }
 
@@ -238,8 +250,9 @@ Item {
                 value: {
                     if (animationTimer.running)
                         return connectionConfigCpp.isConnected ? "#206900" : "#690000"
-                     else
-                        return testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
+                    else
+                        return testConnectionBtn.hovered
+                                && backgroundRec.color.a == 0.5 ? "#01AED6" : Style.backgroundColor
                 }
             }
         }
@@ -264,10 +277,6 @@ Item {
                 color: Style.foregroundColor
             }
             onClicked: {
-                rootItem.connectionConfigCpp.setIp(ip.text)
-                rootItem.connectionConfigCpp.setPort(port.text)
-                rootItem.connectionConfigCpp.setUsername(username.text)
-                rootItem.connectionConfigCpp.setPassword(password.text)
                 rootItem.connectionConfigCpp.saveSettings()
             }
         }

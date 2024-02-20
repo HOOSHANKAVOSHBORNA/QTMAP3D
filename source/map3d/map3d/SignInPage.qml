@@ -15,6 +15,7 @@ ColumnLayout {
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
+    property var connectionConfigCpp: undefined
     property alias usernameTxt: usernameTxt.text
     property alias passwordTxt: passwordTxt.text
     property alias connectionStatus: connectionStatus
@@ -156,8 +157,8 @@ ColumnLayout {
         contentItem: Text {
             id: signInBtnTxt
             text: "Sign in"
-            color: parent.hovered
-                   && parent.enabled ? "#01AED6" : Style.backgroundColor
+            color: parent.hovered && parent.enabled
+                   && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }

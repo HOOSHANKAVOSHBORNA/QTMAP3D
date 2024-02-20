@@ -32,9 +32,10 @@ public:
     Q_INVOKABLE void setPassword(const QString &newPassword);
     Q_INVOKABLE void saveSettings();
 
-
     bool isConnected() const;
-   Q_INVOKABLE void setIsConnected(bool newIsConnected);
+    Q_INVOKABLE void setIsConnected(bool newIsConnected);
+
+    Q_INVOKABLE void testConnection();
 
 signals:
     void ipChanged();

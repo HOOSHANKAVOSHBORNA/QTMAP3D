@@ -13,7 +13,7 @@ LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
             removeItem(0);
             mTimer->stop();
         }
-//        changeAcceptionState(0,true);
+      //  changeAcceptionState(0,true);
     });
 }
 
@@ -30,6 +30,7 @@ QVariant LoadingPage::data(const QModelIndex &index, int role) const
     switch(role) {
     case Qt::DisplayRole:
         return mLoadingDataItem[row].text;
+
 
     case acceptionState:
         return mLoadingDataItem[row].acceptionState;

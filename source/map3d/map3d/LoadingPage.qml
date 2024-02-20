@@ -8,8 +8,8 @@ Item {
         id: loadingContainer
         width: parent.width
         height: 0.1 * parent.height
-        y: 0.75 * parent.height
-        color: "transparent"
+
+        color: "pink"
         clip: true
 
         ListView {

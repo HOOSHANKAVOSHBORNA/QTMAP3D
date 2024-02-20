@@ -18,8 +18,11 @@ ConnectionConfiguration::ConnectionConfiguration(NetworkManager *networkManager,
     data = mSettings->value("configs/password", "").toString();
     mPassword = data;
 
-    if(mNetworkManager)
+    setIsConnected(false);
+    if(mNetworkManager){
+        connect(mNetworkManager, &NetworkManager::connected, this, &ConnectionConfiguration::setIsConnected);
         mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
+    }
 }
 
 QString ConnectionConfiguration::getIp() const
@@ -81,9 +84,11 @@ void ConnectionConfiguration::saveSettings()
     mSettings->setValue("configs/username", mUsername);
     mSettings->setValue("configs/password", mPassword);
 
-    if(mNetworkManager)
+    if(mNetworkManager){
         mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
-    //    mNetworkManager->isConnected();
+    }
+    else
+        setIsConnected(false);
 }
 
 
@@ -96,4 +101,13 @@ void ConnectionConfiguration::setIsConnected(bool newIsConnected)
 {
     mIsConnected = newIsConnected;
     emit isConnectedChanged();
+}
+
+void ConnectionConfiguration::testConnection()
+{
+    if(mNetworkManager){
+        mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
+    }
+    else
+        setIsConnected(false);
 }
