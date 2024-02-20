@@ -35,7 +35,7 @@ public:
     bool isConnected() const;
     void setIsConnected(bool newIsConnected);
 
-    void testConnection();
+   Q_INVOKABLE void testConnection();
 
 signals:
     void ipChanged();

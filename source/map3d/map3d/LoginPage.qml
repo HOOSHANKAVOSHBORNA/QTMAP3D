@@ -118,7 +118,7 @@ Item {
             }
             testConnectionBtn.onClicked: {
                 buttonColor.a = 0.5
-                connectionConfigCpp.setIsConnected(false)
+                connectionConfigCpp.testConnection()
             }
 
             Connections {
@@ -153,7 +153,7 @@ Item {
 
         SignInPage {
             id: signInPage
-            connectionConfigCpp:loginPage.connectionConfigCpp
+            connectionConfigCpp: loginPage.connectionConfigCpp
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio
