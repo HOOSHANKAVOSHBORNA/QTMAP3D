@@ -6,7 +6,10 @@ NetworkManager::NetworkManager(QObject *parent):
     QObject(parent)
 {
     connect(&mClient, &QAmqpClient::connected, this, &NetworkManager::clientConnected);
+    connect(&mClient, &QAmqpClient::disconnected, this, &NetworkManager::clientDisconnected);
     connect(&mClient, qOverload<QAMQP::Error >(&QAmqpClient::error), this, &NetworkManager::clientError);
+    connect(&mClient, qOverload<QAbstractSocket::SocketError >(&QAmqpClient::socketErrorOccurred), this, &NetworkManager::clientSocketError);
+    connect(&mClient, qOverload<const QList<QSslError>& >(&QAmqpClient::sslErrors), this, &NetworkManager::clientSslErrors);
 
     mClient.setAutoReconnect(true);
 }
@@ -60,6 +63,7 @@ bool NetworkManager::isConsuming()
 
 void NetworkManager::clientConnected()
 {
+    emit connected(true);
     qDebug() << "Client connected to: "<<mClient.host()<<": "<<mClient.port();
     mMap3dQueue = mClient.createQueue("Map3d");
     QAmqpQueue *map3dClientQueue = mClient.createQueue("Map3dClient");
@@ -73,9 +77,29 @@ void NetworkManager::clientConnected()
     map3dClientQueue->declare();
 }
 
+void NetworkManager::clientDisconnected()
+{
+    qDebug() << "Client diconnected from: "<<mClient.host()<<": "<<mClient.port();
+    emit connected(false);
+}
+
 void NetworkManager::clientError(QAMQP::Error error)
 {
+    emit connected(mClient.isConnected());
     qDebug()<<"error: "<<error<<": "<< mClient.errorString();
+}
+
+void NetworkManager::clientSocketError(QAbstractSocket::SocketError error)
+{
+    emit connected(mClient.isConnected());
+    qDebug()<<"SocketError: "<<error<<": "<< mClient.errorString();
+}
+
+void NetworkManager::clientSslErrors(const QList<QSslError> &errors)
+{
+    emit connected(mClient.isConnected());
+    for(const auto &error:errors)
+        qDebug()<<"SslError: "<<error.error()<<": "<< error.errorString();
 }
 
 void NetworkManager::onMap3dQueueDeclare()

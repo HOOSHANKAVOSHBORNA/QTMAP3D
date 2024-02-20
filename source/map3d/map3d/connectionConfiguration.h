@@ -33,9 +33,9 @@ public:
     Q_INVOKABLE void saveSettings();
 
     bool isConnected() const;
-    void setIsConnected(bool newIsConnected);
+    Q_INVOKABLE void setIsConnected(bool newIsConnected);
 
-   Q_INVOKABLE void testConnection();
+    Q_INVOKABLE void testConnection();
 
 signals:
     void ipChanged();

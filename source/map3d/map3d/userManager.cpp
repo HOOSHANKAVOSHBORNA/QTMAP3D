@@ -56,8 +56,8 @@ void UserManager::signIn(const QString username, const QString password)
     mServiceManager->sendUser(userData);
 
     setUserName(username);
-    emit selectRole();
-    emit signedIn();
+//    emit selectRole();
+//    emit signedIn();
 
     //--test------
     QVector<QString> testvec;
