@@ -18,6 +18,13 @@ Window {
 
     color: 'royal blue'
 
+    Image {
+        source: "qrc:/Resources/login-earth.jpg"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectCrop
+    }
+
     ColumnLayout {
         anchors.fill: parent
 

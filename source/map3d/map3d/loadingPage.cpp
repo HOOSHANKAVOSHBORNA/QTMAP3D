@@ -13,7 +13,7 @@ LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
             removeItem(0);
             mTimer->stop();
         }
-//        changeAcceptionState(0,true);
+      //  changeAcceptionState(0,true);
     });
 }
 

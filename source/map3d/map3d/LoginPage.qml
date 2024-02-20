@@ -18,7 +18,6 @@ Item {
         width: parent.width / 2
         height: parent.height
         z: backGroundImage.z + 1
-        //        color: "green"
         gradient: Gradient {
             GradientStop {
                 position: 0.0
@@ -208,19 +207,4 @@ Item {
             }
         }
     }
-
-    //    Connections {
-    //        target: userManager
-    //        function onSelectRole() {
-    //            signInPage.visible = false
-    //            rolePage.visible = true
-    //            heightIncrease.start()
-    //            topToBottomRole.start()
-    //        }
-    //        function onSignedIn() {
-    //            // signInPage.signInBtn.opacity = 1
-    //            console.log("hello everybody")
-    //            console.log(signInPage.signInBtn.opacity)
-    //        }
-    //    }
 }
