@@ -153,6 +153,7 @@ Item {
 
         SignInPage {
             id: signInPage
+            connectionConfigCpp:loginPage.connectionConfigCpp
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio

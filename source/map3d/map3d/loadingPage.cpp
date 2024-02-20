@@ -31,6 +31,7 @@ QVariant LoadingPage::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         return mLoadingDataItem[row].text;
 
+
     case acceptionState:
         return mLoadingDataItem[row].acceptionState;
     default:

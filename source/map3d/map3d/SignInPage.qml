@@ -15,6 +15,7 @@ ColumnLayout {
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
+    property var connectionConfigCpp: undefined
     property alias usernameTxt: usernameTxt.text
     property alias passwordTxt: passwordTxt.text
     property alias connectionStatus: connectionStatus

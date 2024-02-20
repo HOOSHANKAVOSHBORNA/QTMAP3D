@@ -97,3 +97,8 @@ void ConnectionConfiguration::setIsConnected(bool newIsConnected)
     mIsConnected = newIsConnected;
     emit isConnectedChanged();
 }
+
+void ConnectionConfiguration::testConnection()
+{
+
+}
