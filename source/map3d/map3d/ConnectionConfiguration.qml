@@ -238,8 +238,9 @@ Item {
                 value: {
                     if (animationTimer.running)
                         return connectionConfigCpp.isConnected ? "#206900" : "#690000"
-                     else
-                        return testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
+                    else
+                        return testConnectionBtn.hovered
+                                && backgroundRec.color.a == 0.5 ? "#01AED6" : Style.backgroundColor
                 }
             }
         }
