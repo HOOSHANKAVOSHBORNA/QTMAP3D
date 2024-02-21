@@ -102,7 +102,8 @@ void Application::initializeSurfaceFormat()
 void Application::clearMainWindow()
 {
     qDebug() << "logout----------------";
-    // delete mMainWindow;
+    mPluginManager->unLoadPlugins();
+    delete mMainWindow;
 }
 
 ServiceManager *Application::serviceManager() const

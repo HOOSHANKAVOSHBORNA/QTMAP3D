@@ -32,7 +32,7 @@ class MapControllerItem : public MapItem
     Q_PROPERTY(bool topMenuVisible READ topMenuVisible WRITE setTopMenuVisible NOTIFY topMenuVisibleChanged FINAL)
 
 public:
-    explicit MapControllerItem();
+    explicit MapControllerItem(QQuickItem *parent = nullptr);
     ~MapControllerItem();
     QVector3D mapMouseGeoLocation() const;
     QVector3D mapMouseLocation() const;

@@ -5,8 +5,8 @@
 #include "mapControllerItem.h"
 #include "searchNodeModel.h"
 
-MapControllerItem::MapControllerItem():
-    MapItem()
+MapControllerItem::MapControllerItem(QQuickItem *parent):
+    MapItem(parent)
 {
 
     initializeOsgEarth();
@@ -57,6 +57,7 @@ MapControllerItem::MapControllerItem():
 
 MapControllerItem::~MapControllerItem()
 {
+    qDebug() << "mapcontroller Deleted!";
 
 }
 

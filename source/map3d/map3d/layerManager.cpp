@@ -66,10 +66,6 @@ LayerModel::LayerModel(QObject *parent): QSortFilterProxyModel(parent)
 
 LayerModel::~LayerModel()
 {
-    delete mSourceModel;
-    for (auto &[key, value]: mLayerToItemMap) {
-        delete value;
-    }
 }
 
 void LayerModel::setMapItem(MapItem *mapItem)
