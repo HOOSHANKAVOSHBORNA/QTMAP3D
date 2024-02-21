@@ -21,7 +21,7 @@ UserTest::UserTest(ServiceManager *serviceManager):
 void UserTest::onUserDataReceived(const UserData &userData)
 {
     qDebug()<<"test received user: "<<userData.toJson();
-
+    mIsLogin = false;
     UserData responsUserData = userData;
 
     if(userData.userName == mUserData1.userName){
@@ -34,7 +34,11 @@ void UserTest::onUserDataReceived(const UserData &userData)
             }
             else if(userData.command == UserData::UserCommand::SelectRole){
                 mUserData1.selectRoleIndex = userData.selectRoleIndex;
+                mIsLogin = true;
+                emit login();
             }
+            else if(userData.command == UserData::UserCommand::Logout)
+                emit logout();
         }
         else{
             responsUserData.response.status = Response::Status::Failed;
@@ -48,10 +52,14 @@ void UserTest::onUserDataReceived(const UserData &userData)
             if(userData.command == UserData::UserCommand::Login){
                 responsUserData.roles.clear();
                 responsUserData.roles = mUserData2.roles;
+                mIsLogin = true;
+                emit login();
             }
             else if(userData.command == UserData::UserCommand::SelectRole){
                 mUserData2.selectRoleIndex = userData.selectRoleIndex;
             }
+            else if(userData.command == UserData::UserCommand::Logout)
+                emit logout();
         }
         else{
             responsUserData.response.status = Response::Status::Failed;
