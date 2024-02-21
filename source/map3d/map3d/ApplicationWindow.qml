@@ -18,6 +18,13 @@ Window {
 
     color: 'red'
 
+    Connections {
+        target: userManager
+        onSignedOut: {
+            appStack.currentIndex = 0
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
 

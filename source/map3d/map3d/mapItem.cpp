@@ -32,7 +32,11 @@ MapItem::MapItem(QQuickItem *parent) :
 
 MapItem::~MapItem()
 {
-
+    mMapObject.release();
+    mMapNode.release();
+    mSkyNode.release();
+    mMapRoot.release();
+    qDebug() << "mapitem Deleted!";
 }
 
 void MapItem::setMap(osgEarth::Map *map)
