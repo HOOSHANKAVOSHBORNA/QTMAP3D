@@ -8,19 +8,15 @@
 MapControllerItem::MapControllerItem(QQuickItem *parent):
     MapItem(parent)
 {
-
     initializeOsgEarth();
-    mSearchNodeManager = SearchNodeManager::createSingletonInstance(nullptr, nullptr);
-    mSearchNodeManager->setMapItem(this);
-    qmlRegisterSingletonType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManagerInstance", SearchNodeManager::createSingletonInstance);
+    mSearchNodeManager = new SearchNodeManager(this);
 
+    //    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
 
-//    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
-
-//    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
+    //    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
     //------------
     // Create an instance of SearchNodeManager
-//    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
+    //    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
 
     // Set the context property to expose to QML
 //    mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", searchNodeManager);
@@ -203,7 +199,7 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 
 SearchNodeManager *MapControllerItem::searchNodeManager() const
 {
-    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
+    return mSearchNodeManager;
 }
 
 QVector3D MapControllerItem::mapMouseGeoLocation() const
