@@ -86,8 +86,8 @@ ColumnLayout {
         background: Rectangle {
             color: foregroundColorTextBox
             radius: height / 2
-            //            border.width: 1
-            //            border.color: "#66ED4337"
+            border.width: (userManager.message === "") ? 0 : 1
+            border.color: (userManager.message === "") ? "#66ED4337" : "transparent"
         }
     }
     RowLayout {
@@ -121,8 +121,8 @@ ColumnLayout {
         background: Rectangle {
             color: foregroundColorTextBox
             radius: height / 2
-            //            border.width: 1
-            //            border.color: "#66ED4337"
+            border.width: (userManager.message === "") ? 0 : 1
+            border.color: (userManager.message === "") ? "#66ED4337" : "transparent"
         }
     }
 

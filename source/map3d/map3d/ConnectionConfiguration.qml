@@ -9,7 +9,7 @@ Item {
     id: rootItem
 
     property var connectionConfigCpp: undefined
-
+    property bool connectionButtonClicked: false
     readonly property color foregroundColorTextBox: Qt.rgba(
                                                         Style.foregroundColor.r,
                                                         Style.foregroundColor.g,
@@ -63,6 +63,7 @@ Item {
         duration: 100
         onFinished: {
             buttonColor.a = 1
+            testConnectionBtn.enabled = true
             testConnectionBtn.hoverEnabled = true
         }
     }
@@ -254,8 +255,12 @@ Item {
                         return connectionConfigCpp.isConnected ? "#206900" : "#690000"
                     else
                         return testConnectionBtn.hovered
-                                && backgroundRec.color.a == 0.5 ? "#01AED6" : Style.backgroundColor
+                                && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
                 }
+            }
+
+            onClicked: {
+                testConnectionBtn.enabled = false
             }
         }
         Button {
