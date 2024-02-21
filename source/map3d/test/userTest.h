@@ -14,7 +14,8 @@ private slots:
 
 private:
     ServiceManager *mServiceManager;
-    UserData mUserData;
+    UserData mUserData1;
+    UserData mUserData2;
 };
 
 #endif // USERTEST_H

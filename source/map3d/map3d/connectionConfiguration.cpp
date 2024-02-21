@@ -84,11 +84,11 @@ void ConnectionConfiguration::saveSettings()
     mSettings->setValue("configs/username", mUsername);
     mSettings->setValue("configs/password", mPassword);
 
-    if(mNetworkManager){
-        mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
-    }
-    else
-        setIsConnected(false);
+//    if(mNetworkManager){
+//        mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
+//    }
+//    else
+//        setIsConnected(false);
 }
 
 

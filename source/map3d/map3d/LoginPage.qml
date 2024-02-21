@@ -175,9 +175,13 @@ Item {
                     rolePage.visible = true
                     heightIncrease.start()
                     topToBottomRole.start()
+                    signInPage.signInResponse()
                 }
                 function onSignedIn() {
-                    signInPage.uiSignedIn()
+                    signInPage.signInResponse()
+                }
+                function onSignInFailed(){
+                    signInPage.signInResponse()
                 }
             }
         }

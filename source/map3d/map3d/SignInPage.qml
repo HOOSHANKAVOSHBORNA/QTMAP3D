@@ -20,11 +20,12 @@ ColumnLayout {
     property alias passwordTxt: passwordTxt.text
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
-    signal uiSignedIn
+    signal signInResponse
     spacing: 0
 
-    onUiSignedIn: {
+    onSignInResponse: {
         backgroundRec.color.a = 1
+        signInBtn.enabled = true
     }
 
     RowLayout {
@@ -165,6 +166,7 @@ ColumnLayout {
 
         onClicked: {
             backgroundRec.color.a = 0.5
+            signInBtn.enabled = false
         }
     }
 }
