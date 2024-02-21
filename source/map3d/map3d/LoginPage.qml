@@ -192,6 +192,7 @@ Item {
                 }
                 function onSignInFailed() {
                     signInPage.signInResponse()
+                    userManager.setMessage("")
                 }
             }
         }
