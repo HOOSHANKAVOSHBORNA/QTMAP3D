@@ -32,26 +32,26 @@ Item {
     readonly property color bg20: Qt.rgba(backgroundColor.r, backgroundColor.g,backgroundColor.b, 0.20)
     readonly property color bg60: Qt.rgba(backgroundColor.r, backgroundColor.g,backgroundColor.b, 0.8)
 
-
-
     RowLayout {
+        anchors.centerIn: parent
         id: mainRow
+        z:1
         anchors.left: parent.left
-        anchors.leftMargin: 110
+//        anchors.leftMargin: 110 / Style.monitorRatio
+
         Rectangle {
             id: nodeInfoHolder
             width: 300 / Style.monitorRatio
             height: 75 / Style.monitorRatio
-            radius: 20
-            color: "#DEE3E6"
-
+            radius: 20 / Style.monitorRatio
+            color: foregroundColor
             RowLayout {
                 anchors.left: parent.left
                 Rectangle {
                     id:downController
                     Layout.preferredHeight: 75 / Style.monitorRatio
                     Layout.preferredWidth: 55 / Style.monitorRatio
-                    radius: 20
+                    radius: 20 / Style.monitorRatio
                     color: fg02
                     IconImage {
                         id:downIcon
@@ -117,9 +117,9 @@ Item {
                                 color: "gold"
                             }
                             background: Rectangle {
-                                radius: 10
+                                radius: 10 / Style.monitorRatio
                                 border.color: root.backgroundColor
-                                border.width: 3
+                                border.width: 3 / Style.monitorRatio
                                 color: root.bg60
                             }
                         }
@@ -142,7 +142,7 @@ Item {
                 }
                 Rectangle {
                     id: attackholder
-                    Layout.leftMargin: -10
+                    Layout.leftMargin: -10 / Style.monitorRatio
                     width: 77 / Style.monitorRatio
                     height: 75 / Style.monitorRatio
                     color: "transparent"
@@ -161,7 +161,7 @@ Item {
                             GradientStop { position: 0.0; color: "red" }
                             GradientStop { position: 1.0; color: attack.rd85}
                         }
-                        radius: 15
+                        radius: 15 / Style.monitorRatio
 
                         Text {
                             id: name
@@ -176,7 +176,6 @@ Item {
                             anchors.fill: parent
                             onClicked: assignmentListModel.onAttackButtonClicked()
                             hoverEnabled: true
-
                         }
                     }
 
@@ -192,7 +191,7 @@ Item {
                             GradientStop { position: 0.0; color: root.backgroundColor }
                             GradientStop { position: 1.0; color: cancel.blue65}
                         }
-                        radius: 15
+                        radius: 15 / Style.monitorRatio
                         Text {
                             id: nameClose
                             anchors.centerIn: parent
@@ -213,260 +212,211 @@ Item {
             }
         }
 
-        Flickable {
-            id: flickable
-            width: rowLay.childrenRect.width > 425 ?425 : rowLay.childrenRect.width  ; height: rowLay.childrenRect.height
-            Layout.leftMargin: 25
-            Layout.bottomMargin: nodeInfoHolder.height - 5 / Style.monitorRatio
-            contentWidth: rowLay.width; contentHeight:  rowLay.height
-            flickableDirection : Flickable.HorizontalFlick
-            boundsMovement: Flickable.StopAtBounds
-            clip: true
-            boundsBehavior: Flickable.DragOverBounds
+        Rectangle{
+            width:55 / Style.monitorRatio
+            height: 75 / Style.monitorRatio
+            color: fg75
+            radius: 20 / Style.monitorRatio
+            ColumnLayout{
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
 
-            RowLayout{
-                id: rowLay
-                Layout.alignment: Qt.AlignVCenter
-                //                Layout.leftMargin:
-                Layout.maximumWidth: 425
-                spacing: 0
-                clip: true
-                onWidthChanged: {
-                    if(width > 420){
-                        rightMotionOpen.running = true
-                        //                        leftMotionOpen.running = true
+                IconImage {
+                    property bool flag: false
+                    id: tick
+                    sourceSize:flag ? "15x15" : "11x11"
+                    source: flag ? "qrc:/Resources/tick7" : "qrc:/Resources/tick6"
+                    width: 15 / Style.monitorRatio
+                    height: 15 / Style.monitorRatio
+                    color: backgroundColor/*objectColor*/
+                    Layout.alignment:  Qt.AlignHCenter
+                    MouseArea{
+                        anchors.fill : parent
+                        onClicked:{ tick.flag = !tick.flag
 
-                    }
-                    else{
-                        rightMotionClose.running = true
-                        //                        leftMotionClose.running = true
+                            assignmentListModel.selectAll(selectall)
+
+                            for (var i = 0; i < modelDataContainer.count; ++i) {
+                                var item = modelDataContainer.itemAt(i);
+                                if (item !== null && selectall) {
+                                    item.color =  bg20
+                                }
+                                else
+                                    item.color =  "transparent"
+
+                            }
+                            selectall =! selectall
+
+                        }
 
                     }
                 }
-
-                Repeater {
-                    id: modelDataContainer
-                    model: root.assignmentListModel
-                    delegate: Rectangle {
-                        id: node
-                        width: 131 / Style.monitorRatio
-                        height: 65 / Style.monitorRatio
-                        color: objectSelection ? bg20 : "transparent"
-                        z: -2
-                        radius: 7
-                        Layout.leftMargin: 5 / Style.monitorRatio
-
-                        Rectangle {
-                            anchors.top: parent.top
-                            anchors.topMargin: 5
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            height: parent.height / 2
-                            width: parent.width
-                            color: "transparent"
-
-                            IconImage {
-                                id: myIcon
-                                anchors.centerIn:  parent
-                                source: objectIcon
-                                width: 35 / Style.monitorRatio
-                                height: 35 / Style.monitorRatio
-                                color: backgroundColor/*objectColor*/
-                            }
-                            IconImage {
-                                id: bulletIcon
-                                visible: !opIsAttacker
-                                anchors.left: myIcon.right
-                                source: "qrc:/Resources/bullet.png"
-                                width: 35 / Style.monitorRatio
-                                height: 35 / Style.monitorRatio
-                                color: backgroundColor/*objectColor*/
-                            }
-                        }
-                        Rectangle {
-                            anchors.bottom: parent.bottom
-                            anchors.left: parent.left
-                            anchors.leftMargin: -10
-                            anchors.bottomMargin: -3
-                            height: parent.height / 2
-                            width: parent.width
-                            color: "transparent"
-
-                            Image {
-                                id: repeaterImg
-                                source: "qrc:/Resources/information.png"
-                                width: 24 / Style.monitorRatio
-                                height: 24 / Style.monitorRatio
-                                anchors.left: parent.left
-                                anchors.leftMargin: 30 / Style.monitorRatio
-                                anchors.verticalCenter: parent.verticalCenter
-                                antialiasing: true
-                            }
-                            Text {
-                                width:70 / Style.monitorRatio
-                                elide: Text.ElideRight
-                                anchors.left: repeaterImg.right
-                                anchors.leftMargin: 5
-                                text: objectID
-                                font.pixelSize: 17 / Style.monitorRatio
-                                color: root.backgroundColor
-                                anchors.verticalCenter: parent.verticalCenter
-                            }
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                assignmentListModel.onMenuItemSelect(
-                                            assignmentListModel.index(index,0).row)
-                            }
-                            onEntered: {
-                                node.color = bg20
-                                assignmentListModel.onItemHovered(
-                                            assignmentListModel.index(index,0).row,true)
-                            }
-                            onExited: {
-                                if (!objectSelection === true) {
-                                    node.color = "transparent"
-                                }
-                                assignmentListModel.onItemHovered(
-                                            assignmentListModel.index(index,0).row,false)
-                            }
-                        }
-                    }
+                Label{
+                    text: "All"
+                    font.pixelSize: 15 / Style.monitorRatio
+                    Layout.alignment: Qt.AlignHCenter
+                    color: backgroundColor
                 }
             }
         }
-    }
-
-    Rectangle{
-        width:55 / Style.monitorRatio
-        height: 75 / Style.monitorRatio
-        color: "transparent"
-        anchors.right: mainRow.right
-        anchors.rightMargin: -6
-        anchors.verticalCenter: mainRow.verticalCenter
         IconImage {
-            id:leftIcon
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.rightMargin: -5
+            id:rightIcon
             source: "qrc:/Resources/down"
-            height: 30 / Style.monitorRatio
-            width: 30 / Style.monitorRatio
-            visible: rowLay.width > 430
+            Layout.maximumWidth:20 / Style.monitorRatio
+            Layout.preferredHeight:  20 / Style.monitorRatio
+
             rotation: 90
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
-                propagateComposedEvents: true
                 onClicked:{
                     flickable.contentX += 131 / Style.monitorRatio
 
+
+                }
+                onEntered: rightIcon.width = rightIcon.width * Style.monitorRatio
+                onExited: rightIcon.width =20 / Style.monitorRatio
+            }
+        }
+
+
+
+                Flickable {
+                    id: flickable
+                    Layout.minimumWidth: 270/ Style.monitorRatio
+                    height: rowLay.childrenRect.height
+                    Layout.bottomMargin: nodeInfoHolder.height - 5 / Style.monitorRatio
+                    contentWidth: rowLay.width; contentHeight:  rowLay.height
+                    flickableDirection : Flickable.HorizontalFlick
+                    boundsMovement: Flickable.StopAtBounds
+                    clip: true
+                    boundsBehavior: Flickable.DragOverBounds
+
+                    RowLayout{
+                        id: rowLay
+                        Layout.alignment: Qt.AlignVCenter
+                        //                Layout.leftMargin:
+                        Layout.maximumWidth: 425 / Style.monitorRatio
+                        spacing: 0
+                        clip: true
+
+                        Repeater {
+                            id: modelDataContainer
+                            model: root.assignmentListModel
+                            delegate: Rectangle {
+                                id: node
+                                width: 131 / Style.monitorRatio
+                                height: 65 / Style.monitorRatio
+                                color: objectSelection ? bg20 : "transparent"
+                                z: -2
+                                radius: 7
+                                Layout.leftMargin: 5 / Style.monitorRatio
+
+                                Rectangle {
+                                    anchors.top: parent.top
+                                    anchors.topMargin: 5
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    height: parent.height / 2
+                                    width: parent.width
+                                    color: "transparent"
+
+                                    IconImage {
+                                        id: myIcon
+                                        anchors.centerIn:  parent
+                                        source: objectIcon
+                                        width: 35 / Style.monitorRatio
+                                        height: 35 / Style.monitorRatio
+                                        color: backgroundColor/*objectColor*/
+                                    }
+                                    IconImage {
+                                        id: bulletIcon
+                                        visible: !opIsAttacker
+                                        anchors.left: myIcon.right
+                                        source: "qrc:/Resources/bullet.png"
+                                        width: 35 / Style.monitorRatio
+                                        height: 35 / Style.monitorRatio
+                                        color: backgroundColor/*objectColor*/
+                                    }
+                                }
+                                Rectangle {
+                                    anchors.bottom: parent.bottom
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: -10/ Style.monitorRatio
+                                    anchors.bottomMargin: -3
+                                    height: parent.height / 2
+                                    width: parent.width
+                                    color: "transparent"
+
+                                    Image {
+                                        id: repeaterImg
+                                        source: "qrc:/Resources/information.png"
+                                        width: 24 / Style.monitorRatio
+                                        height: 24 / Style.monitorRatio
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: 30 / Style.monitorRatio
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        antialiasing: true
+                                    }
+                                    Text {
+                                        width:70 / Style.monitorRatio
+                                        elide: Text.ElideRight
+                                        anchors.left: repeaterImg.right
+                                        anchors.leftMargin: 5
+                                        text: objectID
+                                        font.pixelSize: 17 / Style.monitorRatio
+                                        color: root.backgroundColor
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: {
+                                        assignmentListModel.onMenuItemSelect(
+                                                    assignmentListModel.index(index,0).row)
+                                    }
+                                    onEntered: {
+                                        node.color = bg20
+                                        assignmentListModel.onItemHovered(
+                                                    assignmentListModel.index(index,0).row,true)
+                                    }
+                                    onExited: {
+                                        if (!objectSelection === true) {
+                                            node.color = "transparent"
+                                        }
+                                        assignmentListModel.onItemHovered(
+                                                    assignmentListModel.index(index,0).row,false)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+        IconImage {
+            id:leftIcon
+            source: "qrc:/Resources/down"
+            Layout.maximumWidth:20 / Style.monitorRatio
+            Layout.preferredHeight:  20 / Style.monitorRatio
+            rotation: -90
+            MouseArea{
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked:{
+                    flickable.contentX -= 131 / Style.monitorRatio
+
                 }
                 onEntered: leftIcon.width = leftIcon.width * Style.monitorRatio
-                onExited: leftIcon.width = 30 / Style.monitorRatio
+                onExited: leftIcon.width = 20 / Style.monitorRatio
             }
         }
-        ColumnLayout{
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            IconImage {
-                property bool flag: false
-                id: tick
-                sourceSize:flag ? "15x15" : "11x11"
-                source: flag ? "qrc:/Resources/tick7" : "qrc:/Resources/tick6"
-                width: 15 / Style.monitorRatio
-                height: 15 / Style.monitorRatio
-                color: backgroundColor/*objectColor*/
-                Layout.alignment:  Qt.AlignHCenter
-                MouseArea{
-                    anchors.fill : parent
-                    onClicked:{ tick.flag = !tick.flag
-
-                        assignmentListModel.selectAll(selectall)
-
-                        for (var i = 0; i < modelDataContainer.count; ++i) {
-                            var item = modelDataContainer.itemAt(i);
-                            if (item !== null && selectall) {
-                                item.color =  bg20
-                            }
-                            else
-                                item.color =  "transparent"
-
-                        }
-                        selectall =! selectall
-
-                    }
-
-                }
-            }
-            Label{
-                text: "All"
-                font.pixelSize: 15 / Style.monitorRatio
-                Layout.alignment: Qt.AlignHCenter
-                color: backgroundColor
-            }
-        }
-    }
-    Rectangle {
-
-        id: nodesBackground
-        anchors.left: mainRow.left
-        anchors.verticalCenter: mainRow.verticalCenter
-        anchors.leftMargin: nodeInfoHolder.width - attackholder.width / 2
-        radius: 20
-        color: fg75
-
-        width: (rowLay.childrenRect.width  > 425 ? 534 : (rowLay.childrenRect.width  +  100))
-        height: 75 / Style.monitorRatio
-        z: -2
-
-        Rectangle{
-            id:right
-            anchors.right: parent.right
-            anchors.rightMargin: 0
-            height: 75 / Style.monitorRatio
-            width: 55 / Style.monitorRatio
-            color: Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)
-            radius: 20
-            //            border.width: 1
-            //            border.color: "white"
-            IconImage {
-                id:rightIcon
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.leftMargin: -5
-                source: "qrc:/Resources/down"
-                height: 30 / Style.monitorRatio
-                width: 30 / Style.monitorRatio
-
-                rotation: -90
-                MouseArea{
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked:{
-                        flickable.contentX -= 131 / Style.monitorRatio
-
-                    }
-                    onEntered: rightIcon.width = rightIcon.width * Style.monitorRatio
-                    onExited: rightIcon.width = 30 / Style.monitorRatio
-                }
-            }
-        }
-
-
-
 
         Rectangle{
             height: 75 / Style.monitorRatio
             width: 55 / Style.monitorRatio
-            radius: 20
-            color:/*Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
-                          nodeInfoHolder.b, .03)*/"#DEE3E6"
-            anchors.right: parent.right
-
-
+            radius: 20 / Style.monitorRatio
+            color:fg50
             Rectangle {
                 id:addbtn
                 anchors.top:parent.top
@@ -544,42 +494,14 @@ Item {
             }
 
         }
-        PropertyAnimation {
-            id: rightMotionOpen
-            target: right
-            properties: "anchors.rightMargin"
-            to: 13
-            from: 0
-            duration: 200
-            easing.type: Easing.OutQuint
-        }
-        PropertyAnimation {
-            id: rightMotionClose
-            target: right
-            properties: "anchors.rightMargin"
-            to: 0
-            duration: 200
-            easing.type: Easing.OutQuint
-        }
 
-        //        PropertyAnimation {
-        //            id: leftMotionOpen
-        //            target: left
-        //            properties: "width"
-        //            to: 55 / Style.monitorRatio
-        //            from: 0
-        //            duration: 200
-        //            easing.type: Easing.OutQuint
-        //        }
-        //        PropertyAnimation {
-        //            id: leftMotionClose
-        //            target: left
-        //            properties: "width"
-        //            to: 0
-        //            duration: 200
-        //            easing.type: Easing.OutQuint
-        //        }
-
+    }
+    Rectangle{
+        anchors.fill: mainRow
+        anchors.bottomMargin: 1 / Style.monitorRatio
+        color: fg50
+        z:0
+        radius: 20 / Style.monitorRatio
     }
 
     Rectangle {
@@ -588,9 +510,8 @@ Item {
         height: 45 / Style.monitorRatio
         color: fg50
         radius: width / 2
-        anchors.left: nodesBackground.right
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: 10 / Style.monitorRatio
+        anchors.left: mainRow.right
+        anchors.verticalCenter: mainRow.verticalCenter
         IconImage {
             anchors.centerIn: parent
             source: "qrc:/Resources/close-icon"
@@ -599,6 +520,7 @@ Item {
             color: "white"
         }
         MouseArea {
+
             anchors.fill: parent
             onClicked: {
                 assignmentListModel.onCloseMenuClicked()
@@ -608,9 +530,77 @@ Item {
                 root.removeCheck = false
                 assignmentListModel.onRemoveButtonChecked(false)
                 assignmentListModel.onAddButtonChecked(false)
+                tick.flag = false
             }
         }
     }
+    //    Rectangle {
+
+    //        id: nodesBackground
+    //        anchors.left: mainRow.left
+    //        anchors.verticalCenter: mainRow.verticalCenter
+    //        anchors.leftMargin: nodeInfoHolder.width - attackholder.width / 2
+    //        radius: 20 / Style.monitorRatio
+    //        color: fg75
+
+    //        width: (rowLay.childrenRect.width  > 425 ? 534 : (rowLay.childrenRect.width  +  100))
+    //        height: 75 / Style.monitorRatio
+    //        z: -2
+
+    //        Rectangle{
+    //            id:right
+    //            anchors.right: parent.right
+    //            anchors.rightMargin: 0
+    //            height: 75 / Style.monitorRatio
+    //            width: 55 / Style.monitorRatio
+    //            color: Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)
+    //            radius: 20 / Style.monitorRatio
+    //            //            border.width: 1
+    //            //            border.color: "white"
+
+    //        }
+
+
+
+
+    //        PropertyAnimation {
+    //            id: rightMotionOpen
+    //            target: right
+    //            properties: "anchors.rightMargin"
+    //            to: 13
+    //            from: 0
+    //            duration: 200
+    //            easing.type: Easing.OutQuint
+    //        }
+    //        PropertyAnimation {
+    //            id: rightMotionClose
+    //            target: right
+    //            properties: "anchors.rightMargin"
+    //            to: 0
+    //            duration: 200
+    //            easing.type: Easing.OutQuint
+    //        }
+
+    //        //        PropertyAnimation {
+    //        //            id: leftMotionOpen
+    //        //            target: left
+    //        //            properties: "width"
+    //        //            to: 55 / Style.monitorRatio
+    //        //            from: 0
+    //        //            duration: 200
+    //        //            easing.type: Easing.OutQuint
+    //        //        }
+    //        //        PropertyAnimation {
+    //        //            id: leftMotionClose
+    //        //            target: left
+    //        //            properties: "width"
+    //        //            to: 0
+    //        //            duration: 200
+    //        //            easing.type: Easing.OutQuint
+    //        //        }
+
+    //    }
+
     //////////
 
     Rectangle{
@@ -620,7 +610,7 @@ Item {
         anchors.left: mainRow.left
         anchors.top: mainRow.top
         z:-2
-        radius: 20
+        radius: 20 / Style.monitorRatio
 
     }
 
@@ -629,7 +619,7 @@ Item {
     Rectangle {
         id:bottomLayer
         color: "#DEE3E6"
-        radius: 20
+        radius: 20 / Style.monitorRatio
         width: (downIcon.rotation / 180) % 2 !== 0 ?  (operatorLayout.width + battleLocationIcons.width + 10 < 455 ?
                                                            operatorLayout.width + battleLocationIcons.width + 10
                                                          : 455) : 0
@@ -648,14 +638,14 @@ Item {
             width : 55 / Style.monitorRatio
             color :Qt.rgba(nodeInfoHolder.r, nodeInfoHolder.g,
                            nodeInfoHolder.b, .02)
-            radius: 20
+            radius: 20 / Style.monitorRatio
             Rectangle{
                 width: 39 / Style.monitorRatio
                 height: 29 / Style.monitorRatio
                 anchors.top: parent.top
                 anchors.topMargin: 7 /Style.monitorRatio
                 anchors.horizontalCenter: parent.horizontalCenter
-                radius: 12
+                radius: 12 / Style.monitorRatio
                 color: mouseArea.containsMouse ? bg20 : (opIsAttacker ? bg20 :"transparent")
                 IconImage {
                     anchors.centerIn: parent
@@ -743,13 +733,13 @@ Item {
                         height: 60 / Style.monitorRatio
                         color: operatorSelect ? bg20 : "transparent"
                         z: -2
-                        radius: 7
+                        radius: 7 / Style.monitorRatio
                         Layout.topMargin: 5 / Style.monitorRatio
                         Layout.leftMargin: 5 / Style.monitorRatio
 
                         Rectangle {
                             anchors.top: parent.top
-                            anchors.topMargin: 5
+                            anchors.topMargin: 5 / Style.monitorRatio
                             anchors.horizontalCenter: parent.horizontalCenter
                             height: parent.height / 2
                             width: parent.width
