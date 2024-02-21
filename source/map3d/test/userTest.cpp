@@ -4,9 +4,16 @@
 UserTest::UserTest(ServiceManager *serviceManager):
     mServiceManager(serviceManager)
 {
-    mUserData.name = "Test Name";
-    mUserData.userName = "test1";
-    mUserData.password = "1234";
+    mUserData1.name = "Test1 Name";
+    mUserData1.userName = "test1";
+    mUserData1.password = "1234";
+    mUserData1.roles.append("Admin");
+    mUserData1.roles.append("User");
+    mUserData1.roles.append("Reviewer");
+
+    mUserData2.name = "Test2 Name";
+    mUserData2.userName = "test2";
+    mUserData2.password = "1234";
 
     QObject::connect(mServiceManager, &ServiceManager::userDataReceived, this, &UserTest::onUserDataReceived);
 }
@@ -14,24 +21,47 @@ UserTest::UserTest(ServiceManager *serviceManager):
 void UserTest::onUserDataReceived(const UserData &userData)
 {
     qDebug()<<"test received user: "<<userData.toJson();
-    if(userData.userName == mUserData.userName
-        && userData.password == mUserData.password){
-        mUserData.response.status = Response::Status::Success;
-        mUserData.response.message = "";
-        if(userData.command == UserData::UserCommand::Login){
-            mUserData.roles.clear();
-            mUserData.roles.append("Admin");
-            mUserData.roles.append("User");
-            mUserData.roles.append("Reviewer");
+
+    UserData responsUserData = userData;
+
+    if(userData.userName == mUserData1.userName){
+        if(userData.password == mUserData1.password){
+            responsUserData.response.status = Response::Status::Success;
+            responsUserData.response.message = "";
+            if(userData.command == UserData::UserCommand::Login){
+                responsUserData.roles.clear();
+                responsUserData.roles = mUserData1.roles;
+            }
+            else if(userData.command == UserData::UserCommand::SelectRole){
+                mUserData1.selectRoleIndex = userData.selectRoleIndex;
+            }
         }
-        else if(userData.command == UserData::UserCommand::Login){
-            mUserData.selectRoleIndex = userData.selectRoleIndex;
+        else{
+            responsUserData.response.status = Response::Status::Failed;
+            responsUserData.response.message = "Password is wrong.";
+        }
+    }
+    else if(userData.userName == mUserData2.userName){
+        if(userData.password == mUserData2.password){
+            responsUserData.response.status = Response::Status::Success;
+            responsUserData.response.message = "";
+            if(userData.command == UserData::UserCommand::Login){
+                responsUserData.roles.clear();
+                responsUserData.roles = mUserData2.roles;
+            }
+            else if(userData.command == UserData::UserCommand::SelectRole){
+                mUserData2.selectRoleIndex = userData.selectRoleIndex;
+            }
+        }
+        else{
+            responsUserData.response.status = Response::Status::Failed;
+            responsUserData.response.message = "Password is wrong.";
         }
     }
     else{
-        mUserData.response.status = Response::Status::Failed;
-        mUserData.response.message = "User name or password is wrong.";
+        responsUserData.response.status = Response::Status::Failed;
+        responsUserData.response.message = "User name is wrong.";
     }
-    mUserData.command = userData.command;
-    mServiceManager->sendUser(mUserData);
+
+    mServiceManager->sendUser(responsUserData);
 }

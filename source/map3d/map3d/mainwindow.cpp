@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWindow *parent)
 MainWindow::~MainWindow()
 {
     delete mMapItem;
+    qDebug() << "mainWindow Deleted!";
 }
 
 MapControllerItem *MainWindow::getMapItem()

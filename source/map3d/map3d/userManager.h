@@ -58,16 +58,13 @@ signals:
     void authenticationFailed();
     void signedOut();
     void selectRole();
+    void signInFailed();
 
     void userDataChanged();
 
     void nameChanged();
-
     void userNameChanged();
-
     void messageChanged();
-
-
 
 private slots:
     void onUserDataReceived(const UserData &userData);
