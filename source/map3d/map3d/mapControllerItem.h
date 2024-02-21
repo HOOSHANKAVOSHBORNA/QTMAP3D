@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QTime>
+
 #include "mapItem.h"
 #include "searchNodeModel.h"
 #include "statusBar.h"
+
 Q_DECLARE_METATYPE(SearchNodeModel)
 class SmallMap;
 class FilterManager;

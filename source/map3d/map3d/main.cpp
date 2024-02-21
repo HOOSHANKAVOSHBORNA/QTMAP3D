@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
    // });
     //---------------------------------
     map3DApp->initialize();
-    map3DApp->show();
 
     return app.exec();
 }

@@ -50,9 +50,9 @@ private:
 class OperatorListModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(QString operatorName       READ getOperatorName       WRITE setOperatorName       NOTIFY operatorChanged FINAL)
-    Q_PROPERTY(QUrl    operatorIcon       READ getOperatorIcon       WRITE setOperatorIcon       NOTIFY operatorChanged FINAL)
-    Q_PROPERTY(bool    operatorIsAttacker READ getOperatorIsAttacker WRITE setOperatorIsAttacker NOTIFY operatorChanged FINAL)
+    Q_PROPERTY(QString operatorName       READ getOperatorName       WRITE setOperatorName       NOTIFY operatorChanged )
+    Q_PROPERTY(QUrl    operatorIcon       READ getOperatorIcon       WRITE setOperatorIcon       NOTIFY operatorChanged )
+    Q_PROPERTY(bool    operatorIsAttacker READ getOperatorIsAttacker WRITE setOperatorIsAttacker NOTIFY operatorChanged )
 
 public:
     enum CustomRoles {
@@ -80,6 +80,7 @@ public:
 
 signals:
     void operatorChanged();
+    void operatorListChanged(bool attackerType);
 
 private:
     AssignmentListModel *mAssignmentListModel;
@@ -90,7 +91,7 @@ private:
 
     QString mOperatorName;
     QUrl mOperatorIcon;
-    int mOperatorIsAttacker;
+    bool mOperatorIsAttacker;
 
 };
 
@@ -110,8 +111,6 @@ private:
     MapControllerItem *mMapItem;
     AssignmentListModel *mAssignmentListModel;
     OperatorListModel *mOperatorListModel;
-
-
 
 };
 

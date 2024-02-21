@@ -26,10 +26,7 @@ class UserManager : public QObject
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
-    Q_PROPERTY(QString loginMessage READ loginMessage WRITE setLoginMessage NOTIFY loginMessageChanged)
-    Q_PROPERTY(QString roleMessage READ roleMessage WRITE setRoleMessage NOTIFY roleMessageChanged)
-    Q_PROPERTY(bool rolePageVisible READ rolePageVisible WRITE setRolePageVisible NOTIFY selectRole)
-    Q_PROPERTY(bool isConnected READ isConnected WRITE setIsConnected NOTIFY isConnectedChanged)
+    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
 
 
 public:
@@ -51,16 +48,9 @@ public:
     QString userName() const;
     void setUserName(const QString &newUserName);
 
-    QString loginMessage() const;
-    void setLoginMessage(const QString &newMessage);
+    QString message() const;
+    void setMessage(const QString &newMessage);
 
-    bool rolePageVisible() const;
-    Q_INVOKABLE void setRolePageVisible(bool newRolePageVisible);
-
-    QString roleMessage() const;
-    void setRoleMessage(const QString &newRoleMessage);
-
-    bool isConnected() const;
     void setIsConnected(bool newIsConnected);
 
 signals:
@@ -74,11 +64,9 @@ signals:
 
     void userNameChanged();
 
-    void loginMessageChanged();
+    void messageChanged();
 
-    void roleMessageChanged();
 
-    void isConnectedChanged();
 
 private slots:
     void onUserDataReceived(const UserData &userData);
@@ -89,60 +77,11 @@ private:
     RoleSelectionModel* mRoleSelectionModel;
     QString mName;
     QString mUserName;
-    QString mLoginMessage;
+    QString mMessage;
     bool mRolePageVisible;
-    QString mRoleMessage;
-    bool mIsConnected;
+
 };
 
-//class Profile:public QObject
-//{
-//    Q_OBJECT
-
-//    Q_PROPERTY(QString name READ getName  WRITE setName NOTIFY nameChanged)
-//    Q_PROPERTY(QString username READ getUsername  WRITE setUsername NOTIFY usernameChanged)
-
-//public:
-
-
-//    explicit Profile(ServiceManager *serviceManager, QObject *parent = nullptr);
-
-//    QString getName() const;
-//    void setName(const QString &newName);
-//    QString getUsername() const;
-//    void setUsername(const QString &newUsername);
-//    Q_INVOKABLE void logOut();
-
-
-//signals:
-//    void nameChanged();
-//    void usernameChanged();
-
-//private:
-//    ServiceManager* mServiceManager{nullptr};
-//    QString mName{"Alireza Nabati"};
-//    QString mUsername{"Alirez98"};
-//};
-
-
-//class UserManager: public QObject
-//{
-//    Q_OBJECT
-
-//public:
-//    UserManager(ServiceManager *serviceManager,QQmlApplicationEngine *qmlEngine, QObject *parent = nullptr);
-
-//signals:
-//    void signedIn();
-
-
-//private:
-//    ServiceManager *mServiceManager{nullptr};
-//    QQmlApplicationEngine *mQmlEngine{nullptr};
-//    LoginPage *mLoginPage{nullptr};
-//    Profile *mProfile;
-//    LoadingPage *mLoadingInfo;
-//};
 
 
 

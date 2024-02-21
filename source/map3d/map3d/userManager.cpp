@@ -56,8 +56,8 @@ void UserManager::signIn(const QString username, const QString password)
     mServiceManager->sendUser(userData);
 
     setUserName(username);
-    setRolePageVisible(true);
-    setLoginMessage("Wrong username or password");
+//    emit selectRole();
+//    emit signedIn();
 
     //--test------
     QVector<QString> testvec;
@@ -114,52 +114,6 @@ RoleSelectionModel *UserManager::roleSelectionModel() const
     return mRoleSelectionModel;
 }
 
-//Profile::Profile(ServiceManager *serviceManager, QObject *parent)
-//    : QObject(parent) , mServiceManager{serviceManager}
-//{
-
-//}
-
-//QString Profile::getName() const
-//{
-//    return mName;
-//}
-
-//void Profile::setName(const QString &newName)
-//{
-//    if (mName == newName)
-//        return;
-//    mName = newName;
-//    emit nameChanged();
-//}
-
-//QString Profile::getUsername() const
-//{
-//    return mUsername;
-//}
-
-//void Profile::setUsername(const QString &newUsername)
-//{
-//    if (mUsername == newUsername)
-//        return;
-//    mUsername = newUsername;
-//    emit usernameChanged();
-//}
-
-//void Profile::logOut()
-//{
-//  UserData userData;
-
-//  userData.name = mName;
-//  userData.userName = mUsername;
-//  userData.command = UserData::UserCommand::Logout;
-
-
-//  mServiceManager->sendUser(userData);
-//}
-
-
-
 QString UserManager::name() const
 {
     return mName;
@@ -186,54 +140,16 @@ void UserManager::setUserName(const QString &newUserName)
     emit userNameChanged();
 }
 
-QString UserManager::loginMessage() const
+QString UserManager::message() const
 {
-    return mLoginMessage;
+    return mMessage;
 }
 
-void UserManager::setLoginMessage(const QString &newMessage)
+void UserManager::setMessage(const QString &newMessage)
 {
-    if (mLoginMessage == newMessage)
+    if (mMessage == newMessage)
         return;
-    mLoginMessage = newMessage;
-    emit loginMessageChanged();
+    mMessage = newMessage;
+    emit messageChanged();
 }
 
-bool UserManager::rolePageVisible() const
-{
-    return mRolePageVisible;
-}
-
-void UserManager::setRolePageVisible(bool newRolePageVisible)
-{
-    if (mRolePageVisible == newRolePageVisible)
-        return;
-    mRolePageVisible = newRolePageVisible;
-    emit selectRole();
-}
-
-QString UserManager::roleMessage() const
-{
-    return mRoleMessage;
-}
-
-void UserManager::setRoleMessage(const QString &newRoleMessage)
-{
-    if (mRoleMessage == newRoleMessage)
-        return;
-    mRoleMessage = newRoleMessage;
-    emit roleMessageChanged();
-}
-
-bool UserManager::isConnected() const
-{
-    return mIsConnected;
-}
-
-void UserManager::setIsConnected(bool newIsConnected)
-{
-    if (mIsConnected == newIsConnected)
-        return;
-    mIsConnected = newIsConnected;
-    emit isConnectedChanged();
-}

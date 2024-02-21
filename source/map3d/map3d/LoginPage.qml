@@ -13,11 +13,28 @@ Item {
     width: 1920 / Style.monitorRatio
     height: 1080 / Style.monitorRatio
 
-    property bool logInPageVisible: true
+    Rectangle {
+        id: blueBackground
+        width: parent.width / 2
+        height: parent.height
+        z: backGroundImage.z + 1
+        gradient: Gradient {
+            GradientStop {
+                position: 0.0
+                color: Qt.rgba(Style.foregroundColor.r,
+                               Style.foregroundColor.g,
+                               Style.foregroundColor.b, 0.3)
+            }
 
-    //    onSignedIn: (status)=>{
+            GradientStop {
+                position: 1.0
+                color: Qt.rgba(Style.foregroundColor.r,
+                               Style.foregroundColor.g,
+                               Style.foregroundColor.b, 0.1)
+            }
+        }
+    }
 
-    //    }
     Image {
         id: backGroundImage
         source: "qrc:/Resources/login-earth.jpg"
@@ -25,14 +42,13 @@ Item {
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
     }
-
     PropertyAnimation {
         id: heightIncrease
         target: containerRect
         easing.type: Easing.OutCirc
         property: "height"
         from: 464 / Style.monitorRatio
-        to: 687 / Style.monitorRatio
+        to: 525 / Style.monitorRatio
         duration: 500
     }
     PropertyAnimation {
@@ -40,7 +56,7 @@ Item {
         target: containerRect
         easing.type: Easing.OutCirc
         property: "height"
-        from: 687 / Style.monitorRatio
+        from: 525 / Style.monitorRatio
         to: 464 / Style.monitorRatio
         duration: 500
     }
@@ -76,7 +92,7 @@ Item {
         id: connectionPopUp
         visible: false
         x: containerRect.x
-        y: containerRect.y
+        y: (parent.height - connectionPopUp.height) / 2
         z: containerRect.z + 1
         clip: true
         width: 440 / Style.monitorRatio
@@ -100,6 +116,28 @@ Item {
                 connectionPopUp.visible = false
                 containerRect.enabled = true
             }
+            testConnectionBtn.onClicked: {
+                buttonColor.a = 0.5
+                connectionConfigCpp.testConnection()
+            }
+
+            Connections {
+                target: connectionConfigCpp
+
+                function onIsConnectedChanged() {
+                    if (connectionConfigCpp.isConnected) {
+                        connectionPage.testConnectionTxt = "Connected"
+                        connectionPage.testConnectionTxtColor = "#206900"
+                        connectionPage.buttonColor = "#206900"
+                        connectionPage.testConnectionAnimationStatus.start()
+                    } else {
+                        connectionPage.testConnectionTxt = "Disconnected"
+                        connectionPage.testConnectionTxtColor = "#690000"
+                        connectionPage.buttonColor = "#690000"
+                        connectionPage.testConnectionAnimationStatus.start()
+                    }
+                }
+            }
         }
     }
 
@@ -109,14 +147,13 @@ Item {
         color: Style.backgroundColor
         width: 440 / Style.monitorRatio
         height: 464 / Style.monitorRatio
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: 0.2 * parent.width
+        anchors.centerIn: blueBackground
         radius: 20 / Style.monitorRatio
         clip: true
 
         SignInPage {
             id: signInPage
+            connectionConfigCpp: loginPage.connectionConfigCpp
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio
@@ -129,14 +166,18 @@ Item {
             signInBtn.onClicked: {
                 userManager.signIn(signInPage.usernameTxt,
                                    signInPage.passwordTxt)
-                if (userManager.rolePageVisible) {
-                    logInPageVisible = false
+            }
+
+            Connections {
+                target: userManager
+                function onSelectRole() {
                     signInPage.visible = false
                     rolePage.visible = true
-                    heightIncrease.from = 464 / Style.monitorRatio
-                    heightIncrease.to = 525 / Style.monitorRatio
                     heightIncrease.start()
                     topToBottomRole.start()
+                }
+                function onSignedIn() {
+                    signInPage.uiSignedIn()
                 }
             }
         }
@@ -162,8 +203,6 @@ Item {
             backBtn.onClicked: {
                 rolePage.visible = false
                 signInPage.visible = true
-                heightDecrease.from = 525 / Style.monitorRatio
-                heightDecrease.to = 464 / Style.monitorRatio
                 heightDecrease.start()
                 topToBottomSignIn.start()
             }

@@ -39,7 +39,7 @@ ColumnLayout {
         Button {
             id: connectionStatus
             background: Image {
-                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             }
             Layout.preferredHeight: 39 / Style.monitorRatio
             Layout.preferredWidth: 39 / Style.monitorRatio
@@ -112,14 +112,14 @@ ColumnLayout {
     RowLayout {
         spacing: 0
         Layout.topMargin: 12 / Style.monitorRatio
-        opacity: 0
+        opacity: (userManager.message === "") ? 0 : 1
         Image {
             source: "qrc:/Resources/error.png"
             Layout.preferredHeight: 20 / Style.monitorRatio
             Layout.preferredWidth: 20 / Style.monitorRatio
         }
         Text {
-            text: userManager.roleMessage
+            text: userManager.message
             font.pixelSize: 17 / Style.monitorRatio
             color: "#ED4337"
             Layout.leftMargin: 5 / Style.monitorRatio

@@ -3,10 +3,15 @@ import QtQuick.Layouts 1.13
 import QtQuick.Controls 2.13
 import Crystal 1.0
 import QtQuick.Window 2.13
+
 import "style"
 
-CListWindow {
+Window {
     id: rootItem
+
+    property var listWindowCpp
+    property var tabbarModel: listWindowCpp.tabbarModel
+
     width: 1000
     height: 600
 
@@ -28,7 +33,7 @@ CListWindow {
 
             Repeater {
                 id: rep
-                model: tabbarModel
+                model: rootItem.tabbarModel
 
                 Rectangle {
                     Layout.fillWidth: true

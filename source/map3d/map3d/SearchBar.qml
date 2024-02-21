@@ -9,6 +9,7 @@ Item{
     property var model
     property var filterManager
     property bool flag: true
+    property real maxheight : 420 / Style.monitorRatio
     property int iconSize: 26/Style.monitorRatio
     readonly property color fg: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.50)
     property ListModel history: ListModel {
@@ -33,7 +34,7 @@ Item{
         width: parent.width
         height: 40 / Style.monitorRatio
         color:Style.backgroundColor
-        radius:width > 40/ Style.monitorRatio ? 20/ Style.monitorRatio :width/2
+        radius:width > 40 / Style.monitorRatio ? 20 / Style.monitorRatio : width/2
         z:1
         IconImage{
             id:searchIcon
@@ -127,7 +128,7 @@ Item{
         shadowBlur: 1
         shadowHorizontalOffset: 1.5
         shadowVerticalOffset:.5
-        shadowOpacity:1
+        shadowOpacity:.7
         shadowScale: 0.7
 
     }
@@ -172,7 +173,7 @@ Item{
         id:filterRect
         anchors.top:  parent.top
         anchors.topMargin: 9 / Style.monitorRatio
-        color: Style.backgroundColor
+        color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,0.9)
         width:350 / Style.monitorRatio
         height:0
         radius: 20 / Style.monitorRatio
@@ -182,7 +183,6 @@ Item{
 
         Filter {
             id: dropDown
-            property int innerWidth
             anchors.top: filterRect.top
             anchors.topMargin: 25 / Style.monitorRatio
             anchors.left: parent.left
@@ -195,8 +195,8 @@ Item{
     ScrollView{
         z:1
         id:nodeShowListScroller
-        anchors.bottom: filterRect.bottom
-        anchors.bottomMargin: 5
+        anchors.top: filterRect.top
+        anchors.topMargin: dropDown.innerHeight + mainRec.height
         anchors.left: parent.left
         anchors.leftMargin: 15/Style.monitorRatio
         anchors.right: parent.right
@@ -250,6 +250,7 @@ Item{
                     }
                 }
                 onClicked:{
+
                     rootItem.model.onNodeClicked(index)
                 }
                 background: Rectangle
@@ -264,7 +265,7 @@ Item{
         id : heightMotion
         target: filterRect
         properties: "height"
-        to:420 / Style.monitorRatio
+        to:rootItem.maxheight
         duration: 550
         easing.type: Easing.OutQuint
     }

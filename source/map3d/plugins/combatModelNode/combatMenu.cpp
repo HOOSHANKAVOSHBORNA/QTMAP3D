@@ -87,11 +87,13 @@ void AssignmentListModel::setOperator(SimpleModelNode *node, bool isAttacker)
 
 void AssignmentListModel::onAddButtonChecked(bool check)
 {
+    emit removeAssignmentChecked(false, mOperatorNode, mIsAttacker);
     emit addAssignmentChecked(check, mOperatorNode, mIsAttacker);
 }
 
 void AssignmentListModel::onRemoveButtonChecked(bool check)
 {
+    emit addAssignmentChecked(false, mOperatorNode, mIsAttacker);
     emit removeAssignmentChecked(check, mOperatorNode, mIsAttacker);
 }
 
@@ -244,6 +246,7 @@ void OperatorListModel::addAttacker(SimpleModelNode *node)
 
     int row = mAttackerList.indexOf(node);
     select(row);
+    emit operatorListChanged(true);
 
 }
 
@@ -257,6 +260,7 @@ void OperatorListModel::addTarget(SimpleModelNode *node)
 
     int row = mTargetList.indexOf(node);
     select(row);
+    emit operatorListChanged(false);
 
 }
 
@@ -265,11 +269,11 @@ void OperatorListModel::select(int row)
     if(mSelectedNode)
         mSelectedNode->highlight(false);
     beginResetModel();
-    if(mIsAttacker){
+    if(mIsAttacker && !mAttackerList.empty()){
         mSelectedNode = mAttackerList.at(row);
         mAssignmentListModel->setOperator(mSelectedNode, true);
     }
-    else{
+    else if(!mIsAttacker && !mTargetList.empty()){
         mSelectedNode = mTargetList.at(row);
         mAssignmentListModel->setOperator(mSelectedNode, false);
     }
@@ -285,6 +289,7 @@ void OperatorListModel::operatorToggle(bool isAttacker)
     beginResetModel();
     mIsAttacker = isAttacker;
     endResetModel();
+    emit operatorListChanged(mIsAttacker);
 }
 
 QString OperatorListModel::getOperatorName()
@@ -320,6 +325,7 @@ void OperatorListModel::setOperatorIsAttacker(bool attacker)
 {
     mOperatorIsAttacker= attacker;
     emit operatorChanged();
+    emit operatorListChanged(mIsAttacker);
 }
 
 
@@ -345,7 +351,7 @@ CombatMenu::CombatMenu(CombatManager *combatManager, QQmlEngine *engine, MapCont
             map->setTopMenuItem(item);
         }
     });
-    comp->loadUrl(QUrl("qrc:/resources/CombatMenu.qml"));
+    comp->loadUrl(QUrl("qrc:/CombatMenu.qml"));
 }
 
 CombatMenu::~CombatMenu() {}

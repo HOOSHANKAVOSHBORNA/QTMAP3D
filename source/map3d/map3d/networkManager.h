@@ -17,11 +17,15 @@ public:
     bool isConsuming();
 private slots:
     void clientConnected();
+    void clientDisconnected();
     void clientError(QAMQP::Error error);
+    void clientSocketError(QAbstractSocket::SocketError error);
+    void clientSslErrors(const QList<QSslError> &errors);
     void onMap3dQueueDeclare();
     void onMap3dClientQueueDeclare();
     void onMessageReceived();
 signals:
+    void connected(bool);
     void map3dClientQueueDeclared();
     void messageReceived(const QString &message);
 

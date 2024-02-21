@@ -16,7 +16,14 @@ Window {
     height: 800
     visible: true
 
-    color: 'red'
+    color: 'royal blue'
+
+    Image {
+        source: "qrc:/Resources/login-earth.jpg"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.fill: parent
+        fillMode: Image.PreserveAspectCrop
+    }
 
     Connections {
         target: userManager
@@ -75,7 +82,6 @@ Window {
             MainWindow {
                 id: mapPage
                 mainPageCpp: applicationWindow.mainPageCpp
-                mapItem: applicationWindow.mainPageCpp.getMapItem()
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }

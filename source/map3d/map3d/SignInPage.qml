@@ -15,12 +15,17 @@ ColumnLayout {
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
+    property var connectionConfigCpp: undefined
     property alias usernameTxt: usernameTxt.text
     property alias passwordTxt: passwordTxt.text
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
-
+    signal uiSignedIn
     spacing: 0
+
+    onUiSignedIn: {
+        backgroundRec.color.a = 1
+    }
 
     RowLayout {
         id: header
@@ -39,7 +44,7 @@ ColumnLayout {
         Button {
             id: connectionStatus
             background: Image {
-                source: userManager.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             }
             Layout.preferredHeight: 39 / Style.monitorRatio
             Layout.preferredWidth: 39 / Style.monitorRatio
@@ -122,7 +127,7 @@ ColumnLayout {
 
     RowLayout {
         spacing: 0
-        opacity: 0
+        opacity: (userManager.message === "") ? 0 : 1
         Layout.topMargin: 14 / Style.monitorRatio
 
         Image {
@@ -131,7 +136,7 @@ ColumnLayout {
             Layout.preferredWidth: 20 / Style.monitorRatio
         }
         Text {
-            text: userManager.loginMessage
+            text: userManager.message
             font.pixelSize: 17 / Style.monitorRatio
             color: "#ED4337"
             Layout.leftMargin: 5 / Style.monitorRatio
@@ -140,25 +145,26 @@ ColumnLayout {
 
     Button {
         id: signInBtn
-
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
         Layout.topMargin: 14 / Style.monitorRatio
         hoverEnabled: true
         background: Rectangle {
+            id: backgroundRec
             color: Style.foregroundColor
             radius: width / (Style.monitorRatio * 2)
         }
         contentItem: Text {
+            id: signInBtnTxt
             text: "Sign in"
-            color: parent.hovered
-                   && parent.enabled ? "#01AED6" : Style.backgroundColor
+            color: parent.hovered && parent.enabled
+                   && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
 
         onClicked: {
-
+            backgroundRec.color.a = 0.5
         }
     }
 }

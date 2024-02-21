@@ -1,23 +1,27 @@
-import QtQuick 2.13
+import QtQuick
+import QtQuick.Layouts
 import "style"
 
-Item {
+ColumnLayout {
     property var loadingPageCpp: undefined
 
     Rectangle {
         id: loadingContainer
-        width: parent.width
-        height: 0.1 * parent.height
-        y: 0.75 * parent.height
-        color: "transparent"
+        //        width: parent.width
+        //        height: 0.1 * parent.height
+        Layout.fillWidth: true
+        Layout.preferredHeight: 70 / Style.monitorRatio
+
+        color: "pink"
         clip: true
 
         ListView {
             id: listView
             model: loadingPageCpp
-            height: parent.height
-            width: 0.05 * parent.width
-            anchors.horizontalCenter: parent.horizontalCenter
+            //            height: parent.height
+            //            width: 0.05 * parent.width
+            //            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.fill: parent
             delegate: Text {
                 id: loadingText
                 font.pixelSize: 20 / Style.monitorRatio
@@ -77,10 +81,12 @@ Item {
     }
     AnimatedImage {
         source: "qrc:/Resources/loading.gif"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 100 / Style.monitorRatio
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: 40 / Style.monitorRatio
-        height: 40 / Style.monitorRatio
+
+        //        anchors.horizontalCenter: parent.horizontalCenter
+        Layout.alignment: Qt.AlignHCenter
+        //        width: 40 / Style.monitorRatio
+        //        height: 40 / Style.monitorRatio
+        Layout.preferredHeight: 40 / Style.monitorRatio
+        Layout.preferredWidth: 40 / Style.monitorRatio
     }
 }

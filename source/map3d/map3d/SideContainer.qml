@@ -279,20 +279,41 @@ Item {
             //            }
 
             //-----------------------------------------------------
-            DockWindow {
-                id: settingsDocItem
-                windowTitle: sideModel.get(5).name
+//            DockWindow {
+//                id: settingsDocItem
+//                windowTitle: sideModel.get(5).name
 
-                containerItem: ConnectionConfiguration {
-                    id: settingsItem
+//                containerItem: ConnectionConfiguration {
+//                    id: settingsItem
+//                    closeBtn.visible: false
+//                    connectionConfigCpp: applicationWindow.connectionConfigCpp
+//                    testConnectionBtn.onClicked: {
+////                      connectionConfigCpp.setIsConnected(false)
+//                    }
 
-                    closeBtn.visible: false
-                }
+//                    Connections {
+//                        target: connectionConfigCpp
 
-                onWindowClose: {
-                    sideModel.get(5).isWindow = false
-                }
-            }
+//                        function onIsConnectedChanged() {
+//                            if (connectionConfigCpp.isConnected) {
+//                                settingsItem.testConnectionTxt = "Connected"
+//                                settingsItem.testConnectionTxtColor = "#206900"
+//                                settingsItem.buttonColor = "#206900"
+//                                settingsItem.testConnectionAnimationStatus.start()
+//                            } else {
+//                                settingsItem.testConnectionTxt = "Disconnected"
+//                                settingsItem.testConnectionTxtColor = "#690000"
+//                                settingsItem.buttonColor = "#690000"
+//                                settingsItem.testConnectionAnimationStatus.start()
+//                            }
+//                        }
+//                    }
+//                }
+
+//                onWindowClose: {
+//                    sideModel.get(5).isWindow = false
+//                }
+//            }
         }
     }
 }
