@@ -161,6 +161,7 @@ Item {
         SignInPage {
             id: signInPage
             connectionConfigCpp: loginPage.connectionConfigCpp
+            userManager: loginPage.userManager
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio
@@ -183,9 +184,11 @@ Item {
                     heightIncrease.start()
                     topToBottomRole.start()
                     signInPage.signInResponse()
+                    signInPage.serverResponseTimer.stop()
                 }
                 function onSignedIn() {
                     signInPage.signInResponse()
+                    signInPage.serverResponseTimer.stop()
                 }
                 function onSignInFailed() {
                     signInPage.signInResponse()

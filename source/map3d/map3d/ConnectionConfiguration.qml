@@ -38,7 +38,6 @@ Item {
             testConnectionTxt.color = Style.backgroundColor
             buttonColor = Style.foregroundColor
             reverseAnimation.start()
-            animationTimer.stop()
         }
     }
 

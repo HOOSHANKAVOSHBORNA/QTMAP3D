@@ -49,7 +49,7 @@ public:
     void setUserName(const QString &newUserName);
 
     QString message() const;
-    void setMessage(const QString &newMessage);
+    Q_INVOKABLE void setMessage(const QString &newMessage);
 
     void setIsConnected(bool newIsConnected);
 

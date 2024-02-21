@@ -16,16 +16,29 @@ ColumnLayout {
                                                      Style.foregroundColor.b,
                                                      0.50)
     property var connectionConfigCpp: undefined
+    property var userManager: undefined
     property alias usernameTxt: usernameTxt.text
     property alias passwordTxt: passwordTxt.text
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
+    property alias serverResponseTimer: serverResponseTimer
+
     signal signInResponse
     spacing: 0
 
     onSignInResponse: {
         backgroundRec.color.a = 1
         signInBtn.enabled = true
+    }
+
+    Timer {
+        id: serverResponseTimer
+        interval: 5000
+        onTriggered: {
+            backgroundRec.color.a = 1
+            signInBtn.enabled = true
+            userManager.setMessage("No Response")
+        }
     }
 
     RowLayout {
@@ -87,7 +100,7 @@ ColumnLayout {
             color: foregroundColorTextBox
             radius: height / 2
             border.width: (userManager.message === "") ? 0 : 1
-            border.color: (userManager.message === "") ? "#66ED4337" : "transparent"
+            border.color: (userManager.message === "") ? "transparent" : "#66ED4337"
         }
     }
     RowLayout {
@@ -122,7 +135,7 @@ ColumnLayout {
             color: foregroundColorTextBox
             radius: height / 2
             border.width: (userManager.message === "") ? 0 : 1
-            border.color: (userManager.message === "") ? "#66ED4337" : "transparent"
+            border.color: (userManager.message === "") ? "transparent" : "#66ED4337"
         }
     }
 
@@ -167,6 +180,8 @@ ColumnLayout {
         onClicked: {
             backgroundRec.color.a = 0.5
             signInBtn.enabled = false
+            userManager.setMessage("")
+            serverResponseTimer.start()
         }
     }
 }
