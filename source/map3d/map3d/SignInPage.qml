@@ -25,6 +25,7 @@ ColumnLayout {
 
     onUiSignedIn: {
         backgroundRec.color.a = 1
+        signInBtn.enabled = true
     }
 
     RowLayout {
@@ -165,6 +166,7 @@ ColumnLayout {
 
         onClicked: {
             backgroundRec.color.a = 0.5
+            signInBtn.enabled = false
         }
     }
 }

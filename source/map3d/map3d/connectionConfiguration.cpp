@@ -91,6 +91,14 @@ void ConnectionConfiguration::saveSettings()
         setIsConnected(false);
 }
 
+void ConnectionConfiguration::clearUnsavedUiData()
+{
+    setIp(mSettings->value("configs/ip").toString());
+    setPort(mSettings->value("configs/port").toInt());
+    setUsername(mSettings->value("configs/username").toString());
+    setPassword(mSettings->value("configs/password").toString());
+}
+
 
 bool ConnectionConfiguration::isConnected() const
 {
