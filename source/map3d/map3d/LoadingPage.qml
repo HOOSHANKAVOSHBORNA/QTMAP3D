@@ -7,8 +7,6 @@ ColumnLayout {
 
     Rectangle {
         id: loadingContainer
-        //        width: parent.width
-        //        height: 0.1 * parent.height
         Layout.fillWidth: true
         Layout.preferredHeight: 70 / Style.monitorRatio
 
@@ -18,9 +16,6 @@ ColumnLayout {
         ListView {
             id: listView
             model: loadingPageCpp
-            //            height: parent.height
-            //            width: 0.05 * parent.width
-            //            anchors.horizontalCenter: parent.horizontalCenter
             anchors.fill: parent
             delegate: Text {
                 id: loadingText
@@ -81,11 +76,7 @@ ColumnLayout {
     }
     AnimatedImage {
         source: "qrc:/Resources/loading.gif"
-
-        //        anchors.horizontalCenter: parent.horizontalCenter
         Layout.alignment: Qt.AlignHCenter
-        //        width: 40 / Style.monitorRatio
-        //        height: 40 / Style.monitorRatio
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.preferredWidth: 40 / Style.monitorRatio
     }
