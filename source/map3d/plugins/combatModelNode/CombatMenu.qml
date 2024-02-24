@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-
 import "style"
 
 Item {
@@ -36,9 +35,6 @@ Item {
         anchors.centerIn: parent
         id: mainRow
         z:1
-        anchors.left: parent.left
-//        anchors.leftMargin: 110 / Style.monitorRatio
-
         Rectangle {
             id: nodeInfoHolder
             width: 300 / Style.monitorRatio
@@ -149,7 +145,7 @@ Item {
 
                     Rectangle{
                         id:attack
-                        property color rd85: Qt.rgba("red".r,"red".g,"red".b,.15)
+                        property color rd85: Qt.rgba("red".r,"red".g,"red".b,.05)
 
                         anchors.top: parent.top
                         anchors.topMargin: 6 / Style.monitorRatio
@@ -159,6 +155,7 @@ Item {
                         gradient: Gradient {
                             orientation: Gradient.Horizontal
                             GradientStop { position: 0.0; color: "red" }
+                            GradientStop { position: 0.3; color: "red" }
                             GradientStop { position: 1.0; color: attack.rd85}
                         }
                         radius: 15 / Style.monitorRatio
@@ -534,74 +531,6 @@ Item {
             }
         }
     }
-    //    Rectangle {
-
-    //        id: nodesBackground
-    //        anchors.left: mainRow.left
-    //        anchors.verticalCenter: mainRow.verticalCenter
-    //        anchors.leftMargin: nodeInfoHolder.width - attackholder.width / 2
-    //        radius: 20 / Style.monitorRatio
-    //        color: fg75
-
-    //        width: (rowLay.childrenRect.width  > 425 ? 534 : (rowLay.childrenRect.width  +  100))
-    //        height: 75 / Style.monitorRatio
-    //        z: -2
-
-    //        Rectangle{
-    //            id:right
-    //            anchors.right: parent.right
-    //            anchors.rightMargin: 0
-    //            height: 75 / Style.monitorRatio
-    //            width: 55 / Style.monitorRatio
-    //            color: Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)
-    //            radius: 20 / Style.monitorRatio
-    //            //            border.width: 1
-    //            //            border.color: "white"
-
-    //        }
-
-
-
-
-    //        PropertyAnimation {
-    //            id: rightMotionOpen
-    //            target: right
-    //            properties: "anchors.rightMargin"
-    //            to: 13
-    //            from: 0
-    //            duration: 200
-    //            easing.type: Easing.OutQuint
-    //        }
-    //        PropertyAnimation {
-    //            id: rightMotionClose
-    //            target: right
-    //            properties: "anchors.rightMargin"
-    //            to: 0
-    //            duration: 200
-    //            easing.type: Easing.OutQuint
-    //        }
-
-    //        //        PropertyAnimation {
-    //        //            id: leftMotionOpen
-    //        //            target: left
-    //        //            properties: "width"
-    //        //            to: 55 / Style.monitorRatio
-    //        //            from: 0
-    //        //            duration: 200
-    //        //            easing.type: Easing.OutQuint
-    //        //        }
-    //        //        PropertyAnimation {
-    //        //            id: leftMotionClose
-    //        //            target: left
-    //        //            properties: "width"
-    //        //            to: 0
-    //        //            duration: 200
-    //        //            easing.type: Easing.OutQuint
-    //        //        }
-
-    //    }
-
-    //////////
 
     Rectangle{
         width: bottomLayer .width   < 215 / Style.monitorRatio  ? bottomLayer .width  : 215 / Style.monitorRatio
