@@ -105,6 +105,7 @@ Item {
         }
         ConnectionConfiguration {
             id: connectionPage
+
             anchors.left: parent.left
             anchors.right: parent.right
             connectionConfigCpp: loginPage.connectionConfigCpp
@@ -118,6 +119,7 @@ Item {
             }
             testConnectionBtn.onClicked: {
                 buttonColor.a = 0.5
+                connectionButtonClicked = true
                 connectionConfigCpp.testConnection()
             }
 
@@ -125,16 +127,21 @@ Item {
                 target: connectionConfigCpp
 
                 function onIsConnectedChanged() {
-                    if (connectionConfigCpp.isConnected) {
+                    if (connectionPage.connectionButtonClicked
+                            && connectionConfigCpp.isConnected) {
                         connectionPage.testConnectionTxt = "Connected"
                         connectionPage.testConnectionTxtColor = "#206900"
                         connectionPage.buttonColor = "#206900"
                         connectionPage.testConnectionAnimationStatus.start()
-                    } else {
+                        connectionPage.connectionButtonClicked = false
+                    }
+                    if (connectionPage.connectionButtonClicked
+                            && !connectionConfigCpp.isConnected) {
                         connectionPage.testConnectionTxt = "Disconnected"
                         connectionPage.testConnectionTxtColor = "#690000"
                         connectionPage.buttonColor = "#690000"
                         connectionPage.testConnectionAnimationStatus.start()
+                        connectionPage.connectionButtonClicked = false
                     }
                 }
             }
@@ -154,6 +161,7 @@ Item {
         SignInPage {
             id: signInPage
             connectionConfigCpp: loginPage.connectionConfigCpp
+            userManager: loginPage.userManager
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: 50 / Style.monitorRatio
@@ -175,9 +183,16 @@ Item {
                     rolePage.visible = true
                     heightIncrease.start()
                     topToBottomRole.start()
+                    signInPage.signInResponse()
+                    signInPage.serverResponseTimer.stop()
                 }
                 function onSignedIn() {
-                    signInPage.uiSignedIn()
+                    signInPage.signInResponse()
+                    signInPage.serverResponseTimer.stop()
+                }
+                function onSignInFailed() {
+                    signInPage.signInResponse()
+                    userManager.setMessage("")
                 }
             }
         }

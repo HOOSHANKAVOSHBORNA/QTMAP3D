@@ -120,6 +120,15 @@ void PluginManager::loadPlugins()
     }
 }
 
+void PluginManager::unLoadPlugins()
+{
+    for (auto &i: mPluginsLoaders) {
+        i->unload();
+    }
+    mPluginsLoaders.clear();
+    mPluginsMap.clear();
+}
+
 void PluginManager::setup()
 {
     auto mainWindow = Application::instance()->mainWindow();
@@ -193,16 +202,15 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
         emit pluginLoading(pluginFileName);
 
         const QString filePath = pluginsDir.absoluteFilePath(pluginFileName);
-        QPluginLoader pluginLoader(filePath);
-
-        QObject* instance = pluginLoader.instance();
+        QPluginLoader *pluginLoader = new QPluginLoader(filePath);
+        QObject* instance = pluginLoader->instance();
 
         if (!instance)
         {
             //                QString errStr = pluginLoader.errorString();
             qWarning() << "Plugin loading failed: [" << pluginFileName
-                       << "] " << pluginLoader.errorString();
-            emit pluginLoadError(pluginLoader.errorString());
+                       << "] " << pluginLoader->errorString();
+            emit pluginLoadError(pluginLoader->errorString());
             return;
         }
 
@@ -212,6 +220,7 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
         if (pluginInterface) {
             pluginInterface->setName(pluginFileName);
             mPluginsMap.insert(pluginFileName, pluginInterface);
+            mPluginsLoaders.insert(pluginFileName, pluginLoader);
         }
     }
 }

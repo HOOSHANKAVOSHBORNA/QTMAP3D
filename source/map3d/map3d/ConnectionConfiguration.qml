@@ -9,7 +9,7 @@ Item {
     id: rootItem
 
     property var connectionConfigCpp: undefined
-
+    property bool connectionButtonClicked: false
     readonly property color foregroundColorTextBox: Qt.rgba(
                                                         Style.foregroundColor.r,
                                                         Style.foregroundColor.g,
@@ -34,11 +34,10 @@ Item {
         id: animationTimer
         interval: 2000
         onTriggered: {
-            testConnectionTxt.text = "Test Connection"
+            testConnectionTxt.text = "Connect"
             testConnectionTxt.color = Style.backgroundColor
             buttonColor = Style.foregroundColor
             reverseAnimation.start()
-            animationTimer.stop()
         }
     }
 
@@ -63,6 +62,7 @@ Item {
         duration: 100
         onFinished: {
             buttonColor.a = 1
+            testConnectionBtn.enabled = true
             testConnectionBtn.hoverEnabled = true
         }
     }
@@ -83,6 +83,9 @@ Item {
             Layout.alignment: Qt.AlignRight
             background: Image {
                 source: "qrc:/Resources/close-icon.png"
+            }
+            onClicked: {
+                rootItem.connectionConfigCpp.clearUnsavedUiData()
             }
         }
 
@@ -215,7 +218,7 @@ Item {
                 radius: height / 2
             }
             onTextChanged: {
-                rootItem.connectionConfigCpp.port = port.text
+                rootItem.connectionConfigCpp.port = Number(port.text)
             }
         }
 
@@ -232,9 +235,8 @@ Item {
 
             contentItem: Text {
                 id: testConnectionTxt
-                text: "Test Connection"
+                text: "Connect"
                 font.pixelSize: 15 / Style.monitorRatio
-                //                color:  testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -252,8 +254,12 @@ Item {
                         return connectionConfigCpp.isConnected ? "#206900" : "#690000"
                     else
                         return testConnectionBtn.hovered
-                                && backgroundRec.color.a == 0.5 ? "#01AED6" : Style.backgroundColor
+                                && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
                 }
+            }
+
+            onClicked: {
+                testConnectionBtn.enabled = false
             }
         }
         Button {

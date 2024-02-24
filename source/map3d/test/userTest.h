@@ -12,9 +12,15 @@ public:
 private slots:
     void onUserDataReceived(const UserData& userData);
 
+signals:
+    void login();
+    void logout();
+
 private:
     ServiceManager *mServiceManager;
-    UserData mUserData;
+    UserData mUserData1;
+    UserData mUserData2;
+    bool mIsLogin{false};
 };
 
 #endif // USERTEST_H

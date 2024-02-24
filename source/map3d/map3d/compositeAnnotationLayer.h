@@ -24,7 +24,7 @@ class ParenticAnnotationLayer: public QObject, public osgEarth::Annotation::Anno
 {
 public:
     ParenticAnnotationLayer(int id = -1, QObject *parent = nullptr);
-    ~ParenticAnnotationLayer();
+    virtual ~ParenticAnnotationLayer();
 
     CompositeAnnotationLayer *getParentAtIndex(unsigned index);
     unsigned getIndexOfparent(const ParenticAnnotationLayer* layer) const;

@@ -84,11 +84,19 @@ void ConnectionConfiguration::saveSettings()
     mSettings->setValue("configs/username", mUsername);
     mSettings->setValue("configs/password", mPassword);
 
-    if(mNetworkManager){
-        mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
-    }
-    else
-        setIsConnected(false);
+//    if(mNetworkManager){
+//        mNetworkManager->setConfig(mIp, mPort, mUsername, mPassword);
+//    }
+//    else
+//        setIsConnected(false);
+}
+
+void ConnectionConfiguration::clearUnsavedUiData()
+{
+    setIp(mSettings->value("configs/ip").toString());
+    setPort(mSettings->value("configs/port").toInt());
+    setUsername(mSettings->value("configs/username").toString());
+    setPassword(mSettings->value("configs/password").toString());
 }
 
 

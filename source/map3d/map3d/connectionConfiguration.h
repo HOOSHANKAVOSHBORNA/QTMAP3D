@@ -31,6 +31,7 @@ public:
     Q_INVOKABLE QString getPassword() const;
     Q_INVOKABLE void setPassword(const QString &newPassword);
     Q_INVOKABLE void saveSettings();
+    Q_INVOKABLE void clearUnsavedUiData();
 
     bool isConnected() const;
     Q_INVOKABLE void setIsConnected(bool newIsConnected);

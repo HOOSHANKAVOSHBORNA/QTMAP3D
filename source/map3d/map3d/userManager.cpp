@@ -55,15 +55,15 @@ void UserManager::signIn(const QString username, const QString password)
     userData.command = UserData::UserCommand::Login;
     mServiceManager->sendUser(userData);
 
-    setUserName(username);
+//    setUserName(username);
 //    emit selectRole();
 //    emit signedIn();
 
     //--test------
-    QVector<QString> testvec;
-    testvec.append("Admin");
-    testvec.append("User");
-    mRoleSelectionModel->setRolse(testvec);
+//    QVector<QString> testvec;
+//    testvec.append("Admin");
+//    testvec.append("User");
+//    mRoleSelectionModel->setRolse(testvec);
 }
 
 void UserManager::signIn(int selectRoleIndex)
@@ -107,6 +107,10 @@ void UserManager::onUserDataReceived(const UserData &userData)
             emit signedIn();
         }
     }
+    else{
+        emit signInFailed();
+    }
+    setMessage(userData.response.message);
 }
 
 RoleSelectionModel *UserManager::roleSelectionModel() const
