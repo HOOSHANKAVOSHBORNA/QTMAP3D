@@ -41,68 +41,66 @@ Rectangle {
                 Layout.preferredHeight: 100 / Style.monitorRatio
                 color: "transparent"
                 clip: true
-                ScrollView {
+
+                ListView {
+                    id: listView
+                    model: loadingPageCpp
                     anchors.fill: parent
-                    ListView {
-                        id: listView
-                        model: loadingPageCpp
-                        anchors.fill: parent
-                        delegate: Text {
-                            id: loadingText
-                            font.pixelSize: 20 / Style.monitorRatio
-                            color: acceptionState ? "white" : "red"
-                            text: display
-                            horizontalAlignment: Text.AlignHCenter
-                            width: listView.width
-                        }
+                    delegate: Text {
+                        id: loadingText
+                        font.pixelSize: 20 / Style.monitorRatio
+                        color: acceptionState ? "white" : "red"
+                        text: display
+                        horizontalAlignment: Text.AlignHCenter
+                        width: listView.width
+                    }
 
-                        populate: Transition {
-                            NumberAnimation {
-                                properties: "x,y"
-                                duration: 10000
-                            }
+                    populate: Transition {
+                        NumberAnimation {
+                            properties: "x,y"
+                            duration: 10000
                         }
+                    }
 
-                        add: Transition {
-                            NumberAnimation {
-                                property: "opacity"
-                                from: 0
-                                to: 1.0
-                                duration: 200
-                            }
-                            NumberAnimation {
-                                property: "scale"
-                                from: 0
-                                to: 1.0
-                                duration: 200
-                            }
+                    add: Transition {
+                        NumberAnimation {
+                            property: "opacity"
+                            from: 0
+                            to: 1.0
+                            duration: 200
                         }
+                        NumberAnimation {
+                            property: "scale"
+                            from: 0
+                            to: 1.0
+                            duration: 200
+                        }
+                    }
 
-                        move: Transition {
-                            NumberAnimation {
-                                properties: "x,y"
-                                duration: 200
-                            }
+                    move: Transition {
+                        NumberAnimation {
+                            properties: "x,y"
+                            duration: 200
                         }
+                    }
 
-                        remove: Transition {
-                            NumberAnimation {
-                                properties: "x,y"
-                                duration: 200
-                            }
+                    remove: Transition {
+                        NumberAnimation {
+                            properties: "x,y"
+                            duration: 200
                         }
+                    }
 
-                        removeDisplaced: Transition {
-                            NumberAnimation {
-                                properties: "x,y"
-                                duration: 200
-                            }
+                    removeDisplaced: Transition {
+                        NumberAnimation {
+                            properties: "x,y"
+                            duration: 200
                         }
-                        displaced: Transition {
-                            NumberAnimation {
-                                properties: "x,y"
-                                duration: 200
-                            }
+                    }
+                    displaced: Transition {
+                        NumberAnimation {
+                            properties: "x,y"
+                            duration: 200
                         }
                     }
                 }
