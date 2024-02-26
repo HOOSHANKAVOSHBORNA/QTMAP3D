@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
-
+import "style"
 import "Components"
 
 Window {
@@ -16,14 +16,14 @@ Window {
     height: 800
     visible: true
 
-    color: 'royal blue'
-
     Image {
         source: "qrc:/Resources/login-earth.jpg"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
     }
+
+
 
     Connections {
         target: userManager
