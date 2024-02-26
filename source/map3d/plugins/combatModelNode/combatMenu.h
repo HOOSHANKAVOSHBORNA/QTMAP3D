@@ -14,7 +14,8 @@ public:
         Icon,
         State,
         StateColor,
-        Select
+        Select,
+        BulletCount
     };
 
     explicit AssignmentListModel(CombatManager *combatManager, QObject *parent = nullptr);

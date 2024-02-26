@@ -30,7 +30,6 @@ public:
    virtual QHash<int, QByteArray> roleNames() const override;
    Q_INVOKABLE void addItem(const QString &loadingData, bool acceptionState);
    Q_INVOKABLE void removeItem(int index);
-   Q_INVOKABLE void changeAcceptionState(int index, bool state);
    void swapItem(int sourceIndex, int destinationIndex);
    void updateData(int index);
 

@@ -62,6 +62,7 @@ QHash<int, QByteArray> AssignmentListModel::roleNames() const
     hash[State] = "objectState";
     hash[StateColor] = "objectStateColor";
     hash[Select] = "objectSelection";
+    hash[BulletCount] = "objectBulletCount";
     return hash;
 }
 
