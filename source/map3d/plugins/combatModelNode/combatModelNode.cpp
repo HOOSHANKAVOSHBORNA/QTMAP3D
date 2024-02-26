@@ -204,8 +204,13 @@ void CombatModelNode::onCloseMenuClicked()
 {
     for (int var = 0; var < mCombatMenu->assignmentListModel()->getSelectedAssignmentList().count(); ++var) {
         mCombatMenu->assignmentListModel()->getSelectedAssignmentList().at(var)->attacker->highlight(false);
+        mCombatMenu->assignmentListModel()->getSelectedAssignmentList().at(var)->attacker->select(false);
         mCombatMenu->assignmentListModel()->getSelectedAssignmentList().at(var)->target->highlight(false);
+        mCombatMenu->assignmentListModel()->getSelectedAssignmentList().at(var)->target->select(false);
     }
+    mOperatorNode->highlight(false);
+    mOperatorNode->select(false);
+    mOperatorNode->showMenu(false);
     mapItem()->setTopMenuVisible(false);
 }
 
