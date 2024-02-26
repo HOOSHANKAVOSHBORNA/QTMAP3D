@@ -108,6 +108,8 @@ Item {
 
             anchors.left: parent.left
             anchors.right: parent.right
+            anchors.leftMargin: 50 / Style.monitorRatio
+            anchors.rightMargin: 50 / Style.monitorRatio
             connectionConfigCpp: loginPage.connectionConfigCpp
             closeBtn.onClicked: {
                 connectionPopUp.visible = false
@@ -116,34 +118,6 @@ Item {
             saveBtn.onClicked: {
                 connectionPopUp.visible = false
                 containerRect.enabled = true
-            }
-            testConnectionBtn.onClicked: {
-                buttonColor.a = 0.5
-                connectionButtonClicked = true
-                connectionConfigCpp.testConnection()
-            }
-
-            Connections {
-                target: connectionConfigCpp
-
-                function onIsConnectedChanged() {
-                    if (connectionPage.connectionButtonClicked
-                            && connectionConfigCpp.isConnected) {
-                        connectionPage.testConnectionTxt = "Connected"
-                        connectionPage.testConnectionTxtColor = "#206900"
-                        connectionPage.buttonColor = "#206900"
-                        connectionPage.testConnectionAnimationStatus.start()
-                        connectionPage.connectionButtonClicked = false
-                    }
-                    if (connectionPage.connectionButtonClicked
-                            && !connectionConfigCpp.isConnected) {
-                        connectionPage.testConnectionTxt = "Disconnected"
-                        connectionPage.testConnectionTxtColor = "#690000"
-                        connectionPage.buttonColor = "#690000"
-                        connectionPage.testConnectionAnimationStatus.start()
-                        connectionPage.connectionButtonClicked = false
-                    }
-                }
             }
         }
     }

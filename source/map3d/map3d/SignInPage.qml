@@ -173,6 +173,7 @@ ColumnLayout {
             text: "Sign in"
             color: parent.hovered && parent.enabled
                    && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
+            font.pixelSize: 20 / Style.monitorRatio
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
