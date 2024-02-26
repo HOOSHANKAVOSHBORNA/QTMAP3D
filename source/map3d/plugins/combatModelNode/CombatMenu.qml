@@ -145,7 +145,8 @@ Item {
 
                     Rectangle{
                         id:attack
-                        property color rd85: Qt.rgba("red".r,"red".g,"red".b,.05)
+                        property color red: "red"
+
 
                         anchors.top: parent.top
                         anchors.topMargin: 6 / Style.monitorRatio
@@ -154,10 +155,10 @@ Item {
                         height: attackMA.containsMouse ?  32 / Style.monitorRatio : 27 / Style.monitorRatio
                         gradient: Gradient {
                             orientation: Gradient.Horizontal
-                            GradientStop { position: 0.0; color: "red" }
-                            GradientStop { position: 0.3; color: "red" }
-                            GradientStop { position: 1.0; color: attack.rd85}
+                            GradientStop { position: 0.0; color: attack.red }
+                            GradientStop { position: 1.0; color: Qt.rgba(attack.red.r,attack.red.g,attack.red.b,0.5)}
                         }
+//                        color: Qt.rgba(red.r,red.g,red.b,0.8)
                         radius: 15 / Style.monitorRatio
 
                         Text {
@@ -267,7 +268,7 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked:{
-                    flickable.contentX += 131 / Style.monitorRatio
+                    flickable.contentX -= 131 / Style.monitorRatio
 
 
                 }
@@ -401,7 +402,7 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked:{
-                    flickable.contentX -= 131 / Style.monitorRatio
+                    flickable.contentX += 131 / Style.monitorRatio
 
                 }
                 onEntered: leftIcon.width = leftIcon.width * Style.monitorRatio
