@@ -68,8 +68,8 @@ Item {
                 }
                 IconImage {
                     source: operatorListModel ? operatorListModel.operatorIcon : ""
-                    Layout.preferredHeight: 55 / Style.monitorRatio
-                    Layout.preferredWidth: 55 / Style.monitorRatio
+                    Layout.preferredHeight: 50 / Style.monitorRatio
+                    Layout.preferredWidth: 50 / Style.monitorRatio
                     color: backgroundColor/*operatorListModel ? operatorListModel.operatorColor : "black"*/
                 }
 
@@ -272,7 +272,7 @@ Item {
 
 
                 }
-                onEntered: rightIcon.width = rightIcon.width * Style.monitorRatio
+                onEntered: rightIcon.width = 30 / Style.monitorRatio
                 onExited: rightIcon.width =20 / Style.monitorRatio
             }
         }
@@ -308,7 +308,7 @@ Item {
                                 color: objectSelection ? bg20 : "transparent"
                                 z: -2
                                 radius: 7
-                                Layout.leftMargin: 5 / Style.monitorRatio
+//                                Layout.leftMargin: 5 / Style.monitorRatio
 
                                 Rectangle {
                                     anchors.top: parent.top
@@ -317,24 +317,34 @@ Item {
                                     height: parent.height / 2
                                     width: parent.width
                                     color: "transparent"
+RowLayout{
+    anchors.centerIn: parent
+    IconImage {
+        id: myIcon
+        source: objectIcon
+        sourceSize: Qt.size(35 / Style.monitorRatio, 35 / Style.monitorRatio)
+        color: backgroundColor/*objectColor*/
+    }
+    IconImage {
+        id: bulletIcon
+        visible: !opIsAttacker
+        source: "qrc:/Resources/bullet.png"
+        sourceSize: Qt.size(22 / Style.monitorRatio, 22 / Style.monitorRatio)
+        color: backgroundColor/*objectColor*/
+    }
+    Text {
+        font.pixelSize: 17 / Style.monitorRatio
+        font.family: "Roboto"
+        Layout.leftMargin: -10 / Style.monitorRatio
+        color: backgroundColor
+        text: operatorListModel ? 30 : "" /*objectBulletCount*/
+        visible: !opIsAttacker
+    }
+}
 
-                                    IconImage {
-                                        id: myIcon
-                                        anchors.centerIn:  parent
-                                        source: objectIcon
-                                        width: 35 / Style.monitorRatio
-                                        height: 35 / Style.monitorRatio
-                                        color: backgroundColor/*objectColor*/
-                                    }
-                                    IconImage {
-                                        id: bulletIcon
-                                        visible: !opIsAttacker
-                                        anchors.left: myIcon.right
-                                        source: "qrc:/Resources/bullet.png"
-                                        width: 35 / Style.monitorRatio
-                                        height: 35 / Style.monitorRatio
-                                        color: backgroundColor/*objectColor*/
-                                    }
+
+
+
                                 }
                                 Rectangle {
                                     anchors.bottom: parent.bottom
@@ -348,8 +358,8 @@ Item {
                                     Image {
                                         id: repeaterImg
                                         source: "qrc:/Resources/information.png"
-                                        width: 24 / Style.monitorRatio
-                                        height: 24 / Style.monitorRatio
+                                        width: 20 / Style.monitorRatio
+                                        height: 20 / Style.monitorRatio
                                         anchors.left: parent.left
                                         anchors.leftMargin: 30 / Style.monitorRatio
                                         anchors.verticalCenter: parent.verticalCenter
@@ -405,7 +415,7 @@ Item {
                     flickable.contentX += 131 / Style.monitorRatio
 
                 }
-                onEntered: leftIcon.width = leftIcon.width * Style.monitorRatio
+                onEntered: leftIcon.width = 30 / Style.monitorRatio
                 onExited: leftIcon.width = 20 / Style.monitorRatio
             }
         }
