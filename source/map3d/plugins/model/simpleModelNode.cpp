@@ -374,8 +374,8 @@ void SimpleModelNode::compile()
     //--3D node----------------------------------------------------------
     m3DNode = new osg::LOD;
     if(m3DLowNode){
-        m3DNode->addChild(m3DBaseNode, 0 , 100);
-        m3DNode->addChild(m3DLowNode , 100 , std::numeric_limits<float>::max() );
+        m3DNode->addChild(m3DBaseNode, 0 , 400);
+        m3DNode->addChild(m3DLowNode , 400 , std::numeric_limits<float>::max() );
     }else{
         m3DNode->addChild(m3DBaseNode , 0 , std::numeric_limits<float>::max() );
     }

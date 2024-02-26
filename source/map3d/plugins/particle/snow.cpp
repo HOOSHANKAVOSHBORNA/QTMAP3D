@@ -33,7 +33,7 @@ Snow::Snow(MapItem *map, double duration):
 
     //--Snow 3D Node---------------------------------------------------
     mSnow = new osgParticle::PrecipitationEffect;
-    mSnow->rain(1.0);
+    mSnow->snow(1.0);
     mSnow->setUseFarLineSegments(true);
     osgEarth::Registry::shaderGenerator().run(mSnow.get());
     mPrecipitationRange->addChild(mSnow);
