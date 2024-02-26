@@ -9,7 +9,7 @@ Item {
     id: rootItem
 
     property var connectionConfigCpp: undefined
-
+    property bool connectionButtonClicked: false
     readonly property color foregroundColorTextBox: Qt.rgba(
                                                         Style.foregroundColor.r,
                                                         Style.foregroundColor.g,
@@ -20,25 +20,17 @@ Item {
                                                      Style.foregroundColor.g,
                                                      Style.foregroundColor.b,
                                                      0.50)
-    property alias connectionStatus: connectionStatus
     property alias closeBtn: closeBtn
     property alias saveBtn: saveBtn
-    property alias testConnectionBtn: testConnectionBtn
-    property alias testConnectionTxt: testConnectionTxt.text
-    property alias testConnectionTxtColor: testConnectionTxt.color
-    property alias buttonColor: backgroundRec.color
-    property alias testConnectionAnimationStatus: testConnectionAnimationStatus
-    property alias animationTimer: animationTimer
 
     Timer {
         id: animationTimer
         interval: 2000
         onTriggered: {
-            testConnectionTxt.text = "Test Connection"
+            testConnectionTxt.text = "Connect"
             testConnectionTxt.color = Style.backgroundColor
-            buttonColor = Style.foregroundColor
+            backgroundRec.color = Style.foregroundColor
             reverseAnimation.start()
-            animationTimer.stop()
         }
     }
 
@@ -62,18 +54,15 @@ Item {
         to: 1
         duration: 100
         onFinished: {
-            buttonColor.a = 1
+            backgroundRec.color.a = 1
+            testConnectionBtn.enabled = true
             testConnectionBtn.hoverEnabled = true
         }
     }
 
     ColumnLayout {
+        anchors.fill: parent
         spacing: 0
-
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.leftMargin: 50 / Style.monitorRatio
-        anchors.rightMargin: 50 / Style.monitorRatio
 
         Button {
             id: closeBtn
@@ -83,6 +72,9 @@ Item {
             Layout.alignment: Qt.AlignRight
             background: Image {
                 source: "qrc:/Resources/close-icon.png"
+            }
+            onClicked: {
+                rootItem.connectionConfigCpp.clearUnsavedUiData()
             }
         }
 
@@ -215,7 +207,7 @@ Item {
                 radius: height / 2
             }
             onTextChanged: {
-                rootItem.connectionConfigCpp.port = port.text
+                rootItem.connectionConfigCpp.port = Number(port.text)
             }
         }
 
@@ -232,9 +224,8 @@ Item {
 
             contentItem: Text {
                 id: testConnectionTxt
-                text: "Test Connection"
-                font.pixelSize: 15 / Style.monitorRatio
-                //                color:  testConnectionBtn.hovered ? "#01AED6" : Style.backgroundColor
+                text: "Connect"
+                font.pixelSize: 20 / Style.monitorRatio
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -252,8 +243,15 @@ Item {
                         return connectionConfigCpp.isConnected ? "#206900" : "#690000"
                     else
                         return testConnectionBtn.hovered
-                                && backgroundRec.color.a == 0.5 ? "#01AED6" : Style.backgroundColor
+                                && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
                 }
+            }
+
+            onClicked: {
+                backgroundRec.color.a = 0.5
+                connectionButtonClicked = true
+                connectionConfigCpp.testConnection()
+                testConnectionBtn.enabled = false
             }
         }
         Button {
@@ -267,7 +265,7 @@ Item {
 
             contentItem: Text {
                 text: "Save changes"
-                font.pixelSize: 15 / Style.monitorRatio
+                font.pixelSize: 20 / Style.monitorRatio
                 color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -278,6 +276,27 @@ Item {
             }
             onClicked: {
                 rootItem.connectionConfigCpp.saveSettings()
+            }
+        }
+    }
+
+    Connections {
+        target: connectionConfigCpp
+
+        function onIsConnectedChanged() {
+            if (connectionButtonClicked && connectionConfigCpp.isConnected) {
+                testConnectionTxt.text = "Connection Success"
+                testConnectionTxt.color = "#206900"
+                backgroundRec.color = "#206900"
+                testConnectionAnimationStatus.start()
+                connectionButtonClicked = false
+            }
+            if (connectionButtonClicked && !connectionConfigCpp.isConnected) {
+                testConnectionTxt.text = "Connection Failed"
+                testConnectionTxt.color = "#690000"
+                backgroundRec.color = "#690000"
+                testConnectionAnimationStatus.start()
+                connectionButtonClicked = false
             }
         }
     }

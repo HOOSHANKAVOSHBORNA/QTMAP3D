@@ -19,15 +19,27 @@ int main(int argc, char *argv[])
     //    QObject::connect(&networkManager, &NetworkManager::flyableQueueDeclared,[&networkManager]{
     //        networkManager.sendFlyableData("data");
     //    });
-    UserTest userTest(&serviceManager);
-    LayerTest LayerTest(&serviceManager);
+    UserTest *userTest = new UserTest(&serviceManager);
+    LayerTest *layerTest;
+    NodeTest *nodeTest;
+    AssignmentTest *assignmentTest;
+    ParticleTest *particleTest;
 
-    //    FlyableNodeTest flyableNodeTest(&networkManager);
-    //    MovableNodeTest movableNodeTest(&networkManager);
+    QObject::connect(userTest, &UserTest::login,[&]{
+        qDebug()<<"login";
+        layerTest = new LayerTest(&serviceManager);
+        nodeTest = new NodeTest(&serviceManager);
+//        assignmentTest = new AssignmentTest(&serviceManager);
+//        particleTest = new ParticleTest(&serviceManager);
+    });
+    QObject::connect(userTest, &UserTest::logout,[&]{
+        qDebug()<<"logout";
+//        delete layerTest;
+//        delete nodeTest;
+//        delete assignmentTest;
+//        delete particleTest;
+    });
 
-    NodeTest nodeTest(&serviceManager);
-//    AssignmentTest assignmentTest(&serviceManager);
-//    ParticleTest particleTest(&serviceManager);
 
     return a.exec();
 }

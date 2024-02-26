@@ -49,24 +49,22 @@ public:
     void setUserName(const QString &newUserName);
 
     QString message() const;
-    void setMessage(const QString &newMessage);
+    Q_INVOKABLE void setMessage(const QString &newMessage);
 
     void setIsConnected(bool newIsConnected);
 
 signals:
     void signedIn();
+    void authenticationFailed();
     void signedOut();
     void selectRole();
+    void signInFailed();
 
     void userDataChanged();
 
     void nameChanged();
-
     void userNameChanged();
-
     void messageChanged();
-
-
 
 private slots:
     void onUserDataReceived(const UserData &userData);
