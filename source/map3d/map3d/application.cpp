@@ -73,21 +73,30 @@ void Application::initializeQmlEngine()
 
 void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
 {
-        if (!obj) {
-            qDebug() << "Can not create: " << objUrl.toString();
-            QCoreApplication::exit(-1);
-            return;
-        }
-        mApplicationWindow = qobject_cast<QQuickWindow *>(obj);
+    if (!obj) {
+        qDebug() << "Can not create: " << objUrl.toString();
+        QCoreApplication::exit(-1);
+        return;
+    }
+    mApplicationWindow = qobject_cast<QQuickWindow *>(obj);
 
-        if(!mApplicationWindow){
-            qDebug() << "Can not create application window";
-            QCoreApplication::exit(-1);
-            return;
-        }
+    // TEST
+    //    setPageIndex(2);
+    // ENDTEST
 
-        mPluginManager->loadPlugins();
-        mPluginManager->setup();
+    if (!mApplicationWindow) {
+        qDebug() << "Can not create application window";
+        QCoreApplication::exit(-1);
+        return;
+    }
+
+    mPluginManager->loadPlugins();
+    mPluginManager->setup();
+}
+
+void Application::setPageIndex(int index)
+{
+    mApplicationWindow->setProperty("pageIndex", index);
 }
 
 void Application::initializeSurfaceFormat()

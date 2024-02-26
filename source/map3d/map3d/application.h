@@ -36,6 +36,8 @@ public:
     void initializeQmlEngine();
     void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
 
+    void setPageIndex(int index);
+
 private:
     static void initializeSurfaceFormat();
 
