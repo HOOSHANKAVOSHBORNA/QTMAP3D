@@ -62,9 +62,9 @@ Rectangle {
     radius: Math.ceil(15 / Style.monitorRatio)
     color: bg50
 
-    minWidth: sideContainer.visibleCount ? Math.ceil(
-                                               (360 + 75) / Style.monitorRatio) : Math.ceil(
-                                               75 / Style.monitorRatio)
+    minWidth: sideContainer.currentItemIndex
+              !== -1 ? Math.ceil((360 + 75) / Style.monitorRatio) : Math.ceil(
+                           75 / Style.monitorRatio)
 
     RowLayout {
         id: rowLayout
@@ -107,7 +107,9 @@ Rectangle {
                     spacing: Math.ceil(20 / Style.monitorRatio)
 
                     Repeater {
+                        id: sideBarRep
                         model: sideBarModel
+                        property int checkedIndex: -1
 
                         Button {
                             id: btnDelegate
@@ -122,7 +124,8 @@ Rectangle {
                                 width: Math.ceil(39 / Style.monitorRatio)
                                 height: Math.ceil(39 / Style.monitorRatio)
                                 radius: Math.ceil(10 / Style.monitorRatio)
-                                color: btnDelegate.checked ? fg50 : "transparent"
+                                color: model.index
+                                       === sideBarRep.checkedIndex ? fg50 : "transparent"
                                 anchors.centerIn: btnDelegate
                             }
 
@@ -132,8 +135,21 @@ Rectangle {
                             checkable: true
                             checked: false
                             onToggled: {
-                                model.checked = checked
-                                sideBarModel.toggleItem(index, checked)
+                                print(sideBarRep.checkedIndex !== model.index,
+                                      !sideBarModel.get(model.index).isWindow)
+
+                                if (sideBarRep.checkedIndex === model.index
+                                        && !sideBarModel.get(
+                                            model.index).isWindow) {
+                                    sideBarRep.checkedIndex = -1
+                                    sideContainer.setCurrentItemIndex(-1)
+                                } else if (sideBarRep.checkedIndex !== model.index
+                                           && !sideBarModel.get(
+                                               model.index).isWindow) {
+                                    sideBarRep.checkedIndex = model.index
+                                    sideContainer.setCurrentItemIndex(
+                                                model.index)
+                                }
                             }
 
                             ToolTip {
@@ -270,9 +286,21 @@ Rectangle {
 
         SideContainer {
             id: sideContainer
+
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            currentItemIndex: -1
+
             sideModel: sideBarModel
+
+            onNoItem: {
+                sideBarRep.checkedIndex = -1
+            }
+
+            onCurrentItemIndexChanged: sideBarRep.checkedIndex = currentItemIndex
+
+            Component.onCompleted: currentItemIndex = -1
         }
     }
 
