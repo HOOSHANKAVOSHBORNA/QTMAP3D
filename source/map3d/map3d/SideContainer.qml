@@ -21,17 +21,16 @@ Item {
 
     property alias currentItemIndex: stackLayout.currentIndex
 
-    visible: currentIndex !== -1
+    signal noItem
 
+    //    visible: currentIndex !== -1
     function setCurrentItemIndex(index) {
         print("something", currentItemIndex, index)
         if (currentItemIndex === index) {
             currentItemIndex = -1
-            return false
+            noItem()
         } else {
             currentItemIndex = index
-            print(stackLayout.currentIndex)
-            return true
         }
     }
 
@@ -48,16 +47,50 @@ Item {
 
         //            color: 'silver'
         //        }
-        Text {
-            text: 'Qarch'
-            //            Layout.topMargin: 40 / Style.monitorRatio
-            //            Layout.bottomMargin: 30 / Style.monitorRatio
-            //            Layout.topMargin: 10 / Style.monitorRatio
-            //            Layout.bottomMargin: 5 / Style.monitorRatio
-            color: Style.foregroundColor
-            font.pixelSize: 30 / Style.monitorRatio
-            font.family: Style.fontFamily
-            font.weight: 500
+        RowLayout {
+            visible: currentItemIndex !== -1
+            Layout.preferredHeight: 20
+            Layout.fillWidth: true
+
+            Text {
+                text: currentItemIndex !== -1 ? sideModel.get(
+                                                    currentItemIndex).name : 'you can not see this'
+
+                Layout.topMargin: 20 / Style.monitorRatio
+                Layout.bottomMargin: 10 / Style.monitorRatio
+                color: Style.foregroundColor
+                font.pixelSize: 30 / Style.monitorRatio
+                font.family: Style.fontFamily
+                font.weight: 500
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+
+            Rectangle {
+                Layout.preferredHeight: 22 / Style.monitorRatio
+                Layout.preferredWidth: 22 / Style.monitorRatio
+                color: 'transparent'
+
+                //                            padding: 0
+                Image {
+                    source: "qrc:/Resources/undocker.png"
+                    width: 22 / Style.monitorRatio
+                    height: 22 / Style.monitorRatio
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        stackLayout.data[currentItemIndex].isWindow = true
+                        sideModel.get(currentItemIndex).isWindow = true
+                        currentItemIndex = -1
+                        noItem()
+                    }
+                }
+            }
         }
 
         StackLayout {
@@ -81,41 +114,41 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(0).isWindow = false
+                    currentItemIndex = 0
                 }
             }
 
             DockWindow {
                 id: toolBoxDocItem
                 windowTitle: sideModel.get(1).name
-                isWindow: sideModel.get(1).isWindow
                 containerItem: ToolboxManagerItem {
                     id: toolbox
                     toolboxCpp: rootItem.toolboxCpp
                 }
 
                 onWindowClose: {
-                    sideModel.get(0).isWindow = false
+                    sideModel.get(1).isWindow = false
+                    currentItemIndex = 1
                 }
             }
 
             DockWindow {
                 id: layerDocItem
                 windowTitle: sideModel.get(2).name
-                //                isWindow: sideModel.get(2).isWindow
                 containerItem: LayerManagerItem {
                     id: layers
                     layerCpp: rootItem.layerCpp
                 }
 
                 onWindowClose: {
-                    sideModel.get(1).isWindow = false
+                    sideModel.get(2).isWindow = false
+                    currentItemIndex = 2
                 }
             }
 
             DockWindow {
                 id: bookmarkDocItem
                 windowTitle: sideModel.get(3).name
-                //                isWindow: sideModel.get(3).isWindow
                 containerItem: BookmarkItem {
                     id: bookmark
                     bookmarkCpp: rootItem.bookmarkCpp.getBookmarkProxyModel()
@@ -123,13 +156,13 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(3).isWindow = false
+                    currentItemIndex = 3
                 }
             }
 
             DockWindow {
                 id: locationDocItem
                 windowTitle: sideModel.get(4).name
-                //                isWindow: sideModel.get(4).isWindow
                 containerItem: LocationManagerItem {
                     id: locationManager
                     listModel: rootItem.locationCpp
@@ -137,12 +170,14 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(4).isWindow = false
+                    currentItemIndex = 4
                 }
             }
 
             DockWindow {
                 id: settingsDocItem
                 windowTitle: sideModel.get(5).name
+                isWindow: sideModel.get(5).isWindow
 
                 containerItem: ConnectionConfiguration {
                     id: settingsItem
@@ -154,6 +189,7 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(5).isWindow = false
+                    currentItemIndex = 5
                 }
             }
         }

@@ -135,11 +135,21 @@ Rectangle {
                             checkable: true
                             checked: false
                             onToggled: {
-                                if (sideContainer.setCurrentItemIndex(
-                                            model.index))
-                                    sideBarRep.checkedIndex = model.index
-                                else
+                                print(sideBarRep.checkedIndex !== model.index,
+                                      !sideBarModel.get(model.index).isWindow)
+
+                                if (sideBarRep.checkedIndex === model.index
+                                        && !sideBarModel.get(
+                                            model.index).isWindow) {
                                     sideBarRep.checkedIndex = -1
+                                    sideContainer.setCurrentItemIndex(-1)
+                                } else if (sideBarRep.checkedIndex !== model.index
+                                           && !sideBarModel.get(
+                                               model.index).isWindow) {
+                                    sideBarRep.checkedIndex = model.index
+                                    sideContainer.setCurrentItemIndex(
+                                                model.index)
+                                }
                             }
 
                             ToolTip {
@@ -283,6 +293,14 @@ Rectangle {
             currentItemIndex: -1
 
             sideModel: sideBarModel
+
+            onNoItem: {
+                sideBarRep.checkedIndex = -1
+            }
+
+            onCurrentItemIndexChanged: sideBarRep.checkedIndex = currentItemIndex
+
+            Component.onCompleted: currentItemIndex = -1
         }
     }
 
