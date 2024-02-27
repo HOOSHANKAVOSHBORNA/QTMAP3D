@@ -2,17 +2,18 @@
 #define LOADINGPAGE_H
 #include <QAbstractListModel>
 #include <QTimer>
+
 struct LoadingInfoItem
 {
     QString text;
-    bool acceptionState;
+    bool isError;
 
     bool operator <(const LoadingInfoItem& item) const {
-        return acceptionState < item.acceptionState;
+        return isError < item.isError;
     }
 
     bool operator ==(const LoadingInfoItem& item) const {
-        return acceptionState == item.acceptionState && text == item.text;
+        return isError == item.isError && text == item.text;
     }
 };
 
@@ -28,7 +29,7 @@ public:
    virtual int rowCount(const QModelIndex &parent) const override;
    virtual QVariant data(const QModelIndex &index, int role) const override;
    virtual QHash<int, QByteArray> roleNames() const override;
-   Q_INVOKABLE void addItem(const QString &loadingData, bool acceptionState);
+   Q_INVOKABLE void addItem(const QString &message, bool isError);
    Q_INVOKABLE void removeItem(int index);
    void swapItem(int sourceIndex, int destinationIndex);
    void updateData(int index);

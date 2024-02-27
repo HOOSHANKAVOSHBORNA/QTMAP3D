@@ -11,7 +11,9 @@ Window {
     property var connectionConfigCpp: undefined
     property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
-    property int pageIndex: 0
+//    property int pageIndex: 0
+
+    required property var applicationCpp
 
     visible: true
     width: 800
@@ -24,14 +26,22 @@ Window {
         fillMode: Image.PreserveAspectCrop
     }
 
-
-
-    Connections {
-        target: userManager
-        onSignedOut: {
-            appStack.currentIndex = 0
-        }
-    }
+//    Connections {
+//        target: userManager
+//        function onSignedIn() {
+//            pageIndex = 1
+//        }
+//        function onSignedOut() {
+//            pageIndex = 0
+//        }
+//    }
+//    Connections {
+//        target: applicationCpp
+//        function onPageIndexChanged() {
+//            if(applicationCpp.pageIndex === 1)
+//                applicationCpp.onLoadingPage()
+//        }
+//    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -46,14 +56,14 @@ Window {
             TabButton {
                 text: 'Login Page'
                 onClicked: {
-                    pageIndex = 0
+                    applicationCpp.pageIndex = 0
                 }
             }
 
             TabButton {
                 text: 'Loading Page'
                 onClicked: {
-                    pageIndex = 1
+                    applicationCpp.pageIndex = 1
                 }
             }
 
@@ -61,7 +71,7 @@ Window {
                 text: 'Map Page'
 
                 onClicked: {
-                    pageIndex = 2
+                    applicationCpp.pageIndex = 2
                 }
             }
         }
@@ -71,7 +81,11 @@ Window {
 
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: pageIndex /*debugTabbar.currentIndex*/
+            currentIndex: applicationCpp.pageIndex /*debugTabbar.currentIndex*/
+            onCurrentIndexChanged: {
+                if(currentIndex === 1)
+                    applicationCpp.onLoadingPage()
+            }
 
             LoginPage {
                 userManager: applicationWindow.userManager
