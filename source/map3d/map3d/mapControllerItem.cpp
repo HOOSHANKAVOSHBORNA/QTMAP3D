@@ -3,27 +3,24 @@
 
 #include "filterManager.h"
 #include "mapControllerItem.h"
-#include "searchNodeModel.h"
+#include "qqmlcontext.h"
+// #include "searchNodeModel.h"
 
 MapControllerItem::MapControllerItem(QQuickItem *parent):
     MapItem(parent)
 {
-
     initializeOsgEarth();
-    mSearchNodeManager = SearchNodeManager::createSingletonInstance(nullptr, nullptr);
-    mSearchNodeManager->setMapItem(this);
-    qmlRegisterSingletonType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManagerInstance", SearchNodeManager::createSingletonInstance);
+    mSearchNodeManager = new SearchNodeManager(this, this);
 
+    //    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
 
-//    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
-
-//    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
+    //    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
     //------------
     // Create an instance of SearchNodeManager
-//    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
+    //    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
 
     // Set the context property to expose to QML
-//    mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", searchNodeManager);
+   // mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", mSearchNodeManager);
 //    qmlRegisterType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManager");
 //--------------------
     setAcceptHoverEvents(true);
@@ -166,7 +163,7 @@ StatusBarSearchModel *MapControllerItem::statusBar() const
 
 SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
 {
-    return mSearchNodeProxyModel;
+    return mSearchNodeManager->searchNodeProxyModel();
 }
 
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
@@ -203,7 +200,7 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 
 SearchNodeManager *MapControllerItem::searchNodeManager() const
 {
-    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
+    return mSearchNodeManager;
 }
 
 QVector3D MapControllerItem::mapMouseGeoLocation() const
@@ -246,7 +243,6 @@ void MapControllerItem::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         mLastMousePressTime = QTime::currentTime();
         mLastPressPoint = event->pos();
-
         if (!mInClickProcess) {
             mMousePressOusideClickProcess = true;
         } else {

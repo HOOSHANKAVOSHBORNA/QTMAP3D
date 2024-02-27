@@ -11,8 +11,6 @@ Item {
     id: rootItem
 
     property ListModel sideModel: ListModel {}
-    property alias currentItemIndex: tabBar.currentIndex
-    property int visibleCount: 0
 
     property var toolboxCpp
     property var locationCpp
@@ -21,13 +19,21 @@ Item {
     property var profileCpp
     property var bookmarkCpp
 
-    Connections {
-        target: sideModel
-        function onToggleItem(index, checked) {
-            //            sideModel.get(index).isWindow = false
-            stackLayout.data[index].isWindow = false
+    property alias currentItemIndex: stackLayout.currentIndex
+
+    signal noItem
+
+    //    visible: currentIndex !== -1
+    function setCurrentItemIndex(index) {
+        print("something", currentItemIndex, index)
+        if (currentItemIndex === index) {
+            currentItemIndex = -1
+            noItem()
+        } else {
+            currentItemIndex = index
         }
     }
+
     //clip: true
     ColumnLayout {
         id: columnLayout
@@ -35,145 +41,53 @@ Item {
         anchors.rightMargin: 15 / Style.monitorRatio
         anchors.leftMargin: 15 / Style.monitorRatio
 
-        Text {
-            visible: visibleCount !== 0
-            text: 'Qarch'
-            //            Layout.topMargin: 40 / Style.monitorRatio
-            //            Layout.bottomMargin: 30 / Style.monitorRatio
-            Layout.topMargin: 10 / Style.monitorRatio
-            Layout.bottomMargin: 5 / Style.monitorRatio
-            color: Style.foregroundColor
-            font.pixelSize: 30 / Style.monitorRatio
-            font.family: Style.fontFamily
-            font.weight: 500
-        }
+        //        Rectangle {
+        //            Layout.fillWidth: true
+        //            Layout.fillHeight: true
 
-        TabBar {
-            id: tabBar
-            //            Layout.preferredHeight: 30 / Style.monitorRatio
+        //            color: 'silver'
+        //        }
+        RowLayout {
+            visible: currentItemIndex !== -1
+            Layout.preferredHeight: 20
             Layout.fillWidth: true
-            Material.accent: Style.foregroundColor
 
-            background: Rectangle {
-                color: "transparent"
-                //                height: 2
-                anchors.bottom: parent.bottom
+            Text {
+                text: currentItemIndex !== -1 ? sideModel.get(
+                                                    currentItemIndex).name : 'you can not see this'
+
+                Layout.topMargin: 20 / Style.monitorRatio
+                Layout.bottomMargin: 10 / Style.monitorRatio
+                color: Style.foregroundColor
+                font.pixelSize: 30 / Style.monitorRatio
+                font.family: Style.fontFamily
+                font.weight: 500
             }
 
-            Repeater {
-                id: repeater
-                model: sideModel
-                TabButton {
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-                    contentItem: Rectangle {
-                        anchors.fill: parent
-                        color: 'transparent'
+            Item {
+                Layout.fillWidth: true
+            }
 
-                        Rectangle {
-                            height: 2
-                            width: parent.width
-                            radius: 1
-                            color: Style.disableColor
-                            anchors.bottom: parent.bottom
-                        }
+            Rectangle {
+                Layout.preferredHeight: 22 / Style.monitorRatio
+                Layout.preferredWidth: 22 / Style.monitorRatio
+                color: 'transparent'
 
-                        Rectangle {
-                            color: 'transparent'
-                            anchors.fill: parent
-                            anchors.margins: 3 / Style.monitorRatio
-                            clip: true
+                //                            padding: 0
+                Image {
+                    source: "qrc:/Resources/undocker.png"
+                    width: 22 / Style.monitorRatio
+                    height: 22 / Style.monitorRatio
+                }
 
-                            Text {
-                                id: txt
+                MouseArea {
+                    anchors.fill: parent
 
-                                text: model.name ?? "unknown"
-                                font.family: Style.fontFamily
-                                font.pixelSize: 17 / Style.monitorRatio
-                                opacity: enabled ? 1.0 : 0.3
-                                color: tabBar.currentIndex
-                                       === index ? Style.foregroundColor : Style.disableColor
-                                anchors.verticalCenter: parent.verticalCenter
-                                //                            verticalAlignment: Text.AlignVCenter
-                                //                            horizontalAlignment: Text.AlignHCenter
-                            }
-                        }
-
-                        // TODO: replace rectangle and mouse area with Button
-                        Rectangle {
-                            visible: tabBar.currentIndex === model.index
-                            width: 22 / Style.monitorRatio
-                            height: 22 / Style.monitorRatio
-                            anchors.right: parent.right
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: 'transparent'
-
-                            //                            padding: 0
-                            Image {
-                                source: "qrc:/Resources/undocker.png"
-                                width: 22 / Style.monitorRatio
-                                height: 22 / Style.monitorRatio
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-
-                                onClicked: {
-                                    //                                    stackLayout.data[tabBar.currentIndex].isWindow = true
-                                    //                                    stackLayout.data[tabBar.currentIndex].isWindow = true
-                                    //                                    stackLayout.data[tabBar.currentIndex].windowTitle = model.name
-                                    model.isWindow = true
-                                    stackLayout.data[index].isWindow = true
-                                    //                                    model.checked = false
-                                }
-                            }
-
-                            //                            background: Rectangle {
-                            //                                color: 'transparent'
-                            //                            }
-
-                            //                            display: AbstractButton.IconOnly
-                        }
-                    }
-
-                    visible: model.checked && !model.isWindow
-                    width: {
-                        if (visible) {
-                            if (visibleCount < 3) {
-                                return columnLayout.width / visibleCount
-                            } else if (visibleCount >= 3
-                                       && tabBar.currentIndex === model.index) {
-                                return 100
-                            } else {
-                                return (columnLayout.width - 100) / (visibleCount - 1)
-                            }
-                        } else {
-                            return 0
-                        }
-                    }
-
-                    onVisibleChanged: {
-                        if (visible) {
-                            tabBar.currentIndex = model.index
-                        } else {
-                            if (model.index === tabBar.currentIndex)
-                                for (var j = 0; j < sideModel.count; ++j) {
-                                    if (sideModel.get(j).checked) {
-                                        tabBar.currentIndex = j
-                                        break
-                                    }
-                                }
-                        }
-
-                        var count = 0
-                        for (var i = 0; i < sideModel.count; ++i) {
-                            if (sideModel.get(i).checked && !sideModel.get(
-                                        i).isWindow)
-                                count++
-                        }
-                        visibleCount = count
-                        //                        print(visibleCount)
+                    onClicked: {
+                        stackLayout.data[currentItemIndex].isWindow = true
+                        sideModel.get(currentItemIndex).isWindow = true
+                        currentItemIndex = -1
+                        noItem()
                     }
                 }
             }
@@ -184,12 +98,13 @@ Item {
 
             Layout.fillHeight: true
             Layout.fillWidth: true
-            currentIndex: tabBar.currentIndex
-            visible: visibleCount ? true : false
+            currentIndex: -1
 
-            //---------------------------------------------------------
             DockWindow {
                 id: profileItem
+
+                Layout.fillHeight: true
+                Layout.fillWidth: true
                 windowTitle: sideModel.get(0).name
                 isWindow: sideModel.get(0).isWindow
 
@@ -199,51 +114,41 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(0).isWindow = false
+                    currentItemIndex = 0
                 }
             }
-            //---------------------------------------------------------
+
             DockWindow {
                 id: toolBoxDocItem
                 windowTitle: sideModel.get(1).name
-                isWindow: sideModel.get(1).isWindow
                 containerItem: ToolboxManagerItem {
                     id: toolbox
                     toolboxCpp: rootItem.toolboxCpp
                 }
 
                 onWindowClose: {
-                    sideModel.get(0).isWindow = false
+                    sideModel.get(1).isWindow = false
+                    currentItemIndex = 1
                 }
             }
-            //            Binding {
-            //                target: toolBoxDocItem
-            //                property: "isWindow"
-            //                value: sideModel.get(1).isWindow
-            //            }
-            //---------------------------------------------------------
+
             DockWindow {
                 id: layerDocItem
                 windowTitle: sideModel.get(2).name
-                //                isWindow: sideModel.get(2).isWindow
                 containerItem: LayerManagerItem {
                     id: layers
                     layerCpp: rootItem.layerCpp
                 }
 
                 onWindowClose: {
-                    sideModel.get(1).isWindow = false
+                    sideModel.get(2).isWindow = false
+                    currentItemIndex = 2
                 }
             }
-            //            Binding {
-            //                target: layerDocItem
-            //                property: "isWindow"
-            //                value: sideModel.get(2).isWindow
-            //            }
-            //----------------------------------------------------------------
+
             DockWindow {
                 id: bookmarkDocItem
                 windowTitle: sideModel.get(3).name
-                //                isWindow: sideModel.get(3).isWindow
                 containerItem: BookmarkItem {
                     id: bookmark
                     bookmarkCpp: rootItem.bookmarkCpp.getBookmarkProxyModel()
@@ -251,18 +156,13 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(3).isWindow = false
+                    currentItemIndex = 3
                 }
             }
-            //            Binding {
-            //                target: bookmarkDocItem
-            //                property: "isWindow"
-            //                value: sideModel.get(3).isWindow
-            //            }
-            //----------------------------------------------------------------
+
             DockWindow {
                 id: locationDocItem
                 windowTitle: sideModel.get(4).name
-                //                isWindow: sideModel.get(4).isWindow
                 containerItem: LocationManagerItem {
                     id: locationManager
                     listModel: rootItem.locationCpp
@@ -270,18 +170,14 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(4).isWindow = false
+                    currentItemIndex = 4
                 }
             }
-            //            Binding {
-            //                target: locationDocItem
-            //                property: "isWindow"
-            //                value: sideModel.get(4).isWindow
-            //            }
 
-            //-----------------------------------------------------
             DockWindow {
                 id: settingsDocItem
                 windowTitle: sideModel.get(5).name
+                isWindow: sideModel.get(5).isWindow
 
                 containerItem: ConnectionConfiguration {
                     id: settingsItem
@@ -293,6 +189,7 @@ Item {
 
                 onWindowClose: {
                     sideModel.get(5).isWindow = false
+                    currentItemIndex = 5
                 }
             }
         }

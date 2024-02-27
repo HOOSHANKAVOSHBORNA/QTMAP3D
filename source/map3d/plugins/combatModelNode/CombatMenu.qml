@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-
 import "style"
 
 Item {
@@ -36,9 +35,6 @@ Item {
         anchors.centerIn: parent
         id: mainRow
         z:1
-        anchors.left: parent.left
-//        anchors.leftMargin: 110 / Style.monitorRatio
-
         Rectangle {
             id: nodeInfoHolder
             width: 300 / Style.monitorRatio
@@ -72,8 +68,8 @@ Item {
                 }
                 IconImage {
                     source: operatorListModel ? operatorListModel.operatorIcon : ""
-                    Layout.preferredHeight: 55 / Style.monitorRatio
-                    Layout.preferredWidth: 55 / Style.monitorRatio
+                    Layout.preferredHeight: 50 / Style.monitorRatio
+                    Layout.preferredWidth: 50 / Style.monitorRatio
                     color: backgroundColor/*operatorListModel ? operatorListModel.operatorColor : "black"*/
                 }
 
@@ -149,7 +145,8 @@ Item {
 
                     Rectangle{
                         id:attack
-                        property color rd85: Qt.rgba("red".r,"red".g,"red".b,.15)
+                        property color red: "red"
+
 
                         anchors.top: parent.top
                         anchors.topMargin: 6 / Style.monitorRatio
@@ -158,9 +155,10 @@ Item {
                         height: attackMA.containsMouse ?  32 / Style.monitorRatio : 27 / Style.monitorRatio
                         gradient: Gradient {
                             orientation: Gradient.Horizontal
-                            GradientStop { position: 0.0; color: "red" }
-                            GradientStop { position: 1.0; color: attack.rd85}
+                            GradientStop { position: 0.0; color: attack.red }
+                            GradientStop { position: 1.0; color: Qt.rgba(attack.red.r,attack.red.g,attack.red.b,0.5)}
                         }
+//                        color: Qt.rgba(red.r,red.g,red.b,0.8)
                         radius: 15 / Style.monitorRatio
 
                         Text {
@@ -270,11 +268,11 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked:{
-                    flickable.contentX += 131 / Style.monitorRatio
+                    flickable.contentX -= 131 / Style.monitorRatio
 
 
                 }
-                onEntered: rightIcon.width = rightIcon.width * Style.monitorRatio
+                onEntered: rightIcon.width = 30 / Style.monitorRatio
                 onExited: rightIcon.width =20 / Style.monitorRatio
             }
         }
@@ -310,7 +308,7 @@ Item {
                                 color: objectSelection ? bg20 : "transparent"
                                 z: -2
                                 radius: 7
-                                Layout.leftMargin: 5 / Style.monitorRatio
+//                                Layout.leftMargin: 5 / Style.monitorRatio
 
                                 Rectangle {
                                     anchors.top: parent.top
@@ -319,24 +317,34 @@ Item {
                                     height: parent.height / 2
                                     width: parent.width
                                     color: "transparent"
+RowLayout{
+    anchors.centerIn: parent
+    IconImage {
+        id: myIcon
+        source: objectIcon
+        sourceSize: Qt.size(35 / Style.monitorRatio, 35 / Style.monitorRatio)
+        color: backgroundColor/*objectColor*/
+    }
+    IconImage {
+        id: bulletIcon
+        visible: !opIsAttacker
+        source: "qrc:/Resources/bullet.png"
+        sourceSize: Qt.size(22 / Style.monitorRatio, 22 / Style.monitorRatio)
+        color: backgroundColor/*objectColor*/
+    }
+    Text {
+        font.pixelSize: 17 / Style.monitorRatio
+        font.family: "Roboto"
+        Layout.leftMargin: -10 / Style.monitorRatio
+        color: backgroundColor
+        text: operatorListModel ? 30 : "" /*objectBulletCount*/
+        visible: !opIsAttacker
+    }
+}
 
-                                    IconImage {
-                                        id: myIcon
-                                        anchors.centerIn:  parent
-                                        source: objectIcon
-                                        width: 35 / Style.monitorRatio
-                                        height: 35 / Style.monitorRatio
-                                        color: backgroundColor/*objectColor*/
-                                    }
-                                    IconImage {
-                                        id: bulletIcon
-                                        visible: !opIsAttacker
-                                        anchors.left: myIcon.right
-                                        source: "qrc:/Resources/bullet.png"
-                                        width: 35 / Style.monitorRatio
-                                        height: 35 / Style.monitorRatio
-                                        color: backgroundColor/*objectColor*/
-                                    }
+
+
+
                                 }
                                 Rectangle {
                                     anchors.bottom: parent.bottom
@@ -350,8 +358,8 @@ Item {
                                     Image {
                                         id: repeaterImg
                                         source: "qrc:/Resources/information.png"
-                                        width: 24 / Style.monitorRatio
-                                        height: 24 / Style.monitorRatio
+                                        width: 20 / Style.monitorRatio
+                                        height: 20 / Style.monitorRatio
                                         anchors.left: parent.left
                                         anchors.leftMargin: 30 / Style.monitorRatio
                                         anchors.verticalCenter: parent.verticalCenter
@@ -404,10 +412,10 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked:{
-                    flickable.contentX -= 131 / Style.monitorRatio
+                    flickable.contentX += 131 / Style.monitorRatio
 
                 }
-                onEntered: leftIcon.width = leftIcon.width * Style.monitorRatio
+                onEntered: leftIcon.width = 30 / Style.monitorRatio
                 onExited: leftIcon.width = 20 / Style.monitorRatio
             }
         }
@@ -534,74 +542,6 @@ Item {
             }
         }
     }
-    //    Rectangle {
-
-    //        id: nodesBackground
-    //        anchors.left: mainRow.left
-    //        anchors.verticalCenter: mainRow.verticalCenter
-    //        anchors.leftMargin: nodeInfoHolder.width - attackholder.width / 2
-    //        radius: 20 / Style.monitorRatio
-    //        color: fg75
-
-    //        width: (rowLay.childrenRect.width  > 425 ? 534 : (rowLay.childrenRect.width  +  100))
-    //        height: 75 / Style.monitorRatio
-    //        z: -2
-
-    //        Rectangle{
-    //            id:right
-    //            anchors.right: parent.right
-    //            anchors.rightMargin: 0
-    //            height: 75 / Style.monitorRatio
-    //            width: 55 / Style.monitorRatio
-    //            color: Qt.rgba(foregroundColor.r,foregroundColor.g,foregroundColor.b,0.01)
-    //            radius: 20 / Style.monitorRatio
-    //            //            border.width: 1
-    //            //            border.color: "white"
-
-    //        }
-
-
-
-
-    //        PropertyAnimation {
-    //            id: rightMotionOpen
-    //            target: right
-    //            properties: "anchors.rightMargin"
-    //            to: 13
-    //            from: 0
-    //            duration: 200
-    //            easing.type: Easing.OutQuint
-    //        }
-    //        PropertyAnimation {
-    //            id: rightMotionClose
-    //            target: right
-    //            properties: "anchors.rightMargin"
-    //            to: 0
-    //            duration: 200
-    //            easing.type: Easing.OutQuint
-    //        }
-
-    //        //        PropertyAnimation {
-    //        //            id: leftMotionOpen
-    //        //            target: left
-    //        //            properties: "width"
-    //        //            to: 55 / Style.monitorRatio
-    //        //            from: 0
-    //        //            duration: 200
-    //        //            easing.type: Easing.OutQuint
-    //        //        }
-    //        //        PropertyAnimation {
-    //        //            id: leftMotionClose
-    //        //            target: left
-    //        //            properties: "width"
-    //        //            to: 0
-    //        //            duration: 200
-    //        //            easing.type: Easing.OutQuint
-    //        //        }
-
-    //    }
-
-    //////////
 
     Rectangle{
         width: bottomLayer .width   < 215 / Style.monitorRatio  ? bottomLayer .width  : 215 / Style.monitorRatio

@@ -3,18 +3,31 @@
 
 LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
 {
-    for(int x = 0 ; x < 10 ; ++x)
-        addItem("this is test " + QString::number(x), false );
+//    for(int x = 0 ; x < 20 ; ++x)
+//        addItem("this is test " + QString::number(x), true );
+        addItem("this is test 1", true );
+        addItem("this is test 2", true );
+        addItem("this is test 3", false );
+        addItem("this is test 4", true );
+        addItem("this is test 5", true );
+        addItem("this is test 6", true );
+        addItem("this is test 7", false );
+        addItem("this is test 8", false );
+        addItem("this is test 9", false );
+        addItem("this is test 10", false );
 
         mTimer = new QTimer(this);
 
     connect(mTimer, &QTimer::timeout, [=](){
-        while(mLoadingDataItem[0].acceptionState){
+
+        if(mLoadingDataItem[0].acceptionState && mLoadingDataItem.size()){
             removeItem(0);
             mTimer->stop();
         }
-      //  changeAcceptionState(0,true);
+        updateData(mLoadingDataItem.size() - 1);
     });
+
+    mTimer->start(5000);
 }
 
 int LoadingPage::rowCount(const QModelIndex &parent) const
@@ -73,19 +86,6 @@ void LoadingPage::swapItem(int sourceIndex, int destinationIndex)
         emit beginMoveRows(QModelIndex(),sourceIndex,sourceIndex,QModelIndex(),destinationIndex);
         std::swap(mLoadingDataItem[sourceIndex],mLoadingDataItem[destinationIndex]);
         emit endMoveRows();
-    }
-    else
-        return;
-
-}
-
-void LoadingPage::changeAcceptionState(int index, bool state)
-{
-    if(index < mLoadingDataItem.size()){
-        mLoadingDataItem[index].acceptionState = state;
-        QModelIndex modelIndex = createIndex(index, 0);
-        emit dataChanged(modelIndex,modelIndex);
-        updateData(index);
     }
     else
         return;

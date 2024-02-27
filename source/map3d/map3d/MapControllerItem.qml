@@ -93,8 +93,8 @@ Item {
         anchors.rightMargin: itemMargin
         anchors.top: parent.top
         anchors.topMargin: itemMargin + 3
-        model: SearchNodeManagerInstance.searchNodeProxyModel()
         filterManager: mapItem.filterManager()
+        model: map.mapItem.searchNodeManager().searchNodeProxyModel()
     }
 
     MultiEffect {
@@ -115,7 +115,7 @@ Item {
         anchors.left: parent.left
         anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 2*itemMargin
+        anchors.bottomMargin: 2 * itemMargin
         headingAngle: mapItem.compassDirection.x
         pitchAngle: mapItem.compassDirection.y + 90
         color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
@@ -169,7 +169,6 @@ Item {
         anchors.topMargin: searcbar.maxheight
         anchors.rightMargin: itemMargin
 
-
         onZoomInButtonPressedChanged: mapItem.zoomInButtonPressed = zoomInButtonPressed
         onZoomOutButtonPressedChanged: mapItem.zoomOutButtonPressed = zoomOutButtonPressed
 
@@ -187,7 +186,6 @@ Item {
             mapItem.changeMode()
         }
     }
-
 
 
     StatusBar {

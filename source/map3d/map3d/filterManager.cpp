@@ -141,16 +141,19 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData, Tag *tag)
 
 const QSet<QString> &FilterManager::numFilterFields() const
 {
+    // qDebug() << "num:" << mFilterFieldsNum;
     return mFilterFieldsNum;
 }
 
 const QSet<QString> &FilterManager::colorFilterFields() const
 {
+    // qDebug() << "color:" << mFilterFieldsColor;
     return mFilterFieldsColor;
 }
 
 const QSet<QString> &FilterManager::stringFilterFields() const
 {
+    // qDebug() << "string:" << mFilterFieldsStr;
     return mFilterFieldsStr;
 }
 

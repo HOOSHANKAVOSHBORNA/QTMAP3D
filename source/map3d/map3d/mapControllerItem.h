@@ -108,7 +108,7 @@ private:
     bool mMousePressOusideClickProcess = false;
     bool mInClickProcess = false;
     double mFps = 0.0f;
-    SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
+    // SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
     SearchNodeManager* mSearchNodeManager{nullptr};
 //    SearchNodeManager *getSearchNodeManager() const;
     // TypeListModel* mTypeListModel{nullptr};

@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
-
+import "style"
 import "Components"
 
 Window {
@@ -11,12 +11,11 @@ Window {
     property var connectionConfigCpp: undefined
     property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
+    property int pageIndex: 0
 
+    visible: true
     width: 800
     height: 800
-    visible: true
-
-    color: 'royal blue'
 
     Image {
         source: "qrc:/Resources/login-earth.jpg"
@@ -24,6 +23,8 @@ Window {
         anchors.fill: parent
         fillMode: Image.PreserveAspectCrop
     }
+
+
 
     Connections {
         target: userManager
@@ -44,18 +45,24 @@ Window {
 
             TabButton {
                 text: 'Login Page'
+                onClicked: {
+                    pageIndex = 0
+                }
             }
 
             TabButton {
                 text: 'Loading Page'
+                onClicked: {
+                    pageIndex = 1
+                }
             }
 
             TabButton {
                 text: 'Map Page'
 
-                //                onClicked: {
-                //                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem()
-                //                }
+                onClicked: {
+                    pageIndex = 2
+                }
             }
         }
 
@@ -64,7 +71,7 @@ Window {
 
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: debugTabbar.currentIndex
+            currentIndex: pageIndex /*debugTabbar.currentIndex*/
 
             LoginPage {
                 userManager: applicationWindow.userManager
