@@ -13,6 +13,7 @@ Item {
 
     smooth: true
     View3D {
+        renderMode: View3D.Inline
         anchors.fill: parent
         importScene: Node {
             DirectionalLight {

@@ -133,6 +133,17 @@ Item {
         }
     }
 
+    MiniMap{
+        id: miniMap3D
+        anchors.right: parent.right
+        anchors.rightMargin: itemMargin / Style.monitorRatio
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 1.5*itemMargin
+        rotate: mapItem.mapRotation.x
+        recSize: mapItem.mapRotation.z
+
+    }
+
     MultiEffect {
         source: compassItem
         enabled: true
@@ -176,6 +187,7 @@ Item {
             mapItem.changeMode()
         }
     }
+
 
 
     StatusBar {
