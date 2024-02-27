@@ -62,9 +62,9 @@ Rectangle {
     radius: Math.ceil(15 / Style.monitorRatio)
     color: bg50
 
-    minWidth: sideContainer.visibleCount ? Math.ceil(
-                                               (360 + 75) / Style.monitorRatio) : Math.ceil(
-                                               75 / Style.monitorRatio)
+    minWidth: sideContainer.currentItemIndex
+              !== -1 ? Math.ceil((360 + 75) / Style.monitorRatio) : Math.ceil(
+                           75 / Style.monitorRatio)
 
     RowLayout {
         id: rowLayout
@@ -107,7 +107,9 @@ Rectangle {
                     spacing: Math.ceil(20 / Style.monitorRatio)
 
                     Repeater {
+                        id: sideBarRep
                         model: sideBarModel
+                        property int checkedIndex: -1
 
                         Button {
                             id: btnDelegate
@@ -122,7 +124,8 @@ Rectangle {
                                 width: Math.ceil(39 / Style.monitorRatio)
                                 height: Math.ceil(39 / Style.monitorRatio)
                                 radius: Math.ceil(10 / Style.monitorRatio)
-                                color: btnDelegate.checked ? fg50 : "transparent"
+                                color: model.index
+                                       === sideBarRep.checkedIndex ? fg50 : "transparent"
                                 anchors.centerIn: btnDelegate
                             }
 
@@ -132,8 +135,11 @@ Rectangle {
                             checkable: true
                             checked: false
                             onToggled: {
-                                model.checked = checked
-                                sideBarModel.toggleItem(index, checked)
+                                if (sideContainer.setCurrentItemIndex(
+                                            model.index))
+                                    sideBarRep.checkedIndex = model.index
+                                else
+                                    sideBarRep.checkedIndex = -1
                             }
 
                             ToolTip {
@@ -270,8 +276,12 @@ Rectangle {
 
         SideContainer {
             id: sideContainer
+
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            currentItemIndex: -1
+
             sideModel: sideBarModel
         }
     }
