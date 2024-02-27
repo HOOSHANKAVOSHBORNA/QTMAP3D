@@ -18,13 +18,16 @@ int main(int argc, char *argv[])
     Application::performStartupConfiguration();
     QApplication app(argc, argv);
 
+    QQmlApplicationEngine *qmlEngine = new QQmlApplicationEngine();
     Application *const map3DApp = Application::instance();
-    //--run demo------------------------
-   // QObject::connect(map3DApp, &Application::defenseDataManagerInitialized, [](DefenseDataManager *defenseDataManager) {
-   //     Demo* demo = new Demo(defenseDataManager);
-   // });
-    //---------------------------------
+    map3DApp->setQmlEngine(qmlEngine);
     map3DApp->initialize();
+
+//    qmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(map3DApp)}});
+
+    qmlEngine->load(QUrl("qrc:/ApplicationWindow.qml"));
+    if (qmlEngine->rootObjects().isEmpty())
+        return -1;
 
     return app.exec();
 }
