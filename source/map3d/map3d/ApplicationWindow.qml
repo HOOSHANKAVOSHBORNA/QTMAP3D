@@ -35,13 +35,13 @@ Window {
 //            pageIndex = 0
 //        }
 //    }
-    Connections {
-        target: applicationCpp
-        function onPageIndexChanged() {
-            if(applicationCpp.pageIndex === 1)
-                applicationCpp.onLoadingPage()
-        }
-    }
+//    Connections {
+//        target: applicationCpp
+//        function onPageIndexChanged() {
+//            if(applicationCpp.pageIndex === 1)
+//                applicationCpp.onLoadingPage()
+//        }
+//    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -82,10 +82,10 @@ Window {
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: applicationCpp.pageIndex /*debugTabbar.currentIndex*/
-//            onCurrentIndexChanged: {
-//                if(currentIndex === 1)
-//                    applicationCpp.onLoadingPage()
-//            }
+            onCurrentIndexChanged: {
+                if(currentIndex === 1)
+                    applicationCpp.onLoadingPage()
+            }
 
             LoginPage {
                 userManager: applicationWindow.userManager

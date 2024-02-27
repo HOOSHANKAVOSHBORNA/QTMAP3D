@@ -124,7 +124,7 @@ void Application::onLoadingPage()
         mPluginManager->loadPlugins();
         mPluginManager->setup();
 
-        setPageIndex(2);
+//        setPageIndex(2);
 
 }
 
