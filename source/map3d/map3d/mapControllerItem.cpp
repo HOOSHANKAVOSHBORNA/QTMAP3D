@@ -3,13 +3,14 @@
 
 #include "filterManager.h"
 #include "mapControllerItem.h"
-#include "searchNodeModel.h"
+#include "qqmlcontext.h"
+// #include "searchNodeModel.h"
 
 MapControllerItem::MapControllerItem(QQuickItem *parent):
     MapItem(parent)
 {
     initializeOsgEarth();
-    mSearchNodeManager = new SearchNodeManager(this);
+    mSearchNodeManager = new SearchNodeManager(this, this);
 
     //    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
 
@@ -19,7 +20,7 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
     //    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
 
     // Set the context property to expose to QML
-//    mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", searchNodeManager);
+   // mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", mSearchNodeManager);
 //    qmlRegisterType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManager");
 //--------------------
     setAcceptHoverEvents(true);
@@ -162,7 +163,7 @@ StatusBarSearchModel *MapControllerItem::statusBar() const
 
 SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
 {
-    return mSearchNodeProxyModel;
+    return mSearchNodeManager->searchNodeProxyModel();
 }
 
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
@@ -241,7 +242,6 @@ void MapControllerItem::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         mLastMousePressTime = QTime::currentTime();
         mLastPressPoint = event->pos();
-
         if (!mInClickProcess) {
             mMousePressOusideClickProcess = true;
         } else {

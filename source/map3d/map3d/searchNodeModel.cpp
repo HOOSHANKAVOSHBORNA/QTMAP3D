@@ -11,7 +11,6 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent)
     , mMapItem(mapItem)
 {
     //    init();
-
     connect(mMapItem->getMapObject(), &MapObject::nodeToLayerAdded, this, &SearchNodeModel::addNode);
     connect(mMapItem->getMapObject(),
             &MapObject::nodeFromLayerRemoved,
@@ -64,10 +63,12 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
 
         // ToDo: optimize it
         for (auto &field : nodeData->fieldData) {
+            qDebug() << field.name << ", " << field.value.typeName();
             if (field.name.toLower() == "color")
                 mFilterManager->addColorFilterField(field.value.toString());
             else if (std::strcmp(field.value.typeName(), "double") == 0
-                     || std::strcmp(field.value.typeName(), "qlonglong") == 0)
+                     || std::strcmp(field.value.typeName(), "qlonglong") == 0
+                     || std::strcmp(field.value.typeName(), "int") == 0)
                 mFilterManager->addNumFilterField(field.name);
             else if (std::strcmp(field.value.typeName(), "QString") == 0)
                 mFilterManager->addStringFilterField(field.name);
@@ -243,7 +244,8 @@ int TypeListModel::rowCount(const QModelIndex &parent) const
 }
 
 // -------------------------------------------------------------------------- manager
-SearchNodeManager::SearchNodeManager(MapItem *mapItem)
+SearchNodeManager::SearchNodeManager(MapItem *mapItem, QObject *parent)
+    : QObject(parent)
 {
     mSearchNodeProxyModel = new SearchNodeProxyModel();
     setMapItem(mapItem);
