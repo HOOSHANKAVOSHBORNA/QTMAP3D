@@ -17,6 +17,7 @@ class MapControllerItem : public MapItem
     Q_OBJECT
 
     Q_PROPERTY(QVector2D compassDirection READ compassDirection WRITE setCompassDirection NOTIFY compassDirectionChanged FINAL)
+    Q_PROPERTY(QVector3D mapRotation READ getMapRotation WRITE setMapRotation NOTIFY mapRotationChanged FINAL)
     Q_PROPERTY(double fps READ fps WRITE setFps NOTIFY fpsChanged)
 
     Q_PROPERTY(bool zoomInButtonPressed WRITE setZoomInButtonPressed)
@@ -45,6 +46,9 @@ public:
 
     QVector2D compassDirection() const;
     void setCompassDirection(const QVector2D &newCompassDirection);
+
+    QVector3D getMapRotation();
+    void setMapRotation(QVector3D angle);
 
     void setQmlEngine(QQmlEngine *newQmlEngine);
 
@@ -78,6 +82,7 @@ signals:
     void clicked();
     void searchChange();
     void compassDirectionChanged();
+    void mapRotationChanged();
 
     void topMenuItemChanged();
 
@@ -103,12 +108,13 @@ private:
     bool mMousePressOusideClickProcess = false;
     bool mInClickProcess = false;
     double mFps = 0.0f;
-    SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
+    // SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
     SearchNodeManager* mSearchNodeManager{nullptr};
 //    SearchNodeManager *getSearchNodeManager() const;
     // TypeListModel* mTypeListModel{nullptr};
     StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D mCompassDirection;
+    QVector3D mMapRotation;
     SmallMap *mSmallMap{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
     QQuickItem *mTopMenuItem = nullptr;

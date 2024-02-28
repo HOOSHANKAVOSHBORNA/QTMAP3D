@@ -199,7 +199,7 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
     if ((pluginFileName.split('.').back() == "so") || (pluginFileName.split('.').back() == "dll"))
     {
         qDebug() << pluginFileName;
-        emit pluginLoading(pluginFileName);
+        emit pluginMessage(pluginFileName, false);
 
         const QString filePath = pluginsDir.absoluteFilePath(pluginFileName);
         QPluginLoader *pluginLoader = new QPluginLoader(filePath);
@@ -210,7 +210,7 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
             //                QString errStr = pluginLoader.errorString();
             qWarning() << "Plugin loading failed: [" << pluginFileName
                        << "] " << pluginLoader->errorString();
-            emit pluginLoadError(pluginLoader->errorString());
+            emit pluginMessage(pluginLoader->errorString(), true);
             return;
         }
 

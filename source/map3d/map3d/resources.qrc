@@ -546,5 +546,6 @@
         <file>Resources/loading.gif</file>
         <file>Resources/tick6.png</file>
         <file>Resources/error.png</file>
+        <file>Resources/world_simple.png</file>
     </qresource>
 </RCC>
