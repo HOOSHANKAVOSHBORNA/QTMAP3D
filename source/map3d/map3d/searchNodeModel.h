@@ -88,7 +88,7 @@ public:
 private:
     QString mFilterString = "";
     TypeListModel *mTypeListModel{nullptr};
-
+    SearchNodeModel *mSearchNodeModel;
     //----------------------
 };
 
@@ -97,14 +97,14 @@ class SearchNodeManager : public QObject
     Q_OBJECT
 
 public:
-    explicit SearchNodeManager(MapItem *mapItem);
+    explicit SearchNodeManager(MapItem *mapItem, QObject* parent = nullptr);
 
     void setMapItem(MapItem *mapItem);
     Q_INVOKABLE SearchNodeProxyModel *searchNodeProxyModel() const;
     FilterManager *getFilterManager() const;
 
 private:
-    SearchNodeProxyModel *mSearchNodeProxyModel;
+    SearchNodeProxyModel *mSearchNodeProxyModel{nullptr};
 };
 
 #endif // SEARCHNODEMODEL_H

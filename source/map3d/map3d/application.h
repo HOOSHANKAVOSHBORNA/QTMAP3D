@@ -19,7 +19,7 @@ class QQmlApplicationEngine;
 class Application : public QObject
 {
     Q_OBJECT
-
+    Q_PROPERTY(int pageIndex READ pageIndex WRITE setPageIndex NOTIFY pageIndexChanged)
 private:
     explicit Application();
 
@@ -33,14 +33,25 @@ public:
 
     ServiceManager *serviceManager() const;
 
-    void initializeQmlEngine();
-    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
+//    void initializeQmlEngine();
+//    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
+
+    void setPageIndex(int index);
+
+    void setQmlEngine(QQmlApplicationEngine *newQmlEngine);
+
+    int pageIndex() const;
+    Q_INVOKABLE void onLoadingPage();
+
+signals:
+    void pageIndexChanged();
 
 private:
     static void initializeSurfaceFormat();
 
 private slots:
     void clearMainWindow();
+
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
@@ -55,6 +66,7 @@ private:
     NetworkManager *mNetworkManager{nullptr};
 
     QQuickWindow *mApplicationWindow = nullptr;
+    int mPageIndex {0};
 };
 
 #endif // Application_H

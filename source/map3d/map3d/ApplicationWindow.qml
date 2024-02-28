@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
-
+import "style"
 import "Components"
 
 Window {
@@ -11,12 +11,13 @@ Window {
     property var connectionConfigCpp: undefined
     property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
+//    property int pageIndex: 0
 
+    required property var applicationCpp
+
+    visible: true
     width: 800
     height: 800
-    visible: true
-
-    color: 'royal blue'
 
     Image {
         source: "qrc:/Resources/login-earth.jpg"
@@ -25,12 +26,22 @@ Window {
         fillMode: Image.PreserveAspectCrop
     }
 
-    Connections {
-        target: userManager
-        onSignedOut: {
-            appStack.currentIndex = 0
-        }
-    }
+//    Connections {
+//        target: userManager
+//        function onSignedIn() {
+//            pageIndex = 1
+//        }
+//        function onSignedOut() {
+//            pageIndex = 0
+//        }
+//    }
+//    Connections {
+//        target: applicationCpp
+//        function onPageIndexChanged() {
+//            if(applicationCpp.pageIndex === 1)
+//                applicationCpp.onLoadingPage()
+//        }
+//    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -44,27 +55,34 @@ Window {
 
             TabButton {
                 text: 'Login Page'
+                onClicked: {
+                    applicationCpp.pageIndex = 0
+                }
             }
 
             TabButton {
                 text: 'Loading Page'
+                onClicked: {
+                    applicationCpp.pageIndex = 1
+                }
             }
 
             TabButton {
                 text: 'Map Page'
 
-                //                onClicked: {
-                //                    mapPage.mapItem = applicationWindow.mainPageCpp.getMapItem()
-                //                }
+                onClicked: {
+                    applicationCpp.pageIndex = 2
+                }
             }
         }
+
 
         StackLayout {
             id: appStack
 
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: debugTabbar.currentIndex
+            currentIndex: applicationCpp.pageIndex /*debugTabbar.currentIndex*/
 
             LoginPage {
                 userManager: applicationWindow.userManager

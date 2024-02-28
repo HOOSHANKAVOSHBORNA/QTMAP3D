@@ -3,13 +3,14 @@
 
 #include "filterManager.h"
 #include "mapControllerItem.h"
-#include "searchNodeModel.h"
+#include "qqmlcontext.h"
+// #include "searchNodeModel.h"
 
 MapControllerItem::MapControllerItem(QQuickItem *parent):
     MapItem(parent)
 {
     initializeOsgEarth();
-    mSearchNodeManager = new SearchNodeManager(this);
+    mSearchNodeManager = new SearchNodeManager(this, this);
 
     //    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
 
@@ -19,7 +20,7 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
     //    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
 
     // Set the context property to expose to QML
-//    mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", searchNodeManager);
+   // mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", mSearchNodeManager);
 //    qmlRegisterType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManager");
 //--------------------
     setAcceptHoverEvents(true);
@@ -162,7 +163,7 @@ StatusBarSearchModel *MapControllerItem::statusBar() const
 
 SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
 {
-    return mSearchNodeProxyModel;
+    return mSearchNodeManager->searchNodeProxyModel();
 }
 
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
@@ -222,6 +223,7 @@ void MapControllerItem::frame()
     calculateNavigationStep();
     mStatusBar->setRange(getCameraController()->getViewpoint().getRange());
     emit compassDirectionChanged();
+    emit mapRotationChanged();
 }
 
 void MapControllerItem::mouseMoveEvent(QMouseEvent *event)
@@ -241,7 +243,6 @@ void MapControllerItem::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         mLastMousePressTime = QTime::currentTime();
         mLastPressPoint = event->pos();
-
         if (!mInClickProcess) {
             mMousePressOusideClickProcess = true;
         } else {
@@ -317,6 +318,22 @@ void MapControllerItem::setCompassDirection(const QVector2D &newCompassDirection
         return;
     mCompassDirection = newCompassDirection;
     emit compassDirectionChanged();
+}
+
+QVector3D MapControllerItem::getMapRotation()
+{
+    double xrot = -(getCameraController()->getViewpoint().focalPoint()->x());
+    double yrot = ((getCameraController()->getViewpoint().focalPoint()->y()));
+    double range = (getCameraController()->getViewpoint().range()->getValue() / 300000);
+    return QVector3D(xrot,yrot,std::max(range,5.0));
+}
+
+void MapControllerItem::setMapRotation(QVector3D angle)
+{
+    if (mMapRotation == angle)
+        return;
+    mMapRotation = angle;
+    emit mapRotationChanged();
 }
 
 QQuickItem *MapControllerItem::topMenuItem() const

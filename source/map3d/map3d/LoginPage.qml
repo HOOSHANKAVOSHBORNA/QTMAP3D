@@ -17,7 +17,6 @@ Item {
         id: blueBackground
         width: parent.width / 2
         height: parent.height
-        z: backGroundImage.z + 1
         gradient: Gradient {
             GradientStop {
                 position: 0.0
@@ -33,14 +32,6 @@ Item {
                                Style.foregroundColor.b, 0.1)
             }
         }
-    }
-
-    Image {
-        id: backGroundImage
-        source: "qrc:/Resources/login-earth.jpg"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.fill: parent
-        fillMode: Image.PreserveAspectCrop
     }
     PropertyAnimation {
         id: heightIncrease

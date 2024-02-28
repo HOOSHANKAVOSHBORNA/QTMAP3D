@@ -3,18 +3,18 @@
 
 LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
 {
-    for(int x = 0 ; x < 10 ; ++x)
-        addItem("this is test " + QString::number(x), false );
+//    mTimer = new QTimer(this);
 
-        mTimer = new QTimer(this);
+//    connect(mTimer, &QTimer::timeout, [this](){
 
-    connect(mTimer, &QTimer::timeout, [=](){
-        while(mLoadingDataItem[0].acceptionState){
-            removeItem(0);
-            mTimer->stop();
-        }
-      //  changeAcceptionState(0,true);
-    });
+//        if(mLoadingDataItem.size() && !mLoadingDataItem[0].isError){
+//            removeItem(0);
+//            mTimer->stop();
+//        }
+//        updateData(mLoadingDataItem.size() - 1);
+//    });
+
+//    mTimer->start(1000);
 }
 
 int LoadingPage::rowCount(const QModelIndex &parent) const
@@ -33,7 +33,7 @@ QVariant LoadingPage::data(const QModelIndex &index, int role) const
 
 
     case acceptionState:
-        return mLoadingDataItem[row].acceptionState;
+        return !mLoadingDataItem[row].isError;
     default:
         break;
     }
@@ -49,19 +49,20 @@ QHash<int, QByteArray> LoadingPage::roleNames() const
     return hash;
 }
 
-void LoadingPage::addItem( const QString& loadingData, bool acceptionState)
+void LoadingPage::addItem(const QString &message, bool isError)
 {
-    emit beginInsertRows(QModelIndex(), mLoadingDataItem.size(), mLoadingDataItem.size());
-    mLoadingDataItem.push_back({loadingData,acceptionState});
-    emit endInsertRows();
+    qDebug()<< message<<": "<<isError;
+    beginInsertRows(QModelIndex(), mLoadingDataItem.size(), mLoadingDataItem.size());
+    mLoadingDataItem.push_back({message, isError});
+    endInsertRows();
 }
 
 void LoadingPage::removeItem(int index)
 {
     if(index < mLoadingDataItem.size()){
-        emit beginRemoveRows(QModelIndex(),index,index);
+        beginRemoveRows(QModelIndex(),index,index);
         mLoadingDataItem.erase(mLoadingDataItem.begin() + index);
-        emit endRemoveRows();
+        endRemoveRows();
     }
     else
         return;
@@ -70,22 +71,9 @@ void LoadingPage::removeItem(int index)
 void LoadingPage::swapItem(int sourceIndex, int destinationIndex)
 {
     if(sourceIndex < mLoadingDataItem.size() && destinationIndex < mLoadingDataItem.size()){
-        emit beginMoveRows(QModelIndex(),sourceIndex,sourceIndex,QModelIndex(),destinationIndex);
-        std::swap(mLoadingDataItem[sourceIndex],mLoadingDataItem[destinationIndex]);
-        emit endMoveRows();
-    }
-    else
-        return;
-
-}
-
-void LoadingPage::changeAcceptionState(int index, bool state)
-{
-    if(index < mLoadingDataItem.size()){
-        mLoadingDataItem[index].acceptionState = state;
-        QModelIndex modelIndex = createIndex(index, 0);
-        emit dataChanged(modelIndex,modelIndex);
-        updateData(index);
+        beginMoveRows(QModelIndex(),sourceIndex,sourceIndex,QModelIndex(),destinationIndex);
+        std::swap(mLoadingDataItem[sourceIndex], mLoadingDataItem[destinationIndex]);
+        endMoveRows();
     }
     else
         return;
@@ -94,9 +82,9 @@ void LoadingPage::changeAcceptionState(int index, bool state)
 
 void LoadingPage::updateData(int index)
 {
-    for(int m=index;m>0;m--)
-        if(mLoadingDataItem[m].acceptionState && !mLoadingDataItem[m-1].acceptionState)
+    for(int m = index; m > 0; m--)
+        if(!mLoadingDataItem[m].isError && mLoadingDataItem[m-1].isError)
             swapItem(m , m - 1);
 
-    mTimer->start(1000);
+//    mTimer->start(1000);
 }
