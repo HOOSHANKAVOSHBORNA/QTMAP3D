@@ -263,7 +263,7 @@ Rectangle {
                             indicator: Rectangle {}
                             contentItem: TextField {
                                 id: txtContentItem1
-                                implicitWidth: 60 / Style.monitorRatio
+                                implicitWidth: 80 / Style.monitorRatio
                                 Layout.fillHeight: true
                                 placeholderText: qsTr("subject")
                                 placeholderTextColor: rootObj.fg30
@@ -393,10 +393,10 @@ Rectangle {
                     radius: 8
                     RowLayout {
                         anchors.left: parent.left
-                        anchors.leftMargin: 25 / Style.monitorRatio
+                        anchors.leftMargin: 5 / Style.monitorRatio
                         anchors.top: parent.top
                         anchors.topMargin: -3
-                        spacing: 5
+                        spacing: 5 / Style.monitorRatio
                         ComboBox {
                             id: control3
                             property real txtWidth: 0
@@ -438,7 +438,7 @@ Rectangle {
                             indicator: Rectangle {}
                             contentItem: TextField {
                                 id: txtContentItem3
-                                implicitWidth: 60 / Style.monitorRatio
+                                implicitWidth:80 / Style.monitorRatio
                                 Layout.fillHeight: true
                                 placeholderText: qsTr("subject")
                                 placeholderTextColor: rootObj.fg30
