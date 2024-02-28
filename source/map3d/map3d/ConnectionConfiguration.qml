@@ -111,8 +111,8 @@ Item {
             Layout.preferredWidth: 340 / Style.monitorRatio
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
-            height: 43 / Style.monitorRatio
-            font.pointSize: 17 / Style.monitorRatio
+            Layout.preferredHeight: 43 / Style.monitorRatio
+            font.pixelSize: 17 / Style.monitorRatio
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
@@ -139,8 +139,8 @@ Item {
             Layout.preferredWidth: 340 / Style.monitorRatio
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
-            height: 43 / Style.monitorRatio
-            font.pointSize: 17 / Style.monitorRatio
+            Layout.preferredHeight: 43 / Style.monitorRatio
+            font.pixelSize: 17 / Style.monitorRatio
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
@@ -167,8 +167,8 @@ Item {
             Layout.preferredWidth: 340 / Style.monitorRatio
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
-            height: 43 / Style.monitorRatio
-            font.pointSize: 17 / Style.monitorRatio
+            Layout.preferredHeight: 43 / Style.monitorRatio
+            font.pixelSize: 17 / Style.monitorRatio
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
@@ -195,8 +195,8 @@ Item {
             Layout.preferredWidth: 340 / Style.monitorRatio
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
-            height: 43 / Style.monitorRatio
-            font.pointSize: 17 / Style.monitorRatio
+            Layout.preferredHeight: 43 / Style.monitorRatio
+            font.pixelSize: 17 / Style.monitorRatio
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
