@@ -122,15 +122,16 @@ void Application::onLoadingPage()
         qDebug()<<"onLoading";
         setPageIndex(1);
         disconnect(mServiceManager, nullptr, this, nullptr);
-        connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+        // connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+        mPluginManager->loadPlugins();
+        mPluginManager->setup();
+        // auto i = QtConcurrent::run(&PluginManager::loadPlugins, mPluginManager);
 
-        auto i = QtConcurrent::run(&PluginManager::loadPlugins, mPluginManager);
+        // connect(mPluginManager, &PluginManager::pluginsLoaded, mPluginManager, &PluginManager::setup);
 
-        connect(mPluginManager, &PluginManager::pluginsLoaded, mPluginManager, &PluginManager::setup);
-
-        connect(mPluginManager, &PluginManager::setupFinished, [this](){
+        // connect(mPluginManager, &PluginManager::setupFinished, [this](){
             setPageIndex(2);
-        });
+        // });
 
 }
 
