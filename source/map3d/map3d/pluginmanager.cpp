@@ -118,6 +118,7 @@ void PluginManager::loadPlugins()
     for (const QString& pluginFileName : mPluginFileNameList) {
             parsePlugin(pluginFileName, pluginsDir);
     }
+       emit pluginsLoaded();
 }
 
 void PluginManager::unLoadPlugins()
@@ -146,8 +147,9 @@ void PluginManager::setup()
     //-------------------------------------
     for (auto item : qAsConst(mPluginsMap)) {
         item->setup();
+        qDebug() << "setup: " << item->name();
     }
-//    emit pluginsLoaded();
+    emit setupFinished();
 }
 
 void PluginManager::parsePlugin(const QString &pluginFileName, const QDir &pluginsDir)

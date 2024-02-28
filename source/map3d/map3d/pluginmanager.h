@@ -33,6 +33,8 @@ public:
     QMap<QString, PluginInterface *> pluginsMap() const;
 signals:
     void pluginMessage(QString message, bool isError);
+    void pluginsLoaded();
+    void setupFinished();
 
 private:
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);

@@ -76,16 +76,13 @@ Window {
             }
         }
 
+
         StackLayout {
             id: appStack
 
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: applicationCpp.pageIndex /*debugTabbar.currentIndex*/
-            onCurrentIndexChanged: {
-                if(currentIndex === 1)
-                    applicationCpp.onLoadingPage()
-            }
 
             LoginPage {
                 userManager: applicationWindow.userManager
