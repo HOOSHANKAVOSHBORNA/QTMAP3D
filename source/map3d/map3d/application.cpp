@@ -1,22 +1,22 @@
-#include <QSurfaceFormat>
-#include <QCoreApplication>
 #include <QApplication>
-#include <QQmlApplicationEngine>
-#include <QPluginLoader>
+#include <QCoreApplication>
 #include <QDir>
-#include <QQuickItem>
+#include <QPluginLoader>
+#include <QQmlApplicationEngine>
 #include <QQmlComponent>
+#include <QQuickItem>
 #include <QSplashScreen>
+#include <QSurfaceFormat>
+#include <QtConcurrent/QtConcurrent>
 
 #include "application.h"
 #include "loadingPage.h"
 #include "mainwindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
-#include <QtConcurrent/QtConcurrent>
 
-Application::Application() :
-    mPluginManager(new PluginManager)
+Application::Application()
+    : mPluginManager(new PluginManager)
 {
 }
 

@@ -10,11 +10,13 @@
 #include <QQuickView>
 
 #include "application.h"
-
+#include "logManager.h"
 
 int main(int argc, char *argv[])
 {
-//    qputenv("QSG_RENDER_LOOP", "basic");
+    LogManager logManager;
+    qInstallMessageHandler(LogManager::messageHandler);
+    //    qputenv("QSG_RENDER_LOOP", "basic");
     Application::performStartupConfiguration();
     QApplication app(argc, argv);
 
