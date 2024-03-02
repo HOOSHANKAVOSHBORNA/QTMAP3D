@@ -103,6 +103,7 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
+    mPluginLoader = new QPluginLoader();
 }
 
 void PluginManager::setQmlEngine(QQmlEngine *engine)
@@ -112,13 +113,19 @@ void PluginManager::setQmlEngine(QQmlEngine *engine)
 
 void PluginManager::loadPlugins()
 {
-    QDir pluginsDir = QCoreApplication::applicationDirPath();
-    pluginsDir.cd("../plugins/bin");
-    mPluginFileNameList = pluginsDir.entryList(QDir::Files);
-    for (const QString& pluginFileName : mPluginFileNameList) {
-            parsePlugin(pluginFileName, pluginsDir);
-    }
-       emit pluginsLoaded();
+    mPluginsDir = QCoreApplication::applicationDirPath();
+    mPluginsDir.cd("../plugins/bin");
+    mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
+    mPluginTimer = new QTimer();
+    connect(mPluginTimer, &QTimer::timeout, [&](){
+        parsePlugin(mPluginFileNameList[mIndex], mPluginsDir);
+        if (mIndex == mPluginFileNameList.size() - 1) {
+            stopTimer();
+            emit pluginsLoaded();
+        }
+        mIndex++;
+    });
+    mPluginTimer->start(100);
 }
 
 void PluginManager::unLoadPlugins()
@@ -204,15 +211,16 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
         emit pluginMessage(pluginFileName, false);
 
         const QString filePath = pluginsDir.absoluteFilePath(pluginFileName);
-        QPluginLoader *pluginLoader = new QPluginLoader(filePath);
-        QObject* instance = pluginLoader->instance();
+        mPluginLoader->setFileName(filePath);
+        mPluginLoader->load();
+        QObject* instance = mPluginLoader->instance();
 
         if (!instance)
         {
             //                QString errStr = pluginLoader.errorString();
             qWarning() << "Plugin loading failed: [" << pluginFileName
-                       << "] " << pluginLoader->errorString();
-            emit pluginMessage(pluginLoader->errorString(), true);
+                       << "] " << mPluginLoader->errorString();
+            emit pluginMessage(mPluginLoader->errorString(), true);
             return;
         }
 
@@ -222,9 +230,14 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
         if (pluginInterface) {
             pluginInterface->setName(pluginFileName);
             mPluginsMap.insert(pluginFileName, pluginInterface);
-            mPluginsLoaders.insert(pluginFileName, pluginLoader);
+            mPluginsLoaders.insert(pluginFileName, mPluginLoader);
         }
     }
+}
+
+void PluginManager::stopTimer()
+{
+    mPluginTimer->stop();
 }
 
 QMap<QString, PluginInterface *> PluginManager::pluginsMap() const
