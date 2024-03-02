@@ -39,6 +39,7 @@ signals:
 private:
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
     void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);
+    void stopTimer();
 
 private:
     friend EventHandler;
@@ -47,6 +48,10 @@ private:
     QMap<QString, QPluginLoader*> mPluginsLoaders;
     QStringList mPluginFileNameList;
     QStringList mLoadedPluginList;
+    QPluginLoader *mPluginLoader;
+    int mIndex{0};
+    QDir mPluginsDir;
+    QTimer *mPluginTimer;
 };
 
 #endif // PluginManager_H

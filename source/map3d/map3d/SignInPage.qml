@@ -94,6 +94,7 @@ ColumnLayout {
         leftPadding: 20 / Style.monitorRatio
 
         color: foregroundColorText
+        text: "test2"
         placeholderText: activeFocus ? "" : "Enter your Username"
         placeholderTextColor: foregroundColorText
         background: Rectangle {
@@ -131,6 +132,7 @@ ColumnLayout {
         placeholderText: activeFocus ? "" : "Enter your Password"
         placeholderTextColor: foregroundColorText
         echoMode: TextField.Password
+        text: "1234"
         background: Rectangle {
             color: foregroundColorTextBox
             radius: height / 2
