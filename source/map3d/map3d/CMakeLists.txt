@@ -53,7 +53,8 @@ add_executable(Map3d
         splash.h splash.cpp
         listWindow.cpp listWindow.h
         connectionConfiguration.h connectionConfiguration.cpp
-        loadingPage.h loadingPage.cpp)
+        loadingPage.h loadingPage.cpp
+        logManager.h logManager.cpp)
 
 
 target_include_directories(Map3d PUBLIC "/usr/local/include" "style/" "Components/")
