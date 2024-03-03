@@ -38,7 +38,7 @@ Rectangle {
             Rectangle {
                 id: loadingContainer
                 Layout.fillWidth: true
-                Layout.preferredHeight: 100 / Style.monitorRatio
+                Layout.preferredHeight: 200 / Style.monitorRatio
                 color: "transparent"
                 clip: true
 
@@ -105,6 +105,7 @@ Rectangle {
                     }
                 }
             }
+
             AnimatedImage {
                 source: "qrc:/Resources/loading.gif"
                 Layout.alignment: Qt.AlignHCenter

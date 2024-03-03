@@ -15,6 +15,10 @@ LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
 //    });
 
 //    mTimer->start(1000);
+
+for(int x=0;x<10;x++)
+    addItem("test " + QString::number(x),x%2);
+
 }
 
 int LoadingPage::rowCount(const QModelIndex &parent) const
