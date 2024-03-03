@@ -52,5 +52,6 @@
         <file>ApplicationWindow.qml</file>
         <file>LoadingPage.qml</file>
         <file>MiniMap.qml</file>
+        <file>Components/LoadingButton.qml</file>
     </qresource>
 </RCC>
