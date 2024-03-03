@@ -35,9 +35,6 @@ void Application::performStartupConfiguration()
 void Application::initialize(QQmlApplicationEngine *newQmlEngine)
 {
     mQmlEngine = newQmlEngine;
-    mPluginManager = new PluginManager;
-    mPluginManager->setQmlEngine(mQmlEngine);
-
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
     mServiceManager = new ServiceManager(mNetworkManager);
@@ -55,8 +52,12 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
 
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
 
+    mPluginManager = new PluginManager;
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
+        setPageIndex(2);
+    });
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
 }
 
@@ -78,15 +79,7 @@ void Application::initializeSurfaceFormat()
 void Application::onLoadingPage()
 {
         setPageIndex(1);
-
         mPluginManager->loadPlugins();
-
-        connect(mPluginManager, &PluginManager::pluginsLoaded, mPluginManager, &PluginManager::setup);
-
-        connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
-            setPageIndex(2);
-        });
-
 }
 
 void Application::clearMainWindow()

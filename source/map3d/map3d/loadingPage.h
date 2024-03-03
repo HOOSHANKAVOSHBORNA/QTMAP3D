@@ -35,7 +35,7 @@ public:
    void updateData(int index);
 
 private:
-   std::vector<LoadingInfoItem> mLoadingDataItem;
+   QVector<LoadingInfoItem> mLoadingDataItem;
     QTimer* mTimer;
 };
 
