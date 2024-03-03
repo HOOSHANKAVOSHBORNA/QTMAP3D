@@ -15,8 +15,7 @@
 #include "networkManager.h"
 #include <QtConcurrent/QtConcurrent>
 
-Application::Application() :
-    mPluginManager(new PluginManager)
+Application::Application()
 {
 }
 
@@ -37,6 +36,7 @@ void Application::initialize()
 {
     //--qml--------------------------------------------------
 //    initializeQmlEngine();
+    mPluginManager = new PluginManager;
     mPluginManager->setQmlEngine(mQmlEngine);
 
     //--network----------------------------------------------
@@ -57,6 +57,7 @@ void Application::initialize()
 
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
 
+    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
    // connect(this, &Application::pageIndexChanged, this, &Application::onLoadingPage);
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
@@ -117,17 +118,13 @@ void Application::clearMainWindow()
 
 void Application::onLoadingPage()
 {
-
-
-        qDebug()<<"onLoading";
         setPageIndex(1);
-        disconnect(mServiceManager, nullptr, this, nullptr);
-        connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+
         mPluginManager->loadPlugins();
 
         connect(mPluginManager, &PluginManager::pluginsLoaded, mPluginManager, &PluginManager::setup);
 
-        connect(mPluginManager, &PluginManager::setupFinished, [this](){
+        connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
             setPageIndex(2);
         });
 

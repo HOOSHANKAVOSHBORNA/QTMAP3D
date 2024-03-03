@@ -117,10 +117,10 @@ void PluginManager::loadPlugins()
     mPluginsDir.cd("../plugins/bin");
     mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
     mPluginTimer = new QTimer();
-    connect(mPluginTimer, &QTimer::timeout, [&](){
+    connect(mPluginTimer, &QTimer::timeout, this, [&](){
         parsePlugin(mPluginFileNameList[mIndex], mPluginsDir);
         if (mIndex == mPluginFileNameList.size() - 1) {
-            stopTimer();
+            mPluginTimer->stop();
             emit pluginsLoaded();
         }
         mIndex++;
@@ -233,11 +233,6 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
             mPluginsLoaders.insert(pluginFileName, mPluginLoader);
         }
     }
-}
-
-void PluginManager::stopTimer()
-{
-    mPluginTimer->stop();
 }
 
 QMap<QString, PluginInterface *> PluginManager::pluginsMap() const

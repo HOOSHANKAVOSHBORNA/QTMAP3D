@@ -39,7 +39,6 @@ signals:
 private:
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
     void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);
-    void stopTimer();
 
 private:
     friend EventHandler;
