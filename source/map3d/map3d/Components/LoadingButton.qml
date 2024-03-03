@@ -1,6 +1,8 @@
 import QtQuick
+import QtQuick.Controls
 
-Item {
+Button {
+
     Rectangle {
         id: blueRect
         width: 5
@@ -26,7 +28,7 @@ Item {
         target: blueRect
         loops: Animation.Infinite
         running: true
-        duration: 1000
+        duration: 3000
 
         path: Path {
             startX: redRect.x + redRect.radius
