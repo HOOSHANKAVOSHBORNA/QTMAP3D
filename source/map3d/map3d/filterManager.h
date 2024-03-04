@@ -6,8 +6,27 @@
 #include <QMap>
 #include <QSet>
 #include <QQmlEngine>
+#include <QSortFilterProxyModel>
 
 struct NodeData;
+
+class FilterFieldModel: public QAbstractListModel
+{
+    Q_OBJECT
+public:
+    FilterFieldModel(QObject *parent = nullptr);
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    void addFilterField(QString field);
+    void addFilterField(QSet<QString> &fields);
+    void setFilterField(QSet<QString> &fields);
+    void removeFilterField(QString field);
+private:
+    QVector<QString> mFilterFields;
+};
+
 
 struct Tag : public QObject {
     Q_OBJECT
@@ -83,14 +102,13 @@ class FilterManager : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(QSet<QString> stringFilterFields READ stringFilterFields NOTIFY filterFieldsChanged)
-    Q_PROPERTY(QSet<QString> numFilterFields READ numFilterFields NOTIFY filterFieldsChanged)
-    Q_PROPERTY(QSet<QString> colorFilterFields READ colorFilterFields NOTIFY filterFieldsChanged)
+    Q_PROPERTY(QSortFilterProxyModel * stringFilterFields READ stringFilterFields NOTIFY filterFieldsChanged)
+    Q_PROPERTY(QSortFilterProxyModel * numFilterFields READ numFilterFields NOTIFY filterFieldsChanged)
+    Q_PROPERTY(QSortFilterProxyModel * colorFilterFields READ colorFilterFields NOTIFY filterFieldsChanged)
     Q_PROPERTY(QVector<Tag*> filterTags READ getFilterTags NOTIFY filterTagsEdited)
 public:
 
     FilterManager(QObject* parent = nullptr);
-    // void addFilterField(NodeData *nodeData);
     void addColorFilterField(QSet<QString> &fields);
     void setColorFilterField(QSet<QString> &fields);
     void addColorFilterField(QString fields);
@@ -112,21 +130,24 @@ public:
     Q_INVOKABLE const QVector<Tag*> getFilterTags() const;
     Q_INVOKABLE const Tag * const getFilterTagAt(int index);
 
-    const QSet<QString> &stringFilterFields() const;
-    const QSet<QString> &colorFilterFields() const;
-    const QSet<QString> &numFilterFields() const;
+    Q_INVOKABLE QSortFilterProxyModel *colorFilterFields() const;
+    Q_INVOKABLE QSortFilterProxyModel *stringFilterFields() const;
+    Q_INVOKABLE QSortFilterProxyModel *numFilterFields() const;
 
 signals:
     void filterFieldsChanged();
     void filterTagsEdited();
 private:
-    // void addFilterField(QString field, QVariant value);
     bool checkNodeToShow(NodeData *nodeData, Tag* tag);
 
 private:
-    QSet<QString> mFilterFieldsColor;               // color fields
-    QSet<QString> mFilterFieldsStr;                    // all   fields
-    QSet<QString> mFilterFieldsNum;                 // int   fields
+    QSortFilterProxyModel *mFilterFieldsColor;
+    FilterFieldModel *mFilterFieldsStrModel;
+    QSortFilterProxyModel *mFilterFieldsStr;
+    FilterFieldModel *mFilterFieldsNumModel;
+    QSortFilterProxyModel *mFilterFieldsNum;
+    FilterFieldModel *mFilterFieldsColorModel;
+
     QVector<Tag*> mFilterTags{};
 };
 

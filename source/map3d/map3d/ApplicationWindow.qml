@@ -64,6 +64,7 @@ Window {
                 text: 'Loading Page'
                 onClicked: {
                     applicationCpp.pageIndex = 1
+                    applicationCpp.onLoadingPage()
                 }
             }
 

@@ -63,7 +63,6 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
 
         // ToDo: optimize it
         for (auto &field : nodeData->fieldData) {
-            qDebug() << field.name << ", " << field.value.typeName();
             if (field.name.toLower() == "color")
                 mFilterManager->addColorFilterField(field.value.toString());
             else if (std::strcmp(field.value.typeName(), "double") == 0
