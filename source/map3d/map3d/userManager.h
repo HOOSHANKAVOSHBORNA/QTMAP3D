@@ -26,6 +26,7 @@ class UserManager : public QObject
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
+    Q_PROPERTY(QString roleName READ roleName WRITE setRoleName NOTIFY roleNameChanged)
     Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
 
 
@@ -53,6 +54,9 @@ public:
 
     void setIsConnected(bool newIsConnected);
 
+    QString roleName() const;
+    void setRoleName(const QString &newRoleName);
+
 signals:
     void signedIn();
     void authenticationFailed();
@@ -66,6 +70,8 @@ signals:
     void userNameChanged();
     void messageChanged();
 
+    void roleNameChanged();
+
 private slots:
     void onUserDataReceived(const UserData &userData);
 
@@ -78,6 +84,7 @@ private:
     QString mMessage;
     bool mRolePageVisible;
 
+    QString mRoleName;
 };
 
 

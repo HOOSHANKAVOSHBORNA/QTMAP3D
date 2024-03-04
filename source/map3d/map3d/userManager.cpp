@@ -95,6 +95,8 @@ void UserManager::onUserDataReceived(const UserData &userData)
 
     if(userData.response.status == Response::Status::Success){
         mUserData = userData;
+        setName(mUserData.name);
+        setUserName(mUserData.userName);
         if(userData.command == UserData::UserCommand::Login){
             if(mUserData.roles.isEmpty())
                 emit signedIn();
@@ -104,6 +106,7 @@ void UserManager::onUserDataReceived(const UserData &userData)
             }
         }
         else if(userData.command == UserData::UserCommand::SelectRole){
+            setRoleName(userData.roles.at(userData.selectRoleIndex));
             emit signedIn();
         }
     }
@@ -157,3 +160,16 @@ void UserManager::setMessage(const QString &newMessage)
     emit messageChanged();
 }
 
+
+QString UserManager::roleName() const
+{
+    return mRoleName;
+}
+
+void UserManager::setRoleName(const QString &newRoleName)
+{
+    if (mRoleName == newRoleName)
+        return;
+    mRoleName = newRoleName;
+    emit roleNameChanged();
+}
