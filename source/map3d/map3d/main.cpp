@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 {
     LogManager logManager;
     qInstallMessageHandler(LogManager::messageHandler);
+
     //    qputenv("QSG_RENDER_LOOP", "basic");
     Application::performStartupConfiguration();
     QApplication app(argc, argv);

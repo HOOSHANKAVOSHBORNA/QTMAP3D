@@ -25,7 +25,6 @@ Item {
 
     //    visible: currentIndex !== -1
     function setCurrentItemIndex(index) {
-        print("something", currentItemIndex, index)
         if (currentItemIndex === index) {
             currentItemIndex = -1
             noItem()

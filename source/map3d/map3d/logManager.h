@@ -19,11 +19,15 @@ public:
                                const QString &msg);
 
 private:
+    static bool writeLogToFile(QString textToWrite);
+
+private:
+    static const inline int maxSize = 50000;
     static const inline QString appDir = QStandardPaths::writableLocation(
         QStandardPaths::AppDataLocation);
     static inline const QString appName = QString("Map3d");
     static inline const QString savedDir = QString("logs");
-    static inline const QString savedFileName = QString("mainLogs.txt");
+    static inline QString savedFileName = QString("log_");
 };
 
 #endif // LOGMANAGER_H
