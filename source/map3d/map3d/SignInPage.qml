@@ -28,7 +28,6 @@ ColumnLayout {
     spacing: 0
 
     onSignInResponse: {
-        backgroundRec.color.a = 1
         signInBtn.enabled = true
     }
 
@@ -36,8 +35,9 @@ ColumnLayout {
         id: serverResponseTimer
         interval: 5000
         onTriggered: {
-            backgroundRec.color.a = 1
             signInBtn.enabled = true
+            signInBtn.isWaiting = false
+            signInBtn.loadingAnimation.stop()
             userManager.setMessage("No Response")
         }
     }
@@ -160,31 +160,28 @@ ColumnLayout {
         }
     }
 
-    Button {
+    LoadingButton {
         id: signInBtn
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
         Layout.topMargin: 14 / Style.monitorRatio
         hoverEnabled: true
-        background: Rectangle {
-            id: backgroundRec
-            color: Style.foregroundColor
-            radius: width / (Style.monitorRatio * 2)
-        }
+
         contentItem: Text {
             id: signInBtnTxt
             text: "Sign in"
-            color: parent.hovered && parent.enabled
-                   && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
+            color: parent.hovered
+                   && parent.enabled ? "#01AED6" : Style.backgroundColor
             font.pixelSize: 20 / Style.monitorRatio
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
 
         onClicked: {
-            backgroundRec.color.a = 0.5
             signInBtn.enabled = false
             userManager.setMessage("")
+            loadingAnimation.start()
+            isWaiting = true
             serverResponseTimer.start()
         }
     }
