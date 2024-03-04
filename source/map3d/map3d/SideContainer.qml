@@ -49,7 +49,7 @@ Item {
         //        }
         RowLayout {
             visible: currentItemIndex !== -1
-            Layout.preferredHeight: 20
+            Layout.preferredHeight: 20 / Style.monitorRatio
             Layout.fillWidth: true
 
             Text {
@@ -59,13 +59,9 @@ Item {
                 Layout.topMargin: 20 / Style.monitorRatio
                 Layout.bottomMargin: 10 / Style.monitorRatio
                 color: Style.foregroundColor
-                font.pixelSize: 30 / Style.monitorRatio
+                font.pixelSize: 25 / Style.monitorRatio
                 font.family: Style.fontFamily
-                font.weight: 500
-            }
-
-            Item {
-                Layout.fillWidth: true
+                font.weight: 400/Style.monitorRatio
             }
 
             Rectangle {

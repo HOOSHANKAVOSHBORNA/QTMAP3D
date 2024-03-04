@@ -8,6 +8,7 @@ import "style"
 Rectangle {
     id: rootRect
 
+
     property alias sideContainer: sideContainer
 
     property alias listWindowVisible: btnList.checked
@@ -120,6 +121,7 @@ Rectangle {
                                 height: Math.ceil(35 / Style.monitorRatio)
                             }
 
+
                             background: Rectangle {
                                 width: Math.ceil(39 / Style.monitorRatio)
                                 height: Math.ceil(39 / Style.monitorRatio)
@@ -190,7 +192,9 @@ Rectangle {
                         }
 
                         display: AbstractButton.IconOnly
-
+onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+    print(applicationWindow.connectionConfigCpp.isConnected)
+}
                         checkable: true
 
                         //                        checked: this take value by alias property
@@ -344,8 +348,9 @@ Rectangle {
         }
 
         ListElement {
+//            iconSource: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             name: "Connection Configuration"
-            iconSource: "qrc:/Resources/settings.png"
+            iconSource:  "qrc:/Resources/plugged.png"
             checked: false
             isWindow: false
         }
