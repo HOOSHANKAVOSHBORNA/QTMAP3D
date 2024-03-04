@@ -10,9 +10,12 @@ Rectangle {
     id: rootObj
     property var filterManager
 
+    property real innerHeight : mainColumn.height
+
     readonly property color fg30: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
                                           Style.foregroundColor.b, 0.3)
+
 
     function isNumeric(s) {
         return !isNaN(s - parseFloat(s))
@@ -40,7 +43,6 @@ Rectangle {
     ColumnLayout {
         id:mainColumn
         width: parent.width
-        height: parent.height
 
         Flow {
             id: filterFields
@@ -92,9 +94,7 @@ Rectangle {
             }
 
             RowLayout {
-
                 Label {
-
                     width: 36 / Style.monitorRatio
                     height: 18 / Style.monitorRatio
                     text: "Color"
@@ -124,29 +124,23 @@ Rectangle {
                     width: 115 / Style.monitorRatio
                     height: 24 / Style.monitorRatio
                     clip: true
-
-                    RowLayout {
-                        spacing: 3
-                        x: -colorScroll.position * parent.width
-
-                        ListView {
-                            id: colorRepeater
-                            layoutDirection: Qt.LeftToRight
-                            model: rootObj.filterManager ? filterManager.colorFilterFields: 0
-                            delegate: Row {
+                    ListView {
+                        id: colorRepeater
+                        width: parent.width
+                        height: 24 / Style.monitorRatio
+                        orientation: ListView.Horizontal
+                        layoutDirection: Qt.LeftToRight
+                        model: rootObj.filterManager ? filterManager.colorFilterFields: 0
+                        delegate: Rectangle {
+                            width: 24 / Style.monitorRatio
+                            height: 24 / Style.monitorRatio
+                            radius: height / 2
+                            color: model.display
+                            MouseArea {
                                 anchors.fill: parent
-                                Rectangle {
-                                    width: 24 / Style.monitorRatio
-                                    height: 24 / Style.monitorRatio
-                                    radius: height / 2
-                                    color: "red"
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onClicked: {
-                                            filterManager.addFilterTag("Color",
-                                                                       model.display, Tag.Equal, andCheck.checked ? Tag.And : Tag.Or)
-                                        }
-                                    }
+                                onClicked: {
+                                    filterManager.addFilterTag("Color",
+                                                               model.display, Tag.Equal, andCheck.checked ? Tag.And : Tag.Or)
                                 }
                             }
                         }
@@ -187,7 +181,7 @@ Rectangle {
                 id: stringFilter
                 width: 204 / Style.monitorRatio
                 height: 28 / Style.monitorRatio
-                Layout.leftMargin: 20 / Style.monitorRatio
+                Layout.leftMargin: 15 / Style.monitorRatio
                 radius: 10
                 property color s: "black"
                 color: Qt.rgba(s.r, s.g, s.b, .04)
@@ -201,8 +195,10 @@ Rectangle {
                     radius: 8
                     RowLayout {
                         anchors.bottom: parent.bottom
-                        anchors.right: parent.right
-                        spacing: 5
+                        anchors.left: parent.left
+                        anchors.leftMargin: 5 / Style.monitorRatio
+                        // anchors.right: parent.right
+                        spacing: 5 / Style.monitorRatio
                         ComboBox {
                             id: control
                             model: rootObj.filterManager ? filterManager.stringFilterFields: 0
