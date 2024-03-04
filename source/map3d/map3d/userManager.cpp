@@ -55,9 +55,21 @@ void UserManager::signIn(const QString username, const QString password)
     userData.command = UserData::UserCommand::Login;
     mServiceManager->sendUser(userData);
 
-//    setUserName(username);
-//    emit selectRole();
-//    emit signedIn();
+
+    static bool ok = false;
+
+    if(ok){
+        emit signedIn();
+    }
+    else{
+        emit signInFailed();
+        setMessage("you failed!");
+    }
+    ok = !ok;
+ //   setUserName(username);
+  //  emit selectRole();
+  //  emit signedIn();
+//    emit signInFailed();
 
     //--test------
 //    QVector<QString> testvec;
@@ -95,6 +107,8 @@ void UserManager::onUserDataReceived(const UserData &userData)
 
     if(userData.response.status == Response::Status::Success){
         mUserData = userData;
+        setName(mUserData.name);
+        setUserName(mUserData.userName);
         if(userData.command == UserData::UserCommand::Login){
             if(mUserData.roles.isEmpty())
                 emit signedIn();
@@ -104,6 +118,7 @@ void UserManager::onUserDataReceived(const UserData &userData)
             }
         }
         else if(userData.command == UserData::UserCommand::SelectRole){
+            setRoleName(userData.roles.at(userData.selectRoleIndex));
             emit signedIn();
         }
     }
@@ -157,3 +172,16 @@ void UserManager::setMessage(const QString &newMessage)
     emit messageChanged();
 }
 
+
+QString UserManager::roleName() const
+{
+    return mRoleName;
+}
+
+void UserManager::setRoleName(const QString &newRoleName)
+{
+    if (mRoleName == newRoleName)
+        return;
+    mRoleName = newRoleName;
+    emit roleNameChanged();
+}

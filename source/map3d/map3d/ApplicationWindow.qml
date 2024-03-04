@@ -63,6 +63,7 @@ Window {
                 text: 'Loading Page'
                 onClicked: {
                     applicationCpp.pageIndex = 1
+                    userManager.signedIn()
                 }
             }
 

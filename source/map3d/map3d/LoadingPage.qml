@@ -27,6 +27,9 @@ Rectangle {
 
         ColumnLayout {
             anchors.fill: parent
+            anchors.topMargin: 30
+            anchors.bottomMargin: 30
+            spacing: 50
 
             Image {
                 source: "qrc:/Resources/Qarch.png"
@@ -38,7 +41,7 @@ Rectangle {
             Rectangle {
                 id: loadingContainer
                 Layout.fillWidth: true
-                Layout.preferredHeight: 100 / Style.monitorRatio
+                Layout.preferredHeight: 200 / Style.monitorRatio
                 color: "transparent"
                 clip: true
 
@@ -48,63 +51,64 @@ Rectangle {
                     anchors.fill: parent
                     delegate: Text {
                         id: loadingText
-                        font.pixelSize: 20 / Style.monitorRatio
+                        font.pixelSize: 15 / Style.monitorRatio
                         color: acceptionState ? "white" : "red"
                         text: display
                         horizontalAlignment: Text.AlignHCenter
                         width: listView.width
                     }
 
-                    populate: Transition {
-                        NumberAnimation {
-                            properties: "x,y"
-                            duration: 10000
-                        }
-                    }
+//                    populate: Transition {
+//                        NumberAnimation {
+//                            properties: "x,y"
+//                            duration: 10000
+//                        }
+//                    }
 
-                    add: Transition {
-                        NumberAnimation {
-                            property: "opacity"
-                            from: 0
-                            to: 1.0
-                            duration: 200
-                        }
-                        NumberAnimation {
-                            property: "scale"
-                            from: 0
-                            to: 1.0
-                            duration: 200
-                        }
-                    }
+//                    add: Transition {
+//                        NumberAnimation {
+//                            property: "opacity"
+//                            from: 0
+//                            to: 1.0
+//                            duration: 200
+//                        }
+//                        NumberAnimation {
+//                            property: "scale"
+//                            from: 0
+//                            to: 1.0
+//                            duration: 200
+//                        }
+//                    }
 
-                    move: Transition {
-                        NumberAnimation {
-                            properties: "x,y"
-                            duration: 200
-                        }
-                    }
+//                    move: Transition {
+//                        NumberAnimation {
+//                            properties: "x,y"
+//                            duration: 200
+//                        }
+//                    }
 
-                    remove: Transition {
-                        NumberAnimation {
-                            properties: "x,y"
-                            duration: 200
-                        }
-                    }
+//                    remove: Transition {
+//                        NumberAnimation {
+//                            properties: "x,y"
+//                            duration: 200
+//                        }
+//                    }
 
-                    removeDisplaced: Transition {
-                        NumberAnimation {
-                            properties: "x,y"
-                            duration: 200
-                        }
-                    }
-                    displaced: Transition {
-                        NumberAnimation {
-                            properties: "x,y"
-                            duration: 200
-                        }
-                    }
+//                    removeDisplaced: Transition {
+//                        NumberAnimation {
+//                            properties: "x,y"
+//                            duration: 200
+//                        }
+//                    }
+//                    displaced: Transition {
+//                        NumberAnimation {
+//                            properties: "x,y"
+//                            duration: 200
+//                        }
+//                    }
                 }
             }
+
             AnimatedImage {
                 source: "qrc:/Resources/loading.gif"
                 Layout.alignment: Qt.AlignHCenter
