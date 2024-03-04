@@ -15,6 +15,7 @@ LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
 //    });
 
 //    mTimer->start(1000);
+
 }
 
 int LoadingPage::rowCount(const QModelIndex &parent) const
@@ -51,9 +52,8 @@ QHash<int, QByteArray> LoadingPage::roleNames() const
 
 void LoadingPage::addItem(const QString &message, bool isError)
 {
-    qDebug()<< message<<": "<<isError;
-    beginInsertRows(QModelIndex(), mLoadingDataItem.size(), mLoadingDataItem.size());
-    mLoadingDataItem.push_back({message, isError});
+    beginInsertRows(QModelIndex(), 0, 0);
+    mLoadingDataItem.insert(0, {message, isError});
     endInsertRows();
 }
 

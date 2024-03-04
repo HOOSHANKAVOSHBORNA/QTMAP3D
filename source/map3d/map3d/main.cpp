@@ -10,20 +10,19 @@
 #include <QQuickView>
 
 #include "application.h"
-
+#include "logManager.h"
 
 int main(int argc, char *argv[])
 {
-//    qputenv("QSG_RENDER_LOOP", "basic");
+    LogManager logManager;
+    qInstallMessageHandler(LogManager::messageHandler);
+    //    qputenv("QSG_RENDER_LOOP", "basic");
     Application::performStartupConfiguration();
     QApplication app(argc, argv);
 
     QQmlApplicationEngine *qmlEngine = new QQmlApplicationEngine();
     Application *const map3DApp = Application::instance();
-    map3DApp->setQmlEngine(qmlEngine);
-    map3DApp->initialize();
-
-//    qmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(map3DApp)}});
+    map3DApp->initialize(qmlEngine);
 
     qmlEngine->load(QUrl("qrc:/ApplicationWindow.qml"));
     if (qmlEngine->rootObjects().isEmpty())

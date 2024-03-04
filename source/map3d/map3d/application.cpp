@@ -1,28 +1,27 @@
-#include <QSurfaceFormat>
-#include <QCoreApplication>
 #include <QApplication>
-#include <QQmlApplicationEngine>
-#include <QPluginLoader>
+#include <QCoreApplication>
 #include <QDir>
-#include <QQuickItem>
+#include <QPluginLoader>
+#include <QQmlApplicationEngine>
 #include <QQmlComponent>
+#include <QQuickItem>
 #include <QSplashScreen>
+#include <QSurfaceFormat>
+#include <QtConcurrent/QtConcurrent>
 
 #include "application.h"
 #include "loadingPage.h"
 #include "mainwindow.h"
 #include "mapItem.h"
 #include "networkManager.h"
-#include <QtConcurrent/QtConcurrent>
 
-Application::Application() :
-    mPluginManager(new PluginManager)
+Application::Application()
 {
 }
 
 Application *Application::instance()
 {
-    static Application app;;
+    static Application app;
     return &app;
 }
 
@@ -33,21 +32,17 @@ void Application::performStartupConfiguration()
     //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 }
 
-void Application::initialize()
+void Application::initialize(QQmlApplicationEngine *newQmlEngine)
 {
-    //--qml--------------------------------------------------
-//    initializeQmlEngine();
-    mPluginManager->setQmlEngine(mQmlEngine);
-
+    mQmlEngine = newQmlEngine;
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
-//    mNetworkManager->start();
-
     mServiceManager = new ServiceManager(mNetworkManager);
-    mMainWindow = new MainWindow();
-    mUserManager = new UserManager(mServiceManager);
+
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
+    mUserManager = new UserManager(mServiceManager);
     mLoadingPage = new LoadingPage();
+    mMainWindow = new MainWindow();
 
     mQmlEngine->setInitialProperties({{"userManager", QVariant::fromValue(mUserManager)},
                                       {"connectionConfigCpp", QVariant::fromValue(mConnectionConfig)},
@@ -57,41 +52,14 @@ void Application::initialize()
 
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
 
+    mPluginManager = new PluginManager;
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
-   // connect(this, &Application::pageIndexChanged, this, &Application::onLoadingPage);
+    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
+        setPageIndex(2);
+    });
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
-    //--user manger------------------------------------------
-//    mUserManager = new UserManager(mServiceManager, mQmlEngine);
-
-//    mQmlEngine->load(QUrl("qrc:/ApplicationWindow.qml"));
 }
-
-//void Application::initializeQmlEngine()
-//{
-////    mQmlEngine = new QQmlApplicationEngine();
-//    QObject::connect(mQmlEngine,
-//                     &QQmlApplicationEngine::objectCreated,
-//                     this,
-//                     &Application::onQmlObjectCreated,
-//                     Qt::DirectConnection);
-//}
-
-//void Application::onQmlObjectCreated(QObject *obj, const QUrl &objUrl)
-//{
-//    if (!obj) {
-//        qDebug() << "Can not create: " << objUrl.toString();
-//        QCoreApplication::exit(-1);
-//        return;
-//    }
-//    mApplicationWindow = qobject_cast<QQuickWindow *>(obj);
-
-//    if (!mApplicationWindow) {
-//        qDebug() << "Can not create application window";
-//        QCoreApplication::exit(-1);
-//        return;
-//    }
-
-//}
 
 void Application::setPageIndex(int index)
 {
@@ -108,44 +76,15 @@ void Application::initializeSurfaceFormat()
     QSurfaceFormat::setDefaultFormat(fmt);
 }
 
-void Application::clearMainWindow()
-{
-    qDebug() << "logout----------------";
-    mPluginManager->unLoadPlugins();
-    delete mMainWindow;
-}
-
 void Application::onLoadingPage()
 {
-
-
-        qDebug()<<"onLoading";
         setPageIndex(1);
-        disconnect(mServiceManager, nullptr, this, nullptr);
-        // connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
         mPluginManager->loadPlugins();
-        mPluginManager->setup();
-        // auto i = QtConcurrent::run(&PluginManager::loadPlugins, mPluginManager);
-
-        // connect(mPluginManager, &PluginManager::pluginsLoaded, mPluginManager, &PluginManager::setup);
-
-        // connect(mPluginManager, &PluginManager::setupFinished, [this](){
-            setPageIndex(2);
-        // });
-
 }
 
-void Application::setQmlEngine(QQmlApplicationEngine *newQmlEngine)
+void Application::clearMainWindow()
 {
-    mQmlEngine = newQmlEngine;
-}
-
-ServiceManager *Application::serviceManager() const
-{
-    return mServiceManager;
-}
-
-int Application::pageIndex() const
-{
-    return mPageIndex;
+        qDebug() << "logout----------------";
+        mPluginManager->unLoadPlugins();
+        delete mMainWindow;
 }

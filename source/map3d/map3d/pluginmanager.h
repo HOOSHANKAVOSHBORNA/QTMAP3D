@@ -24,19 +24,16 @@ public:
     explicit PluginManager(QObject *parent = nullptr);
 
 public:
-    void extracted(QDir &pluginsDir);
-    void setQmlEngine(QQmlEngine *engine);
     void loadPlugins();
     void unLoadPlugins();
-    void setup();
 
     QMap<QString, PluginInterface *> pluginsMap() const;
 signals:
     void pluginMessage(QString message, bool isError);
-    void pluginsLoaded();
     void setupFinished();
 
 private:
+    void setup();
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
     void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);
 
@@ -47,6 +44,10 @@ private:
     QMap<QString, QPluginLoader*> mPluginsLoaders;
     QStringList mPluginFileNameList;
     QStringList mLoadedPluginList;
+    QPluginLoader *mPluginLoader;
+    int mIndex{0};
+    QDir mPluginsDir;
+    QTimer *mPluginTimer;
 };
 
 #endif // PluginManager_H

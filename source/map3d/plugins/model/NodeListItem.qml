@@ -35,7 +35,6 @@ Item {
                                           Style.backgroundColor.g,
                                           Style.backgroundColor.b, 0.75)
 
-    //    DebugInAnchor {}
     function isNumeric(s) {
         return !isNaN(s - parseFloat(s))
     }
@@ -55,7 +54,7 @@ Item {
         id: txtObjectList
         text: "Object list"
         anchors.top: parent.top
-        anchors.topMargin: 0
+        anchors.topMargin: 20
         anchors.left: parent.left
         color: Style.foregroundColor
         font.family: Style.fontFamily
@@ -105,8 +104,7 @@ Item {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             repeaterNodeTypeFilter.currentIndex = index
-                            tableModel.setFilterCategoryTag(
-                                        txtNodeTypeFilter.text)
+                            tableModel.filterCategoryTag(txtNodeTypeFilter.text)
                         }
                     }
                 }
@@ -119,7 +117,7 @@ Item {
     Rectangle {
         id: filterRect
         anchors.top: rectCategoryTag.bottom
-        color: Style.backgroundColor
+        color: /*Style.backgroundColor*/ 'royalblue'
         anchors.left: parent.left
         anchors.right: parent.right
         height: 135 / Style.monitorRatio /*69 / Style.monitorRatio*/
@@ -141,7 +139,7 @@ Item {
         width: rootItem.width
         height: 50
         anchors.top: filterRect.bottom
-        anchors.topMargin: 50
+        anchors.topMargin: 30
         anchors.left: rootItem.left
         anchors.right: rootItem.right
 
@@ -156,8 +154,13 @@ Item {
             width: parent.width
             anchors.left: parent.left
             anchors.right: parent.right
-
             //            currentIndex: categoryRect.currentIndex
+            Component.onCompleted: {
+
+                //tableModel.filterStringColumn(repeater.itemAt(0).text)
+                //console.log(tabMain.modelData)
+            }
+
             Repeater {
                 id: repeater
                 model: tableModel ? tableModel.tabbarModel : undefined
@@ -168,10 +171,16 @@ Item {
                 delegate: TabButton {
                     id: tabMain
 
+                    Component.onCompleted: {
+
+                        //                        tableModel.filterStringColumn(repeater.itemAt(0).text)
+                        //console.log(repeater.itemAt(0).text)
+                    }
+
                     text: model.display
 
                     onClicked: {
-                        tableModel.setFilterColumn(txtTabbar.text)
+                        tableModel.filterStringColumn(txtTabbar.text)
                         categoryRect.currentIndex = model.index
                     }
                     background: Rectangle {
@@ -655,24 +664,17 @@ Item {
                                     anchors.fill: parent
                                     onClicked: {
                                         console.log(lvDelegate.lvIndex)
-                                        if (model.index === 2) {
-                                            tableModel.goToPosition(
-                                                        lvDelegate.lvIndex)
-                                        } else if (model.index === 3) {
-                                            tableModel.trackPosition(
-                                                        lvDelegate.lvIndex)
+                                        if (tableview.isAttackecd) {
+
+                                            //                                            iconAttackerButton.color = "transparent"
+                                            //                                            tableview.isAttackecd = false
+                                        } else {
+
+                                            //                                            iconAttackerButton.color = "#01AED6"
+                                            //                                            tableview.isAttackecd = true
                                         }
-
-                                        //                                        if (tableview.isAttackecd) {
-
-                                        //                                            iconAttackerButton.color = "transparent"
-                                        //                                            tableview.isAttackecd = false
-                                        //                                        } else {
-
-                                        //                                            iconAttackerButton.color = "#01AED6"
-                                        //                                            tableview.isAttackecd = true
-                                        //                                        }
-
+                                        tableModel.goToPosition(
+                                                    lvDelegate.lvIndex)
                                         //tableview.checkAttackIconColumn = model.column
                                         //tableview.checkAttackIconRow = model.row
                                     }
