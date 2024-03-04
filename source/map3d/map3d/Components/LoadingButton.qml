@@ -1,8 +1,19 @@
 import QtQuick
 import QtQuick.Controls
+import "style"
 
 Button {
+    id: button
+    property bool isWaiting: false
+    property alias waitingTimer: waitingTimer
 
+    //    Timer{
+    //        id:waitingTimer
+    //        interval: 5000
+    //        onTriggered: {
+    //            button.enabled = true
+    //        }
+    //    }
     Rectangle {
         id: blueRect
         width: 5
@@ -11,7 +22,7 @@ Button {
         color: "blue"
     }
 
-    Rectangle {
+    background: Rectangle {
         id: redRect
         width: 343
         height: 40
