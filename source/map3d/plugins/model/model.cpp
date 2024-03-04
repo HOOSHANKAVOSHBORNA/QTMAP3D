@@ -192,10 +192,18 @@ bool Model::mouseMoveEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
     return false;
 }
 
+bool Model::mouseDragEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    mapItem()->getCameraController()->untrack();
+    return false;
+}
+
 bool Model::frameEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     return false;
 }
+
+
 
 osgEarth::Symbology::Style &Model::getDefaultStyle()
 {
@@ -412,13 +420,13 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
         if (mCurrentModel->asFlyableModelNode()) {
             double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
             geoPos.z() += randomHeight;
-                       // mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
+                // mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
             mProperty->flyTo(geoPos);
             return;
         }
 
         if (mCurrentModel->asMoveableModelNode()) {
-                       // mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
+            // mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
             mProperty->moveTo(geoPos);
             return;
         }
