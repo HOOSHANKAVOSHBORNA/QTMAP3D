@@ -26,22 +26,14 @@ private:
 public:
     static Application *instance();
     static void performStartupConfiguration();
-    void initialize();
+    void initialize(QQmlApplicationEngine *newQmlEngine);
+
     inline MainWindow *mainWindow() const { return mMainWindow; }
     inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
     inline PluginManager *pluginManager() const { return mPluginManager; }
-
-    ServiceManager *serviceManager() const;
-
-//    void initializeQmlEngine();
-//    void onQmlObjectCreated(QObject *obj, const QUrl &objUrl);
-
+    inline ServiceManager *serviceManager() const{return mServiceManager;}
     void setPageIndex(int index);
-
-    void setQmlEngine(QQmlApplicationEngine *newQmlEngine);
-
-    int pageIndex() const;
-    Q_INVOKABLE void onLoadingPage();
+    inline int pageIndex() const{return mPageIndex;}
 
 signals:
     void pageIndexChanged();
@@ -50,8 +42,8 @@ private:
     static void initializeSurfaceFormat();
 
 private slots:
+    void onLoadingPage();
     void clearMainWindow();
-
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
@@ -65,7 +57,7 @@ private:
     LoadingPage *mLoadingPage{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 
-    QQuickWindow *mApplicationWindow = nullptr;
+//    QQuickWindow *mApplicationWindow = nullptr;
     int mPageIndex {0};
 };
 

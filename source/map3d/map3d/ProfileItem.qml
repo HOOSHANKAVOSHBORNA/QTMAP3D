@@ -28,16 +28,16 @@ Item {
         anchors.leftMargin: 15 / Style.monitorRatio
         spacing: 0
 
-        Text {
-            id: nameText
-            text: userManager.name
-            font.pixelSize: 20 / Style.monitorRatio
-            color: Style.foregroundColor
-            Layout.topMargin: 46 / Style.monitorRatio
-        }
+//        Text {
+//            id: nameText
+//            text: userManager.name
+//            font.pixelSize: 20 / Style.monitorRatio
+//            color: Style.foregroundColor
+//            Layout.topMargin: 46 / Style.monitorRatio
+//        }
 
         Text {
-            text: "Name"
+            text: "Name: "
             Layout.topMargin: 16 / Style.monitorRatio
             font.pixelSize: 13 / Style.monitorRatio
             color: Style.foregroundColor
@@ -45,14 +45,15 @@ Item {
 
         Label {
             text: userManager.name
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: 13 / Style.monitorRatio
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
+            Layout.leftMargin: 15 / Style.monitorRatio
             color: Style.foregroundColor
         }
 
         Text {
-            text: "Username"
+            text: "Username: "
             Layout.topMargin: 10 / Style.monitorRatio
             font.pixelSize: 13 / Style.monitorRatio
             color: Style.foregroundColor
@@ -60,9 +61,26 @@ Item {
 
         Label {
             text: userManager.userName
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: 13 / Style.monitorRatio
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
+            Layout.leftMargin: 15 / Style.monitorRatio
+            color: Style.foregroundColor
+        }
+
+        Text {
+            text: "Role: "
+            Layout.topMargin: 10 / Style.monitorRatio
+            font.pixelSize: 13 / Style.monitorRatio
+            color: Style.foregroundColor
+        }
+
+        Label {
+            text: userManager.roleName
+            font.pixelSize: 13 / Style.monitorRatio
+            Layout.fillWidth: true
+            Layout.topMargin: 5 / Style.monitorRatio
+            Layout.leftMargin: 15 / Style.monitorRatio
             color: Style.foregroundColor
         }
 

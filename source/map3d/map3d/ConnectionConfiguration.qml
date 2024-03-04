@@ -7,7 +7,6 @@ import "style"
 
 Item {
     id: rootItem
-
     property var connectionConfigCpp: undefined
     property bool connectionButtonClicked: false
     readonly property color foregroundColorTextBox: Qt.rgba(
@@ -61,7 +60,8 @@ Item {
     }
 
     ColumnLayout {
-        anchors.fill: parent
+       Layout.fillWidth: true
+       Layout.maximumHeight:  745 / Style.monitorRatio
         spacing: 0
 
         Button {
@@ -80,15 +80,15 @@ Item {
 
         RowLayout {
             id: header
-            Layout.fillWidth: true
+//            Layout.fillWidth: true
             Layout.topMargin: 31 / Style.monitorRatio
 
             Text {
                 id: titleText
                 text: "Connection"
-                font.pixelSize: 35 / Style.monitorRatio
+                font.pixelSize: 25 / Style.monitorRatio
                 color: Style.foregroundColor
-                Layout.fillWidth: true
+//                Layout.fillWidth: true
             }
 
             IconImage {
@@ -108,8 +108,8 @@ Item {
 
         TextField {
             id: username
-            Layout.preferredWidth: 340 / Style.monitorRatio
-            Layout.fillWidth: true
+            Layout.preferredWidth: 330 / Style.monitorRatio
+//            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: 17 / Style.monitorRatio
@@ -136,8 +136,8 @@ Item {
 
         TextField {
             id: password
-            Layout.preferredWidth: 340 / Style.monitorRatio
-            Layout.fillWidth: true
+            Layout.preferredWidth: 330 / Style.monitorRatio
+//            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: 17 / Style.monitorRatio
@@ -164,8 +164,8 @@ Item {
 
         TextField {
             id: ip
-            Layout.preferredWidth: 340 / Style.monitorRatio
-            Layout.fillWidth: true
+            Layout.preferredWidth: 330 / Style.monitorRatio
+//            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: 17 / Style.monitorRatio
@@ -192,8 +192,8 @@ Item {
 
         TextField {
             id: port
-            Layout.preferredWidth: 340 / Style.monitorRatio
-            Layout.fillWidth: true
+            Layout.preferredWidth: 330 / Style.monitorRatio
+//            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: 17 / Style.monitorRatio
@@ -217,8 +217,8 @@ Item {
             property alias textColor: testConnectionTxt.color
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
-            Layout.preferredWidth: 340 / Style.monitorRatio
-            Layout.fillWidth: true
+            Layout.preferredWidth: 330 / Style.monitorRatio
+//            Layout.fillWidth: true
             Layout.topMargin: 48 / Style.monitorRatio
             hoverEnabled: true
 
@@ -258,8 +258,8 @@ Item {
             id: saveBtn
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
-            Layout.preferredWidth: 340 / Style.monitorRatio
-            Layout.fillWidth: true
+            Layout.preferredWidth: 330 / Style.monitorRatio
+//            Layout.fillWidth: true
             Layout.topMargin: 25 / Style.monitorRatio
             hoverEnabled: true
 

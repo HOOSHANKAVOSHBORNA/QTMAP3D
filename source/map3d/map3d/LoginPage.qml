@@ -154,9 +154,14 @@ Item {
                 function onSignedIn() {
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
+                    signInPage.signInBtn.loadingAnimation.stop()
+                    signInPage.signInBtn.isWaiting = false
                 }
                 function onSignInFailed() {
                     signInPage.signInResponse()
+                    signInPage.serverResponseTimer.stop()
+                    signInPage.signInBtn.loadingAnimation.stop()
+                    signInPage.signInBtn.isWaiting = false
                     userManager.setMessage("")
                 }
             }

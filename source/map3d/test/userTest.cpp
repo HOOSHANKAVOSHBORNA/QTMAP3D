@@ -26,6 +26,7 @@ void UserTest::onUserDataReceived(const UserData &userData)
 
     if(userData.userName == mUserData1.userName){
         if(userData.password == mUserData1.password){
+            responsUserData.name = mUserData1.name;
             responsUserData.response.status = Response::Status::Success;
             responsUserData.response.message = "";
             if(userData.command == UserData::UserCommand::Login){
@@ -47,6 +48,7 @@ void UserTest::onUserDataReceived(const UserData &userData)
     }
     else if(userData.userName == mUserData2.userName){
         if(userData.password == mUserData2.password){
+            responsUserData.name = mUserData2.name;
             responsUserData.response.status = Response::Status::Success;
             responsUserData.response.message = "";
             if(userData.command == UserData::UserCommand::Login){

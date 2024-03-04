@@ -103,12 +103,7 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
 
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
-    mPluginLoader = new QPluginLoader();
-}
-
-void PluginManager::setQmlEngine(QQmlEngine *engine)
-{
-    PluginInterface::setQmlEngine(engine);
+    mPluginLoader = new QPluginLoader(this);
 }
 
 void PluginManager::loadPlugins()
@@ -116,12 +111,13 @@ void PluginManager::loadPlugins()
     mPluginsDir = QCoreApplication::applicationDirPath();
     mPluginsDir.cd("../plugins/bin");
     mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
-    mPluginTimer = new QTimer();
-    connect(mPluginTimer, &QTimer::timeout, [&](){
+    mPluginTimer = new QTimer(this);
+    connect(mPluginTimer, &QTimer::timeout, this, [&](){
         parsePlugin(mPluginFileNameList[mIndex], mPluginsDir);
         if (mIndex == mPluginFileNameList.size() - 1) {
-            stopTimer();
-            emit pluginsLoaded();
+            mPluginTimer->stop();
+//            emit pluginsLoaded();
+            setup();
         }
         mIndex++;
     });
@@ -139,6 +135,7 @@ void PluginManager::unLoadPlugins()
 
 void PluginManager::setup()
 {
+    PluginInterface::setQmlEngine(Application::instance()->qmlEngine());
     auto mainWindow = Application::instance()->mainWindow();
     PluginInterface::setMainWindow(mainWindow);
     auto mapItem = mainWindow->getMapItem();
@@ -146,15 +143,11 @@ void PluginManager::setup()
     //----------------------------------
     PluginInterface::setPluginsMap(mPluginsMap);
     //--------------------------------
-//    DefenseDataManager* defenseDataManager = Application::instance()->defenseDataManager();
-//    PluginInterface::setDefenseDataManager(defenseDataManager);
-
     ServiceManager *serviceManager = Application::instance()->serviceManager();
     PluginInterface::setServiceManager(serviceManager);
     //-------------------------------------
     for (auto item : qAsConst(mPluginsMap)) {
         item->setup();
-        qDebug() << "setup: " << item->name();
     }
     emit setupFinished();
 }
@@ -179,8 +172,7 @@ void PluginManager::parsePlugin(const QString &pluginFileName, const QDir &plugi
 
         // Resolve dependencies
         QJsonValue  deps = metaData["Dependencies"];
-
-        if (deps.isArray() && !deps.toArray().isEmpty())
+        if (deps.isArray())
         {
             for (const QJsonValue& plugin : deps.toArray())
             {
@@ -217,7 +209,6 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
 
         if (!instance)
         {
-            //                QString errStr = pluginLoader.errorString();
             qWarning() << "Plugin loading failed: [" << pluginFileName
                        << "] " << mPluginLoader->errorString();
             emit pluginMessage(mPluginLoader->errorString(), true);
@@ -233,11 +224,6 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
             mPluginsLoaders.insert(pluginFileName, mPluginLoader);
         }
     }
-}
-
-void PluginManager::stopTimer()
-{
-    mPluginTimer->stop();
 }
 
 QMap<QString, PluginInterface *> PluginManager::pluginsMap() const
