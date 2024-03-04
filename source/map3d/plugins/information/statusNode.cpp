@@ -4,6 +4,7 @@
 #include <osg/Depth>
 #include <osgEarthAnnotation/AnnotationUtils>
 #include <osgEarth/GLUtils>
+#include <osgEarthSymbology/TextSymbol>
 
 StatusNode::StatusNode(MapItem *mapControler)
     : osgEarth::Annotation::PlaceNode(),
@@ -142,6 +143,12 @@ void StatusNode::compile(const std::vector<NodeFieldData>& data)
     width = fm.horizontalAdvance(mTitle);;
     std::string text = "\n";
     for (const auto& data: data){
+        // QByteArray str;
+        // str.append(data.name.data()->cell());
+        // str.append(":");
+        // str.append(data.value.toByteArray().data());
+        // str.append("/n");
+        // QString receivedString = QString::fromUtf8(str);
         QString str = (data.name + ": "+ data.value.toString() +"\n");
         int widthStr = fm.horizontalAdvance(str);
         if(widthStr > width)
@@ -198,6 +205,19 @@ void StatusNode::compile(const std::vector<NodeFieldData>& data)
                        osg::Image::AllocationMode::NO_DELETE);
     setIconImage(osgImage);
     setText(text);
+    // qDebug() << text;
+
+    // osgEarth::Symbology::Style tmpStyle = getStyle();
+    // osgEarth::Annotation::TextSymbol* textSymbol = tmpStyle.getOrCreateSymbol<osgEarth::Annotation::TextSymbol>();
+    // textSymbol->font() = "Arial";
+    // textSymbol->size() = 16.0;
+
+    // textSymbol->encoding().init(osgEarth::Annotation::TextSymbol::ENCODING_UTF8);
+    // textSymbol->layout().getOrUse(osgEarth::Symbology::TextSymbol::LAYOUT_RIGHT_TO_LEFT);
+    // textSymbol->alignment() = osgEarth::Annotation::TextSymbol::ALIGN_BASE_LINE;
+    // textSymbol->halo()->color() = osg::Vec4f(1.0, 0.8, 0.8, 1.0);
+    // setStyle(tmpStyle);
+
 }
 
 StatusNodeData StatusNode::nodeData() const

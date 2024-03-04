@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import "style"
+
+
 Window {
     id:window
     readonly property color verticalBarColor: Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.10)
@@ -93,12 +95,10 @@ Window {
                     spacing: 0
 
                     Button{
-                        Layout.preferredHeight: 28/Style.monitorRatio
-                        Layout.preferredWidth: 28/Style.monitorRatio
-                        Layout.alignment: Qt.AlignHCenter|Qt.AlignLeft
-                        Layout.leftMargin: 44/Style.monitorRatio
+                        Layout.fillWidth: true
                         text: "Track"
                         contentItem:Row{
+                            leftPadding: 40/Style.monitorRatio
                             IconImage{
                                 anchors.verticalCenter: parent.verticalCenter
                                 source: "qrc:/Resources/track-icon.png"
@@ -135,11 +135,10 @@ Window {
                         Layout.alignment: Qt.AlignCenter
                     }
                     Button{
-                        Layout.preferredHeight: 28/Style.monitorRatio
-                        Layout.preferredWidth: 28/Style.monitorRatio
-                        Layout.leftMargin: 44/Style.monitorRatio
-                        Layout.alignment: Qt.AlignHCenter|Qt.AlignRight
+                        Layout.fillWidth: true
+
                         contentItem:Row{
+                            leftPadding: 40/Style.monitorRatio
                             IconImage{
                                 anchors.verticalCenter: parent.verticalCenter
                                 source: "qrc:/Resources/easy-to-find.png"
@@ -173,7 +172,7 @@ Window {
             id:treeViewItem
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.topMargin: 5/Style.monitorRatio
+            Layout.topMargin: 10/Style.monitorRatio
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
             TreeView{
