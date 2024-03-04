@@ -9,31 +9,10 @@ import "style"
 Rectangle {
     id: rootObj
     property var filterManager
-    property real innerHeight : mainColumn.height
-    readonly property color backgroundColor: "#DEE3E6"
-    readonly property color foregroundColor: "#003569"
-    readonly property color fg20: Qt.rgba(rootObj.foregroundColor.r,
-                                          rootObj.foregroundColor.g,
-                                          rootObj.foregroundColor.b, 0.2)
-    readonly property color fg30: Qt.rgba(rootObj.foregroundColor.r,
-                                          rootObj.foregroundColor.g,
-                                          rootObj.foregroundColor.b, 0.3)
-    readonly property color fg50: Qt.rgba(rootObj.foregroundColor.r,
-                                          rootObj.foregroundColor.g,
-                                          rootObj.foregroundColor.b, 0.5)
-    readonly property color fg75: Qt.rgba(rootObj.foregroundColor.r,
-                                          rootObj.foregroundColor.g,
-                                          rootObj.foregroundColor.b, 0.75)
-    readonly property color bg20: Qt.rgba(rootObj.backgroundColor.r,
-                                          rootObj.backgroundColor.g,
-                                          rootObj.backgroundColor.b, 0.2)
-    readonly property color bg75: Qt.rgba(rootObj.backgroundColor.r,
-                                          rootObj.backgroundColor.g,
-                                          rootObj.backgroundColor.b, 0.75)
 
-    readonly property color selectColor: "#B6C0CA"
-    readonly property string fontFamily: "Roboto"
-    readonly property double fontPointSize: 11 / Style.monitorRatio
+    readonly property color fg30: Qt.rgba(Style.foregroundColor.r,
+                                          Style.foregroundColor.g,
+                                          Style.foregroundColor.b, 0.3)
 
     function isNumeric(s) {
         return !isNaN(s - parseFloat(s))
@@ -61,7 +40,7 @@ Rectangle {
     ColumnLayout {
         id:mainColumn
         width: parent.width
-
+        height: parent.height
 
         Flow {
             id: filterFields
@@ -77,8 +56,8 @@ Rectangle {
                         height: 18 / Style.monitorRatio
                         text: "Logical Operator :"
                         font.pixelSize: 15 / Style.monitorRatio
-                        font.family: rootObj.fontFamily
-                        color: rootObj.foregroundColor
+                        font.family: Style.fontFamily
+                        color: Style.foregroundColor
                     }
 
                     RadioButton {
@@ -91,8 +70,8 @@ Rectangle {
                         height: 18 / Style.monitorRatio
                         text: "And"
                         font.pixelSize: 15 / Style.monitorRatio
-                        font.family: rootObj.fontFamily
-                        color: rootObj.foregroundColor
+                        font.family: Style.fontFamily
+                        color: Style.foregroundColor
 
                     }
 
@@ -105,8 +84,8 @@ Rectangle {
                         height: 18 / Style.monitorRatio
                         text: "Or"
                         font.pixelSize: 15 / Style.monitorRatio
-                        font.family: rootObj.fontFamily
-                        color: rootObj.foregroundColor
+                        font.family: Style.fontFamily
+                        color: Style.foregroundColor
 
                     }
                 }
@@ -120,8 +99,8 @@ Rectangle {
                     height: 18 / Style.monitorRatio
                     text: "Color"
                     font.pixelSize: 15 / Style.monitorRatio
-                    font.family: rootObj.fontFamily
-                    color: rootObj.foregroundColor
+                    font.family: Style.fontFamily
+                    color: Style.foregroundColor
                 }
                 IconImage {
                     id: colorLeftIcon
@@ -129,7 +108,7 @@ Rectangle {
                     Layout.preferredHeight: 18 / Style.monitorRatio
                     Layout.preferredWidth: 18 / Style.monitorRatio
                     rotation: 90
-                    color: colorScroll.position < .01 ? rootObj.backgroundColor : "transparent"
+                    color: colorScroll.position < .01 ? Style.backgroundColor : "transparent"
                     visible:colorRepeater.count > 4
                     MouseArea {
                         anchors.fill: parent
@@ -150,20 +129,23 @@ Rectangle {
                         spacing: 3
                         x: -colorScroll.position * parent.width
 
-                        Repeater {
+                        ListView {
                             id: colorRepeater
+                            layoutDirection: Qt.LeftToRight
                             model: rootObj.filterManager ? filterManager.colorFilterFields: 0
-                            delegate: Rectangle {
-                                required property var modelData
-                                width: 24 / Style.monitorRatio
-                                height: 24 / Style.monitorRatio
-                                radius: height / 2
-                                color: modelData
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        filterManager.addFilterTag("Color",
-                                                                   modelData, Tag.Equal, andCheck.checked ? Tag.And : Tag.Or)
+                            delegate: Row {
+                                anchors.fill: parent
+                                Rectangle {
+                                    width: 24 / Style.monitorRatio
+                                    height: 24 / Style.monitorRatio
+                                    radius: height / 2
+                                    color: "red"
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        onClicked: {
+                                            filterManager.addFilterTag("Color",
+                                                                       model.display, Tag.Equal, andCheck.checked ? Tag.And : Tag.Or)
+                                        }
                                     }
                                 }
                             }
@@ -186,7 +168,7 @@ Rectangle {
                     Layout.preferredHeight: 18 / Style.monitorRatio
                     Layout.preferredWidth: 18 / Style.monitorRatio
                     rotation: -90
-                    color: colorScroll.position > .95 ? rootObj.backgroundColor : "transparent"
+                    color: colorScroll.position > .95 ? Style.backgroundColor : "transparent"
                     visible:colorRepeater.count > 4
 
                     MouseArea {
@@ -223,46 +205,70 @@ Rectangle {
                         spacing: 5
                         ComboBox {
                             id: control
-                            property real txtWidth: 0
-                            function filterModel(searchFilterText,searchFilterModel) {
-                                var filteredModel = [];
-                                for (var i = 0; i < searchFilterModel.length; ++i) {
-
-                                    var itemName = searchFilterModel[i].toLowerCase();
-                                    if (itemName.startsWith(searchFilterText)) {
-                                        filteredModel.push(searchFilterModel[i]);
-                                    }
-                                }
-                                return filteredModel;
-                            }
                             model: rootObj.filterManager ? filterManager.stringFilterFields: 0
 
-                            delegate: ItemDelegate {
-                                id: itemDelegate
-                                implicitWidth: control.txtWidth
+                            textRole: "display"
+                            background: Rectangle {
+                                color: "transparent"
+                            }
+                            popup: Popup {
+                                y: control.height - 5
+                                width: 100
+                                implicitHeight: contentItem.implicitHeight
+                                padding: 1
+                                leftPadding: 5
+                                rightPadding: 5
+
+
+                                contentItem: ListView {
+                                    clip: true
+                                    implicitHeight: contentHeight
+                                    model: control.delegateModel
+                                    currentIndex: control.highlightedIndex
+
+                                    ScrollIndicator.vertical: ScrollIndicator { }
+                                }
+
                                 background: Rectangle {
-                                    width: control.txtWidth
-                                    color: Style.backgroundColor
+                                    border.color: Style.foregroundColor
+                                    radius: 8 * Style.monitorRatio
+                                }
+
+                            }
+
+                            delegate: ItemDelegate {
+                                hoverEnabled: true
+                                width: 100
+                                // height: 20
+                                background: Rectangle {
+                                    height: parent.height
+                                    color: "white"
+                                    radius: 20
                                     border.width: .3
                                     border.color: "black"
                                 }
 
-                                contentItem: Text {
-                                    text: control.textRole ? (Array.isArray(
-                                                                  control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
+                                contentItem: Label {
+                                    text: model.display
                                     color: Style.foregroundColor
                                     font.family: Style.fontFamily
                                     font.pixelSize: 14 / Style.monitorRatio
+                                    background: Rectangle {
+                                        color: "transparent"
+                                    }
                                 }
                             }
                             onFocusChanged: {
                                 if (focus)
                                     control.popup.open()
                             }
+                            onCurrentIndexChanged: {
+                                txtContentItem.text = control.textAt(control.highlightedIndex)
+                            }
 
                             indicator: Rectangle {}
                             contentItem: TextField {
-                                id: txtContentItem1
+                                id: txtContentItem
                                 implicitWidth: 60 / Style.monitorRatio
                                 Layout.fillHeight: true
                                 placeholderText: qsTr("subject")
@@ -278,57 +284,8 @@ Rectangle {
 
                                 onTextChanged: {
                                     control.popup.open()
-                                    var searchFilter = txtContentItem1.text.toLowerCase();
-                                    control.model = control.filterModel(searchFilter,filterManager.stringFilterFields);
-                                }
-                            }
-
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
-                            popup: Popup {
-                                id: popupCombo1
-                                y: control.height - 1
-                                width: 100
-                                implicitHeight: contentItem.implicitHeight
-                                padding: 1
-                                enter: Transition {
-                                    NumberAnimation {
-                                        property: "opacity"
-                                        from: 0.0
-                                        to: 1.0
-                                    }
-                                }
-
-                                exit: Transition {
-                                    NumberAnimation {
-                                        property: "opacity"
-                                        from: 1.0
-                                        to: 0.0
-                                    }
-                                }
-
-                                contentItem: ListView {
-                                    clip: true
-                                    implicitHeight: contentHeight
-                                    model: control.delegateModel
-                                    currentIndex: control.highlightedIndex
-                                    ScrollIndicator.vertical: ScrollIndicator {}
-                                }
-
-                                background: Rectangle {
-                                    border.color: Style.foregroundColor
-                                    radius: 8 * Style.monitorRatio
-                                }
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        txtContentItem1.text = control.textAt(
-                                                    control.highlightedIndex)
-
-                                        popupCombo1.close()
-                                    }
+                                    var searchFilter = txtContentItem.text
+                                    control.model.setFilterFixedString(searchFilter)
                                 }
                             }
                         }
@@ -336,18 +293,18 @@ Rectangle {
                         Label {
                             text: ":"
                             font.pixelSize: 15 / Style.monitorRatio
-                            font.family: rootObj.fontFamily
+                            font.family: Style.fontFamily
                             color: rootObj.fg30
                         }
                         TextField {
                             id: descriptionField
                             implicitWidth: 95 / Style.monitorRatio
                             placeholderText: qsTr("Description")
-                            color: rootObj.foregroundColor
-                            font.family: rootObj.fontFamily
+                            color: Style.foregroundColor
+                            font.family: Style.fontFamily
                             font.pixelSize: 15 / Style.monitorRatio
-                            selectedTextColor: rootObj.backgroundColor
-                            selectionColor: rootObj.foregroundColor
+                            selectedTextColor: Style.backgroundColor
+                            selectionColor: Style.foregroundColor
                             placeholderTextColor: rootObj.fg30
                             background: Rectangle {
                                 id: redBackG2
@@ -393,52 +350,77 @@ Rectangle {
                     radius: 8
                     RowLayout {
                         anchors.left: parent.left
-                        anchors.leftMargin: 25 / Style.monitorRatio
+                        anchors.leftMargin: 5 / Style.monitorRatio
                         anchors.top: parent.top
                         anchors.topMargin: -3
-                        spacing: 5
+                        spacing: 5 / Style.monitorRatio
                         ComboBox {
                             id: control3
-                            property real txtWidth: 0
-                            function filterModel(searchFilterText,searchFilterModel) {
-                                var filteredModel = [];
-                                for (var i = 0; i < searchFilterModel.length; ++i) {
+                            textRole: "display"
 
-                                    var itemName = searchFilterModel[i].toLowerCase();
-                                    if (itemName.startsWith(searchFilterText)) {
-                                        filteredModel.push(searchFilterModel[i]);
-                                    }
-                                }
-                                return filteredModel;
+                            model: rootObj.filterManager?filterManager.numFilterFields :0
+                            background: Rectangle {
+                                color: "transparent"
                             }
-                            model: rootObj.filterManager?filterManager.stringFilterFields :0
+                            popup: Popup {
+                                y: control3.height - 5
+                                width: 100
+                                implicitHeight: contentItem.implicitHeight
+                                padding: 1
+                                leftPadding: 5
+                                rightPadding: 5
+
+
+                                contentItem: ListView {
+                                    clip: true
+                                    implicitHeight: contentHeight
+                                    model: control3.delegateModel
+                                    currentIndex: control3.highlightedIndex
+
+                                    ScrollIndicator.vertical: ScrollIndicator { }
+                                }
+
+                                background: Rectangle {
+                                    border.color: Style.foregroundColor
+                                    radius: 8 * Style.monitorRatio
+                                }
+
+                            }
 
                             delegate: ItemDelegate {
-                                id: itemDelegate3
-                                implicitWidth: control.txtWidth
+                                hoverEnabled: true
+                                width: 100
+                                // height: 20
                                 background: Rectangle {
-                                    width: control.txtWidth
-                                    color: Style.backgroundColor
+                                    height: parent.height
+                                    color: "white"
+                                    radius: 20
                                     border.width: .3
                                     border.color: "black"
                                 }
 
-                                contentItem: Text {
-                                    text: control3.textRole ? (Array.isArray(
-                                                                   control3.model) ? modelData[control3.textRole] : model[control3.textRole]) : modelData
+                                contentItem: Label {
+                                    text: model.display
                                     color: Style.foregroundColor
                                     font.family: Style.fontFamily
                                     font.pixelSize: 14 / Style.monitorRatio
+                                    background: Rectangle {
+                                        color: "transparent"
+                                    }
                                 }
                             }
                             onFocusChanged: {
                                 if (focus)
                                     control3.popup.open()
                             }
+                            onCurrentIndexChanged: {
+                                txtContentItem3.text = control3.textAt(control3.highlightedIndex)
+                            }
+
                             indicator: Rectangle {}
                             contentItem: TextField {
                                 id: txtContentItem3
-                                implicitWidth: 60 / Style.monitorRatio
+                                implicitWidth:80 / Style.monitorRatio
                                 Layout.fillHeight: true
                                 placeholderText: qsTr("subject")
                                 placeholderTextColor: rootObj.fg30
@@ -453,55 +435,8 @@ Rectangle {
 
                                 onTextChanged: {
                                     control3.popup.open()
-                                    var searchFilter = txtContentItem3.text.toLowerCase();
-                                    control3.model = control3.filterModel(searchFilter,filterManager.numFilterFields);
-                                }
-                            }
-
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-                            popup: Popup {
-                                id: popupCombo3
-                                y: control.height - 1
-                                width: 100
-                                implicitHeight: contentItem.implicitHeight
-                                padding: 1
-                                enter: Transition {
-                                    NumberAnimation {
-                                        property: "opacity"
-                                        from: 0.0
-                                        to: 1.0
-                                    }
-                                }
-
-                                exit: Transition {
-                                    NumberAnimation {
-                                        property: "opacity"
-                                        from: 1.0
-                                        to: 0.0
-                                    }
-                                }
-
-                                contentItem: ListView {
-                                    clip: true
-                                    implicitHeight: contentHeight
-                                    model: control3.delegateModel
-                                    currentIndex: control3.highlightedIndex
-                                    //visible: false
-                                    ScrollIndicator.vertical: ScrollIndicator {}
-                                }
-
-                                background: Rectangle {
-                                    border.color: Style.foregroundColor
-                                    radius: 8 * Style.monitorRatio                                }
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        txtContentItem3.text = control3.textAt(
-                                                    control3.highlightedIndex)
-                                        popupCombo3.close()
-                                    }
+                                    var searchFilter = txtContentItem3.text
+                                    control3.model.setFilterFixedString(searchFilter)
                                 }
                             }
                         }
@@ -513,15 +448,15 @@ Rectangle {
                                 id: comparison
                                 anchors.fill: parent
                                 radius: width / 2
-                                color: rootObj.backgroundColor
+                                color: Style.backgroundColor
                                 anchors.verticalCenter: parent.verticalCenter
                                 Label {
                                     id: lblComparision
                                     anchors.centerIn: parent
                                     text: "="
                                     font.pixelSize: 16 / Style.monitorRatio
-                                    font.family: rootObj.fontFamily
-                                    color: rootObj.foregroundColor
+                                    font.family: Style.fontFamily
+                                    color: Style.foregroundColor
                                     MouseArea {
                                         anchors.fill: parent
                                         onClicked: {
@@ -533,7 +468,7 @@ Rectangle {
                                         width: 40
                                         background: Rectangle {
                                             width: 40
-                                            color: rootObj.backgroundColor
+                                            color: Style.backgroundColor
                                             border.width: .3
                                             border.color: Style.backgroundColor
                                             radius: 8*Style.monitorRatio
@@ -547,7 +482,7 @@ Rectangle {
 
                                                 background: Rectangle {
                                                     width: 40
-                                                    color: rootObj.backgroundColor
+                                                    color: Style.backgroundColor
                                                     border.width: .3
                                                     border.color: Style.backgroundColor
                                                     radius: 8*Style.monitorRatio
@@ -601,11 +536,11 @@ Rectangle {
                             implicitWidth: 60 / Style.monitorRatio
                             Layout.fillHeight: true
                             placeholderText: qsTr("Numb")
-                            color: rootObj.foregroundColor
-                            font.family: rootObj.fontFamily
+                            color: Style.foregroundColor
+                            font.family: Style.fontFamily
                             font.pixelSize: 15 / Style.monitorRatio
-                            selectedTextColor: rootObj.backgroundColor
-                            selectionColor: rootObj.foregroundColor
+                            selectedTextColor: Style.backgroundColor
+                            selectionColor: Style.foregroundColor
                             placeholderTextColor: rootObj.fg30
                             background: Rectangle {
                                 id: redBackG3
@@ -664,7 +599,7 @@ Rectangle {
                         id: tagsRep
                         model:rootObj.filterManager ? rootObj.filterManager.filterTags : 0
                         delegate: Rectangle {
-                            property color colorHandler: modelData.isEnabled ? "#01AED6" : rootObj.foregroundColor
+                            property color colorHandler: modelData.isEnabled ? "#01AED6" : Style.foregroundColor
                             id: typesHolder
                             implicitHeight: 22 / Style.monitorRatio
                             implicitWidth: showDetails.implicitWidth + (index ? andOrLabel.implicitWidth + 5 : 0)
@@ -675,9 +610,9 @@ Rectangle {
                                 implicitHeight: 22 / Style.monitorRatio
                                 implicitWidth: showDetails.implicitWidth
                                 anchors.right: parent.right
-                                color: mouseArea.containsMouse ? Qt.rgba(rootObj.foregroundColor.r,
-                                                                         rootObj.foregroundColor.g,
-                                                                         rootObj.foregroundColor.b, 0.1): "transparent"
+                                color: mouseArea.containsMouse ? Qt.rgba(Style.foregroundColor.r,
+                                                                         Style.foregroundColor.g,
+                                                                         Style.foregroundColor.b, 0.1): "transparent"
                                 border {
                                     color: colorHandler
                                     width: 1
@@ -713,7 +648,7 @@ Rectangle {
                                     text: modelData.field ? modelData.field : 0
                                     font.family: "Roboto"
                                     font.pixelSize: 15 / Style.monitorRatio
-                                    color: typesHolder.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
+                                    color: typesHolder.colorHandler /*typesHolder.checked ? Style.foregroundColor : rootObj.hoverColor*/
                                     Layout.leftMargin: 15 / Style.monitorRatio
                                     Layout.topMargin: 2 / Style.monitorRatio
                                     Layout.bottomMargin: 2 / Style.monitorRatio
@@ -731,7 +666,7 @@ Rectangle {
                                     text: modelData.value ? modelData.value : 0
                                     font.family: "Roboto"
                                     font.pixelSize: 15 / Style.monitorRatio
-                                    color: typesHolder.colorHandler /*typesHolder.checked ? rootObj.foregroundColor : rootObj.hoverColor*/
+                                    color: typesHolder.colorHandler /*typesHolder.checked ? Style.foregroundColor : rootObj.hoverColor*/
                                     visible: modelData.value ? modelData.value : 0
                                 }
 

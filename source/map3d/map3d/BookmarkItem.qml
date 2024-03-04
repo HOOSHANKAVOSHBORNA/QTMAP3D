@@ -181,6 +181,7 @@ Item {
                                                 treeView.index(row, column))
                                 }
                             }
+
                             Button {
                                 id: removeBtn
                                 visible: !hasChildren

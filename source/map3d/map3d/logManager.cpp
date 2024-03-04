@@ -13,10 +13,25 @@ LogManager::LogManager(QObject *parent)
         dir.mkpath(getSavingFolderPath());
     }
 
+    // TODO: purpose that no log file deleted in the middle!!
+    int i = 1;
+    while (true) {
+        QFile logFile(getSavingFilePath() + QString::number(i).rightJustified(3, '0'));
+
+        if (!logFile.exists()) {
+            break;
+        }
+
+        i++;
+    }
+
+    savedFileName = savedFileName + QString::number(i - 1).rightJustified(3, '0');
+
     QFile logFile(getSavingFilePath());
 
     if (!logFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
-        std::cout << "Cannot open log file!!!";
+        std::cout << "here: " << getSavingFilePath().toStdString() << std::endl;
+        std::cout << "Cannot open log file!!!" << std::endl;
         return;
     }
 
@@ -50,51 +65,59 @@ void LogManager::messageHandler(QtMsgType type,
                                 const QMessageLogContext &context,
                                 const QString &msg)
 {
-    // DEBUG
-    //    qDebug() << context.category << ", " << context.file << ", " << context.function << ", "
-    //             << context.line << ", " << context.version;
-
-    if (type == QtDebugMsg) {
-        if (std::strcmp(context.category, "qml") == 0) { // cateogry is "qml"
-            qDebug() << "debug qml: " << msg.toStdString();
-        } else {
-            qDebug() << "debug cpp: " << msg.toStdString();
-        }
-
-        return;
-    }
-
-    QFile logFile(getSavingFilePath());
-
-    if (!logFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
-        std::cout << "Cannot open log file!!!";
-        return;
-    }
-
-    QTextStream out(&logFile);
-
-    out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ");
-
+    QString txt;
     switch (type) {
-    case QtInfoMsg:
-        out << "INF ";
-        break;
     case QtDebugMsg:
-        out << "DBG ";
-        break;
+        if (std::strcmp(context.category, "qml") == 0) { // category is qml
+            txt += "qml: ";
+        } else {
+            txt += "cpp: ";
+        }
+        txt += QString("%1").arg(msg);
+        std::cout << txt.toStdString() << std::endl;
+        return;
     case QtWarningMsg:
-        out << "WRN ";
+        txt = QString("Warning: %1").arg(msg);
         break;
     case QtCriticalMsg:
-        out << "CRT ";
+        txt = QString("Critical: %1").arg(msg);
         break;
     case QtFatalMsg:
-        out << "FTL ";
+        txt = QString("Fatal: %1").arg(msg);
+        abort();
+    case QtInfoMsg:
+        txt = QString("Info: %1").arg(msg);
         break;
     }
 
-    out << context.category << ": " << msg << "\n";
-    out.flush();
+    txt += QDateTime::currentDateTime().toString(" yyyy-MM-dd hh:mm:ss");
 
-    logFile.close();
+    writeLogToFile(txt);
+}
+
+bool LogManager::writeLogToFile(QString textToWrite)
+{
+    QFile *outFile = new QFile(getSavingFilePath());
+
+    if (outFile->size() > maxSize) {
+        QString newName = savedFileName;
+        int newIndex = newName.right(3).toInt() + 1;
+        newName.remove(newName.size() - 3, newName.size() - 1);
+        newName += QString::number(newIndex).rightJustified(3, '0');
+        savedFileName = newName;
+    }
+
+    if (!outFile->open(QIODevice::WriteOnly | QIODevice::Append)) {
+        std::cout << "Cannot open log file!!!";
+        return false;
+    }
+
+    QTextStream ts(outFile);
+    ts << textToWrite << '\n';
+    ts.flush();
+
+    outFile->close();
+    delete outFile;
+
+    return true;
 }

@@ -11,8 +11,8 @@ Window {
     property var connectionConfigCpp: undefined
     property var loadingPageCpp: undefined
     property var mainPageCpp: undefined
-//    property int pageIndex: 0
 
+    //    property int pageIndex: 0
     required property var applicationCpp
 
     visible: true
@@ -26,23 +26,22 @@ Window {
         fillMode: Image.PreserveAspectCrop
     }
 
-//    Connections {
-//        target: userManager
-//        function onSignedIn() {
-//            pageIndex = 1
-//        }
-//        function onSignedOut() {
-//            pageIndex = 0
-//        }
-//    }
-//    Connections {
-//        target: applicationCpp
-//        function onPageIndexChanged() {
-//            if(applicationCpp.pageIndex === 1)
-//                applicationCpp.onLoadingPage()
-//        }
-//    }
-
+    //    Connections {
+    //        target: userManager
+    //        function onSignedIn() {
+    //            pageIndex = 1
+    //        }
+    //        function onSignedOut() {
+    //            pageIndex = 0
+    //        }
+    //    }
+    //    Connections {
+    //        target: applicationCpp
+    //        function onPageIndexChanged() {
+    //            if(applicationCpp.pageIndex === 1)
+    //                applicationCpp.onLoadingPage()
+    //        }
+    //    }
     ColumnLayout {
         anchors.fill: parent
 
@@ -64,6 +63,7 @@ Window {
                 text: 'Loading Page'
                 onClicked: {
                     applicationCpp.pageIndex = 1
+                    userManager.signedIn()
                 }
             }
 
@@ -75,7 +75,6 @@ Window {
                 }
             }
         }
-
 
         StackLayout {
             id: appStack
