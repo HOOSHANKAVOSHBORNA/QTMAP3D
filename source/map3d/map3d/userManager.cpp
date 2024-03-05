@@ -56,16 +56,6 @@ void UserManager::signIn(const QString username, const QString password)
     mServiceManager->sendUser(userData);
 
 
-    static bool ok = false;
-
-    if(ok){
-        emit signedIn();
-    }
-    else{
-        emit signInFailed();
-        setMessage("you failed!");
-    }
-    ok = !ok;
  //   setUserName(username);
   //  emit selectRole();
   //  emit signedIn();
