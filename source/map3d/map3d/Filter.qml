@@ -108,14 +108,14 @@ Rectangle {
                     Layout.preferredHeight: 18 / Style.monitorRatio
                     Layout.preferredWidth: 18 / Style.monitorRatio
                     rotation: 90
-                    color: colorScroll.position < .01 ? Style.backgroundColor : "transparent"
-                    visible:colorRepeater.count > 4
+                    color: colorRepeater.currentIndex < 1 ? Style.backgroundColor : "transparent"
+                    visible: colorRepeater.count > 4
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
+                            colorRepeater.decrementCurrentIndex();
+                            colorRepeater.positionViewAtIndex(colorRepeater.currentIndex, ListView.Beginning)
 
-                            if (colorScroll.position > 0)
-                                colorScroll.position -= 0.24
 
                         }
                     }
@@ -144,16 +144,8 @@ Rectangle {
                                 }
                             }
                         }
-                    }
-                    ScrollBar {
-                        id: colorScroll
-                        hoverEnabled: true
-                        active: hovered || pressed
-                        orientation: Qt.Horizontal
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        visible: false
+                        flickableDirection: Flickable.VerticalFlick
+                        boundsBehavior: Flickable.StopAtBounds
                     }
                 }
                 IconImage {
@@ -162,16 +154,15 @@ Rectangle {
                     Layout.preferredHeight: 18 / Style.monitorRatio
                     Layout.preferredWidth: 18 / Style.monitorRatio
                     rotation: -90
-                    color: colorScroll.position > .95 ? Style.backgroundColor : "transparent"
+                    color: colorRepeater.currentIndex > colorRepeater.count - 5 ? Style.backgroundColor : "transparent"
                     visible:colorRepeater.count > 4
 
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            if (colorScroll.position < 0.9) {
-                                colorScroll.position += 0.24
-
-                            }
+                            if (colorRepeater.currentIndex < colorRepeater.count - 4)
+                                colorRepeater.incrementCurrentIndex();
+                            colorRepeater.positionViewAtIndex(colorRepeater.currentIndex, ListView.Beginning)
                         }
                     }
                 }
@@ -204,6 +195,7 @@ Rectangle {
                             model: rootObj.filterManager ? filterManager.stringFilterFields: 0
 
                             textRole: "display"
+                            valueRole: "display"
                             background: Rectangle {
                                 color: "transparent"
                             }
@@ -235,7 +227,6 @@ Rectangle {
                             delegate: ItemDelegate {
                                 hoverEnabled: true
                                 width: 100
-                                // height: 20
                                 background: Rectangle {
                                     height: parent.height
                                     color: "white"
@@ -260,6 +251,7 @@ Rectangle {
                             }
                             onCurrentIndexChanged: {
                                 txtContentItem.text = control.textAt(control.highlightedIndex)
+                                control.currentText = txtContentItem.text
                             }
 
                             indicator: Rectangle {}
@@ -275,7 +267,19 @@ Rectangle {
                                 selectedTextColor: Style.backgroundColor
                                 selectionColor: Style.foregroundColor
                                 background: Rectangle {
+                                    id: redBackG
                                     color: "transparent"
+                                }
+                                validator: DoubleValidator {}
+                                PropertyAnimation {
+                                    id: rbg
+                                    target: redBackG
+                                    properties: "opacity"
+                                    to: 0
+                                    from: 1
+                                    duration: 2500
+                                    easing.type: Easing.OutQuint
+
                                 }
 
                                 onTextChanged: {
@@ -303,23 +307,16 @@ Rectangle {
                             selectionColor: Style.foregroundColor
                             placeholderTextColor: rootObj.fg30
                             background: Rectangle {
-                                id: redBackG2
                                 color: "transparent"
-                                radius: 8
                             }
 
-                            PropertyAnimation {
-                                id: rbg2
-                                target: redBackG2
-                                properties: "opacity"
-                                to: 0
-                                from: 1
-                                duration: 2500
-                                easing.type: Easing.OutQuint
-
-                            }
                             onAccepted: {
-                                filterManager.addFilterTag(control.currentText,
+                                if (control.indexOfValue(txtContentItem.text) === -1) {
+                                    redBackG.color = "red"
+                                    rbg.running = true
+                                    return
+                                }
+                                filterManager.addFilterTag(txtContentItem.text,
                                                            descriptionField.text,
                                                            Tag.Equal,
                                                            andCheck.checked ? Tag.And : Tag.Or)
@@ -353,7 +350,7 @@ Rectangle {
                         ComboBox {
                             id: control3
                             textRole: "display"
-
+                            valueRole: "display"
                             model: rootObj.filterManager?filterManager.numFilterFields :0
                             background: Rectangle {
                                 color: "transparent"
@@ -404,13 +401,15 @@ Rectangle {
                                         color: "transparent"
                                     }
                                 }
+                                onClicked: {
+                                    control3.currentIndex = index
+                                    txtContentItem3.text = model.display
+                                }
                             }
                             onFocusChanged: {
                                 if (focus)
                                     control3.popup.open()
-                            }
-                            onCurrentIndexChanged: {
-                                txtContentItem3.text = control3.textAt(control3.highlightedIndex)
+
                             }
 
                             indicator: Rectangle {}
@@ -425,8 +424,21 @@ Rectangle {
                                 font.pixelSize: 15 / Style.monitorRatio
                                 selectedTextColor: Style.backgroundColor
                                 selectionColor: Style.foregroundColor
+
                                 background: Rectangle {
+                                    id: redBackG3
                                     color: "transparent"
+                                }
+                                validator: DoubleValidator {}
+                                PropertyAnimation {
+                                    id: rbg3
+                                    target: redBackG3
+                                    properties: "opacity"
+                                    to: 0
+                                    from: 1
+                                    duration: 2500
+                                    easing.type: Easing.OutQuint
+
                                 }
 
                                 onTextChanged: {
@@ -539,32 +551,21 @@ Rectangle {
                             selectionColor: Style.foregroundColor
                             placeholderTextColor: rootObj.fg30
                             background: Rectangle {
-                                id: redBackG3
                                 color: "transparent"
-                                radius: 8
                             }
-                            PropertyAnimation {
-                                id: rbg3
-                                target: redBackG3
-                                properties: "opacity"
-                                to: 0
-                                from: 1
-                                duration: 2500
-                                easing.type: Easing.OutQuint
-
-                            }
-
                             onAccepted: {
-                                if (rootObj.isNumeric(numbfield3.text)) {
+                                if (control3.indexOfValue(txtContentItem3.text) === -1) {
+                                    redBackG3.color = "red"
+                                    rbg3.running = true
+                                    return
+                                }
+
+                                else {
                                     filterManager.addFilterTag(
-                                                control3.currentText,
+                                                txtContentItem3.text,
                                                 parseFloat(numbfield3.text),
                                                 rootObj.comparetor(lblComparision.text),
                                                 andCheck.checked ? Tag.And : Tag.Or)
-
-                                } else {
-                                    redBackG3.color = "red"
-                                    rbg3.running = true
                                 }
                             }
                         }
