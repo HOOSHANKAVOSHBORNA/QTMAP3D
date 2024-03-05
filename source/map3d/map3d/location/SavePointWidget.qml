@@ -14,7 +14,7 @@ Rectangle{
     signal saveLocation(string name, real latitude, real longitude,
                        real pitch ,real range, real head)
 
-    color: Style.primaryColor
+    color: Style.foregroundColor
     radius: Style.radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.2
@@ -60,7 +60,7 @@ Rectangle{
 
         }
         Rectangle{
-            color:Qt.lighter(Style.primaryColor,.5) //_colorButton
+            color:Qt.lighter(Style.foregroundColor,.5) //_colorButton
             //opacity: 0.3
             radius: Style.radius
             height: parent.width  / 1.2
