@@ -56,16 +56,16 @@ void UserManager::signIn(const QString username, const QString password)
     mServiceManager->sendUser(userData);
 
 
- //   setUserName(username);
-  //  emit selectRole();
-  //  emit signedIn();
-//    emit signInFailed();
+    //   setUserName(username);
+    //  emit selectRole();
+    //  emit signedIn();
+    //    emit signInFailed();
 
     //--test------
-//    QVector<QString> testvec;
-//    testvec.append("Admin");
-//    testvec.append("User");
-//    mRoleSelectionModel->setRolse(testvec);
+    //    QVector<QString> testvec;
+    //    testvec.append("Admin");
+    //    testvec.append("User");
+    //    mRoleSelectionModel->setRolse(testvec);
 }
 
 void UserManager::signIn(int selectRoleIndex)
