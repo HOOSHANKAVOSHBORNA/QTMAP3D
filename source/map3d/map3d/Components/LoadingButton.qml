@@ -16,8 +16,8 @@ Button {
 
     Rectangle {
         id: animationRect
-        width: 5
-        height: 5
+        width: 3
+        height: 3
         radius: width / 2
         color: "blue"
         visible: isWaiting
@@ -28,8 +28,8 @@ Button {
         color: Style.foregroundColor
         radius: backgroundRec.height / 2
 
-        border.color: isWaiting ? foregroundColor‌Border : "transparent"
-        border.width: isWaiting ? 5 : 0
+        border.color: foregroundColor‌Border
+        border.width: isWaiting ? 3 : 0
     }
 
     PathAnimation {
