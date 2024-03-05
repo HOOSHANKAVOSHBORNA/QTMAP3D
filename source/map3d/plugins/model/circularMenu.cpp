@@ -41,6 +41,13 @@ QmlNode *CircularMenu::qmlNode() const
     return mQmlNode;
 }
 
+void CircularMenu::resetMenuModel()
+{
+    mCircularMenuModel->reloadModel();
+}
+
+
+
 void CircularMenu::createQML()
 {
     QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem->parentItem())->engine());
@@ -140,6 +147,12 @@ void CircularMenuModel::removeMenuItem(CircularMenuItem *item)
         mItems.removeOne(item);
         endRemoveRows();
     }
+}
+
+void CircularMenuModel::reloadModel()
+{
+    beginResetModel();
+    endResetModel();
 }
 
 void CircularMenuModel::onItemClicked(const QModelIndex &current)
