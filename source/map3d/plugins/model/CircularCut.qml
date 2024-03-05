@@ -22,6 +22,7 @@ Item {
     property alias checkable: cutButton.checkable
     property alias checked: cutButton.checked
 
+
     // functions
     function toDegree (radianAngle) {
         return radianAngle * Math.PI / 180;
