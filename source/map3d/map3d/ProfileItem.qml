@@ -8,7 +8,6 @@ import "style"
 Item {
     id: rootItem
 
-    //    property var model
     readonly property color foregroundColorRect: Qt.rgba(
                                                      Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
@@ -28,24 +27,16 @@ Item {
         anchors.leftMargin: 15 / Style.monitorRatio
         spacing: 0
 
-//        Text {
-//            id: nameText
-//            text: userManager.name
-//            font.pixelSize: 20 / Style.monitorRatio
-//            color: Style.foregroundColor
-//            Layout.topMargin: 46 / Style.monitorRatio
-//        }
-
         Text {
             text: "Name: "
             Layout.topMargin: 16 / Style.monitorRatio
-            font.pixelSize: 13 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: Style.foregroundColor
         }
 
         Label {
             text: userManager.name
-            font.pixelSize: 13 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.leftMargin: 15 / Style.monitorRatio
@@ -55,13 +46,13 @@ Item {
         Text {
             text: "Username: "
             Layout.topMargin: 10 / Style.monitorRatio
-            font.pixelSize: 13 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: Style.foregroundColor
         }
 
         Label {
             text: userManager.userName
-            font.pixelSize: 13 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.leftMargin: 15 / Style.monitorRatio
@@ -71,13 +62,13 @@ Item {
         Text {
             text: "Role: "
             Layout.topMargin: 10 / Style.monitorRatio
-            font.pixelSize: 13 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: Style.foregroundColor
         }
 
         Label {
             text: userManager.roleName
-            font.pixelSize: 13 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.leftMargin: 15 / Style.monitorRatio
@@ -110,13 +101,13 @@ Item {
                     id: logout
                     anchors.centerIn: parent
                     text: "Log out"
-                    font.pixelSize: 15 / Style.monitorRatio
+                    font.pixelSize: Style.titleFontSize
                     color: Style.foregroundColor
                 }
             }
 
             onClicked: {
-                userManager.signedOut();
+                userManager.signedOut()
             }
         }
     }

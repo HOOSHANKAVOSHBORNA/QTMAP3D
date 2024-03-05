@@ -58,7 +58,7 @@ void UserManager::signIn(const QString username, const QString password)
 
     //   setUserName(username);
    //   emit selectRole();
-    //  emit signedIn();
+      emit signedIn();
     //    emit signInFailed();
 
     //--test------
