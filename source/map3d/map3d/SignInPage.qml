@@ -36,6 +36,7 @@ ColumnLayout {
         interval: 5000
         onTriggered: {
             signInBtn.enabled = true
+            signInBtn.height = 40 / Style.monitorRatio
             signInBtn.isWaiting = false
             signInBtn.loadingAnimation.stop()
             userManager.setMessage("No Response")
@@ -179,6 +180,7 @@ ColumnLayout {
 
         onClicked: {
             signInBtn.enabled = false
+            signInBtn.height = 50 / Style.monitorRatio
             userManager.setMessage("")
             loadingAnimation.start()
             isWaiting = true
