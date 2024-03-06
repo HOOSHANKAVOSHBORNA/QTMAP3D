@@ -57,6 +57,7 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     connect(mUserManager, &UserManager::signedIn, [this](){
         mMainWindow->getLayerManager()->userSignedIn(mUserManager);
     });
+    connect(mPluginManager, &PluginManager::plugunCount, mLoadingPage, &LoadingPage::setPluginCounter);
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
         setPageIndex(2);
