@@ -6,6 +6,7 @@
 #include <QQuickItem>
 #include <osg/Referenced>
 #include <osgEarth/Layer>
+#include <QSettings>
 
 // ----------------------------------------------------------------------------- class prototypes
 class LayerPropertyItem;
@@ -38,6 +39,11 @@ public:
     double opacity() const;
     void setOpacity(double newOpacity);
 
+    QSettings* getLayerSettings();
+    void setLayerSettings(QSettings *setting);
+    QList<QString> getSettingList();
+
+
 signals:
     void nameChanged();
     void colorChanged();
@@ -51,6 +57,8 @@ private:
     QColor mColor;
     bool mIsVisible;
     double mOpacity;
+    QSettings *mLayerSetting{nullptr};
+    QList<QString> mSettingList;
 };
 
 #endif // LAYERPROPERTY_H

@@ -45,7 +45,6 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     mUserManager = new UserManager(mServiceManager);
 
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
-
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
 }
 

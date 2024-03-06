@@ -29,6 +29,7 @@ public:
 
     QMap<QString, PluginInterface *> pluginsMap() const;
 signals:
+    void plugunCount(int count);
     void pluginMessage(QString message, bool isError);
     void setupFinished();
 

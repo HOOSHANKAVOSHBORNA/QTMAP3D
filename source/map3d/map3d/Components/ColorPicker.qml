@@ -18,7 +18,7 @@ Rectangle {
         Layout.fillHeight: true
         spacing: 3 / Style.monitorRatio
 
-        property var mainModel: ["#EF2929", "#FCAF3E", "#FCE94F", "#8AE234", "#729FCF", "#FFFFFF"]
+        property var mainModel: ["transparent" , "#EF2929", "#FCE94F", "#8AE234", "#729FCF", "#FFFFFF"]
 
         Repeater {
             id: mainRepeater
@@ -26,6 +26,7 @@ Rectangle {
             model: colorsrowl.mainModel
 
             property int currentIndex: -1
+
 
             Button {
                 required property var model
@@ -39,6 +40,12 @@ Rectangle {
                 background: Rectangle {
                     radius: width
                     color: colorsrowl.mainModel[model.index]
+                    border.color: colorsrowl.mainModel[model.index] === "transparent" ? Style.foregroundColor : "transparent"
+                }
+                Image{
+                    anchors.fill: parent
+                    source: "qrc:/Resources/index.png"
+                    visible: colorsrowl.mainModel[model.index] === "transparent"
                 }
 
                 Image {

@@ -639,6 +639,7 @@ Rectangle {
                             RowLayout {
                                 id: showDetails
                                 anchors.right:  parent.right
+
                                 Text {
                                     Layout.alignment: Qt.AlignLeft
                                     text: modelData.field ? modelData.field : 0
@@ -656,14 +657,28 @@ Rectangle {
                                     color: typesHolder.colorHandler
                                 }
 
-                                Text {
+                                Rectangle{
                                     id: itemValue
                                     Layout.alignment: Qt.AlignLeft
+width: 15 / Style.monitorRatio
+height: 15 / Style.monitorRatio
+radius: width/2
+                                    color: modelData.value ? modelData.value : "transparent"
+                                    visible: modelData.value ? modelData.field === "Color" : 0
+                                }
+
+                                Text {
+                                    id: itemValue2
+
+                                    Layout.alignment: Qt.AlignLeft
+                                    Layout.preferredWidth: 60 / Style.monitorRatio
+                                    elide: Text.ElideRight
+
                                     text: modelData.value ? modelData.value : 0
                                     font.family: "Roboto"
                                     font.pixelSize: 15 / Style.monitorRatio
                                     color: typesHolder.colorHandler /*typesHolder.checked ? Style.foregroundColor : rootObj.hoverColor*/
-                                    visible: modelData.value ? modelData.value : 0
+                                    visible: modelData.value ? !itemValue.visible : 0
                                 }
 
 
