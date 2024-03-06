@@ -1,5 +1,4 @@
 import QtQuick.Layouts 1.13
-import Crystal 1.0
 import QtQuick
 import QtQuick.Controls 2.15
 import QtQuick.Effects

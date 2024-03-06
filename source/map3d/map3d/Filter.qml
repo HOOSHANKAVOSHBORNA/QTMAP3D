@@ -2,7 +2,6 @@ import QtQuick.Layouts
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
-import Crystal 1.0
 import "style"
 
 
@@ -140,7 +139,7 @@ Rectangle {
                                 anchors.fill: parent
                                 onClicked: {
                                     filterManager.addFilterTag("Color",
-                                                               model.display, Tag.Equal, andCheck.checked ? Tag.And : Tag.Or)
+                                                               model.display, "=", andCheck.checked ? 0 : 1)
                                 }
                             }
                         }
@@ -318,8 +317,8 @@ Rectangle {
                                 }
                                 filterManager.addFilterTag(txtContentItem.text,
                                                            descriptionField.text,
-                                                           Tag.Equal,
-                                                           andCheck.checked ? Tag.And : Tag.Or)
+                                                           "=",
+                                                           andCheck.checked ? 0 : 1)
                             }
                         }
                     }
@@ -564,8 +563,8 @@ Rectangle {
                                     filterManager.addFilterTag(
                                                 txtContentItem3.text,
                                                 parseFloat(numbfield3.text),
-                                                rootObj.comparetor(lblComparision.text),
-                                                andCheck.checked ? Tag.And : Tag.Or)
+                                                lblComparision.text,
+                                                andCheck.checked ? 0 : 1)
                                 }
                             }
                         }
@@ -621,7 +620,7 @@ Rectangle {
                                 anchors.right: borderRect.left
                                 anchors.rightMargin: 5 / Style.monitorRatio
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.logicalOperator === Tag.And ? "&&" : "||"
+                                text: modelData.logicalOperator == 0 ? "&&" : "||"
                                 font.pixelSize: 15 / Style.monitorRatio
                                 font.family: "Roboto"
                                 color: typesHolder.colorHandler
@@ -695,20 +694,20 @@ Rectangle {
 
 
     }
-    function comparetor(txt){
-        if  (txt === "!=")
-            return Tag.NotEqual
-        else if (txt === ">")
-            return Tag.Greater
-        else if (txt === "<")
-            return Tag.Less
-        else if (txt === ">=")
-            return Tag.GreaterEqual
-        else if (txt === "<=")
-            return Tag.LessEqual
-        else
-            return Tag.Equal
-    }
+    // function comparetor(txt){
+    //     if  (txt === "!=")
+    //         return Tag.NotEqual
+    //     else if (txt === ">")
+    //         return Tag.Greater
+    //     else if (txt === "<")
+    //         return Tag.Less
+    //     else if (txt === ">=")
+    //         return Tag.GreaterEqual
+    //     else if (txt === "<=")
+    //         return Tag.LessEqual
+    //     else
+    //         return Tag.Equal
+    // }
     PropertyAnimation {
         id: openMotion
         target: rootObj

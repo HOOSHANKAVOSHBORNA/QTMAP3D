@@ -52,7 +52,7 @@ void SnipTool::onImageProcessComplete(osg::Image *iImage , int width , int heigh
 SnipToolInterface::SnipToolInterface(MapItem *map , QQmlEngine *engine):
     mMap(map)
 {
-    qmlRegisterType<SnipTool>("Crystal", 1, 0, "Snipp");
+    // qmlRegisterType<SnipTool>("Crystal", 1, 0, "Snipp");
     QQmlComponent component(engine, QUrl("qrc:/resources/SnipTool.qml"));
     mSnipTool = new SnipTool(mMap , engine);
     mObject = component.create();
