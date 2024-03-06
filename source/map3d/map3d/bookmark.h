@@ -12,7 +12,8 @@ struct BookmarkItem: public QObject {
     Q_OBJECT
 
 public:
-    BookmarkItem(){};
+    BookmarkItem(QObject *parent = nullptr): QObject(parent){};
+    ~BookmarkItem(){qDebug()<<"~BookmarkItem";}
 
     void setInfo(QString category, QString text, QQuickWindow *window, QString categoryIconUrl)
     {
@@ -43,6 +44,7 @@ class BookmarkProxyModel : public QSortFilterProxyModel
 
 public:
     BookmarkProxyModel(QObject *parent = nullptr);
+    ~BookmarkProxyModel();
     QHash<int, QByteArray> roleNames() const override;
 
     void addBookmarkItem(BookmarkItem *bookmarkItem);
@@ -79,7 +81,7 @@ class BookmarkManager : public QObject
     Q_OBJECT
 
 public:
-    explicit BookmarkManager();
+    explicit BookmarkManager(QObject *parent = nullptr);
     ~BookmarkManager();
 
     void addBookmarkItem(BookmarkItem *bookmarkItem);

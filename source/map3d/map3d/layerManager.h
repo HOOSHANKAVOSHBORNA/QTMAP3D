@@ -7,6 +7,7 @@
 
 #include "layerProperty.h"
 #include "mapItem.h"
+#include "qsettings.h"
 
 Q_DECLARE_METATYPE(osgEarth::Layer);
 
@@ -32,6 +33,8 @@ public:
 
     LayerPropertyItem *propertyInterface() const;
     void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
+
+
 
 signals:
     void propertyItemChanged();
@@ -97,6 +100,9 @@ private:
     void setItemVisible(QStandardItem *item, bool visible);
     bool getLayerVisible(osgEarth::Layer *layer) const;
 
+
+    void setSettings(osgEarth::Layer *layer);
+
 private:
     MapItem *mMapItem;
     QStandardItemModel *mSourceModel;
@@ -104,6 +110,7 @@ private:
     std::map<osgEarth::Layer*, QStandardItem*> mLayerToItemMap;
     QString mFilterString;
     LayerPropertyItem *mPropertyInterface = nullptr;
+    QSettings *mLayerSettings{nullptr};
 };
 
 
