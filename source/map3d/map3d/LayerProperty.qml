@@ -119,8 +119,9 @@ Item {
 
                     //                    initialValue: rootItem.cppInterface.opacity
                     onValueChanged: value => {
-                                        if (!rootItem.cppInterface)
-                                        return
+                                        if (!rootItem.cppInterface){
+                                            return
+                                        }
                                         rootItem.cppInterface.opacity = value
                                     }
                 }

@@ -65,6 +65,6 @@ Item {
             border.width: 1
         }
 
-        // onValueChanged: rootItem.valueChanged(value)
+        onValueChanged: rootItem.valueChanged(value)
     }
 }
