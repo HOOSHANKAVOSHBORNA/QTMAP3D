@@ -7,48 +7,18 @@
 LogManager::LogManager(QObject *parent)
     : QObject(parent)
 {
-    // directory existence checking
-    QDir dir;
-    if (!dir.exists(getSavingFolderPath())) {
-        dir.mkpath(getSavingFolderPath());
-    }
-
-    // TODO: purpose that no log file deleted in the middle!!
-    int i = 1;
-    while (true) {
-        QFile logFile(getSavingFilePath() + QString::number(i).rightJustified(3, '0'));
-
-        if (!logFile.exists()) {
-            break;
-        }
-
-        i++;
-    }
-
-    savedFileName = savedFileName + QString::number(i - 1).rightJustified(3, '0');
-
-    QFile logFile(getSavingFilePath());
-
-    if (!logFile.open(QIODevice::WriteOnly | QIODevice::Append)) {
-        std::cout << "here: " << getSavingFilePath().toStdString() << std::endl;
-        std::cout << "Cannot open log file!!!" << std::endl;
-        return;
-    }
-
-    QTextStream out(&logFile);
-
-    out << "\n";
-    out << "=================== App Started at: "
-        << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")
-        << "===================";
-    out << "\n";
-
-    out.flush();
-
-    logFile.close();
+    QString toWrite = QString("\n\n=================== App Started at:"
+                              + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
+                              + "===================");
+    writeLogToFile(toWrite);
 }
 
 LogManager::~LogManager() {}
+
+void LogManager::setNewSavedFileName()
+{
+    savedFileName = QString::number(QDateTime::currentSecsSinceEpoch());
+}
 
 QString LogManager::getSavingFolderPath()
 {
@@ -97,18 +67,29 @@ void LogManager::messageHandler(QtMsgType type,
 
 bool LogManager::writeLogToFile(QString textToWrite)
 {
+    QDir dir(getSavingFolderPath());
+
+    if (!dir.exists()) {
+        dir.mkpath(getSavingFolderPath());
+    }
+
+    dir.setSorting(QDir::Name);
+    savedFileName = dir.entryList().last();
+
+    if (".." == savedFileName) {
+        setNewSavedFileName();
+    }
+
     QFile *outFile = new QFile(getSavingFilePath());
 
     if (outFile->size() > maxSize) {
-        QString newName = savedFileName;
-        int newIndex = newName.right(3).toInt() + 1;
-        newName.remove(newName.size() - 3, newName.size() - 1);
-        newName += QString::number(newIndex).rightJustified(3, '0');
-        savedFileName = newName;
+        delete outFile;
+        setNewSavedFileName();
+        outFile = new QFile(getSavingFilePath());
     }
 
     if (!outFile->open(QIODevice::WriteOnly | QIODevice::Append)) {
-        std::cout << "Cannot open log file!!!";
+        std::cout << "Cannot open log file!!!" << std::endl;
         return false;
     }
 

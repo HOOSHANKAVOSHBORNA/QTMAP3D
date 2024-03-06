@@ -18,16 +18,18 @@ public:
         QString _name      = QString(),
         QString _iconUrl   = QString(),
         bool    _checkable = false,
-        QString _iconCheckedUrl = QString()
+        QString _iconCheckedUrl = QString(),
+        QObject *parent = nullptr
     ):
         name            (_name     ),
         iconUrl         (_iconUrl  ),
         checkable       (_checkable),
-        iconCheckedUrl  (_iconCheckedUrl)
+        iconCheckedUrl  (_iconCheckedUrl),
+        QObject(parent)
     {
 
     }
-
+    ~CircularMenuItem(){qDebug()<<"~CircularMenuItem";}
     QString name;
     QString iconUrl;
     bool    checkable = false;
@@ -43,7 +45,8 @@ signals:
 class CircularMenu : public QObject
 {
 public:
-    CircularMenu(QQuickItem *parentItem, osgEarth::Annotation::GeoPositionNode *osgNode);
+    CircularMenu(QQuickItem *parentItem, osgEarth::Annotation::GeoPositionNode *osgNode, QObject *parent = nullptr);
+    ~CircularMenu();
     void appendMenuItem(CircularMenuItem* item);
     void removeMenuItem(CircularMenuItem* item);
     void show(bool show);
@@ -76,6 +79,7 @@ class CircularMenuModel : public QAbstractListModel
 
 public:
     explicit CircularMenuModel(QObject *parent = nullptr);
+    ~CircularMenuModel();
 
 public:
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;

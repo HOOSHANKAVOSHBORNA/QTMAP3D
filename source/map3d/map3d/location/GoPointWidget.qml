@@ -10,7 +10,7 @@ Rectangle{
 
 
     id:root
-    color: Style.primaryColor
+    color: Style.foregroundColor
     radius: Style.radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3

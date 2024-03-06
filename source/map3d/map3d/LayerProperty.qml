@@ -115,7 +115,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 10
 
-                    backgroundColor: rootItem.cppInterface ? rootItem.cppInterface.color : "transparent"
+                    backgroundColor: rootItem.cppInterface ? (rootItem.cppInterface.color ? rootItem.cppInterface.color : "transparent") : "transparent"
 
                     //                    initialValue: rootItem.cppInterface.opacity
                     onValueChanged: value => {

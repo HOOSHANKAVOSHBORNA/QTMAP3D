@@ -101,7 +101,7 @@ Item {
                     id: logout
                     anchors.centerIn: parent
                     text: "Log out"
-                    font.pixelSize: Style.titleFontSize
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
             }

@@ -5,6 +5,7 @@ import "style"
 
 ColumnLayout {
     property var roleSelectionModel: undefined
+    property var connectionConfigCpp: undefined
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
     property alias backBtn: backBtn
@@ -137,7 +138,7 @@ ColumnLayout {
         }
         contentItem: Text {
             text: "Sign in"
-            font.pixelSize: Style.titleFontSize
+            font.pixelSize: Style.regularFontSize
             color: parent.hovered
                    && parent.enabled ? "#01AED6" : Style.backgroundColor
             horizontalAlignment: Text.AlignHCenter
