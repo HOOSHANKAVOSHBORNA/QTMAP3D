@@ -33,7 +33,7 @@ void NodeTest::createInfo()
     if(mCount >= mMaxNumber)
         return;
     //---------------------------------------------------------
-    QVector<QString> colors{"yellow", "red", "blue", "green", "white", "black"};
+    QVector<QString> colors{"yellow", "red", "blue", "green", "white", "black", "purple"};
     QVector<QString> types{NodeType::Fixed, NodeType::Movable, NodeType::Flyable};
     QString name = "Node" + QString::number(mCount);
     int id = 30000 + mCount;

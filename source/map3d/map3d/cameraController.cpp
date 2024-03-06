@@ -85,8 +85,8 @@ void CameraController::setTrackNode(osg::Node *node, double minDistance)
 void CameraController::untrack()
 {
     auto vp = getViewpoint();
-    //    if(vp.getNode() == nullptr)
-    //        return;
+       if(vp.getNode() == nullptr)
+           return;
     vp.setNode(nullptr);
     setViewpoint(vp);
 

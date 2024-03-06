@@ -506,6 +506,7 @@ void SimpleModelNode::createBookmarkItem()
     connect(mBookmarkItem, &BookmarkItem::fromBookmarkRemoved, [&](){
         mIsBookmarked = false;
         mBookmarkMenuItem->checked = false;
+        mCircularMenu->resetMenuModel();
     });
 }
 
