@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
 
     QObject::connect(userTest, &UserTest::login,[&]{
         qDebug()<<"login";
-        layerTest = new LayerTest(&serviceManager);
-        nodeTest = new NodeTest(&serviceManager);
+//        layerTest = new LayerTest(&serviceManager);
+//        nodeTest = new NodeTest(&serviceManager);
 //        assignmentTest = new AssignmentTest(&serviceManager);
 //        particleTest = new ParticleTest(&serviceManager);
     });

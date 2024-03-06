@@ -8,12 +8,18 @@
 #include "qmlNode.h"
 
 // ------------------------------------------------------- model manager
-CircularMenu::CircularMenu(QQuickItem *newParentQmlItem, osgEarth::Annotation::GeoPositionNode *newOsgNode)
+CircularMenu::CircularMenu(QQuickItem *newParentQmlItem, osgEarth::Annotation::GeoPositionNode *newOsgNode, QObject *parent)
+    :QObject(parent)
 {
     mParentQmlItem = newParentQmlItem;
     mOsgNode = newOsgNode;
-    mCircularMenuModel = new CircularMenuModel;
+    mCircularMenuModel = new CircularMenuModel(this);
     createQML();
+}
+
+CircularMenu::~CircularMenu()
+{
+    qDebug()<<"~CircularMenu";
 }
 
 void CircularMenu::appendMenuItem(CircularMenuItem *item)
@@ -43,8 +49,8 @@ QmlNode *CircularMenu::qmlNode() const
 
 void CircularMenu::createQML()
 {
-    QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem->parentItem())->engine());
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status) {
+    QQmlComponent* comp = new QQmlComponent(QQmlEngine::contextForObject(mParentQmlItem->parentItem())->engine(), this);
+    QObject::connect(comp, &QQmlComponent::statusChanged,this, [=](const QQmlComponent::Status &status) {
         if(status == QQmlComponent::Error) {
             qDebug() << "Can not load this: " << comp->errorString();
         }
@@ -62,7 +68,8 @@ void CircularMenu::createQML()
 }
 
 // ------------------------------------------------------- model
-CircularMenuModel::CircularMenuModel(QObject *parent)
+CircularMenuModel::CircularMenuModel(QObject *parent):
+    QAbstractListModel(parent)
 {
     // TEST
     //    CircularMenuItem *item1 = new CircularMenuItem{"Info", "qrc:/Resources/info.png", false};
@@ -82,6 +89,11 @@ CircularMenuModel::CircularMenuModel(QObject *parent)
     //    mItems.append(item3);
     //    mItems.append(item4);
     // ENDTEST
+}
+
+CircularMenuModel::~CircularMenuModel()
+{
+    qDebug()<<"~CircularMenuModel";
 }
 
 int CircularMenuModel::rowCount(const QModelIndex &parent) const
@@ -144,11 +156,11 @@ void CircularMenuModel::removeMenuItem(CircularMenuItem *item)
 
 void CircularMenuModel::onItemClicked(const QModelIndex &current)
 {
-    mItems.at(current.row())->itemClicked();
+    emit mItems.at(current.row())->itemClicked();
 }
 
 void CircularMenuModel::onItemChecked(const QModelIndex &current, bool checked)
 {
-    mItems.at(current.row())->itemChecked(checked);
+    emit mItems.at(current.row())->itemChecked(checked);
 }
 

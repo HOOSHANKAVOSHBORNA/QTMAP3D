@@ -46,7 +46,7 @@ private:
     bool mIsShow{false};
     QQmlEngine *mEngine;
     osgEarth::Annotation::GeoPositionNode *mOsgNode;
-    osg::NodeCallback *mNodeCallback{nullptr};
+    osg::ref_ptr<osg::NodeCallback> mNodeCallback{nullptr};
     double mNodeRadius;
 };
 

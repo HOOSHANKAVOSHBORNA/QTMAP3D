@@ -6,7 +6,8 @@
 #include <QQuickView>
 #include <QQmlComponent>
 
-NodeInformationModel::NodeInformationModel(QObject *parent):QStandardItemModel(parent)
+NodeInformationModel::NodeInformationModel(QObject *parent)
+    :QStandardItemModel(parent)
 {
     setColumnCount(1);
     mRootItem = invisibleRootItem();
@@ -14,7 +15,7 @@ NodeInformationModel::NodeInformationModel(QObject *parent):QStandardItemModel(p
 
 NodeInformationModel::~NodeInformationModel()
 {
-
+    qDebug()<<"~NodeInformationModel";
 }
 
 void NodeInformationModel::setNodeData(const NodeData &nodeData)
@@ -57,14 +58,15 @@ QHash<int, QByteArray> NodeInformationModel::roleNames() const
     return hash;
 }
 
-NodeInformation::NodeInformation(QQmlEngine *Engine, QQuickWindow *parent):QObject(parent)
+NodeInformation::NodeInformation(QQmlEngine *Engine, QObject *parent)
+    :QObject(parent)
 {
 
 
-    mNodeInformationModel = new NodeInformationModel(Engine);
+    mNodeInformationModel = new NodeInformationModel(this);
 
     QQmlComponent* comp = new QQmlComponent(Engine, this);
-    QObject::connect(comp, &QQmlComponent::statusChanged, [&](const QQmlComponent::Status &status){
+    QObject::connect(comp, &QQmlComponent::statusChanged, this, [=](const QQmlComponent::Status &status){
         if(status == QQmlComponent::Error){
             qDebug()<<"Can not load this: "<<comp->errorString();
         }
@@ -73,7 +75,7 @@ NodeInformation::NodeInformation(QQmlEngine *Engine, QQuickWindow *parent):QObje
             mWindow = qobject_cast<QQuickWindow*>(comp->create());
             mWindow->setProperty("nodeInfoModel", QVariant::fromValue<NodeInformationModel*>(mNodeInformationModel));
 
-            connect(parent, &QQuickWindow::closing, mWindow, &QQuickWindow::close);
+//            connect(parent, &QQuickWindow::closing, mWindow, &QQuickWindow::close);
             connect(mWindow, SIGNAL(goToPosition()), this, SIGNAL(goToPosition()));
             connect(mWindow, SIGNAL(track()), this, SIGNAL(track()));
         }
@@ -84,7 +86,9 @@ NodeInformation::NodeInformation(QQmlEngine *Engine, QQuickWindow *parent):QObje
 
 NodeInformation::~NodeInformation()
 {
-
+    qDebug()<<"~NodeInformation";
+    if(mWindow)
+        mWindow->close();
 }
 
 void NodeInformation::setNodeData(const NodeData &nodeData)

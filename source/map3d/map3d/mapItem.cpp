@@ -322,7 +322,8 @@ void MapItem::createCameraManipulator()
     vp.heading() = 0;
     mCameraController->setHomeViewpoint(vp, 0);
 
-    settings->setMinMaxPitch(-90, 0);
+    settings->setTerrainAvoidanceEnabled(true);
+    settings->setTerrainAvoidanceMinimumDistance(200);
 }
 
 void MapItem::frame()

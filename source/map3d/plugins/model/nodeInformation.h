@@ -32,7 +32,7 @@ class NodeInformation:public QObject
 {
     Q_OBJECT
 public:
-    explicit NodeInformation(QQmlEngine* Engine, QQuickWindow *parent = nullptr);
+    explicit NodeInformation(QQmlEngine* Engine, QObject *parent = nullptr);
     ~NodeInformation();
 
     void setNodeData(const NodeData &nodeData);

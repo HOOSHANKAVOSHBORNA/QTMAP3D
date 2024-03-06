@@ -15,7 +15,7 @@ DataManager::~DataManager()
 
 }
 
-QMap<int, osg::ref_ptr<SimpleModelNode>> *DataManager::getNodeMap()
+QMap<int, osg::ref_ptr<SimpleModelNode> > *DataManager::getNodeMap()
 {
     return &mNodeMap;
 }
@@ -138,9 +138,9 @@ void DataManager::removeNode(const NodeData &nodeData)
                 layer->removeChild(mNodeMap[nodeData.id]);
         }
 
-        int nodeDataId = getNodeIndexById(nodeData.id);
+//        int nodeDataId = getNodeIndexById(nodeData.id);
 //        nodeRemovingStart(QModelIndex(), nodeDataId, nodeDataId);
-        mNodeMap[nodeData.id].release();
+//        mNodeMap[nodeData.id].release();
         mNodeMap.remove(nodeData.id);
 //        nodeRemovingEnd();
     }
