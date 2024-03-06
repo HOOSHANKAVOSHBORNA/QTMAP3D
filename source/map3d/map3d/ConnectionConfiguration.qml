@@ -60,8 +60,8 @@ Item {
     }
 
     ColumnLayout {
-       Layout.fillWidth: true
-       Layout.maximumHeight:  745 / Style.monitorRatio
+        Layout.fillWidth: true
+        Layout.maximumHeight: 745 / Style.monitorRatio
         spacing: 0
 
         Button {
@@ -80,15 +80,15 @@ Item {
 
         RowLayout {
             id: header
-//            Layout.fillWidth: true
+            //            Layout.fillWidth: true
             Layout.topMargin: 31 / Style.monitorRatio
 
             Text {
                 id: titleText
                 text: "Connection"
-                font.pixelSize: 25 / Style.monitorRatio
+                font.pixelSize: Style.titleFontSize
                 color: Style.foregroundColor
-//                Layout.fillWidth: true
+                //                Layout.fillWidth: true
             }
 
             IconImage {
@@ -101,7 +101,7 @@ Item {
 
         Text {
             text: "Username"
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.topMargin: 50 / Style.monitorRatio
             color: Style.foregroundColor
         }
@@ -109,10 +109,9 @@ Item {
         TextField {
             id: username
             Layout.preferredWidth: 330 / Style.monitorRatio
-//            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
-            font.pixelSize: 17 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
@@ -129,7 +128,7 @@ Item {
 
         Text {
             text: "Password"
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.topMargin: 20 / Style.monitorRatio
             color: Style.foregroundColor
         }
@@ -137,10 +136,10 @@ Item {
         TextField {
             id: password
             Layout.preferredWidth: 330 / Style.monitorRatio
-//            Layout.fillWidth: true
+            //            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
-            font.pixelSize: 17 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
@@ -157,7 +156,7 @@ Item {
 
         Text {
             text: "IP"
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.topMargin: 20 / Style.monitorRatio
             color: Style.foregroundColor
         }
@@ -165,10 +164,9 @@ Item {
         TextField {
             id: ip
             Layout.preferredWidth: 330 / Style.monitorRatio
-//            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
-            font.pixelSize: 17 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
@@ -185,7 +183,7 @@ Item {
 
         Text {
             text: "Port"
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.topMargin: 20 / Style.monitorRatio
             color: Style.foregroundColor
         }
@@ -193,10 +191,9 @@ Item {
         TextField {
             id: port
             Layout.preferredWidth: 330 / Style.monitorRatio
-//            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
-            font.pixelSize: 17 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             leftPadding: 20 / Style.monitorRatio
             color: foregroundColorText
             placeholderTextColor: foregroundColorText
@@ -218,14 +215,13 @@ Item {
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 330 / Style.monitorRatio
-//            Layout.fillWidth: true
             Layout.topMargin: 48 / Style.monitorRatio
             hoverEnabled: true
 
             contentItem: Text {
                 id: testConnectionTxt
                 text: "Connect"
-                font.pixelSize: 20 / Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -259,13 +255,12 @@ Item {
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 330 / Style.monitorRatio
-//            Layout.fillWidth: true
             Layout.topMargin: 25 / Style.monitorRatio
             hoverEnabled: true
 
             contentItem: Text {
                 text: "Save changes"
-                font.pixelSize: 20 / Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter

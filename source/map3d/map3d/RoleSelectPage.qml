@@ -5,6 +5,7 @@ import "style"
 
 ColumnLayout {
     property var roleSelectionModel: undefined
+    property var connectionConfigCpp: undefined
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
     property alias backBtn: backBtn
@@ -31,7 +32,7 @@ ColumnLayout {
         Text {
             id: titleText
             text: "Log in"
-            font.pixelSize: 35 / Style.monitorRatio
+            font.pixelSize: Style.titleFontSize
             color: Style.foregroundColor
             Layout.fillWidth: true
         }
@@ -61,7 +62,7 @@ ColumnLayout {
 
         Text {
             id: usernameTxt
-            font.pixelSize: 23 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: Style.foregroundColor
         }
     }
@@ -69,7 +70,7 @@ ColumnLayout {
     Text {
         text: "Select role"
         Layout.topMargin: 30 / Style.monitorRatio
-        font.pixelSize: 22 / Style.monitorRatio
+        font.pixelSize: Style.regularFontSize
         font.bold: true
         color: Style.foregroundColor
     }
@@ -91,7 +92,7 @@ ColumnLayout {
             opacity: checked ? 1 : 0.75
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 20 / Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 color: Style.foregroundColor
                 leftPadding: 20 / Style.monitorRatio
                 verticalAlignment: Text.AlignVCenter
@@ -120,7 +121,7 @@ ColumnLayout {
         }
         Text {
             text: userManager.message
-            font.pixelSize: 17 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: "#ED4337"
             Layout.leftMargin: 5 / Style.monitorRatio
         }
@@ -137,6 +138,7 @@ ColumnLayout {
         }
         contentItem: Text {
             text: "Sign in"
+            font.pixelSize: Style.regularFontSize
             color: parent.hovered
                    && parent.enabled ? "#01AED6" : Style.backgroundColor
             horizontalAlignment: Text.AlignHCenter

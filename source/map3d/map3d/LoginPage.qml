@@ -150,6 +150,8 @@ Item {
                     topToBottomRole.start()
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
+                    signInPage.signInBtn.loadingAnimation.stop()
+                    signInPage.signInBtn.isWaiting = false
                 }
                 function onSignedIn() {
                     signInPage.signInResponse()
@@ -169,6 +171,7 @@ Item {
 
         RoleSelectPage {
             id: rolePage
+            connectionConfigCpp: loginPage.connectionConfigCpp
             roleSelectionModel: userManager.roleSelectionModel()
             visible: false
             usernameTxt: signInPage.usernameTxt

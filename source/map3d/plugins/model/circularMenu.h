@@ -52,6 +52,9 @@ public:
     void show(bool show);
     void setQmlNode(QmlNode *newQmlNode);
     QmlNode *qmlNode() const;
+
+    void resetMenuModel();
+
 private:
     void createQML();
 private:
@@ -86,6 +89,7 @@ public:
 
     void appendMenuItem(CircularMenuItem* item);
     void removeMenuItem(CircularMenuItem* item);
+    void reloadModel();
 
 public slots:
     void onItemClicked(const QModelIndex &current);

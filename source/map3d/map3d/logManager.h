@@ -12,6 +12,7 @@ public:
     LogManager(QObject *parent = nullptr);
     ~LogManager();
 
+    static void setNewSavedFileName();
     static QString getSavingFolderPath();
     static QString getSavingFilePath();
     static void messageHandler(QtMsgType type,
@@ -27,7 +28,7 @@ private:
         QStandardPaths::AppDataLocation);
     static inline const QString appName = QString("Map3d");
     static inline const QString savedDir = QString("logs");
-    static inline QString savedFileName = QString("log_");
+    static inline QString savedFileName;
 };
 
 #endif // LOGMANAGER_H
