@@ -17,11 +17,11 @@ LayerManager::LayerManager(MapItem *mapItem, QObject *parent) : QObject(parent)
 {
     mLayerModel = new LayerModel();
 
-    mLayerModel->setMapItem(mapItem);
-
     mPropertyInterface = new LayerPropertyItem(this);
     mLayerModel->setPropertyInterface(mPropertyInterface);
     setPropertyInterface(mPropertyInterface);
+
+    mLayerModel->setMapItem(mapItem);
 }
 
 LayerModel *LayerManager::layerModel() const
@@ -56,12 +56,14 @@ void LayerManager::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
     emit propertyInterfaceChanged();
 }
 
+
 // ----------------------------------------------------------------- model
 LayerModel::LayerModel(QObject *parent): QSortFilterProxyModel(parent)
 {
 
     mSourceModel = new QStandardItemModel(this);
     setSourceModel(mSourceModel);
+    mLayerSettings = new QSettings("hooshan","map3d");
 }
 
 LayerModel::~LayerModel()
@@ -134,13 +136,14 @@ void LayerModel::onVisibleItemClicked(const QModelIndex &current)
 {
     QModelIndex indexSource = mapToSource(current);
     QStandardItem *item = mSourceModel->itemFromIndex(indexSource);
-    bool visible = item->data(VisibleRole).toBool();
-    setItemVisible(item, !visible);
+    // bool visible = item->data(VisibleRole).toBool();
 
     auto layer = item->data(LayerRole).value<osgEarth::Layer*>();
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
-    if(visibleLayer)
+    if(visibleLayer){
         setLayerVisible(visibleLayer);
+        setItemVisible(item, visibleLayer->getVisible());
+    }
 }
 
 
@@ -214,8 +217,15 @@ void LayerModel::onMoveItem(QModelIndex oldIndex, QModelIndex newIndex)
 
 void LayerModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)
 {
+    setSettings(layer);
     QStandardItem *newItem = new QStandardItem(QString(layer->getName().c_str()));
+    if(parentLayer){
+        auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+        auto visibleparentLayer = dynamic_cast<osgEarth::VisibleLayer*>(parentLayer);
+        visibleLayer->setVisible(visibleparentLayer->getVisible());
+    }
     newItem->setData(getLayerVisible(layer), VisibleRole);
+
     newItem->setData(false, DropRole);
 
     QVariant layerVariant;
@@ -229,6 +239,9 @@ void LayerModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLa
         mSourceModel->invisibleRootItem()->insertRow(index, newItem);
 
     mLayerToItemMap[layer] = newItem;
+
+
+
 }
 
 void LayerModel::onLayerRemoved(osgEarth::Layer *layer , osgEarth::Layer *parentLayer, unsigned index)
@@ -280,6 +293,23 @@ bool LayerModel::getLayerVisible(osgEarth::Layer *layer) const
     return visible;
 }
 
+void LayerModel::setSettings(osgEarth::Layer *layer)
+{
+    if(mLayerSettings->allKeys().contains(QString::number(layer->getUID())) && mPropertyInterface){
+        mPropertyInterface->setModelNodeLayer(layer);
+        QList<QString> vec = mLayerSettings->value(QString::number(layer->getUID())).toStringList().toList();
+        if((vec.length() >= 1 )&&(!vec.at(0).isEmpty())){
+            mPropertyInterface->setColor(vec[0]);
+        }
+        if((vec.length() >= 2 )&&(!vec.at(1).isEmpty())){
+            mPropertyInterface->setIsVisible(vec[1].startsWith("t",Qt::CaseInsensitive));
+        }
+        if((vec.length() >= 13 )&&(!vec.at(2).isEmpty())){
+            mPropertyInterface->setOpacity(vec[2].toDouble());
+        }
+    }
+}
+
 LayerPropertyItem *LayerModel::propertyInterface() const
 {
     return mPropertyInterface;
@@ -288,12 +318,13 @@ LayerPropertyItem *LayerModel::propertyInterface() const
 void LayerModel::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
 {
     mPropertyInterface = newPropertyInterface;
+    mPropertyInterface->setLayerSettings(mLayerSettings);
 }
 
 void LayerModel::setLayerVisible(osgEarth::VisibleLayer *layer)
 {
     bool visible = layer->getVisible();
-    layer->setVisible(!visible);
+    mPropertyInterface->setIsVisible(!visible);
 }
 
 bool LayerModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const

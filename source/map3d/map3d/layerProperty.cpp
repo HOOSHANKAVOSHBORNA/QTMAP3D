@@ -5,6 +5,8 @@
 #include "layerProperty.h"
 #include "utility.h"
 
+LayerPropertyItem::LayerPropertyItem(QObject *parent) : QObject(parent){}
+
 QString LayerPropertyItem::name() const
 {
     return mName;
@@ -33,13 +35,28 @@ void LayerPropertyItem::setColor(const QColor &newColor)
     if (!mModelNodeLayer)
         return;
 
+    if(newColor.alphaF() != 0.0){
     osgEarth::Color color = Utility::qColor2osgEarthColor(mColor);
     osg::ref_ptr<osg::Material> mat = new osg::Material;
     mat->setDiffuse(osg::Material::FRONT_AND_BACK, color);
     mModelNodeLayer->getOrCreateStateSet()
         ->setAttributeAndModes(mat, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
+    if(mLayerSetting){
+        mSettingList.replace(0,mColor.name());
+        mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+    }
+    }else{
+        mModelNodeLayer->getOrCreateStateSet()->removeAttribute(osg::StateAttribute::MATERIAL);
+        if(mLayerSetting){
+            mSettingList.replace(0,NULL);
+            mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+        }
+    }
+
     emit colorChanged();
+
+
 }
 
 bool LayerPropertyItem::isVisible() const
@@ -53,14 +70,17 @@ void LayerPropertyItem::setIsVisible(bool newIsVisible)
 
     if (!mModelNodeLayer)
         return;
-    // TODO
-    //    mModelNodeLayer->setVisible(mIsVisible);
+
+
+    auto layerVisible = dynamic_cast<osgEarth::VisibleLayer *>(mModelNodeLayer.get());
+    layerVisible->setVisible(newIsVisible);
+
     emit isVisibleChanged();
-}
 
-LayerPropertyItem::LayerPropertyItem(QObject *parent) : QObject(parent)
-{
-
+    if(mLayerSetting){
+        mSettingList.replace(1,QVariant(newIsVisible).toString());
+        mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+    }
 }
 
 osg::ref_ptr<osgEarth::Layer> LayerPropertyItem::modelNodeLayer() const
@@ -71,13 +91,9 @@ osg::ref_ptr<osgEarth::Layer> LayerPropertyItem::modelNodeLayer() const
 void LayerPropertyItem::setModelNodeLayer(const osg::ref_ptr<osgEarth::Layer> &newModelNodeLayer)
 {
     mModelNodeLayer = newModelNodeLayer;
-
     if (!mModelNodeLayer)
         return;
-
     setName(QString::fromStdString(mModelNodeLayer->getName()));
-    // TODO
-    //    setColor(mModelNodeLayer->getOrCreateStateSet()->getAttribute());
 }
 
 double LayerPropertyItem::opacity() const
@@ -92,7 +108,30 @@ void LayerPropertyItem::setOpacity(double newOpacity)
     if (!mModelNodeLayer)
         return;
 
-    dynamic_cast<osgEarth::VisibleLayer *>(mModelNodeLayer.get())->setOpacity((float) newOpacity);
+    mColor.setAlphaF(newOpacity+0.001);
+    setColor(mColor);
+
 
     emit opacityChanged();
+
 }
+
+QSettings *LayerPropertyItem::getLayerSettings()
+{
+    return mLayerSetting;
+}
+
+void LayerPropertyItem::setLayerSettings(QSettings *setting)
+{
+    mLayerSetting = setting;
+    if(mModelNodeLayer){
+        mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+    }
+    mSettingList.resize(3);
+}
+
+QList<QString> LayerPropertyItem::getSettingList()
+{
+    return mSettingList;
+}
+

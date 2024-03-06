@@ -207,11 +207,6 @@ Item {
                                 anchors.fill: parent
                                 acceptedButtons: Qt.RightButton
                                 onClicked: function (mouse) {
-                                    if (rootItem.layerCpp.propertyInterface.name === display) {
-                                        propertySection.visible = !propertySection.visible
-                                    } else {
-                                        propertySection.visible = true
-                                    }
                                     rootItem.layerModel.onItemLeftClicked(
                                                 treeView.index(row, column))
                                     contextMenu.popup()
@@ -245,11 +240,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        if (rootItem.layerCpp.propertyInterface.name === display) {
-                                            propertySection.visible = !propertySection.visible
-                                        } else {
-                                            propertySection.visible = true
-                                        }
+
                                         rootItem.layerModel.onItemLeftClicked(
                                                     treeView.index(row, column))
                                     }
@@ -394,6 +385,25 @@ Item {
                                                                    column),
                                                     treeView.index(row + 1,
                                                                    column))
+                                    }
+                                }
+                                MenuSeparator {
+                                    contentItem: Rectangle {
+                                        implicitWidth: 200 / Style.monitorRatio
+                                        implicitHeight: 7 / Style.monitorRatio
+                                        color: "transparent"
+                                    }
+                                }
+                                Action {
+                                    text: "Properties"
+                                    icon.source: "qrc:/Resources/list.png"
+                                    icon.color: Style._persianGreen
+                                    onTriggered: {
+                                        if (rootItem.layerCpp.propertyInterface.name === display) {
+                                            propertySection.visible = !propertySection.visible
+                                        } else {
+                                            propertySection.visible = true
+                                        }
                                     }
                                 }
                                 MenuSeparator {
