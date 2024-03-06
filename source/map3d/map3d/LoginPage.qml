@@ -171,6 +171,7 @@ Item {
 
         RoleSelectPage {
             id: rolePage
+            connectionConfigCpp: loginPage.connectionConfigCpp
             roleSelectionModel: userManager.roleSelectionModel()
             visible: false
             usernameTxt: signInPage.usernameTxt
