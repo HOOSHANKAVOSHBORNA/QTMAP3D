@@ -60,7 +60,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Name"
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     TextField {
@@ -70,7 +70,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.rightMargin: 15 / Style.monitorRatio
                         text: rootItem.model ? rootItem.model.name : ""
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize:Style.regularFontSize
                         color: "black"
                         background: Rectangle {
                             color: foregroundColor
@@ -93,7 +93,7 @@ Item {
                     Text {
                         text: "Color"
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
 
@@ -116,7 +116,7 @@ Item {
                     Text {
                         text: "Stroke"
                         color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                     }
@@ -181,7 +181,7 @@ Item {
                     Text {
                         text: "Location"
                         color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: (lblWidth / Style.monitorRatio)
                         visible: rootItem.model ? rootItem.model.locationStatus : false
@@ -213,7 +213,7 @@ Item {
                                     text: "X "
                                     padding: 5 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
-                                    font.pointSize: 10 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     color: Style.foregroundColor
                                 }
 
@@ -245,7 +245,7 @@ Item {
                                     text: "Y "
                                     padding: 5 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
-                                    font.pointSize: 10 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     color: Style.foregroundColor
                                 }
                                 StepSpinBox {
@@ -276,7 +276,7 @@ Item {
                                     text: "Z "
                                     padding: 5 / Style.monitorRatio
                                     Layout.topMargin: 5 / Style.monitorRatio
-                                    font.pointSize: 10 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     color: Style.foregroundColor
                                 }
                                 StepSpinBox {
@@ -307,7 +307,7 @@ Item {
                             CheckBox {
                                 id: relative
                                 text: "Relative"
-                                font.pointSize:10 / Style.monitorRatio
+                                font.pixelSize:Style.regularFontSize
                                 checked: false
 
                                 onCheckStateChanged: if (checked === true) {
@@ -351,7 +351,7 @@ Item {
                     Text {
                         text: "Center"
                         color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         visible: rootItem.model ? rootItem.model.centerStatus : false
@@ -377,7 +377,7 @@ Item {
                                 Layout.preferredWidth: 20 / Style.monitorRatio
                                 text: "X "
                                 padding: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
@@ -408,7 +408,7 @@ Item {
                                 Layout.preferredWidth: 20 / Style.monitorRatio
                                 text: "Y "
                                 padding: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
@@ -439,7 +439,7 @@ Item {
                                 Layout.preferredWidth: 20 / Style.monitorRatio
                                 text: "Z "
                                 padding: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 Layout.topMargin: 5 / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
@@ -476,7 +476,7 @@ Item {
                     Text {
                         text: "Arc"
                         color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         visible: rootItem.model ? rootItem.model.arcStatus : false
@@ -503,7 +503,7 @@ Item {
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 text: "Start "
                                 padding: 5 / Style.monitorRatio
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             FloatSpinBox {
@@ -532,7 +532,7 @@ Item {
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 text: "End "
                                 padding: 5 / Style.monitorRatio
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             FloatSpinBox {
@@ -570,7 +570,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Radius"
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Rectangle {
@@ -615,7 +615,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Radius Minor "
-                        font.pixelSize: 14 / Style.monitorRatio
+                        font.pixelSize: Style.smallFontSize
                         color: Style.foregroundColor
                     }
 
@@ -660,7 +660,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Radius Major "
-                        font.pixelSize: 14 / Style.monitorRatio
+                        font.pixelSize: Style.smallFontSize
                         color: Style.foregroundColor
                     }
                     Rectangle {
@@ -704,7 +704,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Height "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -749,7 +749,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Length "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
 
@@ -793,7 +793,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Width "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Rectangle {
@@ -836,7 +836,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Clamp "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
 
@@ -942,7 +942,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Tesselation "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
 
@@ -988,7 +988,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Length "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -1017,7 +1017,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Bearing "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -1046,7 +1046,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Altitude "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -1075,7 +1075,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Slope "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {

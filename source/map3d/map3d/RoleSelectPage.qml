@@ -130,7 +130,7 @@ ColumnLayout {
         id: signInBtn
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
-        Layout.topMargin: 15 / Style.monitorRatio
+        Layout.topMargin: Style.smallFontSize
         hoverEnabled: true
         background: Rectangle {
             color: Style.foregroundColor

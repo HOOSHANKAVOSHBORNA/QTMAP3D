@@ -79,7 +79,7 @@ Item {
         color: 'springgreen'
         style: Text.Outline
         styleColor: "black"
-        font.pointSize: 20
+        font.pointSize: Style.regularFontSize
         font.weight: Font.Bold
         anchors.left: parent.left
         anchors.top: parent.top

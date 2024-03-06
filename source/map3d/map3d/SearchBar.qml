@@ -53,7 +53,7 @@ Item{
             anchors.right: openCloseIcons.left
             verticalAlignment: Text.AlignVCenter
             font.family: Style.fontFamily
-            font.pixelSize: 16/Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: Style.foregroundColor
             background: Rectangle{
                 color: "transparent"
@@ -145,7 +145,7 @@ Item{
             anchors.leftMargin: 10
             visible: parent.width > 300 / Style.monitorRatio
             text: "Filter"
-            font.pixelSize:20/Style.monitorRatio
+            font.pixelSize:Style.titleFontSize
             font.family: Style.fontFamily
             color: Style.foregroundColor
         }
@@ -225,7 +225,7 @@ Item{
                         anchors.leftMargin: 10 / Style.monitorRatio
                         text:model.display
                         font.family: Style.fontFamily
-                        font.pixelSize: 15 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
                         elide: Text.ElideRight
                     }
@@ -233,7 +233,7 @@ Item{
                         id:id
                         text: model.id_
                         font.family: Style.fontFamily
-                        font.pixelSize: 15 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
 
                         elide: Text.ElideRight
@@ -243,7 +243,7 @@ Item{
                         anchors.left: id.right
                         text:" :"
                         font.family: Style.fontFamily
-                        font.pixelSize: 15 / Style.monitorRatio
+                        font.pixelSize:Style.regularFontSize
                         color: delegateBtn.hovered ? Style.hoverColor : Style.foregroundColor
 
                         elide: Text.ElideRight

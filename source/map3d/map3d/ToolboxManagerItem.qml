@@ -49,7 +49,7 @@ Item {
                 anchors.right: parent.right
                 verticalAlignment: Text.AlignVCenter
                 font.family: Style.fontFamily
-                font.pixelSize: 17 / Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 color: Style.foregroundColor
                 background: Rectangle {
                     color: "transparent"
@@ -147,7 +147,7 @@ Item {
                                 anchors.left: itemIcon.right
                                 anchors.leftMargin: 10 / Style.monitorRatio
                                 clip: true
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 font.weight: Font.Medium
                                 color: Style.foregroundColor
                                 text: display
@@ -220,7 +220,7 @@ Item {
                         Layout.preferredHeight: contentHeight
                         text: toolboxCpp.propertyItemTitle
                         font.family: Style.fontFamily
-                        font.pixelSize: 20 / Style.monitorRatio
+                        font.pixelSize: Style.titleFontSize
 
                         Layout.bottomMargin: 1
                         //                    Layout.topMargin: 25 / Style.monitorRatio

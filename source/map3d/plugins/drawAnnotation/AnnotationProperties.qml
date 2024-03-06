@@ -60,7 +60,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Name"
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize:Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     TextField {
@@ -71,7 +71,7 @@ Item {
                         Layout.rightMargin: 15 / Style.monitorRatio
                         height: valHeight
                         text: rootItem.cppInterface ? rootItem.cppInterface.name : ""
-                        font.pointSize: 10 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: "black"
                         background: Rectangle {
                             color: foregroundColor
@@ -95,7 +95,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Color"
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
 
@@ -120,7 +120,7 @@ Item {
                     Text {
                         text: "Stroke"
                         color: Style.foregroundColor
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                     }
@@ -194,7 +194,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Height "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                         Layout.alignment: Qt.AlignVCenter
                     }
@@ -238,7 +238,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Clamp "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
 
@@ -344,7 +344,7 @@ Item {
                     Text {
                         Layout.preferredWidth: lblWidth / Style.monitorRatio
                         text: "Tesselation "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
 
@@ -390,7 +390,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Length "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -419,7 +419,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Bearing "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -448,7 +448,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Altitude "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -477,7 +477,7 @@ Item {
                     Text {
                         Layout.preferredWidth: swtchWidth / Style.monitorRatio
                         text: "Show Slope "
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
                     }
                     Switch {
@@ -519,7 +519,7 @@ Item {
                             Text {
                                 Layout.preferredWidth: swtchWidth / Style.monitorRatio
                                 text: "Points "
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             Switch {
@@ -548,7 +548,7 @@ Item {
                             Text {
                                 text: "Point Color"
                                 color: Style.foregroundColor
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 Layout.alignment: Qt.AlignTop
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 visible: rootItem.cppInterface ? rootItem.cppInterface.strokeStatus : false
@@ -573,7 +573,7 @@ Item {
                             spacing: 0
                             Text {
                                 text: "Point Width "
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 Layout.preferredWidth: lblWidth / Style.monitorRatio
                                 color: Style.foregroundColor
                             }
@@ -617,7 +617,7 @@ Item {
                             Text {
                                 Layout.preferredWidth: swtchWidth / Style.monitorRatio
                                 text: "Point Smooth "
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             Switch {
