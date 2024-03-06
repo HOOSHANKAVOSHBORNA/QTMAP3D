@@ -54,6 +54,7 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
 
     mPluginManager = new PluginManager;
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
+    connect(mPluginManager, &PluginManager::plugunCount, mLoadingPage, &LoadingPage::setPluginCounter);
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
         setPageIndex(2);

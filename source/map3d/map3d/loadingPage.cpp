@@ -33,7 +33,7 @@ QVariant LoadingPage::data(const QModelIndex &index, int role) const
         return mLoadingDataItem[row].text;
 
 
-    case acceptionState:
+    case errorStatus:
         return !mLoadingDataItem[row].isError;
     default:
         break;
@@ -46,7 +46,7 @@ QVariant LoadingPage::data(const QModelIndex &index, int role) const
 QHash<int, QByteArray> LoadingPage::roleNames() const
 {
     QHash<int, QByteArray> hash = QAbstractItemModel::roleNames();
-    hash[acceptionState] = "acceptionState";
+    hash[errorStatus] = "errorStatus";
     return hash;
 }
 
@@ -86,5 +86,18 @@ void LoadingPage::updateData(int index)
         if(!mLoadingDataItem[m].isError && mLoadingDataItem[m-1].isError)
             swapItem(m , m - 1);
 
-//    mTimer->start(1000);
+    //    mTimer->start(1000);
+}
+
+int LoadingPage::pluginCounter() const
+{
+    return mPluginCounter;
+}
+
+void LoadingPage::setPluginCounter(int pluginCounter)
+{
+    if (mPluginCounter == pluginCounter)
+        return;
+    mPluginCounter = pluginCounter;
+    emit pluginCounterChanged();
 }

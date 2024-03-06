@@ -49,10 +49,15 @@ Rectangle {
                     model: loadingPageCpp
                     anchors.fill: parent
                     verticalLayoutDirection: ListView.BottomToTop
+                    onCountChanged: {
+                        progressBar.value = loadingPageCpp.rowCount(
+                                    ) / loadingPageCpp.pluginCounter
+                    }
+
                     delegate: Text {
                         id: loadingText
                         font.pixelSize: 15 / Style.monitorRatio
-                        color: acceptionState ? "white" : "red"
+                        color: errorStatus ? "white" : "red"
                         text: display
                         horizontalAlignment: Text.AlignHCenter
                         width: listView.width
@@ -109,11 +114,28 @@ Rectangle {
                 }
             }
 
-            AnimatedImage {
-                source: "qrc:/Resources/loading.gif"
+            ProgressBar {
+                id: progressBar
+                value: 0
+                padding: 2
                 Layout.alignment: Qt.AlignHCenter
-                Layout.preferredHeight: 40 / Style.monitorRatio
-                Layout.preferredWidth: 40 / Style.monitorRatio
+                background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: 6
+                    color: "#e6e6e6"
+                    radius: 3
+                }
+                contentItem: Item {
+                    implicitWidth: 200
+                    implicitHeight: 4
+
+                    Rectangle {
+                        width: progressBar.visualPosition * parent.width
+                        height: parent.height
+                        radius: 2
+                        color: "#17a81a"
+                    }
+                }
             }
         }
     }
