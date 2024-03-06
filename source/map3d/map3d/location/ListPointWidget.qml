@@ -12,7 +12,7 @@ Item {
 
     Rectangle{
         anchors.fill: parent
-        color: Style.primaryColor
+        color: Style.foregroundColor
         radius: Style.radius
         opacity: 0.8
     }

@@ -84,7 +84,8 @@ void Application::onLoadingPage()
 
 void Application::clearMainWindow()
 {
-        qDebug() << "logout----------------";
-        mPluginManager->unLoadPlugins();
-        delete mMainWindow;
+    qDebug() << "logout----------------";
+    setPageIndex(0);
+    mPluginManager->unLoadPlugins();
+    mMainWindow->clearData();
 }
