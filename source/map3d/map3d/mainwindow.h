@@ -13,6 +13,7 @@
 #include "bookmark.h"
 #include "toolboxManager.h"
 #include "locationManager.h"
+#include "userManager.h"
 
 class ListWindow;
 class LayerModel;
@@ -36,7 +37,6 @@ public:
 
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
     void setListWindow(ListWindow *listWindow);
-
     void clearData();
 
 private:
