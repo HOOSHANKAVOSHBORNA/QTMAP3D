@@ -63,6 +63,7 @@ public:
 
     Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
     Q_INVOKABLE void goToLocation(const QModelIndex &index);
+    Q_INVOKABLE void goToLocation(double lat, double lang);
     Q_INVOKABLE void printCurrentLocation();
     Q_INVOKABLE void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
     Q_INVOKABLE QVector3D getCurrentXYZ();

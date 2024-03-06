@@ -92,6 +92,25 @@ void LocationProxyModel::goToLocation(const QModelIndex &index)
     dynamic_cast<LocationModel*>(sourceModel())->goToLocation(mapToSource(index));
 }
 
+void LocationProxyModel::goToLocation(double lat, double lon)
+{
+    osgEarth::Viewpoint vp = dynamic_cast<LocationModel *>(sourceModel())
+                                 ->mapItem()
+                                 ->getCameraController()
+                                 ->getViewpoint();
+    dynamic_cast<LocationModel *>(sourceModel())
+        ->mapItem()
+        ->getCameraController()
+        ->setViewpoint(osgEarth::Viewpoint("somewhere",
+                                           lon,
+                                           lat,
+                                           vp.focalPoint().value().z(),
+                                           vp.heading()->getValue(),
+                                           vp.pitch()->getValue(),
+                                           vp.getRange()),
+                       1);
+}
+
 // DEBUG
 void LocationProxyModel::printCurrentLocation()
 {
