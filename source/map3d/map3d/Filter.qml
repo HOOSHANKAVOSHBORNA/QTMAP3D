@@ -672,10 +672,9 @@ radius: width/2
                                     id: itemValue2
 
                                     Layout.alignment: Qt.AlignLeft
-                                    Layout.preferredWidth: 40 / Style.monitorRatio
+                                    Layout.preferredWidth: 60 / Style.monitorRatio
                                     elide: Text.ElideRight
-//                                    Layout.maximumHeight: 10 / Style.monitorRatio
-//                                    wrapMode: Text.Wrap
+
                                     text: modelData.value ? modelData.value : 0
                                     font.family: "Roboto"
                                     font.pixelSize: 15 / Style.monitorRatio
