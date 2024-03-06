@@ -46,7 +46,7 @@ Item {
                 anchors.right: parent.right
                 verticalAlignment: Text.AlignVCenter
                 font.family: Style.fontFamily
-                font.pixelSize: 17 / Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 color: Style.foregroundColor
                 background: Rectangle {
                     color: "transparent"
@@ -135,7 +135,7 @@ Item {
                                 Layout.leftMargin: 5
                                 text: model.display
                                 font.family: Style.fontFamily
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 font.weight: 400
                                 color: Style.foregroundColor
                                 Layout.fillWidth: true

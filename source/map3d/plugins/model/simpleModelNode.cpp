@@ -48,12 +48,10 @@ SimpleModelNode::SimpleModelNode(QQmlEngine *engine,
 
 SimpleModelNode::~SimpleModelNode()
 {
-    if(mNodeInformation){
-        delete mNodeInformation;
+    if (mBookmarkManager && mIsBookmarked){
+        mBookmarkManager->removeBookmarkItem(mBookmarkItem);
     }
-    if(mCircularMenu){
-        delete mCircularMenu;
-    }
+    qDebug()<<"~SimpleModelNode()";
 }
 
 void SimpleModelNode::setQmlEngine(QQmlEngine *engine)
@@ -171,14 +169,14 @@ void SimpleModelNode::setNodeData(const NodeData &nodeData)
     //    setColor(osgEarth::Color(mNodeData->color));
     if (mNodeInformation)
         mNodeInformation->setNodeData(nodeData);
-    if (mBookmarkItem)
+    if (mNodeInformation && mBookmarkItem)
         mBookmarkItem->setInfo(mNodeData.type.toString(),
                                mNodeData.name,
                                mNodeInformation->window(),
                                mNodeData.iconInfoUrl);
 
     //    //TODO add signal for update data--------------------
-    setUserData(&mNodeData);
+    setUserData(new NodeData(mNodeData));
 }
 
 osgEarth::Color SimpleModelNode::color() const
@@ -468,18 +466,18 @@ void SimpleModelNode::compile()
 
 void SimpleModelNode::createCircularMenu()
 {
-    mCircularMenu = new CircularMenu(mMapItem, this);
+    mCircularMenu = new CircularMenu(mMapItem, this, this);
     mCircularMenu->show(false);
-    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false, "qrc:/Resources/menu-info.png"};
+    CircularMenuItem *infoMenuItem = new CircularMenuItem{"Info", "qrc:/Resources/menu-info.png", false, "qrc:/Resources/menu-info.png", mCircularMenu};
     QObject::connect(infoMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onInfoClicked);
 
-    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true, "qrc:/Resources/menu-bookmark-checked.png"};
+    mBookmarkMenuItem = new CircularMenuItem{"Bookmark", "qrc:/Resources/menu-bookmark.png", true, "qrc:/Resources/menu-bookmark-checked.png", mCircularMenu};
     QObject::connect(mBookmarkMenuItem, &CircularMenuItem::itemChecked, this, &SimpleModelNode::onBookmarkChecked);
 
-    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png"};
+    CircularMenuItem *targetMenuItem = new CircularMenuItem{"Target", "qrc:/Resources/menu-target.png", false, "qrc:/Resources/menu-info.png", mCircularMenu};
     QObject::connect(targetMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onTargetChecked);
 
-    mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false};
+    mAttackerMenuItem = new CircularMenuItem{"Attack", "qrc:/Resources/menu-attack.png", false, "", mCircularMenu};
     QObject::connect(mAttackerMenuItem, &CircularMenuItem::itemClicked, this, &SimpleModelNode::onAttackChecked);
 
     mCircularMenu->appendMenuItem(mBookmarkMenuItem);
@@ -489,7 +487,7 @@ void SimpleModelNode::createCircularMenu()
 
 void SimpleModelNode::createNodeInformation()
 {
-    mNodeInformation = new NodeInformation(mEngine, mMapItem->window());
+    mNodeInformation = new NodeInformation(mEngine, this);
 
     connect(mNodeInformation,&NodeInformation::goToPosition, this, &SimpleModelNode::onGoToPosition);
     connect(mNodeInformation,&NodeInformation::track, this, &SimpleModelNode::onTrack);
@@ -497,13 +495,13 @@ void SimpleModelNode::createNodeInformation()
 
 void SimpleModelNode::createBookmarkItem()
 {
-    mBookmarkItem = new BookmarkItem();
+    mBookmarkItem = new BookmarkItem(this);
 
     connect(mBookmarkItem, &BookmarkItem::goToPosition, this, &SimpleModelNode::onGoToPosition);
 
     connect(mBookmarkItem, &BookmarkItem::track, this, &SimpleModelNode::onTrack);
 
-    connect(mBookmarkItem, &BookmarkItem::fromBookmarkRemoved, [&](){
+    connect(mBookmarkItem, &BookmarkItem::fromBookmarkRemoved, this, [&](){
         mIsBookmarked = false;
         mBookmarkMenuItem->checked = false;
         mCircularMenu->resetMenuModel();

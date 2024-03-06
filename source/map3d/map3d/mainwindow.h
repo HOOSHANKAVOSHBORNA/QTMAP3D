@@ -37,6 +37,8 @@ public:
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
     void setListWindow(ListWindow *listWindow);
 
+    void clearData();
+
 private:
     MapControllerItem *mMapItem = nullptr;
     ListWindow *mListWindow = nullptr;

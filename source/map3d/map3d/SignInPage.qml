@@ -36,7 +36,6 @@ ColumnLayout {
         interval: 5000
         onTriggered: {
             signInBtn.enabled = true
-            signInBtn.height = 40 / Style.monitorRatio
             signInBtn.isWaiting = false
             signInBtn.loadingAnimation.stop()
             userManager.setMessage("No Response")
@@ -52,7 +51,7 @@ ColumnLayout {
         Text {
             id: titleText
             text: "Log in"
-            font.pixelSize: 35 / Style.monitorRatio
+            font.pixelSize: Style.titleFontSize
             color: Style.foregroundColor
             Layout.fillWidth: true
         }
@@ -81,7 +80,7 @@ ColumnLayout {
         }
         Text {
             text: "Username"
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.leftMargin: 5 / Style.monitorRatio
             color: Style.foregroundColor
         }
@@ -92,7 +91,7 @@ ColumnLayout {
         Layout.preferredWidth: 340 / Style.monitorRatio
         Layout.topMargin: 5 / Style.monitorRatio
         Layout.preferredHeight: 40 / Style.monitorRatio
-        font.pixelSize: 17 / Style.monitorRatio
+        font.pixelSize: Style.regularFontSize
         leftPadding: 20 / Style.monitorRatio
 
         color: foregroundColorText
@@ -117,7 +116,7 @@ ColumnLayout {
         }
         Text {
             text: "Password"
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             Layout.leftMargin: 5 / Style.monitorRatio
             color: Style.foregroundColor
         }
@@ -128,7 +127,7 @@ ColumnLayout {
         Layout.preferredWidth: 340 / Style.monitorRatio
         Layout.topMargin: 5 / Style.monitorRatio
         Layout.preferredHeight: 40 / Style.monitorRatio
-        font.pixelSize: 17 / Style.monitorRatio
+        font.pixelSize: Style.regularFontSize
         leftPadding: 20 / Style.monitorRatio
         color: foregroundColorText
         placeholderText: activeFocus ? "" : "Enter your Password"
@@ -155,7 +154,7 @@ ColumnLayout {
         }
         Text {
             text: userManager.message
-            font.pixelSize: 17 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: "#ED4337"
             Layout.leftMargin: 5 / Style.monitorRatio
         }
@@ -173,14 +172,13 @@ ColumnLayout {
             text: "Sign in"
             color: parent.hovered
                    && parent.enabled ? "#01AED6" : Style.backgroundColor
-            font.pixelSize: 20 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
 
         onClicked: {
             signInBtn.enabled = false
-            signInBtn.height = 50 / Style.monitorRatio
             userManager.setMessage("")
             loadingAnimation.start()
             isWaiting = true
