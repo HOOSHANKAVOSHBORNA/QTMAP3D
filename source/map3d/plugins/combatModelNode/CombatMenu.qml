@@ -83,7 +83,7 @@ Item {
                             Layout.preferredWidth: 22 / Style.monitorRatio
                         }
                         Text {
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: "Roboto"
                             color: backgroundColor
                             text: operatorListModel ? 30 : ""
@@ -91,7 +91,7 @@ Item {
                     }
                     Text {
                         id: txt
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         font.family: "Roboto"
                         color: backgroundColor
                         text: operatorListModel ? operatorListModel.operatorName : ""
@@ -104,7 +104,7 @@ Item {
                             text: toolTipText
                             y: -20
                             visible: toolTipText ? ma.containsMouse : false
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: "Roboto"
                             contentItem: Text {
                                 text: control.text
@@ -164,7 +164,7 @@ Item {
                             anchors.centerIn: parent
                             text: qsTr("Assign")
                             font.family: "Roboto"
-                            font.pixelSize: attackMA.containsMouse ? 15 / Style.monitorRatio : 13/Style.monitorRatio
+                            font.pixelSize: attackMA.containsMouse ? Style.regularFontSize : Style.smallFontSize
                             color: "white"
                         }
                         MouseArea {
@@ -193,7 +193,7 @@ Item {
                             anchors.centerIn: parent
                             text: qsTr("Cancel")
                             font.family: "Roboto"
-                            font.pixelSize: closeMA.containsMouse ? 15 / Style.monitorRatio : 13 / Style.monitorRatio
+                            font.pixelSize: closeMA.containsMouse ? Style.regularFontSize : Style.smallFontSize
                             color: "white"
                         }
                         MouseArea {
@@ -246,7 +246,7 @@ Item {
                 }
                 Label{
                     text: "All"
-                    font.pixelSize: 15 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     Layout.alignment: Qt.AlignHCenter
                     color: backgroundColor
                 }
@@ -322,7 +322,7 @@ Item {
                                     color: backgroundColor
                                 }
                                 Text {
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     font.family: "Roboto"
                                     Layout.leftMargin: -10 / Style.monitorRatio
                                     color: backgroundColor
@@ -356,7 +356,7 @@ Item {
                                 anchors.left: repeaterImg.right
                                 anchors.leftMargin: 5
                                 text: objectID
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: root.backgroundColor
                                 anchors.verticalCenter: parent.verticalCenter
                             }
@@ -640,8 +640,8 @@ Item {
                     scrollView.contentX -= 110 / Style.monitorRatio
 
                 }
-                onEntered: bottomLIcon.sourceSize = Qt.size(25 / Style.monitorRatio, 25 / Style.monitorRatio)
-                onExited: bottomLIcon.sourceSize =Qt.size(20 / Style.monitorRatio, 20 / Style.monitorRatio)
+//                onEntered: bottomLIcon.sourceSize = Qt.size(25 / Style.monitorRatio, 25 / Style.monitorRatio)
+//                onExited: bottomLIcon.sourceSize =Qt.size(20 / Style.monitorRatio, 20 / Style.monitorRatio)
             }
         }
 
@@ -700,7 +700,7 @@ Item {
                             RowLayout {
                                 anchors.bottom: parent.bottom
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.bottomMargin: -3
+                                anchors.bottomMargin: -3 / Style.monitorRatio
                                 height: parent.height / 2
                                 width: parent.width
 
@@ -708,7 +708,7 @@ Item {
                                     Layout.maximumWidth: 81 / Style.monitorRatio
                                     Layout.alignment: Qt.AlignHCenter
                                     text: operatorName
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     color:backgroundColor
                                     elide: Text.ElideRight
                                 }

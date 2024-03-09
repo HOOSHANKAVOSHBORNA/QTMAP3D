@@ -74,6 +74,12 @@ MainWindow *Application::mainPageCpp()
     return mMainWindow;
 }
 
+void Application::saveDataInFile()
+{
+    // TODO: clean save in file
+    dynamic_cast<LocationModel *>(mMainWindow->getLocationManager()->sourceModel())->writeToFile();
+}
+
 void Application::initializeSurfaceFormat()
 {
     QSurfaceFormat fmt;
@@ -95,7 +101,7 @@ void Application::onLoadingPage()
         setPageIndex(2);
     });
 
-    mMainWindow = new MainWindow();
+    mMainWindow = new MainWindow(mUserManager);
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
     emit mainPageCppChanged();
     setPageIndex(1);

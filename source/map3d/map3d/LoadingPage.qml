@@ -56,8 +56,10 @@ Rectangle {
 
                     delegate: Text {
                         id: loadingText
-                        font.pixelSize: 15 / Style.monitorRatio
+
+                        font.pixelSize: Style.smallFontSize
                         color: errorStatus ? "white" : "red"
+
                         text: display
                         horizontalAlignment: Text.AlignHCenter
                         width: listView.width

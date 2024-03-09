@@ -1,6 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
+
 import "style"
 import "Components"
 
@@ -18,6 +19,10 @@ Window {
     visible: true
     width: 800
     height: 800
+
+    onClosing: {
+        applicationCpp.saveDataInFile()
+    }
 
     Image {
         source: "qrc:/Resources/login-earth.jpg"

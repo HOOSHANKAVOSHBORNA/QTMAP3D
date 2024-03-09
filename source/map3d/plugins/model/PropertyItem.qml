@@ -42,7 +42,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     text: "Name"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -53,7 +53,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     text: rootItem.cppInterface ? rootItem.cppInterface.name : "notInitial"
-                    font.pointSize: 10 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: "black"
 
                     background: Rectangle {
@@ -78,7 +78,7 @@ Item {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     Layout.fillHeight: true
                     text: "Color"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -103,7 +103,7 @@ Item {
                 Text {
                     text: "Location"
                     color: Style.foregroundColor
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     Layout.alignment: Qt.AlignTop
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                 }
@@ -132,7 +132,7 @@ Item {
                                 text: "X"
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 
@@ -165,7 +165,7 @@ Item {
                                 text: "Y "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             StepSpinBox {
@@ -197,7 +197,7 @@ Item {
                                 text: "Z "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 
@@ -230,7 +230,7 @@ Item {
                         CheckBox {
                             id: relative
                             text: "Relative"
-                            font.pointSize: 10 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             checked: false
 
                             onCheckStateChanged: if (checked) {
@@ -282,7 +282,7 @@ Item {
                 Text {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     text: "Speed"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -327,7 +327,7 @@ Item {
                 Text {
                     text: "Move to"
                     color: Style.foregroundColor
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     Layout.alignment: Qt.AlignTop
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                 }
@@ -356,7 +356,7 @@ Item {
                                 text: "X "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 
@@ -389,7 +389,7 @@ Item {
                                 text: "Y "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             StepSpinBox {
@@ -421,7 +421,7 @@ Item {
                                 text: "Z "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 
@@ -464,7 +464,7 @@ Item {
                 Text {
                     text: "Fly to"
                     color: Style.foregroundColor
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     Layout.alignment: Qt.AlignTop
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                 }
@@ -494,7 +494,7 @@ Item {
                                 text: "X "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 
@@ -527,7 +527,7 @@ Item {
                                 text: "Y "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             StepSpinBox {
@@ -559,7 +559,7 @@ Item {
                                 text: "Z "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 

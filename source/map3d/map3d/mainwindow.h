@@ -23,7 +23,7 @@ class MainWindow : public QObject
     Q_OBJECT
 
 public:
-    MainWindow(QWindow *parent = nullptr);
+    MainWindow(UserManager *userManager, QWindow *parent = nullptr);
     ~MainWindow();
 
     void initComponent();

@@ -20,13 +20,12 @@
 #include "mapItem.h"
 #include "qmlNode.h"
 
-MainWindow::MainWindow(QWindow *parent)
+MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
 {
-    // qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 
     mMapItem = new MapControllerItem();
-    mLocationManager = new LocationManager(mMapItem, this);
+    mLocationManager = new LocationManager(mMapItem, userManager, this);
     mToolboxManager = new ToolboxManager(this);
     mBookmarkManager = new BookmarkManager(this);
     mListWindow = new ListWindow(this);

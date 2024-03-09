@@ -37,10 +37,14 @@ Item {
 
                 anchors.fill: parent
 
-                sideContainer.locationCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getLocationManager() : undefined
-                sideContainer.toolboxCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getToolboxManager() : undefined
-                sideContainer.layerCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getLayerManager() : undefined
-                sideContainer.bookmarkCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getBookmarkManager() : undefined
+                sideContainer.locationCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getLocationManager(
+                                                                      ) : undefined
+                sideContainer.toolboxCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getToolboxManager(
+                                                                     ) : undefined
+                sideContainer.layerCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getLayerManager(
+                                                                   ) : undefined
+                sideContainer.bookmarkCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getBookmarkManager(
+                                                                      ) : undefined
 
                 listWindowVisible: mainItem.listWindowVisible
 
@@ -74,7 +78,8 @@ Item {
             }
 
             MapControllerItem {
-                mapItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.getMapItem() : undefined
+                mapItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.getMapItem(
+                                                    ) : undefined
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
             }
@@ -83,7 +88,8 @@ Item {
 
     ListWindow {
         visible: mainItem.listWindowVisible
-        listWindowCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getListWindow() : undefined
+        listWindowCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getListWindow(
+                                                  ) : undefined
 
         onClosing: {
             listWindowVisible = false
