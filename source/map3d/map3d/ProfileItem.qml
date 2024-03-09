@@ -1,8 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
-
-import Crystal 1.0
 import "style"
 
 Item {
@@ -101,7 +99,7 @@ Item {
                     id: logout
                     anchors.centerIn: parent
                     text: "Log out"
-                    font.pixelSize: Style.titleFontSize
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
             }

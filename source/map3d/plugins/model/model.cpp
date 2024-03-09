@@ -124,7 +124,7 @@ osgEarth::Annotation::PlaceNode *Model::iconNode() const
 bool Model::mouseClickEvent(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     //--select model and show menu------------------------------------------
-    if(mPickModelNode){
+    if(mPickModelNode.valid()){
         mPickModelNode->select(false);
         mPickModelNode->showMenu(false);
     }
@@ -408,7 +408,7 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
     mLayerData.children[mType.type].command = Command::Add;
 
     mapItem()->getMapObject()->onLayerDataReceived(mLayerData);
-    mCurrentModel = mDataManager->onNodeDataReceived(mNodeData);
+    /*mCurrentModel =*/ mDataManager->onNodeDataReceived(mNodeData);
     // mProperty->setModelNode(mCurrentModel);
     mState = State::MOVING;
     mCount++;
@@ -463,7 +463,7 @@ void Model::cancel()
             mapItem()->getMapObject()->onLayerDataReceived(mLayerData);
         }
 
-        mCurrentModel.release();
+//        mCurrentModel.release();
         mState = State::READY;
 
 

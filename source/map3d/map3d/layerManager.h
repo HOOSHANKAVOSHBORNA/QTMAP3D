@@ -7,6 +7,8 @@
 
 #include "layerProperty.h"
 #include "mapItem.h"
+#include "qsettings.h"
+#include "userManager.h"
 
 Q_DECLARE_METATYPE(osgEarth::Layer);
 
@@ -33,6 +35,10 @@ public:
     LayerPropertyItem *propertyInterface() const;
     void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
 
+    void userSignedIn(UserManager *user);
+
+
+
 signals:
     void propertyItemChanged();
     void propertyItemTitleChanged();
@@ -42,6 +48,7 @@ private:
     LayerModel *mLayerModel = nullptr;
     LayerPropertyItem *mPropertyInterface = nullptr;
     QString mPropertyItemTitle;
+    QSettings *mLayerSettings{nullptr};
 };
 
 class LayerModel : public QSortFilterProxyModel
@@ -57,7 +64,7 @@ class LayerModel : public QSortFilterProxyModel
     };
 
 public:
-    explicit LayerModel(QObject *parent = nullptr);
+    explicit LayerModel( QObject *parent = nullptr);
     ~LayerModel();
 
     void setMapItem(MapItem *mapItem);
@@ -70,6 +77,8 @@ public:
 
     LayerPropertyItem *propertyInterface() const;
     void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
+
+    void setSettings(QSettings *settings);
 
 public slots:
     void setDragIndex(QModelIndex value);
@@ -97,6 +106,8 @@ private:
     void setItemVisible(QStandardItem *item, bool visible);
     bool getLayerVisible(osgEarth::Layer *layer) const;
 
+
+
 private:
     MapItem *mMapItem;
     QStandardItemModel *mSourceModel;
@@ -104,6 +115,7 @@ private:
     std::map<osgEarth::Layer*, QStandardItem*> mLayerToItemMap;
     QString mFilterString;
     LayerPropertyItem *mPropertyInterface = nullptr;
+    QSettings *mLayerSettings{nullptr};
 };
 
 

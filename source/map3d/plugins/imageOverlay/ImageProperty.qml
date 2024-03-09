@@ -3,7 +3,7 @@ import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import Crystal 1.0
+// import Crystal 1.0
 
 import "Components"
 

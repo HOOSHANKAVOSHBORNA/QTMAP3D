@@ -13,6 +13,10 @@ Item {
 
     signal valueChanged(double newValue)
 
+    function setColorAlpha(color, alpha) {
+        return Qt.hsla(color.hslHue, color.hslSaturation, color.hslLightness, alpha)
+    }
+
     Slider {
         id: control
         value: rootItem.initialValue
@@ -31,11 +35,11 @@ Item {
                 orientation: Gradient.Horizontal
                 GradientStop {
                     position: 0.0
-                    color: "#00" + backgroundColor.toString().replace("#", "")
+                    color:  setColorAlpha(backgroundColor,0)
                 }
                 GradientStop {
                     position: 1.0
-                    color: "#FF" + backgroundColor.toString().replace("#", "")
+                    color: setColorAlpha(backgroundColor,1)
                 }
             }
 

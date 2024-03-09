@@ -27,15 +27,15 @@ int main(int argc, char *argv[])
 
     QObject::connect(userTest, &UserTest::login,[&]{
         qDebug()<<"login";
-        layerTest = new LayerTest(&serviceManager);
-        nodeTest = new NodeTest(&serviceManager);
+       // layerTest = new LayerTest(&serviceManager);
+       // nodeTest = new NodeTest(&serviceManager);
 //        assignmentTest = new AssignmentTest(&serviceManager);
 //        particleTest = new ParticleTest(&serviceManager);
     });
     QObject::connect(userTest, &UserTest::logout,[&]{
         qDebug()<<"logout";
-//        delete layerTest;
-//        delete nodeTest;
+       // delete layerTest;
+       // delete nodeTest;
 //        delete assignmentTest;
 //        delete particleTest;
     });

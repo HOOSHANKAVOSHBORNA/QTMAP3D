@@ -5,10 +5,15 @@
 BookmarkProxyModel::BookmarkProxyModel(QObject *parent):
     QSortFilterProxyModel(parent)
 {
-    mStandardItemModel = new QStandardItemModel;
+    mStandardItemModel = new QStandardItemModel(this);
     setSourceModel(mStandardItemModel);
     rootItem = mStandardItemModel->invisibleRootItem();
     mSelectioModel = new QItemSelectionModel(this);
+}
+
+BookmarkProxyModel::~BookmarkProxyModel()
+{
+    qDebug()<<"~BookmarkProxyModel";
 }
 
 QHash<int, QByteArray> BookmarkProxyModel::roleNames() const
@@ -153,14 +158,15 @@ void BookmarkProxyModel::removeItem(QStandardItem *item)
 }
 
 //--bookmark manager----------------------------------------------------------------------------
-BookmarkManager::BookmarkManager()
+BookmarkManager::BookmarkManager(QObject *parent)
+    :QObject(parent)
 {
-    mBookmarkProxyModel = new BookmarkProxyModel();
+    mBookmarkProxyModel = new BookmarkProxyModel(this);
 }
 
 BookmarkManager::~BookmarkManager()
 {
-    delete mBookmarkProxyModel;
+    qDebug()<<"~BookmarkManager";
 }
 
 void BookmarkManager::addBookmarkItem(BookmarkItem *bookmarkItem)

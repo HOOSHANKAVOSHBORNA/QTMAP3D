@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Crystal
 import "style"
 
 Item {
@@ -171,6 +170,7 @@ Item {
 
         RoleSelectPage {
             id: rolePage
+            connectionConfigCpp: loginPage.connectionConfigCpp
             roleSelectionModel: userManager.roleSelectionModel()
             visible: false
             usernameTxt: signInPage.usernameTxt

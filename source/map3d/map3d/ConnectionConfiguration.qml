@@ -2,7 +2,6 @@ import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQml
-import Crystal
 import "style"
 
 Item {
@@ -221,7 +220,7 @@ Item {
             contentItem: Text {
                 id: testConnectionTxt
                 text: "Connect"
-                font.pixelSize: Style.titleFontSize
+                font.pixelSize: Style.regularFontSize
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -255,13 +254,12 @@ Item {
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 330 / Style.monitorRatio
-            //            Layout.fillWidth: true
             Layout.topMargin: 25 / Style.monitorRatio
             hoverEnabled: true
 
             contentItem: Text {
                 text: "Save changes"
-                font.pixelSize: Style.titleFontSize
+                font.pixelSize: Style.regularFontSize
                 color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
