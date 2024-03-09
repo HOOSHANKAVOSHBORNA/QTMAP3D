@@ -84,8 +84,10 @@ Rectangle {
                     verticalAlignment: Text.AlignVCenter
                     font.family: Style.fontFamily
                     font.pixelSize: Style.regularFontSize
-                    color: fg75
 
+                    background: Rectangle {
+                        color: 'transparent'
+                    }
 
                     onAccepted: lvLocationManger.model.searchedName = text
                     onTextChanged: lvLocationManger.model.searchedName = text
@@ -127,17 +129,6 @@ Rectangle {
                                                    parseFloat(tiLang.text))
                         }
                     }
-
-                    //                    Text {
-                    //                        anchors.fill: parent
-                    //                        anchors.leftMargin: 15 / Style.monitorRatio
-                    //                        anchors.rightMargin: 15 / Style.monitorRatio
-                    //                        verticalAlignment: tiLat.verticalAlignment
-                    //                        text: "Lat..."
-                    //                        font: tiLat.font
-                    //                        visible: tiLat.text === ""
-                    //                        color: fg75
-                    //                    }
                 }
 
                 Rectangle {
@@ -168,17 +159,6 @@ Rectangle {
                                                    parseFloat(tiLang.text))
                         }
                     }
-
-                    //                    Text {
-                    //                        anchors.fill: parent
-                    //                        anchors.leftMargin: 15 / Style.monitorRatio
-                    //                        anchors.rightMargin: 15 / Style.monitorRatio
-                    //                        verticalAlignment: tiLang.verticalAlignment
-                    //                        text: "Long..."
-                    //                        font: tiLang.font
-                    //                        visible: tiLang.text === ""
-                    //                        color: fg75
-                    //                    }
                 }
             }
 
@@ -203,8 +183,7 @@ Rectangle {
                         text: "Add place"
                         font.family: Style.fontFamily
                         font.pixelSize: Style.regularFontSize
-                        color: Style.foregroundColor
-
+                        color: Style.backgroundColor
                     }
                 }
 
