@@ -48,7 +48,7 @@ Rectangle {
             width: parent.width
             spacing: 15
             Layout.topMargin: 10 / Style.monitorRatio
-            Layout.leftMargin: 15 / Style.monitorRatio
+            Layout.leftMargin: Style.smallFontSize
             RowLayout {
                 width: parent.width
                 RowLayout {
@@ -56,7 +56,7 @@ Rectangle {
                         width: 36 / Style.monitorRatio
                         height: 18 / Style.monitorRatio
                         text: "Logical Operator :"
-                        font.pixelSize: 15 / Style.monitorRatio
+                        font.pixelSize: Style.smallFontSize
                         font.family: Style.fontFamily
                         color: Style.foregroundColor
                     }
@@ -70,7 +70,7 @@ Rectangle {
                         width: 36 / Style.monitorRatio
                         height: 18 / Style.monitorRatio
                         text: "And"
-                        font.pixelSize: 15 / Style.monitorRatio
+                        font.pixelSize: Style.smallFontSize
                         font.family: Style.fontFamily
                         color: Style.foregroundColor
 
@@ -84,7 +84,7 @@ Rectangle {
                         width: 36 / Style.monitorRatio
                         height: 18 / Style.monitorRatio
                         text: "Or"
-                        font.pixelSize: 15 / Style.monitorRatio
+                        font.pixelSize: Style.smallFontSize
                         font.family: Style.fontFamily
                         color: Style.foregroundColor
 
@@ -97,7 +97,7 @@ Rectangle {
                     width: 36 / Style.monitorRatio
                     height: 18 / Style.monitorRatio
                     text: "Color"
-                    font.pixelSize: 15 / Style.monitorRatio
+                    font.pixelSize:Style.smallFontSize
                     font.family: Style.fontFamily
                     color: Style.foregroundColor
                 }
@@ -238,7 +238,7 @@ Rectangle {
                                     text: model.display
                                     color: Style.foregroundColor
                                     font.family: Style.fontFamily
-                                    font.pixelSize: 14 / Style.monitorRatio
+                                    font.pixelSize:Style.smallFontSize
                                     background: Rectangle {
                                         color: "transparent"
                                     }
@@ -262,7 +262,7 @@ Rectangle {
                                 placeholderTextColor: rootObj.fg30
                                 color: rootObj.fg30
                                 font.family: Style.fontFamily
-                                font.pixelSize: 15 / Style.monitorRatio
+                                font.pixelSize: Style.smallFontSize
                                 selectedTextColor: Style.backgroundColor
                                 selectionColor: Style.foregroundColor
                                 background: Rectangle {
@@ -291,7 +291,7 @@ Rectangle {
 
                         Label {
                             text: ":"
-                            font.pixelSize: 15 / Style.monitorRatio
+                            font.pixelSize: Style.smallFontSize
                             font.family: Style.fontFamily
                             color: rootObj.fg30
                         }
@@ -301,7 +301,7 @@ Rectangle {
                             placeholderText: qsTr("Description")
                             color: Style.foregroundColor
                             font.family: Style.fontFamily
-                            font.pixelSize: 15 / Style.monitorRatio
+                            font.pixelSize: Style.smallFontSize
                             selectedTextColor: Style.backgroundColor
                             selectionColor: Style.foregroundColor
                             placeholderTextColor: rootObj.fg30
@@ -395,7 +395,7 @@ Rectangle {
                                     text: model.display
                                     color: Style.foregroundColor
                                     font.family: Style.fontFamily
-                                    font.pixelSize: 14 / Style.monitorRatio
+                                    font.pixelSize: Style.smallFontSize
                                     background: Rectangle {
                                         color: "transparent"
                                     }
@@ -420,7 +420,7 @@ Rectangle {
                                 placeholderTextColor: rootObj.fg30
                                 color: rootObj.fg30
                                 font.family: Style.fontFamily
-                                font.pixelSize: 15 / Style.monitorRatio
+                                font.pixelSize: Style.smallFontSize
                                 selectedTextColor: Style.backgroundColor
                                 selectionColor: Style.foregroundColor
 
@@ -461,7 +461,7 @@ Rectangle {
                                     id: lblComparision
                                     anchors.centerIn: parent
                                     text: "="
-                                    font.pixelSize: 16 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     font.family: Style.fontFamily
                                     color: Style.foregroundColor
                                     MouseArea {
@@ -498,7 +498,7 @@ Rectangle {
                                                     text: modelData
                                                     color: "#003569"
                                                     font.family: "Roboto"
-                                                    font.pixelSize: 14 / Style.monitorRatio
+                                                    font.pixelSize: Style.regularFontSize
                                                 }
                                                 onClicked: {
                                                     lblComparision.text = modelData
@@ -545,7 +545,7 @@ Rectangle {
                             placeholderText: qsTr("Numb")
                             color: Style.foregroundColor
                             font.family: Style.fontFamily
-                            font.pixelSize: 15 / Style.monitorRatio
+                            font.pixelSize: Style.smallFontSize
                             selectedTextColor: Style.backgroundColor
                             selectionColor: Style.foregroundColor
                             placeholderTextColor: rootObj.fg30
@@ -620,8 +620,9 @@ Rectangle {
                                 anchors.right: borderRect.left
                                 anchors.rightMargin: 5 / Style.monitorRatio
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.logicalOperator == 0 ? "&&" : "||"
-                                font.pixelSize: 15 / Style.monitorRatio
+                                text: modelData.logicalOperator === Tag.And ? "&&" : "||"
+                                font.pixelSize: Style.smallFontSize
+
                                 font.family: "Roboto"
                                 color: typesHolder.colorHandler
                                 visible: index ? true : false
@@ -644,7 +645,7 @@ Rectangle {
                                     Layout.alignment: Qt.AlignLeft
                                     text: modelData.field ? modelData.field : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 15 / Style.monitorRatio
+                                    font.pixelSize: Style.smallFontSize
                                     color: typesHolder.colorHandler /*typesHolder.checked ? Style.foregroundColor : rootObj.hoverColor*/
                                     Layout.leftMargin: 15 / Style.monitorRatio
                                     Layout.topMargin: 2 / Style.monitorRatio
@@ -652,7 +653,7 @@ Rectangle {
                                 }
                                 Label {
                                     text: modelData.comparisionToString()
-                                    font.pixelSize: 15 / Style.monitorRatio
+                                    font.pixelSize: Style.smallFontSize
                                     font.family: "Roboto"
                                     color: typesHolder.colorHandler
                                 }
@@ -676,7 +677,7 @@ radius: width/2
 
                                     text: modelData.value ? modelData.value : 0
                                     font.family: "Roboto"
-                                    font.pixelSize: 15 / Style.monitorRatio
+                                    font.pixelSize: Style.smallFontSize
                                     color: typesHolder.colorHandler /*typesHolder.checked ? Style.foregroundColor : rootObj.hoverColor*/
                                     visible: modelData.value ? !itemValue.visible : 0
                                 }

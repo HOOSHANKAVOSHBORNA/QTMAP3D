@@ -79,7 +79,7 @@ Item {
 
         RowLayout {
             id: header
-            //            Layout.fillWidth: true
+            Layout.fillWidth: true
             Layout.topMargin: 31 / Style.monitorRatio
 
             Text {
@@ -87,7 +87,7 @@ Item {
                 text: "Connection"
                 font.pixelSize: Style.titleFontSize
                 color: Style.foregroundColor
-                //                Layout.fillWidth: true
+                                Layout.fillWidth: true
             }
 
             IconImage {
@@ -107,7 +107,7 @@ Item {
 
         TextField {
             id: username
-            Layout.preferredWidth: 330 / Style.monitorRatio
+            Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: Style.regularFontSize
@@ -134,7 +134,7 @@ Item {
 
         TextField {
             id: password
-            Layout.preferredWidth: 330 / Style.monitorRatio
+            Layout.preferredWidth: 320 / Style.monitorRatio
             //            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
@@ -162,7 +162,7 @@ Item {
 
         TextField {
             id: ip
-            Layout.preferredWidth: 330 / Style.monitorRatio
+            Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: Style.regularFontSize
@@ -189,7 +189,7 @@ Item {
 
         TextField {
             id: port
-            Layout.preferredWidth: 330 / Style.monitorRatio
+            Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: Style.regularFontSize
@@ -213,7 +213,7 @@ Item {
             property alias textColor: testConnectionTxt.color
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
-            Layout.preferredWidth: 330 / Style.monitorRatio
+            Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 48 / Style.monitorRatio
             hoverEnabled: true
 
@@ -253,7 +253,7 @@ Item {
             id: saveBtn
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
-            Layout.preferredWidth: 330 / Style.monitorRatio
+            Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 25 / Style.monitorRatio
             hoverEnabled: true
 

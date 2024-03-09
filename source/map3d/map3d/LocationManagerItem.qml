@@ -83,12 +83,9 @@ Rectangle {
                     anchors.right: parent.right
                     verticalAlignment: Text.AlignVCenter
                     font.family: Style.fontFamily
-                    font.pixelSize: 17 / Style.monitorRatio
-                    color: Style.foregroundColor
-                    background: Rectangle {
-                        color: "transparent"
-                        radius: height / 2
-                    }
+                    font.pixelSize: Style.regularFontSize
+                    color: fg75
+
 
                     onAccepted: lvLocationManger.model.searchedName = text
                     onTextChanged: lvLocationManger.model.searchedName = text
@@ -117,7 +114,7 @@ Rectangle {
                         anchors.rightMargin: 15 / Style.monitorRatio
                         verticalAlignment: Text.AlignVCenter
                         font.family: Style.fontFamily
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: fg75
                         text: "0.0"
 
@@ -158,7 +155,7 @@ Rectangle {
                         anchors.rightMargin: 15 / Style.monitorRatio
                         verticalAlignment: Text.AlignVCenter
                         font.family: Style.fontFamily
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: fg75
                         text: "0.0"
 
@@ -205,8 +202,9 @@ Rectangle {
                     Text {
                         text: "Add place"
                         font.family: Style.fontFamily
-                        font.pixelSize: 17 / Style.monitorRatio
-                        color: Style.backgroundColor
+                        font.pixelSize: Style.regularFontSize
+                        color: Style.foregroundColor
+
                     }
                 }
 
@@ -266,7 +264,7 @@ Rectangle {
                     anchors.top: parent.top
                     anchors.topMargin: 30 / Style.monitorRatio
                     font.family: Style.fontFamily
-                    font.pixelSize: 22 / Style.monitorRatio
+                    font.pixelSize: Style.titleFontSize
                 }
 
                 Button {
@@ -327,7 +325,7 @@ Rectangle {
 
                             text: "set before opening :)"
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: Style.foregroundColor
                         }
                     }
@@ -348,7 +346,7 @@ Rectangle {
                             anchors.rightMargin: 30 / Style.monitorRatio
                             verticalAlignment: Text.AlignVCenter
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: fg80
                         }
 
@@ -380,7 +378,7 @@ Rectangle {
                             anchors.rightMargin: 30 / Style.monitorRatio
                             verticalAlignment: Text.AlignVCenter
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: fg80
                         }
 
@@ -431,7 +429,7 @@ Rectangle {
                                 text: "Take photo for place"
                                 font.underline: true
                                 font.family: Style.fontFamily
-                                font.pixelSize: 15 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: fg50
                             }
                         }
@@ -445,7 +443,7 @@ Rectangle {
                         Text {
                             text: "Place color"
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: fg80
                         }
 
@@ -507,7 +505,7 @@ Rectangle {
 
                             Text {
                                 text: "More colors"
-                                font.pixelSize: 14 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 font.family: Style.fontFamily
                                 color: fg50
                             }
@@ -549,7 +547,7 @@ Rectangle {
                         Text {
                             anchors.centerIn: parent
                             text: "Cancel"
-                            font.pixelSize: 15 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
                             color: Style.foregroundColor
                         }
@@ -570,7 +568,7 @@ Rectangle {
                         Text {
                             anchors.centerIn: parent
                             text: "Save"
-                            font.pixelSize: 15 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
                             color: beautifulWhite
                         }
@@ -678,7 +676,7 @@ Rectangle {
 
                             Layout.fillWidth: true
                             text: model.name
-                            font.pixelSize: 20 / Style.monitorRatio
+                            font.pixelSize: Style.titleFontSize
                             font.family: Style.fontFamily
                             color: Style.backgroundColor
 
@@ -754,7 +752,7 @@ Rectangle {
 
                         Text {
                             text: model.description
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
                             color: bg75
                         }
@@ -762,7 +760,7 @@ Rectangle {
                         Text {
                             text: model.lon.toFixed(
                                       6) + ", " + model.lat.toFixed(6)
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
                             color: bg75
                         }
