@@ -13,7 +13,6 @@
 #include <osgEarthUtil/EarthManipulator>
 #include <osgGA/GUIEventAdapter>
 
-#include "userManager.h"
 #include "bookmark.h"
 #include "layerManager.h"
 #include "listWindow.h"
@@ -22,15 +21,13 @@
 #include "mapControllerItem.h"
 #include "mapItem.h"
 #include "qmlNode.h"
-#include "smallMap.h"
 
-MainWindow::MainWindow(QWindow *parent)
+MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
 {
-    // qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 
     mMapItem = new MapControllerItem;
-    mLocationManager = new LocationManager(mMapItem);
+    mLocationManager = new LocationManager(mMapItem, userManager);
     mToolboxManager = new ToolboxManager;
     mBookmarkManager = new BookmarkManager;
     mListWindow = new ListWindow;

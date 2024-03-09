@@ -47,12 +47,15 @@ public:
     Q_INVOKABLE LoadingPage* loadingPageCpp();
     Q_INVOKABLE MainWindow* mainPageCpp();
 
+    Q_INVOKABLE void saveDataInFile();
+
 signals:
     void pageIndexChanged();
     void userManagerChanged();
     void connectionConfigCppChanged();
     void loadingPageCppChanged();
     void mainPageCppChanged();
+
 private:
     static void initializeSurfaceFormat();
 

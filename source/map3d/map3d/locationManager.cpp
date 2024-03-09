@@ -8,9 +8,10 @@
 #include "locationManager.h"
 
 // ----------------------------------------------------- model manager
-LocationManager::LocationManager(MapItem *mapItem, QObject *parent): QObject(parent)
+LocationManager::LocationManager(MapItem *mapItem, UserManager *userManager, QObject *parent)
+    : QObject(parent)
 {
-    mLocationModel = new LocationModel(mapItem);
+    mLocationModel = new LocationModel(mapItem, userManager);
 
     // ------------------------------------------------- loading models from file
     if (mLocationModel->readFromFile()) {
@@ -165,11 +166,13 @@ void LocationProxyModel::setSearchedName(const QString &newSearchedName)
 }
 
 // ------------------------------------------------------------ model
-LocationModel::LocationModel(MapItem *mapItem, QObject *parent): QAbstractListModel(parent)
+LocationModel::LocationModel(MapItem *mapItem, UserManager *userManager, QObject *parent)
+    : QAbstractListModel(parent)
 {
     mMapItem = mapItem;
+    mUserManager = userManager;
 
-    // test
+    // TEST
     osgEarth::GeoPoint gp{mapItem->getMapSRS(), -165, 90, 0};
     osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
     vp->name() = "North";
@@ -177,8 +180,8 @@ LocationModel::LocationModel(MapItem *mapItem, QObject *parent): QAbstractListMo
     vp->setPitch(-20);
     vp->setRange(5000000);
     vp->focalPoint() = gp;
-
     mLocations.append(new LocationItem{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"});
+    // ENDTEST
 }
 
 LocationModel::~LocationModel()
@@ -268,7 +271,7 @@ void LocationModel::myAppendRow(QString newName,
     vp->setPitch(currentVp.getPitch());
     vp->setRange(currentVp.getRange());
     vp->focalPoint() = gp;
-    mLocations.append(new LocationItem{vp, newName, newImageSource, newColor});
+    mLocations.append(new LocationItem{vp, newDescription, newImageSource, newColor});
 
     endInsertRows();
 }
@@ -334,7 +337,6 @@ bool LocationModel::appendLocationsFromJson(const QJsonObject &json)
         QJsonArray locationsArray = v.toArray();
         for (const QJsonValue &location : locationsArray) {
             QJsonDocument doc(location.toObject());
-            //            qDebug() << doc.toJson();
             mLocations.append(LocationItem::fromJson(location.toObject()));
         }
     }
@@ -361,9 +363,12 @@ bool LocationModel::readFromFile()
         dir.mkpath(appDir + "/" + savedDir);
     }
 
-    //    qDebug() << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    savedFileName = mUserManager->userName();
+    if (mUserManager->userName() == "") {
+        savedFileName = "NoUser";
+    }
 
-    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName);
+    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName + ".json");
 
     if (!locationsFile.open(QIODevice::ReadOnly)) {
         return false;
@@ -384,9 +389,16 @@ bool LocationModel::writeToFile()
         dir.mkpath(savedDir);
     }
 
-    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName);
+    savedFileName = mUserManager->userName();
+    if (mUserManager->userName() == "") {
+        savedFileName = "NoUser";
+    }
+
+    QFile locationsFile(appDir + "/" + savedDir + "/" + savedFileName + ".json");
 
     if (!locationsFile.open(QIODevice::WriteOnly)) {
+        qDebug() << "ay-debug ------ "
+                 << "I am going to write to:" << locationsFile.fileName();
         return false;
     }
 

@@ -6,8 +6,9 @@
 #include <QSortFilterProxyModel>
 #include <QStandardPaths>
 
-#include "osgEarth/Viewpoint"
 #include "mapItem.h"
+#include "osgEarth/Viewpoint"
+#include "userManager.h"
 
 class LocationManager;
 class LocationProxyModel;
@@ -33,7 +34,7 @@ class LocationManager : public QObject
     Q_OBJECT
 
 public:
-    explicit LocationManager(MapItem *mapItem, QObject *parent = nullptr);
+    explicit LocationManager(MapItem *mapItem, UserManager *userManager, QObject *parent = nullptr);
     ~LocationManager();
     void myRemoveRow(int index);
     void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
@@ -85,7 +86,7 @@ class LocationModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit LocationModel(MapItem *mapItem, QObject* parent = nullptr);
+    explicit LocationModel(MapItem *mapItem, UserManager *userManager, QObject *parent = nullptr);
     ~LocationModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -120,12 +121,13 @@ public:
 
 public:
     QString appDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    const QString savedDir = QString("saved");
-    const QString savedFileName = QString("locations.json");
+    const QString savedDir = QString("locatoins");
+    QString savedFileName = QString("NoUser");
 
 private:
     MapItem *mMapItem;
     QVector<LocationItem *> mLocations;
+    UserManager *mUserManager;
 };
 
 // ------------------------------------------------------------ structs
