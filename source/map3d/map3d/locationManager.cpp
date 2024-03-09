@@ -92,6 +92,25 @@ void LocationProxyModel::goToLocation(const QModelIndex &index)
     dynamic_cast<LocationModel*>(sourceModel())->goToLocation(mapToSource(index));
 }
 
+void LocationProxyModel::goToLocation(double lat, double lon)
+{
+    osgEarth::Viewpoint vp = dynamic_cast<LocationModel *>(sourceModel())
+                                 ->mapItem()
+                                 ->getCameraController()
+                                 ->getViewpoint();
+    dynamic_cast<LocationModel *>(sourceModel())
+        ->mapItem()
+        ->getCameraController()
+        ->setViewpoint(osgEarth::Viewpoint("somewhere",
+                                           lon,
+                                           lat,
+                                           vp.focalPoint().value().z(),
+                                           vp.heading()->getValue(),
+                                           vp.pitch()->getValue(),
+                                           vp.getRange()),
+                       1);
+}
+
 // DEBUG
 void LocationProxyModel::printCurrentLocation()
 {
@@ -109,12 +128,8 @@ void LocationProxyModel::printCurrentLocation()
 
 void LocationProxyModel::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
-    vp.name() = newName.toStdString();
-
-    osgEarth::Viewpoint *vpPointer = new osgEarth::Viewpoint(vp);
-
-    dynamic_cast<LocationModel*>(sourceModel())->myAppendRow(LocationItem{vpPointer, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel *>(sourceModel())
+        ->myAppendRow(newName, newDescription, newImageSource, newColor);
 }
 
 QVector3D LocationProxyModel::getCurrentXYZ()
@@ -130,12 +145,8 @@ QVector3D LocationProxyModel::getCurrentXYZ()
 
 void LocationProxyModel::editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor)
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
-    vp.name() = newName.toStdString();
-
-    osgEarth::Viewpoint *vpPointer = new osgEarth::Viewpoint(vp);
-
-    dynamic_cast<LocationModel*>(sourceModel())->myEditRow(mapToSource(index), LocationItem{vpPointer, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel *>(sourceModel())
+        ->myEditRow(mapToSource(index), newName, newDescription, newImageSource, newColor);
 }
 
 QString LocationProxyModel::searchedName() const
@@ -225,31 +236,62 @@ void LocationModel::goToLocation(QModelIndex index)
     mMapItem->getCameraController()->setViewpoint(*(mLocations.at(index.row())->viewpoint), 1);
 }
 
-void LocationModel::myAppendRow(const LocationItem &newLocationItem)
+// DEBUG
+void LocationModel::printViewpoint(osgEarth::Viewpoint *vp)
+{
+    qDebug() << "vp->name(): " << QString::fromStdString(vp->name().get());
+    qDebug() << "vp->focalPoint().value().x(): " << vp->focalPoint().value().x();
+    qDebug() << "vp->focalPoint().value().y(): " << vp->focalPoint().value().y();
+    qDebug() << "vp->focalPoint().value().z(): " << vp->focalPoint().value().z();
+    qDebug() << "vp->heading(): " << vp->heading()->as(osgEarth::Units::DEGREES);
+    qDebug() << "vp->pitch(): " << vp->pitch()->as(osgEarth::Units::DEGREES);
+    qDebug() << "vp->range(): " << vp->range()->as(osgEarth::Units::METERS);
+}
+// ENDDEBUG
+
+void LocationModel::myAppendRow(QString newName,
+                                QString newDescription,
+                                QString newImageSource,
+                                QString newColor)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    LocationItem *li = new LocationItem(newLocationItem);
-    mLocations.append(li);
+
+    osgEarth::Viewpoint currentVp = mapItem()->getCameraController()->getViewpoint();
+    osgEarth::GeoPoint gp{mMapItem->getMapSRS(),
+                          currentVp.focalPoint()->x(),
+                          currentVp.focalPoint()->y(),
+                          currentVp.focalPoint()->z()};
+
+    osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
+    vp->name() = newName.toStdString();
+    vp->setHeading(currentVp.getHeading());
+    vp->setPitch(currentVp.getPitch());
+    vp->setRange(currentVp.getRange());
+    vp->focalPoint() = gp;
+    mLocations.append(new LocationItem{vp, newName, newImageSource, newColor});
+
     endInsertRows();
 }
 
-void LocationModel::myAppendRow(QString name, double lon, double lat, double z, double heading, double pitch, double range, QString description, QString imageSource, QString color)
+void LocationModel::myEditRow(QModelIndex index,
+                              QString newName,
+                              QString newDescription,
+                              QString newImageSource,
+                              QString newColor)
 {
-    osgEarth::GeoPoint gp{mMapItem->getMapSRS(), lon, lat, z};
-    osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
-    vp->name() = name.toStdString();
-    vp->setHeading(heading);
-    vp->setPitch(pitch);
-    vp->setRange(range);
-    vp->focalPoint() = gp;
+    osgEarth::Viewpoint vp = mapItem()->getCameraController()->getViewpoint();
+    LocationItem *li = mLocations[index.row()];
+    li->viewpoint->name() = newName.toStdString();
+    li->viewpoint->focalPoint()->x() = vp.focalPoint()->x();
+    li->viewpoint->focalPoint()->y() = vp.focalPoint()->y();
+    li->viewpoint->focalPoint()->z() = vp.focalPoint()->z();
+    li->viewpoint->setHeading(vp.getHeading());
+    li->viewpoint->setPitch(vp.getPitch());
+    li->viewpoint->setRange(vp.getRange());
+    li->description = newDescription;
+    li->imageSource = newImageSource;
+    li->color = newColor;
 
-    mLocations.append(new LocationItem{vp, description, imageSource, color});
-}
-
-void LocationModel::myEditRow(QModelIndex index, const LocationItem &newLocationItem)
-{
-    LocationItem *li = new LocationItem(newLocationItem);
-    mLocations[index.row()] = li;
     emit dataChanged(this->index(index.row(), 0), this->index(index.row(), 0));
 }
 

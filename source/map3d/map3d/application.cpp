@@ -39,29 +39,12 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     mNetworkManager = new NetworkManager();
     mServiceManager = new ServiceManager(mNetworkManager);
 
+    mQmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(this)}});
+
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
     mUserManager = new UserManager(mServiceManager);
-    mLoadingPage = new LoadingPage();
-    mMainWindow = new MainWindow();
 
-    mQmlEngine->setInitialProperties({{"userManager", QVariant::fromValue(mUserManager)},
-                                      {"connectionConfigCpp", QVariant::fromValue(mConnectionConfig)},
-                                      {"loadingPageCpp", QVariant::fromValue(mLoadingPage)},
-                                      {"mainPageCpp", QVariant::fromValue(mMainWindow)},
-                                      {"applicationCpp", QVariant::fromValue(this)}});
-
-    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
-
-    mPluginManager = new PluginManager;
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
-    connect(mUserManager, &UserManager::signedIn, [this](){
-        mMainWindow->getLayerManager()->userSignedIn(mUserManager);
-    });
-    connect(mPluginManager, &PluginManager::plugunCount, mLoadingPage, &LoadingPage::setPluginCounter);
-    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
-    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
-        setPageIndex(2);
-    });
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
 }
 
@@ -69,6 +52,26 @@ void Application::setPageIndex(int index)
 {
     mPageIndex = index;
     emit pageIndexChanged();
+}
+
+UserManager *Application::userManager()
+{
+    return mUserManager;
+}
+
+ConnectionConfiguration *Application::connectionConfigCpp()
+{
+    return mConnectionConfig;
+}
+
+LoadingPage *Application::loadingPageCpp()
+{
+    return mLoadingPage;
+}
+
+MainWindow *Application::mainPageCpp()
+{
+    return mMainWindow;
 }
 
 void Application::initializeSurfaceFormat()
@@ -82,8 +85,20 @@ void Application::initializeSurfaceFormat()
 
 void Application::onLoadingPage()
 {
-        setPageIndex(1);
-        mPluginManager->loadPlugins();
+    mLoadingPage = new LoadingPage();
+    mPluginManager = new PluginManager;
+
+    emit loadingPageCppChanged();
+    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
+        setPageIndex(2);
+    });
+
+    mMainWindow = new MainWindow();
+    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
+    emit mainPageCppChanged();
+    setPageIndex(1);
+    mPluginManager->loadPlugins();
 }
 
 void Application::clearMainWindow()

@@ -11,7 +11,7 @@ Item {
     id: mainItem
 
     //--properties--------------------------------------
-    property var mainPageCpp
+    property var mainPageCpp: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp : undefined
     property bool listWindowVisible: false
 
     property real widgetsPositionFactor: 1.0
@@ -37,10 +37,10 @@ Item {
 
                 anchors.fill: parent
 
-                sideContainer.locationCpp: mainItem.mainPageCpp.getLocationManager()
-                sideContainer.toolboxCpp: mainItem.mainPageCpp.getToolboxManager()
-                sideContainer.layerCpp: mainItem.mainPageCpp.getLayerManager()
-                sideContainer.bookmarkCpp: mainItem.mainPageCpp.getBookmarkManager()
+                sideContainer.locationCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getLocationManager() : undefined
+                sideContainer.toolboxCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getToolboxManager() : undefined
+                sideContainer.layerCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getLayerManager() : undefined
+                sideContainer.bookmarkCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getBookmarkManager() : undefined
 
                 listWindowVisible: mainItem.listWindowVisible
 
@@ -74,7 +74,7 @@ Item {
             }
 
             MapControllerItem {
-                mapItem: mainItem.mainPageCpp.getMapItem()
+                mapItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.getMapItem() : undefined
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
             }
@@ -83,7 +83,7 @@ Item {
 
     ListWindow {
         visible: mainItem.listWindowVisible
-        listWindowCpp: mainItem.mainPageCpp.getListWindow()
+        listWindowCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getListWindow() : undefined
 
         onClosing: {
             listWindowVisible = false

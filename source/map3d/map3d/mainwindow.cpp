@@ -26,7 +26,7 @@
 
 MainWindow::MainWindow(QWindow *parent)
 {
-    qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
+    // qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 
     mMapItem = new MapControllerItem;

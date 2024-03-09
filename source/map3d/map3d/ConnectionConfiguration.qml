@@ -2,7 +2,6 @@ import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQml
-import Crystal
 import "style"
 
 Item {
