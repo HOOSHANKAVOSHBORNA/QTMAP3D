@@ -105,7 +105,7 @@ Item {
             }
 
             onClicked: {
-                userManager.signedOut()
+                applicationCpp.userManager.signedOut()
             }
         }
     }

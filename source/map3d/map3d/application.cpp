@@ -43,7 +43,7 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
 
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
     mUserManager = new UserManager(mServiceManager);
-
+    emit userManagerChanged();
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
 }
@@ -91,6 +91,7 @@ void Application::onLoadingPage()
     emit loadingPageCppChanged();
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
+
         setPageIndex(2);
     });
 
@@ -105,6 +106,7 @@ void Application::clearMainWindow()
 {
     qDebug() << "logout----------------";
     setPageIndex(0);
-    mPluginManager->unLoadPlugins();
-    mMainWindow->clearData();
+    delete mPluginManager;
+    delete mMainWindow;
+    delete mLoadingPage;
 }

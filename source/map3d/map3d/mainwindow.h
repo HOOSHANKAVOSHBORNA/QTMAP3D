@@ -13,7 +13,6 @@
 #include "bookmark.h"
 #include "toolboxManager.h"
 #include "locationManager.h"
-#include "userManager.h"
 
 class ListWindow;
 class LayerModel;

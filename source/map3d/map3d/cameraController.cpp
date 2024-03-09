@@ -8,6 +8,9 @@ CameraController::CameraController(MapItem *mapItem)
 {
 
 }
+CameraController::~CameraController() {
+    qDebug() << "~CameraController";
+}
 
 void CameraController::home(double value)
 {

@@ -6,14 +6,11 @@
 #include <QQuickOpenGLUtils>
 #include <QTimer>
 #include <QWindow>
-#include <chrono>
-#include <iostream>
 #include <osgEarth/ImageLayer>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthUtil/EarthManipulator>
 #include <osgGA/GUIEventAdapter>
 
-#include "userManager.h"
 #include "bookmark.h"
 #include "layerManager.h"
 #include "listWindow.h"
@@ -22,25 +19,25 @@
 #include "mapControllerItem.h"
 #include "mapItem.h"
 #include "qmlNode.h"
-#include "smallMap.h"
 
 MainWindow::MainWindow(QWindow *parent)
 {
     // qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 
-    mMapItem = new MapControllerItem;
-    mLocationManager = new LocationManager(mMapItem);
-    mToolboxManager = new ToolboxManager;
-    mBookmarkManager = new BookmarkManager;
-    mListWindow = new ListWindow;
-    mLayerManager = new LayerManager(mMapItem);
+    mMapItem = new MapControllerItem();
+    mLocationManager = new LocationManager(mMapItem, this);
+    mToolboxManager = new ToolboxManager(this);
+    mBookmarkManager = new BookmarkManager(this);
+    mListWindow = new ListWindow(this);
+    mLayerManager = new LayerManager(mMapItem, this);
 }
 
 MainWindow::~MainWindow()
 {
+    // qDebug() << mMapItem.
     delete mMapItem;
-    qDebug() << "mainWindow Deleted!";
+    qDebug() << "~MainWindow!";
 }
 
 MapControllerItem *MainWindow::getMapItem()
