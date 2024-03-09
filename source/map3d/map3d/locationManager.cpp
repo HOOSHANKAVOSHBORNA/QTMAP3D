@@ -128,12 +128,8 @@ void LocationProxyModel::printCurrentLocation()
 
 void LocationProxyModel::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
-    vp.name() = newName.toStdString();
-
-    osgEarth::Viewpoint *vpPointer = new osgEarth::Viewpoint(vp);
-
-    dynamic_cast<LocationModel*>(sourceModel())->myAppendRow(LocationItem{vpPointer, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel *>(sourceModel())
+        ->myAppendRow(newName, newDescription, newImageSource, newColor);
 }
 
 QVector3D LocationProxyModel::getCurrentXYZ()
@@ -253,25 +249,28 @@ void LocationModel::printViewpoint(osgEarth::Viewpoint *vp)
 }
 // ENDDEBUG
 
-void LocationModel::myAppendRow(const LocationItem &newLocationItem)
+void LocationModel::myAppendRow(QString newName,
+                                QString newDescription,
+                                QString newImageSource,
+                                QString newColor)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    LocationItem *li = new LocationItem(newLocationItem);
-    mLocations.append(li);
-    endInsertRows();
-}
 
-void LocationModel::myAppendRow(QString name, double lon, double lat, double z, double heading, double pitch, double range, QString description, QString imageSource, QString color)
-{
-    osgEarth::GeoPoint gp{mMapItem->getMapSRS(), lon, lat, z};
+    osgEarth::Viewpoint currentVp = mapItem()->getCameraController()->getViewpoint();
+    osgEarth::GeoPoint gp{mMapItem->getMapSRS(),
+                          currentVp.focalPoint()->x(),
+                          currentVp.focalPoint()->y(),
+                          currentVp.focalPoint()->z()};
+
     osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
-    vp->name() = name.toStdString();
-    vp->setHeading(heading);
-    vp->setPitch(pitch);
-    vp->setRange(range);
+    vp->name() = newName.toStdString();
+    vp->setHeading(currentVp.getHeading());
+    vp->setPitch(currentVp.getPitch());
+    vp->setRange(currentVp.getRange());
     vp->focalPoint() = gp;
+    mLocations.append(new LocationItem{vp, newName, newImageSource, newColor});
 
-    mLocations.append(new LocationItem{vp, description, imageSource, color});
+    endInsertRows();
 }
 
 void LocationModel::myEditRow(QModelIndex index,
