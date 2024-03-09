@@ -111,6 +111,7 @@ void PluginManager::loadPlugins()
     mPluginsDir = QCoreApplication::applicationDirPath();
     mPluginsDir.cd("../plugins/bin");
     mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
+    emit plugunCount(mPluginFileNameList.size());
     mPluginTimer = new QTimer(this);
     connect(mPluginTimer, &QTimer::timeout, this, [&](){
         parsePlugin(mPluginFileNameList[mIndex], mPluginsDir);

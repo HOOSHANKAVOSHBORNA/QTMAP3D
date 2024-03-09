@@ -13,6 +13,7 @@
 #include <osgEarthUtil/EarthManipulator>
 #include <osgGA/GUIEventAdapter>
 
+#include "userManager.h"
 #include "bookmark.h"
 #include "layerManager.h"
 #include "listWindow.h"
@@ -31,9 +32,9 @@ MainWindow::MainWindow(QWindow *parent)
     mMapItem = new MapControllerItem;
     mLocationManager = new LocationManager(mMapItem);
     mToolboxManager = new ToolboxManager;
-    mLayerManager = new LayerManager(mMapItem);
     mBookmarkManager = new BookmarkManager;
     mListWindow = new ListWindow;
+    mLayerManager = new LayerManager(mMapItem);
 }
 
 MainWindow::~MainWindow()
@@ -81,6 +82,7 @@ void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
 }
+
 
 void MainWindow::clearData()
 {
