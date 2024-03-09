@@ -149,12 +149,8 @@ QVector3D LocationProxyModel::getCurrentXYZ()
 
 void LocationProxyModel::editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor)
 {
-    osgEarth::Viewpoint vp = dynamic_cast<LocationModel*>(sourceModel())->mapItem()->getCameraController()->getViewpoint();
-    vp.name() = newName.toStdString();
-
-    osgEarth::Viewpoint *vpPointer = new osgEarth::Viewpoint(vp);
-
-    dynamic_cast<LocationModel*>(sourceModel())->myEditRow(mapToSource(index), LocationItem{vpPointer, newDescription, newImageSource, newColor});
+    dynamic_cast<LocationModel *>(sourceModel())
+        ->myEditRow(mapToSource(index), newName, newDescription, newImageSource, newColor);
 }
 
 QString LocationProxyModel::searchedName() const
@@ -244,6 +240,19 @@ void LocationModel::goToLocation(QModelIndex index)
     mMapItem->getCameraController()->setViewpoint(*(mLocations.at(index.row())->viewpoint), 1);
 }
 
+// DEBUG
+void LocationModel::printViewpoint(osgEarth::Viewpoint *vp)
+{
+    qDebug() << "vp->name(): " << QString::fromStdString(vp->name().get());
+    qDebug() << "vp->focalPoint().value().x(): " << vp->focalPoint().value().x();
+    qDebug() << "vp->focalPoint().value().y(): " << vp->focalPoint().value().y();
+    qDebug() << "vp->focalPoint().value().z(): " << vp->focalPoint().value().z();
+    qDebug() << "vp->heading(): " << vp->heading()->as(osgEarth::Units::DEGREES);
+    qDebug() << "vp->pitch(): " << vp->pitch()->as(osgEarth::Units::DEGREES);
+    qDebug() << "vp->range(): " << vp->range()->as(osgEarth::Units::METERS);
+}
+// ENDDEBUG
+
 void LocationModel::myAppendRow(const LocationItem &newLocationItem)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
@@ -265,10 +274,25 @@ void LocationModel::myAppendRow(QString name, double lon, double lat, double z, 
     mLocations.append(new LocationItem{vp, description, imageSource, color});
 }
 
-void LocationModel::myEditRow(QModelIndex index, const LocationItem &newLocationItem)
+void LocationModel::myEditRow(QModelIndex index,
+                              QString newName,
+                              QString newDescription,
+                              QString newImageSource,
+                              QString newColor)
 {
-    LocationItem *li = new LocationItem(newLocationItem);
-    mLocations[index.row()] = li;
+    osgEarth::Viewpoint vp = mapItem()->getCameraController()->getViewpoint();
+    LocationItem *li = mLocations[index.row()];
+    li->viewpoint->name() = newName.toStdString();
+    li->viewpoint->focalPoint()->x() = vp.focalPoint()->x();
+    li->viewpoint->focalPoint()->y() = vp.focalPoint()->y();
+    li->viewpoint->focalPoint()->z() = vp.focalPoint()->z();
+    li->viewpoint->setHeading(vp.getHeading());
+    li->viewpoint->setPitch(vp.getPitch());
+    li->viewpoint->setRange(vp.getRange());
+    li->description = newDescription;
+    li->imageSource = newImageSource;
+    li->color = newColor;
+
     emit dataChanged(this->index(index.row(), 0), this->index(index.row(), 0));
 }
 

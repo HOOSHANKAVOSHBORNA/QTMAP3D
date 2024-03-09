@@ -97,7 +97,11 @@ public:
     Q_INVOKABLE void myAppendRow(QString name, double lon, double lat, double z,
                                  double heading, double pitch, double range,
                                  QString description, QString imageSource, QString color);
-    Q_INVOKABLE void myEditRow(QModelIndex index, const LocationItem &newLocationItem);
+    Q_INVOKABLE void myEditRow(QModelIndex index,
+                               QString newName,
+                               QString newDescription,
+                               QString newImageSource,
+                               QString newColor);
 
     QVector<LocationItem *> locations() const;
     void setLocations(const QVector<LocationItem *> &newLocations);
@@ -111,6 +115,8 @@ public:
 
     Q_INVOKABLE bool readFromFile();
     Q_INVOKABLE bool writeToFile();
+
+    void printViewpoint(osgEarth::Viewpoint *vp);
 
 public:
     QString appDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
