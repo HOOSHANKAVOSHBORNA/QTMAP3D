@@ -83,17 +83,9 @@ Rectangle {
                     anchors.right: parent.right
                     verticalAlignment: Text.AlignVCenter
                     font.family: Style.fontFamily
-<<<<<<< HEAD
                     font.pixelSize: Style.regularFontSize
                     color: fg75
-=======
-                    font.pixelSize: 17 / Style.monitorRatio
-                    color: Style.foregroundColor
-                    background: Rectangle {
-                        color: "transparent"
-                        radius: height / 2
-                    }
->>>>>>> 4b358c48560cec0efa8b8f346c0738bb9a538764
+
 
                     onAccepted: lvLocationManger.model.searchedName = text
                     onTextChanged: lvLocationManger.model.searchedName = text
@@ -122,7 +114,7 @@ Rectangle {
                         anchors.rightMargin: 15 / Style.monitorRatio
                         verticalAlignment: Text.AlignVCenter
                         font.family: Style.fontFamily
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: fg75
                         text: "0.0"
 
@@ -163,7 +155,7 @@ Rectangle {
                         anchors.rightMargin: 15 / Style.monitorRatio
                         verticalAlignment: Text.AlignVCenter
                         font.family: Style.fontFamily
-                        font.pixelSize: 17 / Style.monitorRatio
+                        font.pixelSize: Style.regularFontSize
                         color: fg75
                         text: "0.0"
 
@@ -210,13 +202,9 @@ Rectangle {
                     Text {
                         text: "Add place"
                         font.family: Style.fontFamily
-<<<<<<< HEAD
                         font.pixelSize: Style.regularFontSize
                         color: Style.foregroundColor
-=======
-                        font.pixelSize: 17 / Style.monitorRatio
-                        color: Style.backgroundColor
->>>>>>> 4b358c48560cec0efa8b8f346c0738bb9a538764
+
                     }
                 }
 
