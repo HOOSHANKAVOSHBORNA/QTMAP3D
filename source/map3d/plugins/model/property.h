@@ -7,7 +7,6 @@
 #include <osg/Referenced>
 
 #include "mapControllerItem.h"
-#include "simpleModelNode.h"
 
 // class prototypes
 class Property;
@@ -16,18 +15,20 @@ class PropertyItem;
 // ---------------------------------------------------------------------- manager
 class Property : public QObject
 {
+    Q_OBJECT
 public:
-    explicit Property(QQmlEngine *engine, MapControllerItem *mapItem);
+    explicit Property(QQmlEngine *engine, MapControllerItem *mapItem, QObject *parent = nullptr);
 
-    osg::ref_ptr<SimpleModelNode> modelNode() const;
-    void setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNode);
-
-    void setName(const std::string &name);
-    void setPosition(const osgEarth::GeoPoint &positon);
-    void moveTo(const osgEarth::GeoPoint &positon);
-    void flyTo(const osgEarth::GeoPoint &positon);
+    NodeData nodeData() const;
+    void setNodeData(const NodeData &nodeData);
 
     QQuickItem *qmlItem() const;
+
+    bool hasModel() const;
+    void sethasModel(bool newHasModel);
+
+signals:
+    void nodeDataChanged(const NodeData &nodeData);
 
 private:
     void createQML();
@@ -37,6 +38,7 @@ private:
     MapControllerItem *mMapItem = nullptr;
     PropertyItem *mPropertyItem = nullptr;
     QQuickItem *mQmlItem = nullptr;
+    bool mHasModel{false};
 };
 
 // ---------------------------------------------------------------------- interface for qml
@@ -46,17 +48,13 @@ class PropertyItem : public QObject
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY propertyChanged FINAL)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY propertyChanged FINAL)
     Q_PROPERTY(QVector3D location READ getLocation WRITE setLocation NOTIFY propertyChanged FINAL)
-    Q_PROPERTY(bool isMovable READ isMovable WRITE setIsMovable NOTIFY propertyChanged FINAL)
-    Q_PROPERTY(bool isFlyable READ isFlyable WRITE setIsFlyable NOTIFY propertyChanged FINAL)
-    Q_PROPERTY(QVector3D moveTo READ getMoveTo WRITE setMoveTo NOTIFY propertyChanged FINAL)
-    Q_PROPERTY(QVector3D flyTo READ getFlyTo WRITE setFlyTo NOTIFY propertyChanged FINAL)
     Q_PROPERTY(double speed READ speed WRITE setSpeed NOTIFY propertyChanged FINAL)
 
 public:
-    PropertyItem(MapControllerItem *mapItem);
+    PropertyItem(MapControllerItem *mapItem, QObject *parent = nullptr);
 
-    osg::ref_ptr<SimpleModelNode> modelNode() const;
-    void setModelNode(const osg::ref_ptr<SimpleModelNode> &newModelNode);
+    NodeData nodeData() const;
+    void setNodeData(const NodeData &nodeData);
 
     QString name();
     void setName(const QString &newName);
@@ -67,35 +65,21 @@ public:
     QVector3D getLocation() const;
     void setLocation(const QVector3D &newLocation);
 
-    QVector3D getMoveTo() const;
-    void setMoveTo(const QVector3D &newmoveTo);
-
     double speed() const;
     void setSpeed(double newSpeed);
 
-    QVector3D getFlyTo() const;
-    void setFlyTo(const QVector3D &newFlyTo);
-
-    bool isMovable() const;
-    void setIsMovable(bool newIsMovable);
-
-    bool isFlyable() const;
-    void setIsFlyable(bool newIsFlyable);
-
 signals:
     void propertyChanged();
+    void nodeDataChanged(const NodeData &nodeData);
 
 private:
     MapControllerItem *mMapItem{nullptr};
-    osg::ref_ptr<SimpleModelNode> mModelNode{nullptr};
+    NodeData mNodeData;
     QString mName{"defaultName"};
-    QColor mColor{"white"};
+    QColor mColor{QColorConstants::Red};
     QVector3D mLocation;
-    QVector3D mMoveTo;
     double mSpeed{10};
-    QVector3D mFlyTo;
-    bool mIsMovable;
-    bool mIsFlyable;
+    bool mIsNodeDataSet{false};
 };
 
 #endif // PROPERTY_H
