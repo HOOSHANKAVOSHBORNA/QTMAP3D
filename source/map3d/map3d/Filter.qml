@@ -217,7 +217,7 @@ Rectangle {
                                 }
 
                                 background: Rectangle {
-                                    border.color: Style.foregroundColor
+                                    border.color: Style.backgroundColor
                                     radius: 8 * Style.monitorRatio
                                 }
 
@@ -373,7 +373,7 @@ Rectangle {
                                 }
 
                                 background: Rectangle {
-                                    border.color: Style.foregroundColor
+                                    border.color: Style.backgroundColor
                                     radius: 8 * Style.monitorRatio
                                 }
 
@@ -489,10 +489,10 @@ Rectangle {
 
                                                 background: Rectangle {
                                                     width: 40
-                                                    color: Style.backgroundColor
-                                                    border.width: .3
-                                                    border.color: Style.backgroundColor
-                                                    radius: 8*Style.monitorRatio
+                                                    color: "white"
+                                                    border.width: .1
+                                                    border.color: Style.foregroundColor
+                                                    radius: 4
                                                 }
                                                 contentItem: Text {
                                                     text: modelData

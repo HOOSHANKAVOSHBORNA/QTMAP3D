@@ -19,7 +19,7 @@ Rectangle {
 
     property real heightFactor : 0.0
 
-    property double massageFontSize: 13 / Style.monitorRatio
+    property double massageFontSize: Style.regularFontSize
     property var model
     property var sourceModel
     property string modeMap: "geocentric"
@@ -91,7 +91,7 @@ Rectangle {
             placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100)? root.model.data(root.model.index(0, 0), Qt.UserRole + 100): "Messages" : "Messages"
             color: Style.backgroundColor
             font.family: Style.fontFamily
-            font.pointSize: 11 / Style.monitorRatio
+            font.pointSize: Style.regularFontSize
             selectedTextColor: Style.backgroundColor
             selectionColor: Style.selectColor
             placeholderTextColor: Style.foregroundColor
@@ -147,7 +147,7 @@ Rectangle {
 
             Text {
                 color: Style.foregroundColor
-                font.pixelSize: 14/Style.monitorRatio
+                font.pixelSize:Style.regularFontSize
                 text: root.model.range
                 font.family: Style.fontFamily
             }
@@ -162,7 +162,7 @@ Rectangle {
 
             Text {
                 color: Style.foregroundColor
-                font.pixelSize: 14/Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 text: "Altitude: "
                 font.family: Style.fontFamily
             }
@@ -216,7 +216,7 @@ Rectangle {
 
             Text {
                 color: Style.foregroundColor
-                font.pixelSize: 14/Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 text: "1000 KM "
                 font.family: Style.fontFamily
             }
@@ -247,7 +247,7 @@ Rectangle {
                     color: lightBlue
                     text: Number(modelData).toLocaleString(Qt.locale(), root.fe[index], 3)
                     font.family: Style.fontFamily
-                    font.pixelSize: 14/Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
 
 
                 }
@@ -284,7 +284,7 @@ Rectangle {
                           : modelData
                     color: Style.foregroundColor
                     font.family: Style.fontFamily
-                    font.pixelSize: 14/Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                 }
                 highlighted: control.highlightedIndex === index
             }
@@ -319,7 +319,7 @@ Rectangle {
 
                 text: control.displayText
                 font.family: Style.fontFamily
-                font.pixelSize: 14/Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 color:Style.foregroundColor
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -358,7 +358,7 @@ leftPadding:3
 height: control.displayText !== name?implicitHeight : 1
                              text: name
                              font{
-                                 pixelSize: 14/Style.monitorRatio
+                                 pixelSize: Style.regularFontSize
                                  family: Style.fontFamily
                              }
 
@@ -435,7 +435,7 @@ height: control.displayText !== name?implicitHeight : 1
                     text: "Messages"
                     font.family: Style.fontFamily
                     font.weight: Font.Medium
-                    font.pixelSize: 24/Style.monitorRatio
+                    font.pixelSize: Style.titleFontSize
 
                 }
             }
@@ -515,7 +515,7 @@ height: control.displayText !== name?implicitHeight : 1
                     placeholderText: implicitWidth? qsTr("Search ..." ) : ""
                     color: Style.foregroundColor
                     font.family: Style.fontFamily
-                    font.pointSize: 11/Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     selectByMouse: true
                     selectedTextColor: Style.foregroundColor
                     selectionColor: Style.selectColor
@@ -612,7 +612,7 @@ height: control.displayText !== name?implicitHeight : 1
                 text:"Subject"
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
-                font.pixelSize:  16/ Style.monitorRatio
+                font.pixelSize:  Style.regularFontSize
                 selectedTextColor: Style.foregroundColor
                 selectionColor: Style.selectColor
                 placeholderTextColor: Style.disableColor
@@ -748,7 +748,7 @@ height: control.displayText !== name?implicitHeight : 1
                             text: messageText
                             color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
-                            font.pixelSize:  13/ Style.monitorRatio
+                            font.pixelSize:  Style.regularFontSize
                             selectedTextColor: Style.foregroundColor
                             selectionColor: Style.selectColor
                             placeholderTextColor: Style.disableColor
