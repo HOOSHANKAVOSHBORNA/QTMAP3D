@@ -48,7 +48,7 @@ class ListWindow : public QObject
     Q_PROPERTY(TabbarModel *tabbarModel READ tabbarModel WRITE setTabbarModel NOTIFY tabbarModelChanged FINAL)
 
 public:
-    ListWindow(QQuickWindow *parent = nullptr);
+    ListWindow(QObject *parent = nullptr);
     ~ListWindow();
 
     Q_INVOKABLE TabbarModel *tabbarModel() const;

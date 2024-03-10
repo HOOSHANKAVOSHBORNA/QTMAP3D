@@ -14,6 +14,7 @@ ParenticAnnotationLayer::ParenticAnnotationLayer(int id, QObject *parent):
 
 ParenticAnnotationLayer::~ParenticAnnotationLayer()
 {
+    qDebug() << "~Parentic";
     clear();
 }
 
