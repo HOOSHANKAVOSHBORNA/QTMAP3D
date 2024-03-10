@@ -62,6 +62,8 @@ protected:
     void confirm();
     void cancel();
 
+private slots:
+    void onNodeRemoved(SimpleModelNode*simpleModelNode);
 private:
     SimpleModelNode* pick(float x, float y);
 
@@ -75,7 +77,6 @@ private:
     osg::ref_ptr<osgEarth::Annotation::PlaceNode> mIconNode{nullptr};
     osg::ref_ptr<SimpleModelNode> mCurrentModel {nullptr};
     osg::ref_ptr<SimpleModelNode> mPickModelNode {nullptr};
-    osg::ref_ptr<SimpleModelNode> mHighliteModelNode {nullptr};
 
     NodeData mNodeData;
     LayerData mLayerData;
