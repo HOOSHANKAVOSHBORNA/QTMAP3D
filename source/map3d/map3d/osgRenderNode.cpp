@@ -23,21 +23,23 @@
 #include "osgViewerItem.h"
 #include <osg/GraphicsContext>
 OSGRenderNode::OSGRenderNode(OsgViewerItem *parent):
-    QSGRenderNode(),
-    osgViewer::Viewer(),
     QObject(parent),
+    myViewer(),
+    QSGRenderNode(),
     mOSGItem(parent)
 {
-
+    releaseResources();
 }
 
 OSGRenderNode::~OSGRenderNode()
 {
+    qDebug() << "~OSGRenderNode";
     releaseResources();
 }
 
 void OSGRenderNode::releaseResources()
 {
+    QSGRenderNode::releaseResources();
 }
 
 void OSGRenderNode::render(const RenderState *state)
@@ -46,10 +48,10 @@ void OSGRenderNode::render(const RenderState *state)
 
 
 
-//        if (!mGLFunctions) {
-//            mGLFunctions = new QOpenGLFunctions_2_0;
-//            mGLFunctions->initializeOpenGLFunctions();
-//        }
+       // if (!mGLFunctions) {
+       //     mGLFunctions = new QOpenGLFunctions_2_0;
+       //     mGLFunctions->initializeOpenGLFunctions();
+       // }
 
 
         QQuickOpenGLUtils::resetOpenGLState();

@@ -18,7 +18,8 @@ OsgViewerItem::OsgViewerItem(QQuickItem *parent) :
 
 OsgViewerItem::~OsgViewerItem()
 {
-    delete mOSGRenderNode;
+    qDebug() << "~OsgViewerItem";
+    // delete mOSGRenderNode;
 }
 
 osgViewer::Viewer *OsgViewerItem::getViewer() const
