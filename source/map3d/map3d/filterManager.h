@@ -1,6 +1,7 @@
 #ifndef FILTERMANAGER_H
 #define FILTERMANAGER_H
 #include "qqmlintegration.h"
+#include "qsettings.h"
 #include "qvariant.h"
 #include <QObject>
 #include <QMap>
@@ -162,6 +163,7 @@ private:
     FilterFieldModel *mFilterFieldsNumModel;
     QSortFilterProxyModel *mFilterFieldsNum;
     FilterFieldModel *mFilterFieldsColorModel;
+    QSettings *mFilterSettings;
 
     QVector<Tag*> mFilterTags{};
 };

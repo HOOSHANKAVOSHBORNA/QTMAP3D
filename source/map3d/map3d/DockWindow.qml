@@ -11,19 +11,16 @@ Item {
     property bool isWindow: false
 
     onIsWindowChanged: {
-//        print("onIsWindowChanged: ", isWindow)
-        if(isWindow){
+        if (isWindow) {
             wnd.visible = true
             rootItem.visible = false
             container.parent = undockedContainer
-        }
-        else{
+        } else {
             wnd.visible = false
             rootItem.visible = true
             container.parent = rootItem
         }
     }
-
 
     signal windowClose
 
@@ -33,21 +30,20 @@ Item {
     }
 
     //    state: "docked"
-//    states: [
-//        State {
-//            name: "undocked"
-//            PropertyChanges{ target: wnd; visible: true; /*title: name */}
-//            PropertyChanges{ target: rootItem; visible: false }
-//            ParentChange{ target: container; parent: undockedContainer }
-//        },
-//        State {
-//            name: "docked"
-//            PropertyChanges { target: wnd; visible: false }
-//            PropertyChanges { target: rootItem; visible: true }
-//            ParentChange { target: container; parent: rootItem }
-//        }
-//    ]
-
+    //    states: [
+    //        State {
+    //            name: "undocked"
+    //            PropertyChanges{ target: wnd; visible: true; /*title: name */}
+    //            PropertyChanges{ target: rootItem; visible: false }
+    //            ParentChange{ target: container; parent: undockedContainer }
+    //        },
+    //        State {
+    //            name: "docked"
+    //            PropertyChanges { target: wnd; visible: false }
+    //            PropertyChanges { target: rootItem; visible: true }
+    //            ParentChange { target: container; parent: rootItem }
+    //        }
+    //    ]
     Window {
         id: wnd
 
@@ -63,16 +59,16 @@ Item {
         }
 
         onVisibleChanged: {
-            if(visible){
+            if (visible) {
                 show()
             } else {
-                close();
+                close()
             }
         }
 
         onClosing: {
             windowClose()
-//            rootItem.state = "docked"
+            //            rootItem.state = "docked"
             isWindow = false
         }
     }
