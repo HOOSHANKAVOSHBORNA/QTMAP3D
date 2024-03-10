@@ -8,14 +8,14 @@ import "style"
 Item {
     id: map
 
-    property var mapItem
+    property var mapItem : undefined
 
     property bool itemVisible: true
     readonly property int iconSize: 26 / Style.monitorRatio
     readonly property real itemMargin: 20 / Style.monitorRatio
 
     function toggleItemsVisible() {
-        if (mapItem.itemVisible === true) {
+        if (mapItem && mapItem.itemVisible === true) {
             itemsShowAnimation.stop()
             itemsHideAnimation.start()
             mapItem.itemVisible = false
@@ -37,7 +37,7 @@ Item {
     StackLayout {
         id: mapContainer
         anchors.fill: parent
-        data: mapItem
+        data: mapItem ?? 0
     }
 
     Item {
@@ -45,11 +45,11 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 10
         anchors.horizontalCenter: parent.horizontalCenter
-        visible: mapItem.topMenuVisible
+        visible: mapItem ? mapItem.topMenuVisible : true
         width: 706
         height: 75
 
-        children: mapItem.topMenuItem ?? []
+        children: mapItem ? mapItem.topMenuItem : []
     }
 
     //    PropertyAnimation {
@@ -75,11 +75,11 @@ Item {
     //    }
     Label {
         id: fpsLabel
-        text: mapItem.fps.toLocaleString(Qt.locale(), 'f', 2)
+        text: mapItem ? mapItem.fps.toLocaleString(Qt.locale(), 'f', 2) : 0
         color: 'springgreen'
         style: Text.Outline
         styleColor: "black"
-        font.pointSize: 20
+        font.pointSize: Style.regularFontSize
         font.weight: Font.Bold
         anchors.left: parent.left
         anchors.top: parent.top
@@ -93,8 +93,8 @@ Item {
         anchors.rightMargin: itemMargin
         anchors.top: parent.top
         anchors.topMargin: itemMargin + 3
-        filterManager: mapItem.filterManager()
-        model: map.mapItem.searchNodeManager().searchNodeProxyModel()
+        filterManager: map.mapItem ? map.mapItem.filterManager() : undefined
+        model: map.mapItem ? mapItem.searchNodeManager().searchNodeProxyModel() : undefined
     }
 
     MultiEffect {
@@ -116,15 +116,15 @@ Item {
         anchors.leftMargin: itemMargin + 80 / Style.monitorRatio
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 2 * itemMargin
-        headingAngle: mapItem.compassDirection.x
-        pitchAngle: mapItem.compassDirection.y + 90
+        headingAngle: mapItem ? mapItem.compassDirection.x : undefined
+        pitchAngle: mapItem ? mapItem.compassDirection.y + 90 : undefined
         color: mouseArea.hovered ? Style.selectColor : Style.backgroundColor
 
         MouseArea {
             id: mouseArea
             anchors.fill: parent
             onDoubleClicked: {
-                mapItem.setHeadingToNorth()
+                mapItem ? mapItem.setHeadingToNorth() : undefined
             }
             hoverEnabled: true
             property bool hovered: false
@@ -139,8 +139,8 @@ Item {
         anchors.rightMargin: itemMargin / Style.monitorRatio
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 1.5*itemMargin
-        rotate: mapItem.mapRotation.x
-        recSize: mapItem.mapRotation.z
+        rotate: mapItem ? mapItem.mapRotation.x : undefined
+        recSize: mapItem ? mapItem.mapRotation.z : undefined
 
     }
 
@@ -169,21 +169,35 @@ Item {
         anchors.topMargin: searcbar.maxheight
         anchors.rightMargin: itemMargin
 
-        onZoomInButtonPressedChanged: mapItem.zoomInButtonPressed = zoomInButtonPressed
-        onZoomOutButtonPressedChanged: mapItem.zoomOutButtonPressed = zoomOutButtonPressed
+        onZoomInButtonPressedChanged: {
+            if (mapItem)
+                mapItem.zoomInButtonPressed = zoomInButtonPressed
+        }
+        onZoomOutButtonPressedChanged: {
+            if (mapItem)
+                mapItem.zoomOutButtonPressed = zoomOutButtonPressed
+        }
 
-        onMovePositionChanged: mapItem.movePosition = movePosition
-        onRotatePositonChanged: mapItem.rotatePosition = rotatePositon
+        onMovePositionChanged: {
+            if (mapItem)
+                mapItem.movePosition = movePosition
+        }
+        onRotatePositonChanged: {
+            if (mapItem)
+                mapItem.rotatePosition = rotatePositon
+        }
 
         width: 211 / Style.monitorRatio
         height: 200 / Style.monitorRatio
 
         onBtnHomeClicked: function () {
-            mapItem.home()
+            if (mapItem)
+                mapItem.home()
         }
 
         onBtnProjectionClicked: function () {
-            mapItem.changeMode()
+            if (mapItem)
+                mapItem.changeMode()
         }
     }
 
@@ -197,15 +211,15 @@ Item {
         anchors.rightMargin: 0
         width: parent.width
         height: 22 / Style.monitorRatio
-        latitude: mapItem.mapMouseGeoLocation.x
-        longitude: mapItem.mapMouseGeoLocation.y
-        altitude: mapItem.mapMouseGeoLocation.z
-        coordinate1: mapItem.mapMouseLocation.x
-        coordinate2: mapItem.mapMouseLocation.y
-        coordinate3: mapItem.mapMouseLocation.z
+        latitude: mapItem ? mapItem.mapMouseGeoLocation.x : undefined
+        longitude: mapItem ? mapItem.mapMouseGeoLocation.y : undefined
+        altitude: mapItem ? mapItem.mapMouseGeoLocation.z : undefined
+        coordinate1: mapItem ? mapItem.mapMouseLocation.x : undefined
+        coordinate2: mapItem ? mapItem.mapMouseLocation.y : undefined
+        coordinate3: mapItem ? mapItem.mapMouseLocation.z : undefined
         message: "Ready"
         timer: -1
-        model: mapItem.statusBar()
-        sourceModel: mapItem.statusBar().getSourceModel()
+        model: mapItem ? mapItem.statusBar() : undefined
+        sourceModel: mapItem ? mapItem.statusBar().getSourceModel() : undefined
     }
 }

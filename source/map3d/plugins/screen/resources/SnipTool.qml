@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Shapes
 import QtQuick.Particles
-import Crystal 1.0
+// import Crystal 1.0
 
 Window {
 

@@ -58,7 +58,7 @@ Item {
         anchors.left: parent.left
         color: Style.foregroundColor
         font.family: Style.fontFamily
-        font.pointSize: 20 / Style.monitorRatio
+        font.pointSize: Style.titleFontSize
         font.bold: true
     }
 
@@ -96,7 +96,7 @@ Item {
                         text: model.display
                         color: index === repeaterNodeTypeFilter.currentIndex ? Style.hoverColor : Style.foregroundColor
                         font.family: Style.fontFamily
-                        font.pointSize: 17 / Style.monitorRatio
+                        font.pointSize: Style.regularFontSize
                     }
 
                     MouseArea {
@@ -206,7 +206,7 @@ Item {
                         anchors.bottomMargin: 5
                         text: tabMain.text
                         font.family: "Roboto"
-                        font.pointSize: 17 / Style.monitorRatio
+                        font.pointSize: Style.regularFontSize
                         color: tabBar.currentIndex
                                === model.index ? Style.foregroundColor : Style.disableColor
                     }
@@ -240,7 +240,7 @@ Item {
                 text: model.display
                 color: Style.foregroundColor
                 font.family: Style.fontFamily
-                font.pointSize: 17 / Style.monitorRatio
+                font.pointSize: Style.regularFontSize
                 //anchors.centerIn: parent
                 anchors.left: model.column === 2 ? parent.left : undefined
                 anchors.centerIn: model.column === 2 ? undefined : parent
@@ -382,7 +382,7 @@ Item {
                                     text: model.display
 
                                     elide: Text.ElideRight
-                                    font.pointSize: 17 / Style.monitorRatio
+                                    font.pointSize: Style.regularFontSize
                                     font.family: Style.fontFamily
                                     color: Style.foregroundColor
                                     anchors.left: model.column === 2 ? parent.left : undefined
@@ -576,7 +576,7 @@ Item {
                                     color: Style.foregroundColor //menuItem.highlighted ? "#ffffff" : "#21be2b"
                                     //horizontalAlignment: Text.AlignLeft
                                     font.family: Style.fontFamily
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     verticalAlignment: Text.AlignVCenter
                                     //elide: Text.ElideRight
                                 }

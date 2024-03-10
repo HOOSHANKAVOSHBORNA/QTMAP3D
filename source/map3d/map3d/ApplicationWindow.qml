@@ -1,16 +1,17 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
+
 import "style"
 import "Components"
 
 Window {
     id: applicationWindow
 
-    property var userManager: undefined
-    property var connectionConfigCpp: undefined
-    property var loadingPageCpp: undefined
-    property var mainPageCpp: undefined
+    // property var userManager: undefined
+    // property var connectionConfigCpp: undefined
+    // property var loadingPageCpp: undefined
+    // property var mainPageCpp: undefined
 
     //    property int pageIndex: 0
     required property var applicationCpp
@@ -18,6 +19,10 @@ Window {
     visible: true
     width: 800
     height: 800
+
+    onClosing: {
+        applicationCpp.saveDataInFile()
+    }
 
     Image {
         source: "qrc:/Resources/login-earth.jpg"
@@ -63,7 +68,7 @@ Window {
                 text: 'Loading Page'
                 onClicked: {
                     applicationCpp.pageIndex = 1
-                    userManager.signedIn()
+                    applicationCpp.userManager.signedIn()
                 }
             }
 
@@ -84,21 +89,21 @@ Window {
             currentIndex: applicationCpp.pageIndex /*debugTabbar.currentIndex*/
 
             LoginPage {
-                userManager: applicationWindow.userManager
-                connectionConfigCpp: applicationWindow.connectionConfigCpp
+                userManager: applicationCpp.userManager
+                connectionConfigCpp: applicationCpp.connectionConfigCpp
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
 
             LoadingPage {
-                loadingPageCpp: applicationWindow.loadingPageCpp
+                // loadingPageCpp: applicationCpp.loadingPageCpp ? applicationCpp.loadingPageCpp : undefined
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
 
             MainWindow {
                 id: mapPage
-                mainPageCpp: applicationWindow.mainPageCpp
+                // mainPageCpp: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp : undefined
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }

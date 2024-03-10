@@ -41,7 +41,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     text: "Name"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -52,7 +52,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     text: rootItem.cppInterface ? rootItem.cppInterface.name : "notInitial"
-                    font.pointSize: 10 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: "black"
 
                     background: Rectangle {
@@ -78,7 +78,7 @@ Item {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     Layout.fillHeight: true
                     text: "Color"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -107,7 +107,7 @@ Item {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     Layout.fillHeight: true
                     text: "Opacity"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize:Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -115,12 +115,13 @@ Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 10
 
-                    backgroundColor: rootItem.cppInterface ? rootItem.cppInterface.color : "transparent"
+                    backgroundColor: rootItem.cppInterface ?  rootItem.cppInterface.color : "red"
 
                     //                    initialValue: rootItem.cppInterface.opacity
                     onValueChanged: value => {
-                                        if (!rootItem.cppInterface)
-                                        return
+                                        if (!rootItem.cppInterface){
+                                            return
+                                        }
                                         rootItem.cppInterface.opacity = value
                                     }
                 }

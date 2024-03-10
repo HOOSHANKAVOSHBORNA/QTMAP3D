@@ -2,9 +2,6 @@
 #include <QDir>
 #include <QPluginLoader>
 #include <QCoreApplication>
-#include <iostream>
-#include <algorithm>
-#include <iterator>
 #include <QDebug>
 
 #include "pluginmanager.h"
@@ -106,11 +103,21 @@ PluginManager::PluginManager(QObject *parent) : QObject(parent)
     mPluginLoader = new QPluginLoader(this);
 }
 
+PluginManager::~PluginManager()
+{
+    qDebug() << "~PluginManager";
+    unLoadPlugins();
+    for (auto &i : mPluginsMap)
+        delete i;
+    delete mPluginLoader;
+}
+
 void PluginManager::loadPlugins()
 {
     mPluginsDir = QCoreApplication::applicationDirPath();
     mPluginsDir.cd("../plugins/bin");
     mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
+    emit plugunCount(mPluginFileNameList.size());
     mPluginTimer = new QTimer(this);
     connect(mPluginTimer, &QTimer::timeout, this, [&](){
         parsePlugin(mPluginFileNameList[mIndex], mPluginsDir);
@@ -126,11 +133,10 @@ void PluginManager::loadPlugins()
 
 void PluginManager::unLoadPlugins()
 {
-    for (auto &i: mPluginsLoaders) {
-        i->unload();
+    for (auto &i: mLoadedPlugins) {
+        mPluginLoader->setFileName(i);
+        mPluginLoader->unload();
     }
-    mPluginsLoaders.clear();
-    mPluginsMap.clear();
 }
 
 void PluginManager::setup()
@@ -221,7 +227,7 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
         if (pluginInterface) {
             pluginInterface->setName(pluginFileName);
             mPluginsMap.insert(pluginFileName, pluginInterface);
-            mPluginsLoaders.insert(pluginFileName, mPluginLoader);
+            mLoadedPlugins.push_back(pluginFileName);
         }
     }
 }

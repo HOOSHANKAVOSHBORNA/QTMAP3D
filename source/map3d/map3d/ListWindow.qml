@@ -1,7 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Layouts 1.13
 import QtQuick.Controls 2.13
-import Crystal 1.0
 import QtQuick.Window 2.13
 
 import "style"
@@ -9,8 +8,8 @@ import "style"
 Window {
     id: rootItem
 
-    property var listWindowCpp
-    property var tabbarModel: listWindowCpp.tabbarModel
+    property var listWindowCpp: undefined
+    property var tabbarModel: listWindowCpp ? listWindowCpp.tabbarModel : undefined
 
     width: 1000
     height: 600
@@ -33,7 +32,7 @@ Window {
 
             Repeater {
                 id: rep
-                model: rootItem.tabbarModel
+                model: rootItem.tabbarModel ?? 0
 
                 Rectangle {
                     Layout.fillWidth: true

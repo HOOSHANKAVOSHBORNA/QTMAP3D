@@ -63,7 +63,7 @@ Item {
             }
 
             text: textFromValue()
-            font.pixelSize: 15 / Style.monitorRatio
+            font.pixelSize: Style.regularFontSize
             color: Style.foregroundColor
             selectionColor: Style.backgroundColor
             selectedTextColor: Style.foregroundColor

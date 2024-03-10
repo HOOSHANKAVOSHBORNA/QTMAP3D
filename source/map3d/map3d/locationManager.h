@@ -6,8 +6,9 @@
 #include <QSortFilterProxyModel>
 #include <QStandardPaths>
 
-#include "osgEarth/Viewpoint"
 #include "mapItem.h"
+#include "osgEarth/Viewpoint"
+#include "userManager.h"
 
 class LocationManager;
 class LocationProxyModel;
@@ -33,7 +34,7 @@ class LocationManager : public QObject
     Q_OBJECT
 
 public:
-    explicit LocationManager(MapItem *mapItem, QObject *parent = nullptr);
+    explicit LocationManager(MapItem *mapItem, UserManager *userManager, QObject *parent = nullptr);
     ~LocationManager();
     void myRemoveRow(int index);
     void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
@@ -63,6 +64,7 @@ public:
 
     Q_INVOKABLE void myRemoveRow(const QModelIndex &index);
     Q_INVOKABLE void goToLocation(const QModelIndex &index);
+    Q_INVOKABLE void goToLocation(double lat, double lang);
     Q_INVOKABLE void printCurrentLocation();
     Q_INVOKABLE void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
     Q_INVOKABLE QVector3D getCurrentXYZ();
@@ -84,7 +86,7 @@ class LocationModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit LocationModel(MapItem *mapItem, QObject* parent = nullptr);
+    explicit LocationModel(MapItem *mapItem, UserManager *userManager, QObject *parent = nullptr);
     ~LocationModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -92,11 +94,15 @@ public:
 
     Q_INVOKABLE void myRemoveRow(QModelIndex index);
     Q_INVOKABLE void goToLocation(QModelIndex index);
-    Q_INVOKABLE void myAppendRow(const LocationItem &newLocationItem);
-    Q_INVOKABLE void myAppendRow(QString name, double lon, double lat, double z,
-                                 double heading, double pitch, double range,
-                                 QString description, QString imageSource, QString color);
-    Q_INVOKABLE void myEditRow(QModelIndex index, const LocationItem &newLocationItem);
+    Q_INVOKABLE void myAppendRow(QString newName,
+                                 QString newDescription,
+                                 QString newImageSource,
+                                 QString newColor);
+    Q_INVOKABLE void myEditRow(QModelIndex index,
+                               QString newName,
+                               QString newDescription,
+                               QString newImageSource,
+                               QString newColor);
 
     QVector<LocationItem *> locations() const;
     void setLocations(const QVector<LocationItem *> &newLocations);
@@ -111,14 +117,17 @@ public:
     Q_INVOKABLE bool readFromFile();
     Q_INVOKABLE bool writeToFile();
 
+    void printViewpoint(osgEarth::Viewpoint *vp);
+
 public:
     QString appDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    const QString savedDir = QString("saved");
-    const QString savedFileName = QString("locations.json");
+    const QString savedDir = QString("locatoins");
+    QString savedFileName = QString("NoUser");
 
 private:
     MapItem *mMapItem;
     QVector<LocationItem *> mLocations;
+    UserManager *mUserManager;
 };
 
 // ------------------------------------------------------------ structs

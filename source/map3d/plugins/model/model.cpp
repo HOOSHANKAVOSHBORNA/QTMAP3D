@@ -29,6 +29,7 @@ Model::Model(QObject *parent)
 
 Model::~Model()
 {
+    qDebug() << "~Model";
     mIconNode.release();
 }
 

@@ -3,7 +3,6 @@
 #include "serviceManager.h"
 FilterManager::FilterManager(QObject *parent) : QObject(parent)
 {
-    qmlRegisterType<Tag>("Crystal", 1, 0, "Tag");
 
     mFilterFieldsColor = new QSortFilterProxyModel(this);
     mFilterFieldsColor->setFilterRole(Qt::DisplayRole);
@@ -179,9 +178,9 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData)
     return firstTag ? flag : true;
 }
 
-void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op)
+void FilterManager::addFilterTag(QString field, QVariant value, QString comp, Tag::LogicalOperator op)
 {
-    Tag* tag = new Tag{field, value, comp, op};
+    Tag* tag = new Tag{field, value, Tag::srtingToComparison(comp), op};
     if (!mFilterTags.contains(tag)) {
         mFilterTags.push_back(tag);
         connect(tag, &Tag::tagChanged, this, &FilterManager::filterTagsEdited);
@@ -190,9 +189,9 @@ void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision
     emit filterTagsEdited();
 }
 
-void FilterManager::removeFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op)
+void FilterManager::removeFilterTag(QString field, QVariant value, QString comp, Tag::LogicalOperator op)
 {
-    Tag *tag = new Tag{field, value, comp, op};
+    Tag *tag = new Tag{field, value,  Tag::srtingToComparison(comp), op};
     auto it = std::find_if(mFilterTags.begin(), mFilterTags.end(), [this, tag](const Tag *t){
         return *tag == t;
     });

@@ -1,13 +1,9 @@
-
-#include <iostream>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
 #include <osgEarth/Registry>
 #include <QMessageBox>
 #include <QTimer>
-#include <deque>
-#include <chrono>
 #include <QQuickOpenGLUtils>
 #include <osgGA/TrackballManipulator>
 #include <osgEarthDrivers/xyz/XYZOptions>
@@ -32,11 +28,11 @@ MapItem::MapItem(QQuickItem *parent) :
 
 MapItem::~MapItem()
 {
-    mMapObject.release();
-    mMapNode.release();
-    mSkyNode.release();
-    mMapRoot.release();
-    qDebug() << "mapitem Deleted!";
+    // mMapNode->unref();
+    // mSkyNode->unref();
+    // mMapRoot->unref();
+    // delete mMapObject;
+    qDebug() << "~Mapitem";
 }
 
 void MapItem::setMap(osgEarth::Map *map)

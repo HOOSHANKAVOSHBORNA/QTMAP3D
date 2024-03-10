@@ -6,8 +6,6 @@
 #include <QQuickOpenGLUtils>
 #include <QTimer>
 #include <QWindow>
-#include <chrono>
-#include <iostream>
 #include <osgEarth/ImageLayer>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarthUtil/EarthManipulator>
@@ -21,25 +19,24 @@
 #include "mapControllerItem.h"
 #include "mapItem.h"
 #include "qmlNode.h"
-#include "smallMap.h"
 
-MainWindow::MainWindow(QWindow *parent)
+MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
 {
-    qmlRegisterType<SmallMap>("Crystal", 1, 0, "SmallMap");
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 
-    mMapItem = new MapControllerItem;
-    mLocationManager = new LocationManager(mMapItem);
-    mToolboxManager = new ToolboxManager;
-    mLayerManager = new LayerManager(mMapItem);
-    mBookmarkManager = new BookmarkManager;
-    mListWindow = new ListWindow;
+    mMapItem = new MapControllerItem();
+    mLocationManager = new LocationManager(mMapItem, userManager, this);
+    mToolboxManager = new ToolboxManager(this);
+    mBookmarkManager = new BookmarkManager(this);
+    mListWindow = new ListWindow(this);
+    mLayerManager = new LayerManager(mMapItem, this);
 }
 
 MainWindow::~MainWindow()
 {
+    // qDebug() << mMapItem.
     delete mMapItem;
-    qDebug() << "mainWindow Deleted!";
+    qDebug() << "~MainWindow!";
 }
 
 MapControllerItem *MainWindow::getMapItem()
@@ -80,6 +77,12 @@ void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
+}
+
+
+void MainWindow::clearData()
+{
+
 }
 
 ListWindow *MainWindow::getListWindow() const

@@ -1,7 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 //import QtQuick.Effects
-import Crystal 1.0
 import "../style"
 
 Rectangle{
@@ -10,7 +9,7 @@ Rectangle{
 
 
     id:root
-    color: Style.primaryColor
+    color: Style.foregroundColor
     radius: Style.radius
     opacity: 0.8
     height:columnGo.implicitHeight * 1.3

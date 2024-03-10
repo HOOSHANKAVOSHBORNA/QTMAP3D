@@ -31,13 +31,13 @@ Item {
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01]
             currentIndex: rootItem.stepIndex
 //            font.pointSize: 10
-            font.pixelSize: 15 / Style.monitorRatio
+            font.pixelSize: Style.smallFontSize
             displayText: model[currentIndex].toString()
 
             contentItem: Text {
                 text: stepCombobox.displayText
                 color: Style.foregroundColor
-                font.pixelSize: 15 / Style.monitorRatio
+                font.pixelSize:Style.regularFontSize
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
             }

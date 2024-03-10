@@ -42,7 +42,7 @@ Item {
                     Layout.fillHeight: true
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     text: "Name"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -53,7 +53,7 @@ Item {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     text: rootItem.cppInterface ? rootItem.cppInterface.name : "notInitial"
-                    font.pointSize: 10 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: "black"
 
                     background: Rectangle {
@@ -78,7 +78,7 @@ Item {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     Layout.fillHeight: true
                     text: "Color"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -110,7 +110,7 @@ Item {
                 Text {
                     text: "Location"
                     color: Style.foregroundColor
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     Layout.alignment: Qt.AlignTop
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                 }
@@ -139,7 +139,7 @@ Item {
                                 text: "X"
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 
@@ -172,7 +172,7 @@ Item {
                                 text: "Y "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
                             StepSpinBox {
@@ -204,7 +204,7 @@ Item {
                                 text: "Z "
                                 padding: 5 / Style.monitorRatio
                                 Layout.topMargin: 5 / Style.monitorRatio
-                                font.pointSize: 10 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: Style.foregroundColor
                             }
 
@@ -237,7 +237,7 @@ Item {
                         CheckBox {
                             id: relative
                             text: "Relative"
-                            font.pointSize: 10 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             checked: false
 
                             onCheckStateChanged: if (checked) {
@@ -289,7 +289,7 @@ Item {
                 Text {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     text: "Speed"
-                    font.pixelSize: 17 / Style.monitorRatio
+                    font.pixelSize: Style.regularFontSize
                     color: Style.foregroundColor
                 }
 
@@ -324,280 +324,7 @@ Item {
                 }
             }
 
-            // --------------------------------------------------------- MoveTo
-//            RowLayout {
-//                spacing: 0
-//                Layout.fillWidth: true
 
-//                visible: rootItem.cppInterface ? rootItem.cppInterface.isMovable : false
-
-//                Text {
-//                    text: "Move to"
-//                    color: Style.foregroundColor
-//                    font.pixelSize: 17 / Style.monitorRatio
-//                    Layout.alignment: Qt.AlignTop
-//                    Layout.preferredWidth: lblWidth / Style.monitorRatio
-//                }
-
-//                GroupBox {
-//                    id: moveToSec
-//                    Layout.fillWidth: true
-//                    Layout.preferredWidth: 200 / Style.monitorRatio
-//                    padding: 0
-
-//                    background: Rectangle {
-//                        color: fg20
-//                        radius: 10 / Style.monitorRatio
-//                        border.color: "transparent"
-//                    }
-
-//                    ColumnLayout {
-//                        anchors.fill: parent
-//                        GridLayout {
-//                            columnSpacing: 1
-//                            rowSpacing: 1
-//                            columns: 2
-
-//                            Text {
-//                                Layout.preferredWidth: 20 / Style.monitorRatio
-//                                text: "X "
-//                                padding: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                font.pointSize: 10 / Style.monitorRatio
-//                                color: Style.foregroundColor
-//                            }
-
-//                            StepSpinBox {
-//                                id: xMoveToValue
-//                                editable: true
-//                                Layout.fillWidth: true
-//                                Layout.minimumWidth: 100 / Style.monitorRatio
-//                                Layout.rightMargin: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                height: valHeight / Style.monitorRatio
-//                                decimals: 4
-//                                from: -180
-//                                to: 180
-//                                x: 6 // 0.01
-//                                onValueChanged: {
-//                                    rootItem.cppInterface.moveTo.x = value
-//                                }
-//                            }
-
-//                            Binding {
-//                                target: xMoveToValue
-//                                property: "value"
-//                                value: rootItem.cppInterface ? rootItem.cppInterface.moveTo.x : 0
-//                                delayed: true
-//                            }
-
-//                            Text {
-//                                Layout.preferredWidth: 20 / Style.monitorRatio
-//                                text: "Y "
-//                                padding: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                font.pointSize: 10 / Style.monitorRatio
-//                                color: Style.foregroundColor
-//                            }
-//                            StepSpinBox {
-//                                id: yMoveToValue
-//                                editable: true
-//                                Layout.fillWidth: true
-//                                Layout.minimumWidth: 100 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                Layout.rightMargin: 5 / Style.monitorRatio
-//                                height: valHeight / Style.monitorRatio
-//                                decimals: 4
-//                                from: -180
-//                                to: 180
-//                                stepIndex: 4 // 0.01
-//                                onValueChanged: {
-//                                    rootItem.cppInterface.moveTo.y = value
-//                                }
-//                            }
-
-//                            Binding {
-//                                target: yMoveToValue
-//                                property: "value"
-//                                value: rootItem.cppInterface ? rootItem.cppInterface.moveTo.y : 0
-//                                delayed: true
-//                            }
-
-//                            Text {
-//                                Layout.preferredWidth: 20 / Style.monitorRatio
-//                                text: "Z "
-//                                padding: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                font.pointSize: 10 / Style.monitorRatio
-//                                color: Style.foregroundColor
-//                            }
-
-//                            StepSpinBox {
-//                                id: zMoveToValue
-
-//                                editable: true
-//                                Layout.fillWidth: true
-//                                Layout.minimumWidth: 100 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                Layout.rightMargin: 5 / Style.monitorRatio
-//                                height: valHeight / Style.monitorRatio
-//                                decimals: 4
-//                                from: -200
-//                                to: rootItem.zMax
-//                                stepIndex: 0
-//                                onValueChanged: {
-//                                    rootItem.cppInterface.moveTo.z = value
-//                                }
-//                            }
-
-//                            Binding {
-//                                target: zMoveToValue
-//                                property: "value"
-//                                value: rootItem.cppInterface ? rootItem.cppInterface.moveTo.z : 0
-//                                delayed: true
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-
-            // --------------------------------------------------------- FlyTo
-//            RowLayout {
-//                spacing: 0
-//                Layout.fillWidth: true
-
-//                visible: rootItem.cppInterface ? rootItem.cppInterface.isFlyable : false
-
-//                Text {
-//                    text: "Fly to"
-//                    color: Style.foregroundColor
-//                    font.pixelSize: 17 / Style.monitorRatio
-//                    Layout.alignment: Qt.AlignTop
-//                    Layout.preferredWidth: lblWidth / Style.monitorRatio
-//                }
-
-//                GroupBox {
-//                    id: flyToSec
-//                    Layout.fillWidth: true
-//                    Layout.preferredWidth: 200 / Style.monitorRatio
-//                    padding: 0
-
-//                    background: Rectangle {
-//                        color: fg20
-//                        radius: 10 / Style.monitorRatio
-//                        border.color: "transparent"
-//                    }
-
-//                    ColumnLayout {
-//                        anchors.fill: parent
-
-//                        GridLayout {
-//                            columnSpacing: 1
-//                            rowSpacing: 1
-//                            columns: 2
-
-//                            Text {
-//                                Layout.preferredWidth: 20 / Style.monitorRatio
-//                                text: "X "
-//                                padding: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                font.pointSize: 10 / Style.monitorRatio
-//                                color: Style.foregroundColor
-//                            }
-
-//                            StepSpinBox {
-//                                id: xFlyToValue
-//                                editable: true
-//                                Layout.fillWidth: true
-//                                Layout.minimumWidth: 100 / Style.monitorRatio
-//                                Layout.rightMargin: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                height: valHeight / Style.monitorRatio
-//                                decimals: 4
-//                                from: -180
-//                                to: 180
-//                                stepIndex: 4 // 0.01
-//                                onValueChanged: {
-//                                    rootItem.cppInterface.flyTo.x = value
-//                                }
-//                            }
-
-//                            Binding {
-//                                target: xFlyToValue
-//                                property: "value"
-//                                value: rootItem.cppInterface ? rootItem.cppInterface.flyTo.x : 0
-//                                delayed: true
-//                            }
-
-//                            Text {
-//                                Layout.preferredWidth: 20 / Style.monitorRatio
-//                                text: "Y "
-//                                padding: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                font.pointSize: 10 / Style.monitorRatio
-//                                color: Style.foregroundColor
-//                            }
-//                            StepSpinBox {
-//                                id: yFlyToValue
-//                                editable: true
-//                                Layout.fillWidth: true
-//                                Layout.minimumWidth: 100 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                Layout.rightMargin: 5 / Style.monitorRatio
-//                                height: valHeight / Style.monitorRatio
-//                                decimals: 4
-//                                from: -180
-//                                to: 180
-//                                stepIndex: 4 // 0.01
-//                                onValueChanged: {
-//                                    rootItem.cppInterface.flyTo.y = value
-//                                }
-//                            }
-
-//                            Binding {
-//                                target: yFlyToValue
-//                                property: "value"
-//                                value: rootItem.cppInterface ? rootItem.cppInterface.flyTo.y : 0
-//                                delayed: true
-//                            }
-
-//                            Text {
-//                                Layout.preferredWidth: 20 / Style.monitorRatio
-//                                text: "Z "
-//                                padding: 5 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                font.pointSize: 10 / Style.monitorRatio
-//                                color: Style.foregroundColor
-//                            }
-
-//                            StepSpinBox {
-//                                id: zFlyToValue
-
-//                                editable: true
-//                                Layout.fillWidth: true
-//                                Layout.minimumWidth: 100 / Style.monitorRatio
-//                                Layout.topMargin: 5 / Style.monitorRatio
-//                                Layout.rightMargin: 5 / Style.monitorRatio
-//                                height: valHeight / Style.monitorRatio
-//                                decimals: 4
-//                                from: -180
-//                                to: rootItem.zMax
-//                                stepIndex: 0 // 100
-//                                onValueChanged: {
-//                                    rootItem.cppInterface.flyTo.z = value
-//                                }
-//                            }
-
-//                            Binding {
-//                                target: zFlyToValue
-//                                property: "value"
-//                                value: rootItem.cppInterface ? rootItem.cppInterface.flyTo.z : 0
-//                                delayed: true
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 }

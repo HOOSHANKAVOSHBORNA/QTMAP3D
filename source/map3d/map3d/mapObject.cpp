@@ -52,8 +52,9 @@ void CompositeCallback::onLayerMoved(ParenticAnnotationLayer *layer, CompositeAn
 
 void CompositeCallback::onNodeAdded(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer)
 {
-    if (mMapObject)
+    if (mMapObject) {
         emit mMapObject->nodeToLayerAdded(node, layer);
+    }
 }
 
 void CompositeCallback::onNodeRemoved(osgEarth::Annotation::AnnotationNode *node, ParenticAnnotationLayer *layer)
@@ -134,6 +135,14 @@ MapObject::MapObject(QObject *parent):
     QObject(parent)
 {
     addMapCallback(new MainMapCallback(this));
+}
+
+MapObject::~MapObject()
+{
+    for (auto &i: mLayerMap) {
+        delete i;
+    }
+    qDebug() << "~MapObject";
 }
 
 MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):

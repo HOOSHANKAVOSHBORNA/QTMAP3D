@@ -1,8 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
-
-import Crystal 1.0
 import "style"
 
 Item {
@@ -107,7 +105,7 @@ Item {
             }
 
             onClicked: {
-                userManager.signedOut()
+                applicationCpp.userManager.signedOut()
             }
         }
     }

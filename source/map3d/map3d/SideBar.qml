@@ -162,7 +162,7 @@ Rectangle {
                                     id: tooltipText
                                     anchors.margins: 7 / Style.monitorRatio
                                     text: model.name
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     color: 'white'
                                 }
 
@@ -192,9 +192,9 @@ Rectangle {
                         }
 
                         display: AbstractButton.IconOnly
-onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-    print(applicationWindow.connectionConfigCpp.isConnected)
-}
+//onClicked: {
+//    print(applicationWindow.connectionConfigCpp.isConnected)
+//}
                         checkable: true
 
                         //                        checked: this take value by alias property
@@ -211,7 +211,7 @@ onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                                 id: tooltipText2
                                 anchors.margins: 7 / Style.monitorRatio
                                 text: 'List'
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: 'white'
                             }
 
@@ -259,7 +259,7 @@ onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                             id: tooltipText3
                             anchors.margins: 7 / Style.monitorRatio
                             text: pin ? "Pin" : "Unpin"
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: 'white'
                         }
 

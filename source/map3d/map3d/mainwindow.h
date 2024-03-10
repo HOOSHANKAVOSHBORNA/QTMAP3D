@@ -23,7 +23,7 @@ class MainWindow : public QObject
     Q_OBJECT
 
 public:
-    MainWindow(QWindow *parent = nullptr);
+    MainWindow(UserManager *userManager, QWindow *parent = nullptr);
     ~MainWindow();
 
     void initComponent();
@@ -36,6 +36,7 @@ public:
 
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
     void setListWindow(ListWindow *listWindow);
+    void clearData();
 
 private:
     MapControllerItem *mMapItem = nullptr;
