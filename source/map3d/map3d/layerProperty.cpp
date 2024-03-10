@@ -43,14 +43,18 @@ void LayerPropertyItem::setColor(const QColor &newColor)
         ->setAttributeAndModes(mat, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
     if(mLayerSetting){
+        mLayerSetting->beginGroup("layer");
         mSettingList.replace(0,mColor.name());
         mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+        mLayerSetting->endGroup();
     }
     }else{
         mModelNodeLayer->getOrCreateStateSet()->removeAttribute(osg::StateAttribute::MATERIAL);
         if(mLayerSetting){
+            mLayerSetting->beginGroup("layer");
             mSettingList.replace(0,NULL);
             mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+            mLayerSetting->endGroup();
         }
     }
 
@@ -78,8 +82,10 @@ void LayerPropertyItem::setIsVisible(bool newIsVisible)
     emit isVisibleChanged();
 
     if(mLayerSetting){
+        mLayerSetting->beginGroup("layer");
         mSettingList.replace(1,QVariant(newIsVisible).toString());
         mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+        mLayerSetting->endGroup();
     }
 }
 
@@ -123,11 +129,14 @@ QSettings *LayerPropertyItem::getLayerSettings()
 
 void LayerPropertyItem::setLayerSettings(QSettings *setting)
 {
+
     mLayerSetting = setting;
+    mLayerSetting->beginGroup("layer");
     if(mModelNodeLayer){
         mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
     }
     mSettingList.resize(3);
+    mLayerSetting->endGroup();
 }
 
 QList<QString> LayerPropertyItem::getSettingList()

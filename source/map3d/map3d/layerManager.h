@@ -8,7 +8,6 @@
 #include "layerProperty.h"
 #include "mapItem.h"
 #include "qsettings.h"
-#include "userManager.h"
 
 Q_DECLARE_METATYPE(osgEarth::Layer);
 
@@ -35,7 +34,6 @@ public:
     LayerPropertyItem *propertyInterface() const;
     void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
 
-    void userSignedIn(UserManager *user);
 
 
 
@@ -79,6 +77,7 @@ public:
     void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
 
     void setSettings(QSettings *settings);
+    void setlayerSettings(osgEarth::Layer *layer);
 
 public slots:
     void setDragIndex(QModelIndex value);
