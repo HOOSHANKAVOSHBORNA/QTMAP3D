@@ -238,12 +238,12 @@ void FilterManager::removeFilterTag(int index)
 {
     if (index >= mFilterTags.size())
         return;
-    mFilterTags.remove(index);
+    mFilterSettings->beginGroup("filter");
     if(mFilterSettings->contains(mFilterTags[index]->field)){
-        mFilterSettings->beginGroup("filter");
         mFilterSettings->remove(mFilterTags[index]->field);
-        mFilterSettings->endGroup();
     }
+    mFilterSettings->endGroup();
+    mFilterTags.remove(index);
     emit filterTagsEdited();
 }
 
