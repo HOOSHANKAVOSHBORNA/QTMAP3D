@@ -18,7 +18,16 @@ namespace eveBIM
     class ViewerWidget;
 }
 
-class OSGRenderNode: public QSGRenderNode , public osgViewer::Viewer, public QObject
+class myViewer: public osgViewer::Viewer
+{
+public:
+    myViewer(): osgViewer::Viewer() {}
+    ~myViewer(){
+        qDebug() << "~myViewer";
+    }
+};
+
+class OSGRenderNode: public QObject, public myViewer, public QSGRenderNode
 {
 public:
     OSGRenderNode(OsgViewerItem *parent);
@@ -30,14 +39,6 @@ public:
     QRectF rect() const override;
     void sync(QQuickItem *item);
     //osg----------------------------------------
-    bool continuousUpdate() const
-    {
-        return mcontinuousUpdate;
-    }
-    void setContinuousUpdate(bool continuousUpdate)
-    {
-        mcontinuousUpdate = continuousUpdate;
-    }
 
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void keyReleaseEvent(QKeyEvent* event);
@@ -72,7 +73,7 @@ private:
     bool mosgInitialized {false};
     osg::ref_ptr<osgViewer::GraphicsWindow> mosgWinEmb;
     float mwindowScale {1.0f};
-    bool mcontinuousUpdate {true};
+    // bool mcontinuousUpdate {true};
     int  _timerId{0};
     osg::Timer _lastFrameStartTime;
     bool _applicationAboutToQuit {false};

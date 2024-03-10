@@ -91,19 +91,19 @@ void Application::initializeSurfaceFormat()
 
 void Application::onLoadingPage()
 {
+    initializeSurfaceFormat();
     mLoadingPage = new LoadingPage();
     mPluginManager = new PluginManager;
-
-    emit loadingPageCppChanged();
-    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
-    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
-
-        setPageIndex(2);
-    });
-
     mMainWindow = new MainWindow(mUserManager);
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
     emit mainPageCppChanged();
+    emit loadingPageCppChanged();
+    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
+        setPageIndex(2);
+    });
+
+
     setPageIndex(1);
     mPluginManager->loadPlugins();
 }
@@ -111,8 +111,8 @@ void Application::onLoadingPage()
 void Application::clearMainWindow()
 {
     qDebug() << "logout----------------";
-    setPageIndex(0);
     delete mPluginManager;
     delete mMainWindow;
     delete mLoadingPage;
+    setPageIndex(0);
 }
