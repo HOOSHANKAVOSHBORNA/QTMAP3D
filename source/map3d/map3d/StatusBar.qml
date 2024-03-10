@@ -52,34 +52,34 @@ Rectangle {
         height: parent.height
         visible: true
 
-        Button {
-            id: messageLogo
-            //            topPadding: 0
-            anchors.verticalCenter: parent.verticalCenter
-            icon{
-                source : "qrc:/Resources/message.png"
-                height: 20/Style.monitorRatio
-                width: 20/Style.monitorRatio
-                color: "transparent" /*hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
-                                 (pressed ? Style.hoverColor : Style.foregroundColor);*/
+//        Button {
+//            id: messageLogo
+//            //            topPadding: 0
+//            anchors.verticalCenter: parent.verticalCenter
+//            icon{
+//                source : "qrc:/Resources/message.png"
+//                height: 20/Style.monitorRatio
+//                width: 20/Style.monitorRatio
+//                color: "red" /*hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
+//                                 (pressed ? Style.hoverColor : Style.foregroundColor);*/
 
-            }
-            background:Rectangle {
-                color:"transparent"
-            }
-//            onClicked: {
-//                if(root.heightFactor == 0){
-//                    showRect.start()
-//                    root.heightVisiblity = true
-//                    heading.visible = true}
-//                else{
-
-//                    hideRect.start()
-//                    heading.visible = false
-//                    root.heightVisiblity = false}
 //            }
+//            background:Rectangle {
+//                color:"transparent"
+//            }
+////            onClicked: {
+////                if(root.heightFactor == 0){
+////                    showRect.start()
+////                    root.heightVisiblity = true
+////                    heading.visible = true}
+////                else{
 
-        }
+////                    hideRect.start()
+////                    heading.visible = false
+////                    root.heightVisiblity = false}
+////            }
+
+//        }
 //        TextField{
 //            id:messageTextField
 //            wrapMode: Text.WrapAnywhere
