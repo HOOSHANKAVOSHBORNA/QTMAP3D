@@ -29,9 +29,12 @@ class UserManager : public QObject
     Q_PROPERTY(QString roleName READ roleName WRITE setRoleName NOTIFY roleNameChanged)
     Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged)
 
+private:
+    explicit UserManager();
 
 public:
-    UserManager(ServiceManager *serviceManager, QObject *parent = nullptr);
+    static UserManager *instance();
+    void initialize(ServiceManager *serviceManager, QObject *parent = nullptr);
 
     void setServiceManager(ServiceManager *newServiceManager);
 
@@ -41,7 +44,6 @@ public:
     Q_INVOKABLE UserData userData() const;
 
     Q_INVOKABLE RoleSelectionModel *roleSelectionModel() const;
-
 
     QString name() const;
     void setName(const QString &newName);
@@ -76,9 +78,10 @@ private slots:
     void onUserDataReceived(const UserData &userData);
 
 private:
-    ServiceManager* mServiceManager{nullptr};
+    static inline UserManager *mUserManager = nullptr;
+    ServiceManager *mServiceManager = nullptr;
     UserData mUserData;
-    RoleSelectionModel* mRoleSelectionModel;
+    RoleSelectionModel *mRoleSelectionModel;
     QString mName;
     QString mUserName;
     QString mMessage;
@@ -86,8 +89,5 @@ private:
 
     QString mRoleName;
 };
-
-
-
 
 #endif // USERMANAGER_H

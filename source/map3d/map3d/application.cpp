@@ -42,7 +42,8 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     mQmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(this)}});
 
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
-    mUserManager = new UserManager(mServiceManager);
+    mUserManager = UserManager::instance();
+    mUserManager->initialize(mServiceManager);
     emit userManagerChanged();
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
@@ -97,7 +98,6 @@ void Application::onLoadingPage()
     emit loadingPageCppChanged();
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
-
         setPageIndex(2);
     });
 
