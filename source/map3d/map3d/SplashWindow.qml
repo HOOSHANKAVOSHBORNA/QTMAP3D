@@ -1,5 +1,5 @@
 import QtQuick
-import Crystal
+// import Crystal
 
 CSplash {
     id: splash

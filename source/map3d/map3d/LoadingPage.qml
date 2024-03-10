@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import "style"
 
 Rectangle {
-    property var loadingPageCpp: undefined
+    // property var loadingPageCpp: undefined
     color: "transparent"
     Rectangle {
         width: parent.width / 2
@@ -46,7 +46,7 @@ Rectangle {
                 clip: true
                 ListView {
                     id: listView
-                    model: loadingPageCpp
+                    model: applicationCpp.loadingPageCpp ? applicationCpp.loadingPageCpp : 0
                     anchors.fill: parent
                     verticalLayoutDirection: ListView.BottomToTop
                     onCountChanged: {
@@ -56,8 +56,10 @@ Rectangle {
 
                     delegate: Text {
                         id: loadingText
-                        font.pixelSize: 15 / Style.monitorRatio
+
+                        font.pixelSize: Style.smallFontSize
                         color: errorStatus ? "white" : "red"
+
                         text: display
                         horizontalAlignment: Text.AlignHCenter
                         width: listView.width

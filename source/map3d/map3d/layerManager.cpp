@@ -9,6 +9,7 @@
 #include <osgEarthAnnotation/GeoPositionNode>
 
 #include "layerManager.h"
+#include "userManager.h"
 
 //LayerModel *LayerModel::mInstance = nullptr;
 
@@ -20,7 +21,9 @@ LayerManager::LayerManager(MapItem *mapItem, QObject *parent) : QObject(parent)
     mPropertyInterface = new LayerPropertyItem(this);
     mLayerModel->setPropertyInterface(mPropertyInterface);
     setPropertyInterface(mPropertyInterface);
-
+    mLayerSettings = new QSettings("Map3D",UserManager::instance()->userName());
+    mPropertyInterface->setLayerSettings(mLayerSettings);
+    mLayerModel->setSettings(mLayerSettings);
     mLayerModel->setMapItem(mapItem);
 }
 
@@ -57,13 +60,13 @@ void LayerManager::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
 }
 
 
+
 // ----------------------------------------------------------------- model
 LayerModel::LayerModel(QObject *parent): QSortFilterProxyModel(parent)
 {
 
     mSourceModel = new QStandardItemModel(this);
     setSourceModel(mSourceModel);
-    mLayerSettings = new QSettings("hooshan","map3d");
 }
 
 LayerModel::~LayerModel()
@@ -73,11 +76,10 @@ LayerModel::~LayerModel()
 void LayerModel::setMapItem(MapItem *mapItem)
 {
     mMapItem = mapItem;
-    resetModel();
-
     connect(mapItem, &MapItem::mapCleared, this, &LayerModel::resetModel);
     connect(mapItem->getMapObject(), &MapObject::layerAdded, this, &LayerModel::onLayerAdded);
     connect(mapItem->getMapObject(), &MapObject::layerRemoved, this, &LayerModel::onLayerRemoved);
+    resetModel();
 }
 
 MapItem *LayerModel::getMapItem()
@@ -217,7 +219,6 @@ void LayerModel::onMoveItem(QModelIndex oldIndex, QModelIndex newIndex)
 
 void LayerModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLayer , unsigned index)
 {
-    setSettings(layer);
     QStandardItem *newItem = new QStandardItem(QString(layer->getName().c_str()));
     if(parentLayer){
         auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
@@ -240,6 +241,9 @@ void LayerModel::onLayerAdded(osgEarth::Layer *layer , osgEarth::Layer *parentLa
 
     mLayerToItemMap[layer] = newItem;
 
+    if(mLayerSettings){
+        setlayerSettings(layer);
+    }
 
 
 }
@@ -293,20 +297,29 @@ bool LayerModel::getLayerVisible(osgEarth::Layer *layer) const
     return visible;
 }
 
-void LayerModel::setSettings(osgEarth::Layer *layer)
+void LayerModel::setSettings(QSettings *settings)
 {
-    if(mLayerSettings->allKeys().contains(QString::number(layer->getUID())) && mPropertyInterface){
-        mPropertyInterface->setModelNodeLayer(layer);
-        QList<QString> vec = mLayerSettings->value(QString::number(layer->getUID())).toStringList().toList();
-        if((vec.length() >= 1 )&&(!vec.at(0).isEmpty())){
-            mPropertyInterface->setColor(vec[0]);
+    mLayerSettings = settings;
+}
+
+void LayerModel::setlayerSettings(osgEarth::Layer *layer)
+{
+    if(mLayerSettings){
+        mLayerSettings->beginGroup("layer");
+        if(mLayerSettings->allKeys().contains(QString::number(layer->getUID())) && mPropertyInterface){
+            mPropertyInterface->setModelNodeLayer(layer);
+            QList<QString> vec = mLayerSettings->value(QString::number(layer->getUID())).toStringList().toList();
+            if((vec.length() >= 1 )&&(!vec.at(0).isEmpty())){
+                mPropertyInterface->setColor(vec[0]);
+            }
+            if((vec.length() >= 2 )&&(!vec.at(1).isEmpty())){
+                mPropertyInterface->setIsVisible(vec[1].startsWith("t",Qt::CaseInsensitive));
+            }
+            if((vec.length() >= 13 )&&(!vec.at(2).isEmpty())){
+                mPropertyInterface->setOpacity(vec[2].toDouble());
+            }
         }
-        if((vec.length() >= 2 )&&(!vec.at(1).isEmpty())){
-            mPropertyInterface->setIsVisible(vec[1].startsWith("t",Qt::CaseInsensitive));
-        }
-        if((vec.length() >= 13 )&&(!vec.at(2).isEmpty())){
-            mPropertyInterface->setOpacity(vec[2].toDouble());
-        }
+        mLayerSettings->endGroup();
     }
 }
 
@@ -318,7 +331,6 @@ LayerPropertyItem *LayerModel::propertyInterface() const
 void LayerModel::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
 {
     mPropertyInterface = newPropertyInterface;
-    mPropertyInterface->setLayerSettings(mLayerSettings);
 }
 
 void LayerModel::setLayerVisible(osgEarth::VisibleLayer *layer)

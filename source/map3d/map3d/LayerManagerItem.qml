@@ -1,5 +1,4 @@
 import QtQuick.Layouts 1.13
-import Crystal 1.0
 import QtQuick
 import QtQuick.Controls 2.15
 import QtQuick.Effects
@@ -55,7 +54,7 @@ Item {
                 anchors.right: parent.right
                 verticalAlignment: Text.AlignVCenter
                 font.family: Style.fontFamily
-                font.pixelSize: 17 / Style.monitorRatio
+                font.pixelSize: Style.regularFontSize
                 color: Style.foregroundColor
 
                 background: Rectangle {
@@ -263,7 +262,7 @@ Item {
                                 anchors.left: itemIcon.right
                                 anchors.leftMargin: 10 / Style.monitorRatio
                                 clip: true
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize:Style.regularFontSize
                                 font.weight: Font.Medium
                                 color: Style.foregroundColor
                                 text: display
@@ -432,7 +431,7 @@ Item {
                                         leftPadding: menuItem.indicator.width + menuItem.indicator.x
                                         text: menuItem.text
                                         font.family: Style.fontFamily
-                                        font.pixelSize: 17 / Style.monitorRatio
+                                        font.pixelSize:Style.regularFontSize
                                         font.weight: Font.Medium
                                         opacity: enabled ? 1.0 : 0.3
                                         color: Style.foregroundColor
@@ -481,7 +480,7 @@ Item {
                         Layout.preferredHeight: contentHeight
                         text: 'Layer Property'
                         font.family: Style.fontFamily
-                        font.pixelSize: 20 / Style.monitorRatio
+                        font.pixelSize: Style.titleFontSize
 
                         Layout.bottomMargin: 1 / Style.monitorRatio
                         //                        Layout.topMargin: 25 / Style.monitorRatio

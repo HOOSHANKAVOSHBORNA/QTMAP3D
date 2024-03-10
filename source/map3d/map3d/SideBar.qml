@@ -8,7 +8,6 @@ import "style"
 Rectangle {
     id: rootRect
 
-
     property alias sideContainer: sideContainer
 
     property alias listWindowVisible: btnList.checked
@@ -121,7 +120,6 @@ Rectangle {
                                 height: Math.ceil(35 / Style.monitorRatio)
                             }
 
-
                             background: Rectangle {
                                 width: Math.ceil(39 / Style.monitorRatio)
                                 height: Math.ceil(39 / Style.monitorRatio)
@@ -137,12 +135,11 @@ Rectangle {
                             checkable: true
                             checked: false
                             onToggled: {
-                                print(sideBarRep.checkedIndex !== model.index,
-                                      !sideBarModel.get(model.index).isWindow)
-
-                                if (sideBarRep.checkedIndex === model.index
-                                        && !sideBarModel.get(
-                                            model.index).isWindow) {
+                                if (sideBarModel.get(model.index).isWindow) {
+                                    sideContainer.focusWidnow(model.index)
+                                } else if (sideBarRep.checkedIndex === model.index
+                                           && !sideBarModel.get(
+                                               model.index).isWindow) {
                                     sideBarRep.checkedIndex = -1
                                     sideContainer.setCurrentItemIndex(-1)
                                 } else if (sideBarRep.checkedIndex !== model.index
@@ -162,7 +159,7 @@ Rectangle {
                                     id: tooltipText
                                     anchors.margins: 7 / Style.monitorRatio
                                     text: model.name
-                                    font.pixelSize: 17 / Style.monitorRatio
+                                    font.pixelSize: Style.regularFontSize
                                     color: 'white'
                                 }
 
@@ -192,9 +189,9 @@ Rectangle {
                         }
 
                         display: AbstractButton.IconOnly
-onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-    print(applicationWindow.connectionConfigCpp.isConnected)
-}
+                        //onClicked: {
+                        //    print(applicationWindow.connectionConfigCpp.isConnected)
+                        //}
                         checkable: true
 
                         //                        checked: this take value by alias property
@@ -211,7 +208,7 @@ onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                                 id: tooltipText2
                                 anchors.margins: 7 / Style.monitorRatio
                                 text: 'List'
-                                font.pixelSize: 17 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: 'white'
                             }
 
@@ -259,7 +256,7 @@ onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                             id: tooltipText3
                             anchors.margins: 7 / Style.monitorRatio
                             text: pin ? "Pin" : "Unpin"
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: 'white'
                         }
 
@@ -348,9 +345,9 @@ onClicked: {print("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         }
 
         ListElement {
-//            iconSource: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+            //            iconSource: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
             name: "Connection Configuration"
-            iconSource:  "qrc:/Resources/plugged.png"
+            iconSource: "qrc:/Resources/plugged.png"
             checked: false
             isWindow: false
         }

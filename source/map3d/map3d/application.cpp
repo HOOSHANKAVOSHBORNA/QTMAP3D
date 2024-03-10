@@ -39,26 +39,13 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     mNetworkManager = new NetworkManager();
     mServiceManager = new ServiceManager(mNetworkManager);
 
+    mQmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(this)}});
+
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
-    mUserManager = new UserManager(mServiceManager);
-    mLoadingPage = new LoadingPage();
-    mMainWindow = new MainWindow();
-
-    mQmlEngine->setInitialProperties({{"userManager", QVariant::fromValue(mUserManager)},
-                                      {"connectionConfigCpp", QVariant::fromValue(mConnectionConfig)},
-                                      {"loadingPageCpp", QVariant::fromValue(mLoadingPage)},
-                                      {"mainPageCpp", QVariant::fromValue(mMainWindow)},
-                                      {"applicationCpp", QVariant::fromValue(this)}});
-
-    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
-
-    mPluginManager = new PluginManager;
+    mUserManager = UserManager::instance();
+    mUserManager->initialize(mServiceManager);
+    emit userManagerChanged();
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
-    connect(mPluginManager, &PluginManager::plugunCount, mLoadingPage, &LoadingPage::setPluginCounter);
-    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
-    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
-        setPageIndex(2);
-    });
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
 }
 
@@ -66,6 +53,32 @@ void Application::setPageIndex(int index)
 {
     mPageIndex = index;
     emit pageIndexChanged();
+}
+
+UserManager *Application::userManager()
+{
+    return mUserManager;
+}
+
+ConnectionConfiguration *Application::connectionConfigCpp()
+{
+    return mConnectionConfig;
+}
+
+LoadingPage *Application::loadingPageCpp()
+{
+    return mLoadingPage;
+}
+
+MainWindow *Application::mainPageCpp()
+{
+    return mMainWindow;
+}
+
+void Application::saveDataInFile()
+{
+    // TODO: clean save in file
+    dynamic_cast<LocationModel *>(mMainWindow->getLocationManager()->sourceModel())->writeToFile();
 }
 
 void Application::initializeSurfaceFormat()
@@ -79,14 +92,29 @@ void Application::initializeSurfaceFormat()
 
 void Application::onLoadingPage()
 {
-        setPageIndex(1);
-        mPluginManager->loadPlugins();
+    initializeSurfaceFormat();
+    mLoadingPage = new LoadingPage();
+    mPluginManager = new PluginManager;
+
+    mMainWindow = new MainWindow(mUserManager);
+    mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
+    emit mainPageCppChanged();
+    emit loadingPageCppChanged();
+    connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
+    connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
+        setPageIndex(2);
+    });
+
+
+    setPageIndex(1);
+    mPluginManager->loadPlugins();
 }
 
 void Application::clearMainWindow()
 {
     qDebug() << "logout----------------";
+    delete mPluginManager;
+    delete mMainWindow;
+    delete mLoadingPage;
     setPageIndex(0);
-    mPluginManager->unLoadPlugins();
-    mMainWindow->clearData();
 }

@@ -3,8 +3,6 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Material
 
-import Crystal
-
 import "style"
 
 Item {
@@ -33,6 +31,12 @@ Item {
         }
     }
 
+    function focusWidnow(index) {
+        console.log('there')
+        stackLayout.data[index].isWindow = false
+        stackLayout.data[index].isWindow = true
+    }
+
     //clip: true
     ColumnLayout {
         id: columnLayout
@@ -58,9 +62,10 @@ Item {
                 Layout.topMargin: 20 / Style.monitorRatio
                 Layout.bottomMargin: 10 / Style.monitorRatio
                 color: Style.foregroundColor
-                font.pixelSize: 25 / Style.monitorRatio
+                font.pixelSize: Style.titleFontSize
                 font.family: Style.fontFamily
-                font.weight: 400 / Style.monitorRatio
+                font.weight: 500 / Style.monitorRatio
+                Layout.fillWidth: true
             }
 
             Rectangle {

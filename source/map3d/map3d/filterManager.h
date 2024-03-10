@@ -1,6 +1,7 @@
 #ifndef FILTERMANAGER_H
 #define FILTERMANAGER_H
 #include "qqmlintegration.h"
+#include "qsettings.h"
 #include "qvariant.h"
 #include <QObject>
 #include <QMap>
@@ -46,8 +47,8 @@ public:
         LessEqual
     };
     enum LogicalOperator{
-        And,
-        Or
+        And = 0,
+        Or = 1
 //        Not
     };
     Q_ENUM(LogicalOperator)
@@ -90,6 +91,21 @@ public:
         return "";
     }
 
+    static Comparision srtingToComparison(QString s) {
+        if (s == "=")
+            return Comparision::Equal;
+        else if (s == "!=")
+            return Comparision::NotEqual;
+        else if (s == ">=")
+            return Comparision::GreaterEqual;
+        else if (s == "<=")
+            return Comparision::LessEqual;
+        else if (s == ">")
+            return Comparision::Greater;
+        else
+            return Comparision::Greater;
+    }
+
     bool operator==(const Tag* t) const {
         return (t->field.toLower() == field.toLower()) && (t->comparision == comparision) && (t->value == value) && t->logicalOperator == logicalOperator;
     }
@@ -124,8 +140,8 @@ public:
     void removeStringFilterField(QString field);
     bool checkNodeToShow(NodeData *nodeData);
 
-    Q_INVOKABLE void addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
-    Q_INVOKABLE void removeFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op = Tag::And);
+    Q_INVOKABLE void addFilterTag(QString field, QVariant value, QString comp, Tag::LogicalOperator op = Tag::And);
+    Q_INVOKABLE void removeFilterTag(QString field, QVariant value, QString comp, Tag::LogicalOperator op = Tag::And);
     Q_INVOKABLE void removeFilterTag(int index);
     Q_INVOKABLE const QVector<Tag*> getFilterTags() const;
     Q_INVOKABLE const Tag * const getFilterTagAt(int index);
@@ -147,6 +163,7 @@ private:
     FilterFieldModel *mFilterFieldsNumModel;
     QSortFilterProxyModel *mFilterFieldsNum;
     FilterFieldModel *mFilterFieldsColorModel;
+    QSettings *mFilterSettings;
 
     QVector<Tag*> mFilterTags{};
 };

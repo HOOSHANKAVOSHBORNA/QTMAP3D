@@ -36,6 +36,7 @@ public:
 
 
 
+
 signals:
     void propertyItemChanged();
     void propertyItemTitleChanged();
@@ -45,6 +46,7 @@ private:
     LayerModel *mLayerModel = nullptr;
     LayerPropertyItem *mPropertyInterface = nullptr;
     QString mPropertyItemTitle;
+    QSettings *mLayerSettings{nullptr};
 };
 
 class LayerModel : public QSortFilterProxyModel
@@ -60,7 +62,7 @@ class LayerModel : public QSortFilterProxyModel
     };
 
 public:
-    explicit LayerModel(QObject *parent = nullptr);
+    explicit LayerModel( QObject *parent = nullptr);
     ~LayerModel();
 
     void setMapItem(MapItem *mapItem);
@@ -73,6 +75,9 @@ public:
 
     LayerPropertyItem *propertyInterface() const;
     void setPropertyInterface(LayerPropertyItem *newPropertyInterface);
+
+    void setSettings(QSettings *settings);
+    void setlayerSettings(osgEarth::Layer *layer);
 
 public slots:
     void setDragIndex(QModelIndex value);
@@ -101,7 +106,6 @@ private:
     bool getLayerVisible(osgEarth::Layer *layer) const;
 
 
-    void setSettings(osgEarth::Layer *layer);
 
 private:
     MapItem *mMapItem;

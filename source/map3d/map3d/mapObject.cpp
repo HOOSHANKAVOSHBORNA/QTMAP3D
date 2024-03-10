@@ -137,6 +137,14 @@ MapObject::MapObject(QObject *parent):
     addMapCallback(new MainMapCallback(this));
 }
 
+MapObject::~MapObject()
+{
+    for (auto &i: mLayerMap) {
+        delete i;
+    }
+    qDebug() << "~MapObject";
+}
+
 MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     osgEarth::Map(options),
     QObject(parent)

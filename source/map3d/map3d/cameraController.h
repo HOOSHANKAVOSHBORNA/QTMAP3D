@@ -9,6 +9,7 @@ class CameraController: public osgEarth::Util::EarthManipulator
 {
 public:
     CameraController(MapItem* mapItem);
+    ~CameraController();
 
     virtual void home(double /*unused*/) override;
 

@@ -1,9 +1,10 @@
 #include "filterManager.h"
-
 #include "serviceManager.h"
+#include "userManager.h"
+
+
 FilterManager::FilterManager(QObject *parent) : QObject(parent)
 {
-    qmlRegisterType<Tag>("Crystal", 1, 0, "Tag");
 
     mFilterFieldsColor = new QSortFilterProxyModel(this);
     mFilterFieldsColor->setFilterRole(Qt::DisplayRole);
@@ -22,6 +23,21 @@ FilterManager::FilterManager(QObject *parent) : QObject(parent)
     mFilterFieldsNum->setFilterCaseSensitivity(Qt::CaseInsensitive);
     mFilterFieldsNumModel = new FilterFieldModel(this);
     mFilterFieldsNum->setSourceModel(mFilterFieldsNumModel);
+
+    mFilterSettings = new QSettings("Map3D",UserManager::instance()->userName());
+    mFilterSettings->beginGroup("filter");
+    for (int var = 0; var < mFilterSettings->allKeys().count(); ++var) {
+        QString key = mFilterSettings->allKeys().at(var);
+        QVariantList data = mFilterSettings->value(key).toList();
+        Tag::LogicalOperator op;
+        if(data[2].toString().startsWith("or")){
+            op = Tag::Or;
+        }else{
+            op = Tag::And;
+        }
+        addFilterTag(key,data[0],data[1].toString(),op);
+    }
+    mFilterSettings->endGroup();
 
 }
 
@@ -114,36 +130,36 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData, Tag *tag)
         return false;
     if (it != nodeData->fieldData.end()) {
         switch (tag->comparision) {
-            case Tag::Comparision::Equal:
-                if (it->value.toString().startsWith(tag->value.toString())) {
-                    return true;
-                }
-                break;
-            case Tag::Comparision::Less:
-                if (it->value.toDouble() < tag->value.toDouble()) {
-                    return true;
-                }
-                break;
-            case Tag::Comparision::LessEqual:
-                if (it->value.toDouble() <= tag->value.toDouble()) {
-                    return true;
-                }
-                break;
-            case Tag::Comparision::Greater:
-                if (it->value.toDouble() > tag->value.toDouble()) {
-                    return true;
-                }
-                break;
-            case Tag::Comparision::GreaterEqual:
-                if (it->value.toDouble() >= tag->value.toDouble()) {
-                    return true;
-                }
-                break;
-            case Tag::Comparision::NotEqual:
-                if (it->value.toString() != tag->value.toString()) {
-                    return true;
-                }
-                break;
+        case Tag::Comparision::Equal:
+            if (it->value.toString().startsWith(tag->value.toString())) {
+                return true;
+            }
+            break;
+        case Tag::Comparision::Less:
+            if (it->value.toDouble() < tag->value.toDouble()) {
+                return true;
+            }
+            break;
+        case Tag::Comparision::LessEqual:
+            if (it->value.toDouble() <= tag->value.toDouble()) {
+                return true;
+            }
+            break;
+        case Tag::Comparision::Greater:
+            if (it->value.toDouble() > tag->value.toDouble()) {
+                return true;
+            }
+            break;
+        case Tag::Comparision::GreaterEqual:
+            if (it->value.toDouble() >= tag->value.toDouble()) {
+                return true;
+            }
+            break;
+        case Tag::Comparision::NotEqual:
+            if (it->value.toString() != tag->value.toString()) {
+                return true;
+            }
+            break;
         }
     }
     return false;
@@ -179,25 +195,41 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData)
     return firstTag ? flag : true;
 }
 
-void FilterManager::addFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op)
+void FilterManager::addFilterTag(QString field, QVariant value, QString comp, Tag::LogicalOperator op)
 {
-    Tag* tag = new Tag{field, value, comp, op};
+    Tag* tag = new Tag{field, value, Tag::srtingToComparison(comp), op};
     if (!mFilterTags.contains(tag)) {
         mFilterTags.push_back(tag);
         connect(tag, &Tag::tagChanged, this, &FilterManager::filterTagsEdited);
+        //----------------------------------------------------
+        if(!mFilterSettings->contains(field)){
+            mFilterSettings->beginGroup("filter");
+            QVariantList list;
+            list.insert(0,value);
+            list.insert(1,comp);
+            list.insert(2,op);
+            mFilterSettings->setValue(field,list);
+            mFilterSettings->endGroup();
+        }
     }else
         delete tag;
     emit filterTagsEdited();
+
 }
 
-void FilterManager::removeFilterTag(QString field, QVariant value, Tag::Comparision comp, Tag::LogicalOperator op)
+void FilterManager::removeFilterTag(QString field, QVariant value, QString comp, Tag::LogicalOperator op)
 {
-    Tag *tag = new Tag{field, value, comp, op};
+    Tag *tag = new Tag{field, value,  Tag::srtingToComparison(comp), op};
     auto it = std::find_if(mFilterTags.begin(), mFilterTags.end(), [this, tag](const Tag *t){
         return *tag == t;
     });
     if (it != mFilterTags.end()) {
         mFilterTags.erase(it);
+    }
+    if(mFilterSettings->contains(field)){
+        mFilterSettings->beginGroup("filter");
+        mFilterSettings->remove(field);
+        mFilterSettings->endGroup();
     }
     emit filterTagsEdited();
 }
@@ -206,6 +238,11 @@ void FilterManager::removeFilterTag(int index)
 {
     if (index >= mFilterTags.size())
         return;
+    mFilterSettings->beginGroup("filter");
+    if(mFilterSettings->contains(mFilterTags[index]->field)){
+        mFilterSettings->remove(mFilterTags[index]->field);
+    }
+    mFilterSettings->endGroup();
     mFilterTags.remove(index);
     emit filterTagsEdited();
 }

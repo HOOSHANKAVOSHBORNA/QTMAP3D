@@ -6,7 +6,7 @@
 #include <QQuickItem>
 #include <QVariant>
 
-ListWindow::ListWindow(QQuickWindow *parent)
+ListWindow::ListWindow(QObject *parent): QObject(parent)
 {
     mTabbarModel = new TabbarModel();
 

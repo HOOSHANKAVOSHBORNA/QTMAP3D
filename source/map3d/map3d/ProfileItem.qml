@@ -1,8 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
-
-import Crystal 1.0
 import "style"
 import "Components"
 
@@ -92,7 +90,7 @@ Item {
             buttonBorder.color: Style.foregroundColor
 
             onClicked: {
-                userManager.signedOut()
+                applicationCpp.userManager.signedOut()
             }
         }
     }

@@ -3,16 +3,15 @@
 
 #include <QObject>
 #include <QUrl>
-#include <list>
 
 #include "connectionConfiguration.h"
 #include "loadingPage.h"
 #include "userManager.h"
 #include "pluginmanager.h"
 #include "networkManager.h"
+#include "mainwindow.h"
 
-
-class MainWindow;
+// class MainWindow;
 class ListWindow;
 class QQmlApplicationEngine;
 
@@ -20,6 +19,11 @@ class Application : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int pageIndex READ pageIndex WRITE setPageIndex NOTIFY pageIndexChanged)
+    Q_PROPERTY(UserManager* userManager READ userManager NOTIFY userManagerChanged)
+    Q_PROPERTY(ConnectionConfiguration* connectionConfigCpp READ connectionConfigCpp NOTIFY connectionConfigCppChanged)
+    Q_PROPERTY(LoadingPage* loadingPageCpp READ loadingPageCpp NOTIFY loadingPageCppChanged)
+    Q_PROPERTY(MainWindow* mainPageCpp READ mainPageCpp NOTIFY mainPageCppChanged)
+
 private:
     explicit Application();
 
@@ -35,8 +39,19 @@ public:
     void setPageIndex(int index);
     inline int pageIndex() const{return mPageIndex;}
 
+    Q_INVOKABLE UserManager* userManager();
+    Q_INVOKABLE ConnectionConfiguration* connectionConfigCpp();
+    Q_INVOKABLE LoadingPage* loadingPageCpp();
+    Q_INVOKABLE MainWindow* mainPageCpp();
+
+    Q_INVOKABLE void saveDataInFile();
+
 signals:
     void pageIndexChanged();
+    void userManagerChanged();
+    void connectionConfigCppChanged();
+    void loadingPageCppChanged();
+    void mainPageCppChanged();
 
 private:
     static void initializeSurfaceFormat();

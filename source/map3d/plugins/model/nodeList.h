@@ -22,7 +22,7 @@ class CategoryTagModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit CategoryTagModel(DataManager *dataManager);
+    explicit CategoryTagModel(DataManager *dataManager, QObject *parent = nullptr);
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
@@ -40,7 +40,7 @@ class CategoryTabbarModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit CategoryTabbarModel(DataManager *dataManager);
+    explicit CategoryTabbarModel(DataManager *dataManager, QObject *parent = nullptr);
 
     Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
@@ -61,7 +61,7 @@ protected:
     friend class NodeList;
 
 public:
-    explicit NodeListModel(DataManager *dataManager);
+    explicit NodeListModel(DataManager *dataManager, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex & = QModelIndex()) const override;
     int columnCount(const QModelIndex & = QModelIndex()) const override;
@@ -100,7 +100,7 @@ protected:
     friend class NodeList;
 
 public:
-    explicit NodeProxyModel(DataManager *dataManager);
+    explicit NodeProxyModel(DataManager *dataManager, QObject *parent = nullptr);
 
     void invalidateRowFilterInvoker();
     void invalidateColumnFilterInvoker();
@@ -152,7 +152,7 @@ class NodeList : public QObject
     Q_PROPERTY(QQuickItem *qmlItem READ qmlItem WRITE setQmlItem NOTIFY qmlItemChanged FINAL)
 
 public:
-    explicit NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *dataManager);
+    explicit NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *dataManager, QObject *parent = nullptr);
 
     QQuickItem *qmlItem() const;
     void setQmlItem(QQuickItem *newQmlItem);

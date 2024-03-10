@@ -27,6 +27,12 @@ Rectangle {
     readonly property color bg50: Qt.rgba(Style.backgroundColor.r,
                                           Style.backgroundColor.g,
                                           Style.backgroundColor.b, 0.50)
+    readonly property color bg75: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.75)
+    readonly property color bg95: Qt.rgba(Style.backgroundColor.r,
+                                          Style.backgroundColor.g,
+                                          Style.backgroundColor.b, 0.75)
 
     readonly property color fg80: Qt.rgba(Style.foregroundColor.r,
                                           Style.foregroundColor.g,
@@ -56,34 +62,103 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 30 / Style.monitorRatio
+                height: 30 / Style.monitorRatio
                 radius: height / 2
                 color: bg20
-                clip: true
 
-                TextInput {
-                    id: tiSearchedText
-
-                    anchors.fill: parent
-                    anchors.leftMargin: 15 / Style.monitorRatio
-                    anchors.rightMargin: 15 / Style.monitorRatio
-                    verticalAlignment: Text.AlignVCenter
-                    font.family: Style.fontFamily
-                    font.pixelSize: 17 / Style.monitorRatio
-                    color: fg75
-
-                    onTextChanged: lvLocationManger.model.searchedName = text
+                IconImage {
+                    id: searchIcon
+                    source: "qrc:/Resources/search.png"
+                    width: 24 / Style.monitorRatio
+                    height: 24 / Style.monitorRatio
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10 / Style.monitorRatio
+                    color: Style.foregroundColor
                 }
 
-                Text {
-                    anchors.fill: parent
-                    anchors.leftMargin: 15 / Style.monitorRatio
-                    anchors.rightMargin: 15 / Style.monitorRatio
-                    verticalAlignment: tiSearchedText.verticalAlignment
-                    text: "Go to location..."
-                    font: tiSearchedText.font
-                    visible: tiSearchedText.text === ""
-                    color: fg75
+                TextField {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: searchIcon.right
+                    anchors.right: parent.right
+                    verticalAlignment: Text.AlignVCenter
+                    font.family: Style.fontFamily
+                    font.pixelSize: Style.regularFontSize
+
+                    background: Rectangle {
+                        color: 'transparent'
+                    }
+
+                    onAccepted: lvLocationManger.model.searchedName = text
+                    onTextChanged: lvLocationManger.model.searchedName = text
+
+                    placeholderText: "Name..."
+                    placeholderTextColor: Style.disableColor
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 30 / Style.monitorRatio
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 30 / Style.monitorRatio
+                    radius: height / 2
+                    color: bg20
+                    clip: true
+
+                    TextInput {
+                        id: tiLat
+
+                        anchors.fill: parent
+                        anchors.leftMargin: 15 / Style.monitorRatio
+                        anchors.rightMargin: 15 / Style.monitorRatio
+                        verticalAlignment: Text.AlignVCenter
+                        font.family: Style.fontFamily
+                        font.pixelSize: Style.regularFontSize
+                        color: fg75
+                        text: "0.0"
+
+                        validator: RegularExpressionValidator {
+                            regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
+                        }
+
+                        onAccepted: {
+                            listModel.goToLocation(parseFloat(tiLat.text),
+                                                   parseFloat(tiLang.text))
+                        }
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 30 / Style.monitorRatio
+                    radius: height / 2
+                    color: bg20
+                    clip: true
+
+                    TextInput {
+                        id: tiLang
+
+                        anchors.fill: parent
+                        anchors.leftMargin: 15 / Style.monitorRatio
+                        anchors.rightMargin: 15 / Style.monitorRatio
+                        verticalAlignment: Text.AlignVCenter
+                        font.family: Style.fontFamily
+                        font.pixelSize: Style.regularFontSize
+                        color: fg75
+                        text: "0.0"
+
+                        validator: RegularExpressionValidator {
+                            regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
+                        }
+
+                        onAccepted: {
+                            listModel.goToLocation(parseFloat(tiLat.text),
+                                                   parseFloat(tiLang.text))
+                        }
+                    }
                 }
             }
 
@@ -91,23 +166,24 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30 / Style.monitorRatio
                 radius: height / 2
-                color: bg25
+                color: fg80
 
                 RowLayout {
                     anchors.centerIn: parent
                     spacing: 4 / Style.monitorRatio
 
-                    Image {
+                    IconImage {
                         Layout.preferredWidth: 22 / Style.monitorRatio
                         Layout.preferredHeight: 22 / Style.monitorRatio
                         source: "qrc:/Resources/location-add.png"
+                        color: Style.backgroundColor
                     }
 
                     Text {
                         text: "Add place"
                         font.family: Style.fontFamily
-                        font.pixelSize: 17 / Style.monitorRatio
-                        color: Style.foregroundColor
+                        font.pixelSize: Style.regularFontSize
+                        color: Style.backgroundColor
                     }
                 }
 
@@ -115,8 +191,8 @@ Rectangle {
                     anchors.fill: parent
 
                     onClicked: {
-                        popup.editIndex = -1
-                        popup.myOpen()
+                        rPopup.editIndex = -1
+                        rPopup.myOpen()
                     }
                 }
             }
@@ -124,7 +200,7 @@ Rectangle {
 
         // -------------------------------------- Popup
         Window {
-            id: popup
+            id: rPopup
 
             property int editIndex: -1
 
@@ -132,7 +208,7 @@ Rectangle {
                 txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(
                             6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
 
-                popup.visible = true
+                rPopup.visible = true
             }
 
             function myClose() {
@@ -140,37 +216,22 @@ Rectangle {
                 tiLocationDescription.text = ""
                 lvColors.selectedColor = "black"
 
-                popup.close()
+                rPopup.close()
             }
 
-            x: 400
-            y: 400
-            width: 1500 / Style.monitorRatio
-            height: 1000 / Style.monitorRatio
+            flags: Qt.Window | Qt.FramelessWindowHint
+            width: 400 / Style.monitorRatio
+            height: 523 / Style.monitorRatio
             color: "transparent"
-            visible: false
-            flags: Qt.FramelessWindowHint
 
-            // -------------------------------------- rPopup Draggablity
             MouseArea {
                 anchors.fill: parent
-
-                smooth: true
-                drag.target: rPopup
-                drag.axis: Drag.XAndYAxis
-                drag.minimumX: 0
-                drag.minimumY: 0
-                drag.maximumX: 800
-                drag.maximumY: 800
+                onPositionChanged: rPopup.startSystemMove()
             }
 
-            // -------------------------------------- rPopup
             Rectangle {
-                id: rPopup
-
-                width: 400 / Style.monitorRatio
-                height: 523 / Style.monitorRatio
-                color: "silver"
+                anchors.fill: parent
+                color: 'silver'
                 radius: 20 / Style.monitorRatio
 
                 Text {
@@ -178,11 +239,11 @@ Rectangle {
 
                     text: "Add place"
                     color: Style.foregroundColor
-                    anchors.horizontalCenter: rPopup.horizontalCenter
-                    anchors.top: rPopup.top
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top
                     anchors.topMargin: 30 / Style.monitorRatio
                     font.family: Style.fontFamily
-                    font.pixelSize: 22 / Style.monitorRatio
+                    font.pixelSize: Style.titleFontSize
                 }
 
                 Button {
@@ -196,22 +257,22 @@ Rectangle {
                     }
 
                     anchors.verticalCenter: txtAddPlace.verticalCenter
-                    anchors.right: rPopup.right
+                    anchors.right: parent.right
                     anchors.rightMargin: 20 / Style.monitorRatio
                     icon.source: "qrc:/Resources/add-place-close.png"
                     icon.width: 24 / Style.monitorRatio
                     icon.height: 24 / Style.monitorRatio
 
-                    onClicked: popup.myClose()
+                    onClicked: rPopup.myClose()
                 }
 
                 ColumnLayout {
                     anchors.top: txtAddPlace.bottom
-                    anchors.topMargin: 25 / Style.monitorRatio
-                    anchors.left: rPopup.left
+                    anchors.topMargin: 20 / Style.monitorRatio
+                    anchors.left: parent.left
                     anchors.leftMargin: 20 / Style.monitorRatio
-                    anchors.right: rPopup.right
                     anchors.rightMargin: 20 / Style.monitorRatio
+                    anchors.right: parent.right
 
                     spacing: 8 / Style.monitorRatio
 
@@ -243,7 +304,7 @@ Rectangle {
 
                             text: "set before opening :)"
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: Style.foregroundColor
                         }
                     }
@@ -264,7 +325,7 @@ Rectangle {
                             anchors.rightMargin: 30 / Style.monitorRatio
                             verticalAlignment: Text.AlignVCenter
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: fg80
                         }
 
@@ -296,7 +357,7 @@ Rectangle {
                             anchors.rightMargin: 30 / Style.monitorRatio
                             verticalAlignment: Text.AlignVCenter
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: fg80
                         }
 
@@ -347,7 +408,7 @@ Rectangle {
                                 text: "Take photo for place"
                                 font.underline: true
                                 font.family: Style.fontFamily
-                                font.pixelSize: 15 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 color: fg50
                             }
                         }
@@ -361,7 +422,7 @@ Rectangle {
                         Text {
                             text: "Place color"
                             font.family: Style.fontFamily
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             color: fg80
                         }
 
@@ -423,7 +484,7 @@ Rectangle {
 
                             Text {
                                 text: "More colors"
-                                font.pixelSize: 14 / Style.monitorRatio
+                                font.pixelSize: Style.regularFontSize
                                 font.family: Style.fontFamily
                                 color: fg50
                             }
@@ -448,9 +509,9 @@ Rectangle {
 
                 // ---------------------------------------------- cancel & save buttons
                 Row {
-                    anchors.bottom: rPopup.bottom
+                    anchors.bottom: parent.bottom
                     anchors.bottomMargin: 30 / Style.monitorRatio
-                    anchors.right: rPopup.right
+                    anchors.right: parent.right
                     anchors.rightMargin: 20 / Style.monitorRatio
                     spacing: 4 / Style.monitorRatio
 
@@ -465,7 +526,7 @@ Rectangle {
                         Text {
                             anchors.centerIn: parent
                             text: "Cancel"
-                            font.pixelSize: 15 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
                             color: Style.foregroundColor
                         }
@@ -473,7 +534,7 @@ Rectangle {
                         MouseArea {
                             anchors.fill: parent
 
-                            onClicked: popup.myClose()
+                            onClicked: rPopup.myClose()
                         }
                     }
 
@@ -486,7 +547,7 @@ Rectangle {
                         Text {
                             anchors.centerIn: parent
                             text: "Save"
-                            font.pixelSize: 15 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
                             color: beautifulWhite
                         }
@@ -495,7 +556,7 @@ Rectangle {
                             anchors.fill: parent
 
                             onClicked: {
-                                if (popup.editIndex === -1) {
+                                if (rPopup.editIndex === -1) {
                                     lvLocationManger.model.addNewLocation(
                                                 tiLocationName.text,
                                                 tiLocationDescription.text,
@@ -504,7 +565,7 @@ Rectangle {
                                 } else {
                                     lvLocationManger.model.editLocation(
                                                 lvLocationManger.model.index(
-                                                    popup.editIndex, 0),
+                                                    rPopup.editIndex, 0),
                                                 tiLocationName.text,
                                                 tiLocationDescription.text,
                                                 "qrc:/Resources/airplane1.jpg",
@@ -512,7 +573,7 @@ Rectangle {
                                 }
 
                                 lvLocationManger.model.sourceModel.writeToFile()
-                                popup.myClose()
+                                rPopup.myClose()
                             }
                         }
                     }
@@ -523,8 +584,8 @@ Rectangle {
         // ----------------------------------------------- seperate line
         Rectangle {
             Layout.fillWidth: true
-            height: 1
-            color: bg50
+            height: 2
+            color: fg80
         }
 
         // ----------------------------------------------- locatoins list
@@ -542,25 +603,14 @@ Rectangle {
 
                 width: lvLocationManger.width
                 height: 232 / Style.monitorRatio
-                color: bg25
+                color: fg80
                 radius: 15 / Style.monitorRatio
                 clip: true
 
                 MouseArea {
-                    id: goToLocationBtn
                     anchors.fill: parent
 
                     onDoubleClicked: {
-
-                        // DEBUG
-                        //                        console.log("model.name: ", model.name)
-                        //                        console.log("model.lon: ", model.lon)
-                        //                        console.log("model.lat: ", model.lat)
-                        //                        console.log("model.z: ", model.z)
-                        //                        console.log("model.heading: ", model.heading)
-                        //                        console.log("model.pitch: ", model.pitch)
-                        //                        console.log("model.range: ", model.range)
-                        // ENDDEBUG
                         lvLocationManger.model.goToLocation(
                                     lvLocationManger.model.index(index, 0))
                     }
@@ -605,9 +655,9 @@ Rectangle {
 
                             Layout.fillWidth: true
                             text: model.name
-                            font.pixelSize: 20 / Style.monitorRatio
+                            font.pixelSize: Style.titleFontSize
                             font.family: Style.fontFamily
-                            color: Style.foregroundColor
+                            color: Style.backgroundColor
 
                             // for debug
                             MouseArea {
@@ -633,6 +683,7 @@ Rectangle {
                             icon.source: "qrc:/Resources/location-edit.png"
                             icon.width: 25 / Style.monitorRatio
                             icon.height: 25 / Style.monitorRatio
+                            icon.color: Style.backgroundColor
 
                             onClicked: {
                                 lvLocationManger.model.goToLocation(
@@ -642,9 +693,9 @@ Rectangle {
                                 tiLocationName.text = model.name
                                 tiLocationDescription.text = model.description
                                 lvColors.selectedColor = model.color
-                                popup.editIndex = model.index
+                                rPopup.editIndex = model.index
 
-                                popup.myOpen()
+                                rPopup.myOpen()
                             }
                         }
 
@@ -661,6 +712,7 @@ Rectangle {
                             icon.source: "qrc:/Resources/location-delete.png"
                             icon.width: 25 / Style.monitorRatio
                             icon.height: 25 / Style.monitorRatio
+                            icon.color: Style.backgroundColor
 
                             onClicked: lvLocationManger.model.myRemoveRow(
                                            lvLocationManger.model.index(index,
@@ -679,17 +731,17 @@ Rectangle {
 
                         Text {
                             text: model.description
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
-                            color: fg75
+                            color: bg75
                         }
 
                         Text {
                             text: model.lon.toFixed(
                                       6) + ", " + model.lat.toFixed(6)
-                            font.pixelSize: 17 / Style.monitorRatio
+                            font.pixelSize: Style.regularFontSize
                             font.family: Style.fontFamily
-                            color: fg75
+                            color: bg75
                         }
                     }
                 }

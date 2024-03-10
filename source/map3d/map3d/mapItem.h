@@ -11,6 +11,13 @@
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
 
+class Root: public osg::Group {
+    Root() : osg::Group(){}
+    ~Root() {
+        qDebug() << "~Root";
+    }
+};
+
 class MapItem : public OsgViewerItem
 {
     Q_OBJECT

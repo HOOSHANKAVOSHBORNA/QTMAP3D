@@ -29,6 +29,7 @@ Model::Model(QObject *parent)
 
 Model::~Model()
 {
+    qDebug() << "~Model";
     mIconNode.release();
 }
 
@@ -36,13 +37,13 @@ bool Model::setup()
 {
 
     osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
+    //--mapItem setting-----------------------------------------------------------------
     connect(mapItem(), &MapItem::modeChanged, this, &Model::onModeChanged);
     mIs3D = mapItem()->getMode();
-
-
-    mDataManager = new DataManager(qmlEngine(), mapItem(), mainWindow());
-    //    osgEarth::GLUtils::setGlobalDefaults(mapItem()->getViewer()->getCamera()->getOrCreateStateSet());
-
+    //--dataManager setting-------------------------------------------------------------
+    mDataManager = new DataManager(qmlEngine(), mapItem(), mainWindow(), this);
+    connect(mDataManager, &DataManager::nodeRemoved, this, &Model::onNodeRemoved);
+    //--serviceManager setting---------------------------------------------------------
     connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::onNodeDataReceived);
 
     //--toolbox item---------------------------------------------------------------------
@@ -95,13 +96,12 @@ bool Model::setup()
     layerDataFixed.isComposite = false;
     layerDataFlyable.command = Command::Remove;
     mLayerData.children.push_back(layerDataFlyable);
-
-    // property item setup
-    mProperty = new Property(qmlEngine(), mapItem());
-
-    // list window setup
-    mNodeList = new NodeList(qmlEngine(), mapItem(), mDataManager);
-    mainWindow()->addTabToListWindow("Allllll", mNodeList->qmlItem());
+    //--property setting------------------------------------------------------------------
+    mProperty = new Property(qmlEngine(), mapItem(), this);
+    connect(mProperty, &Property::nodeDataChanged, mDataManager, &DataManager::onNodeDataReceived);
+    //--list window setting--------------------------------------------------------------
+    mNodeList = new NodeList(qmlEngine(), mapItem(), mDataManager, this);
+    mainWindow()->addTabToListWindow("Node List", mNodeList->qmlItem());
 
     return true;
 }
@@ -244,7 +244,6 @@ void Model::onTreeItemCheck(bool check)
         mState = State::READY;
         mapItem()->addNode(iconNode());
 
-        mProperty->setModelNode(nullptr);
         mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Tree");
     } else {
         if (mState == State::MOVING)
@@ -277,7 +276,6 @@ void Model::onCarItemCheck(bool check)
         mType = NodeType::Movable;
         mState = State::READY;
         mapItem()->addNode(iconNode());
-        mProperty->setModelNode(nullptr);
         mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Car");
     } else {
         if (mState == State::MOVING)
@@ -310,7 +308,6 @@ void Model::onAirplanItemCheck(bool check)
         mType = NodeType::Flyable;
         mState = State::READY;
         mapItem()->addNode(iconNode());
-        mProperty->setModelNode(nullptr);
         mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Airplane");
     } else {
         if (mState == State::MOVING)
@@ -344,12 +341,14 @@ void Model::onTankItemCheck(bool check)
         mType = NodeType::Movable;
         mState = State::READY;
         mapItem()->addNode(iconNode());
+        mainWindow()->getToolboxManager()->addPropertyItem(mProperty->qmlItem(), "Tank");
     }
     else {
         if(mState == State::MOVING)
             cancel();
         mState = State::NONE;
         mapItem()->removeNode(iconNode());
+        mainWindow()->getToolboxManager()->removePropertyItem();
     }
 }
 
@@ -365,6 +364,8 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
     mNodeData.longitude = geoPos.x();
     mNodeData.latitude = geoPos.y();
     mNodeData.altitude = geoPos.z();
+    mNodeData.color = mProperty->nodeData().color;
+    mNodeData.speed = mProperty->nodeData().speed;
     mNodeData.command = Command::Add;
     mNodeData.fieldData.clear();
 
@@ -408,39 +409,50 @@ void Model::initModel(const osgEarth::GeoPoint &geoPos)
     mLayerData.children[mType.type].command = Command::Add;
 
     mapItem()->getMapObject()->onLayerDataReceived(mLayerData);
-    /*mCurrentModel =*/ mDataManager->onNodeDataReceived(mNodeData);
-    // mProperty->setModelNode(mCurrentModel);
+    //    mCurrentModel = mDataManager->onNodeDataReceived(mNodeData);
+    mProperty->sethasModel(true);
+    mProperty->setNodeData(mNodeData);
     mState = State::MOVING;
     mCount++;
 }
 
 void Model::moving(osgEarth::GeoPoint &geoPos)
 {
-    if (mCurrentModel) {
-        if (mCurrentModel->asFlyableModelNode()) {
-            double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
-            geoPos.z() += randomHeight;
-                // mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
-            mProperty->flyTo(geoPos);
-            return;
-        }
+    //    if (mCurrentModel) {
+    //        if (mCurrentModel->asFlyableModelNode()) {
+    //            double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
+    //            geoPos.z() += randomHeight;
+    //                // mCurrentModel->asFlyableModelNode()->flyTo(geoPos, 20);
+    //            mProperty->flyTo(geoPos);
+    //            return;
+    //        }
 
-        if (mCurrentModel->asMoveableModelNode()) {
-            // mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
-            mProperty->moveTo(geoPos);
-            return;
-        }
+    //        if (mCurrentModel->asMoveableModelNode()) {
+    //            // mCurrentModel->asMoveableModelNode()->moveTo(geoPos, 20);
+    //            mProperty->moveTo(geoPos);
+    //            return;
+    //        }
 
-        mCurrentModel->setPosition(geoPos);
-        //        mProperty->setPosition(geoPos);
-        //        qDebug() << "position changed";
+    //        mCurrentModel->setPosition(geoPos);
+    //        //        mProperty->setPosition(geoPos);
+    //        //        qDebug() << "position changed";
+    //    }
+
+    mNodeData.longitude = geoPos.x();
+    mNodeData.latitude = geoPos.y();
+    mNodeData.altitude = geoPos.z();
+    if (mNodeData.type == NodeType::Flyable) {
+        double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
+        mNodeData.altitude = randomHeight;
     }
+    mProperty->setNodeData(mNodeData);
 }
 
 void Model::confirm()
 {
     if (mState == State::MOVING) {
         mState = State::READY;
+        mProperty->sethasModel(false);
     }
 }
 
@@ -462,11 +474,19 @@ void Model::cancel()
             mLayerData.command = Command::Remove;
             mapItem()->getMapObject()->onLayerDataReceived(mLayerData);
         }
-
-//        mCurrentModel.release();
+        mProperty->sethasModel(false);
         mState = State::READY;
+    }
+}
 
+void Model::onNodeRemoved(SimpleModelNode *simpleModelNode)
+{
+    if(mPickModelNode == simpleModelNode){
+        mPickModelNode = nullptr;
+    }
 
+    if(mCurrentModel == simpleModelNode){
+        mCurrentModel = nullptr;
     }
 }
 
