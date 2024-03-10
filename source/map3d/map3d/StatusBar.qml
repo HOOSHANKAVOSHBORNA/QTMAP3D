@@ -60,8 +60,8 @@ Rectangle {
                 source : "qrc:/Resources/message.png"
                 height: 20/Style.monitorRatio
                 width: 20/Style.monitorRatio
-                color: hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
-                                 (pressed ? Style.hoverColor : Style.foregroundColor);
+                color: "transparent" /*hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
+                                 (pressed ? Style.hoverColor : Style.foregroundColor);*/
 
             }
             background:Rectangle {
