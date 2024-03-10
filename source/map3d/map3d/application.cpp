@@ -42,8 +42,9 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     mQmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(this)}});
 
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
-    mUserManager = new UserManager(mServiceManager);
-
+    mUserManager = UserManager::instance();
+    mUserManager->initialize(mServiceManager);
+    emit userManagerChanged();
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
 }
@@ -111,6 +112,7 @@ void Application::clearMainWindow()
 {
     qDebug() << "logout----------------";
     setPageIndex(0);
-    mPluginManager->unLoadPlugins();
-    mMainWindow->clearData();
+    delete mPluginManager;
+    delete mMainWindow;
+    delete mLoadingPage;
 }

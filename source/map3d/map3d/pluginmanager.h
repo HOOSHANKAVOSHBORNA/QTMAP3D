@@ -22,10 +22,10 @@ class PluginManager : public QObject
 
 public:
     explicit PluginManager(QObject *parent = nullptr);
+    ~PluginManager();
 
 public:
     void loadPlugins();
-    void unLoadPlugins();
 
     QMap<QString, PluginInterface *> pluginsMap() const;
 signals:
@@ -37,12 +37,13 @@ private:
     void setup();
     void parsePlugin(const QString &pluginFileName, const QDir &pluginsDir);
     void loadPlugin(const QString &pluginFileName, const QDir &pluginsDir);
+    void unLoadPlugins();
 
 private:
     friend EventHandler;
 
     QMap<QString, PluginInterface*> mPluginsMap;
-    QMap<QString, QPluginLoader*> mPluginsLoaders;
+    QVector<QString> mLoadedPlugins;
     QStringList mPluginFileNameList;
     QStringList mLoadedPluginList;
     QPluginLoader *mPluginLoader;

@@ -15,18 +15,15 @@
 class ListWindow;
 class QQmlApplicationEngine;
 
-
-
-
 class Application : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int pageIndex READ pageIndex WRITE setPageIndex NOTIFY pageIndexChanged)
-
     Q_PROPERTY(UserManager* userManager READ userManager NOTIFY userManagerChanged)
     Q_PROPERTY(ConnectionConfiguration* connectionConfigCpp READ connectionConfigCpp NOTIFY connectionConfigCppChanged)
     Q_PROPERTY(LoadingPage* loadingPageCpp READ loadingPageCpp NOTIFY loadingPageCppChanged)
     Q_PROPERTY(MainWindow* mainPageCpp READ mainPageCpp NOTIFY mainPageCppChanged)
+
 private:
     explicit Application();
 

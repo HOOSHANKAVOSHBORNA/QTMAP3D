@@ -115,7 +115,7 @@ private:
     StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D mCompassDirection;
     QVector3D mMapRotation;
-    SmallMap *mSmallMap{nullptr};
+    // SmallMap *mSmallMap{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
     QQuickItem *mTopMenuItem = nullptr;
     bool mTopMenuVisible = false;

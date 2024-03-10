@@ -8,7 +8,8 @@
 #include "nodeList.h"
 
 //--------------------------------NodeList-----------------------
-NodeList::NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *dataManager)
+NodeList::NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *dataManager, QObject *parent)
+    :QObject(parent)
 {
     mQmlEngine = engine;
     mMapItem = mapItem;
@@ -112,7 +113,8 @@ void NodeList::setQmlItem(QQuickItem *newQmlItem)
 }
 
 //--------------------------------------NodeProxyModel-------------------------------------
-NodeProxyModel::NodeProxyModel(DataManager *dataManager)
+NodeProxyModel::NodeProxyModel(DataManager *dataManager, QObject *parent)
+    :QSortFilterProxyModel(parent)
 {
     mDataManager = dataManager;
 }
@@ -219,7 +221,8 @@ QItemSelectionModel *NodeProxyModel::selectModel()
 }
 
 //-----------------------------------------NodeListModel------------------------------------
-NodeListModel::NodeListModel(DataManager *dataManager)
+NodeListModel::NodeListModel(DataManager *dataManager, QObject *parent)
+    :QAbstractTableModel(parent)
 {
     mDataManager = dataManager;
 
@@ -368,7 +371,8 @@ QHash<int, QByteArray> NodeListModel::roleNames() const
             {Qt::EditRole, "editRole"}};
 }
 
-CategoryTabbarModel::CategoryTabbarModel(DataManager *dataManager)
+CategoryTabbarModel::CategoryTabbarModel(DataManager *dataManager, QObject *parent)
+    :QAbstractListModel(parent)
 {
     mDataManager = dataManager;
 
@@ -398,7 +402,8 @@ void CategoryTabbarModel::beginEndResetModel()
     endResetModel();
 }
 
-CategoryTagModel::CategoryTagModel(DataManager *dataManager)
+CategoryTagModel::CategoryTagModel(DataManager *dataManager, QObject *parent)
+    :QAbstractListModel(parent)
 {
     mDataManager = dataManager;
 

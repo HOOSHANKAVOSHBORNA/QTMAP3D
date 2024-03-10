@@ -2,17 +2,20 @@
 #include "flyableModelNode.h"
 #include "moveableModelNode.h"
 #include "mainwindow.h"
-DataManager::DataManager(QQmlEngine *engine, MapItem *mapItem, MainWindow *mainWindow)
-    : mMapItem(mapItem)
-    , mMainWindow(mainWindow)
+#include "utility.h"
+
+DataManager::DataManager(QQmlEngine *engine, MapItem *mapItem, MainWindow *mainWindow, QObject *parent)
+    :QObject(parent),
+    mMapItem(mapItem),
+    mMainWindow(mainWindow)
 {
     mQmlEngine = engine;
-    mFilterManager = new FilterManager();
+    mFilterManager = new FilterManager(this);
 }
 
 DataManager::~DataManager()
 {
-
+    qDebug()<<"~DataManager";
 }
 
 QMap<int, osg::ref_ptr<SimpleModelNode> > *DataManager::getNodeMap()
@@ -22,6 +25,7 @@ QMap<int, osg::ref_ptr<SimpleModelNode> > *DataManager::getNodeMap()
 
 SimpleModelNode* DataManager::onNodeDataReceived(const NodeData &nodeData)
 {
+    qDebug()<<"color DataManager: "<<nodeData.color;
     SimpleModelNode* node{nullptr};
     if (nodeData.command == Command::Remove){
         removeNode(nodeData);
@@ -118,7 +122,7 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
     //    node->setPosition(geoPoint);
     node->setAttacker(nodeData.isAttacker);
     node->setNodeData(nodeData);
-    node->setColor(nodeData.color.toStdString());
+    node->setColor(Utility::qColor2osgEarthColor(QColor(nodeData.color)));
     //add to layer after set data
     for(int layerId: node->nodeData().layersId){
         auto layer = mMapItem->getMapObject()->getLayerByUserId(layerId);
@@ -141,8 +145,10 @@ void DataManager::removeNode(const NodeData &nodeData)
 //        int nodeDataId = getNodeIndexById(nodeData.id);
 //        nodeRemovingStart(QModelIndex(), nodeDataId, nodeDataId);
 //        mNodeMap[nodeData.id].release();
+        emit nodeRemoved(mNodeMap[nodeData.id]);
         mNodeMap.remove(nodeData.id);
 //        nodeRemovingEnd();
+
     }
 }
 

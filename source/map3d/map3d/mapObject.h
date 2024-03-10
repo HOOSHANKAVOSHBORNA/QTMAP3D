@@ -52,6 +52,7 @@ class MapObject: public QObject, public osgEarth::Map
     Q_OBJECT
 public:
     MapObject(QObject *parent = nullptr);
+    ~MapObject();
     MapObject(const osgEarth::MapOptions& options, QObject *parent = nullptr);
     void setServiceManager(ServiceManager *serviceManager);
     bool addLayer(osgEarth::Layer* layer, osgEarth::Layer *parentLayer = nullptr);

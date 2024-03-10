@@ -39,26 +39,40 @@ void RoleSelectionModel::clear()
 }
 
 //--user manager----------------------------------------------------------------------
-UserManager::UserManager(ServiceManager* serviceManager, QObject *parent):
-    QObject(parent), mServiceManager{serviceManager}
+UserManager::UserManager() {}
+
+UserManager *UserManager::instance()
 {
+    if (!mUserManager) {
+        mUserManager = new UserManager;
+    }
+
+    return mUserManager;
+}
+
+void UserManager::initialize(ServiceManager *serviceManager, QObject *parent)
+{
+    UserManager::mUserManager->setParent(parent);
+    mServiceManager = serviceManager;
     mRoleSelectionModel = new RoleSelectionModel(serviceManager);
-    connect(mServiceManager, &ServiceManager::userDataReceived, this, &UserManager::onUserDataReceived);
+    connect(mServiceManager,
+            &ServiceManager::userDataReceived,
+            this,
+            &UserManager::onUserDataReceived);
 }
 
 void UserManager::signIn(const QString username, const QString password)
 {
-    qDebug()<<"signIn LoginPage";
+    qDebug() << "signIn LoginPage";
     UserData userData;
     userData.userName = username;
     userData.password = password;
     userData.command = UserData::UserCommand::Login;
     mServiceManager->sendUser(userData);
 
-
     //   setUserName(username);
-   //   emit selectRole();
-   //   emit signedIn();
+    //   emit selectRole();
+    //   emit signedIn();
     //    emit signInFailed();
 
     //--test------
@@ -161,7 +175,6 @@ void UserManager::setMessage(const QString &newMessage)
     mMessage = newMessage;
     emit messageChanged();
 }
-
 
 QString UserManager::roleName() const
 {
