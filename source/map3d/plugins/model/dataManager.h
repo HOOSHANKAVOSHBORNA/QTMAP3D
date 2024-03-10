@@ -9,7 +9,7 @@ class DataManager : public QObject
 {
     Q_OBJECT
 public:
-    DataManager(QQmlEngine *engine, MapItem *mapItem, MainWindow *mainWindow);
+    DataManager(QQmlEngine *engine, MapItem *mapItem, MainWindow *mainWindow, QObject *parent = nullptr);
     ~DataManager();
 //    void removeFlyableNodeData(NodeData *nodeData);
 //    void removeMovableNodeData(NodeData *nodeData);
@@ -67,6 +67,7 @@ signals:
     void tabNameAppendingStart(QModelIndex, int, int);
     void tabNameAppendingEnd();
 
+    void nodeRemoved(SimpleModelNode*);
 public slots:
     SimpleModelNode* onNodeDataReceived(const NodeData &nodeData);
 

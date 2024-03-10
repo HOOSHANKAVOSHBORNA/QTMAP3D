@@ -31,6 +31,12 @@ Item {
         }
     }
 
+    function focusWidnow(index) {
+        console.log('there')
+        stackLayout.data[index].isWindow = false
+        stackLayout.data[index].isWindow = true
+    }
+
     //clip: true
     ColumnLayout {
         id: columnLayout

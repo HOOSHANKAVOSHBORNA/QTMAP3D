@@ -173,14 +173,14 @@ LocationModel::LocationModel(MapItem *mapItem, UserManager *userManager, QObject
     mUserManager = userManager;
 
     // TEST
-    osgEarth::GeoPoint gp{mapItem->getMapSRS(), -165, 90, 0};
-    osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
-    vp->name() = "North";
-    vp->setHeading(0);
-    vp->setPitch(-20);
-    vp->setRange(5000000);
-    vp->focalPoint() = gp;
-    mLocations.append(new LocationItem{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"});
+    //    osgEarth::GeoPoint gp{mapItem->getMapSRS(), -165, 90, 0};
+    //    osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
+    //    vp->name() = "North";
+    //    vp->setHeading(0);
+    //    vp->setPitch(-20);
+    //    vp->setRange(5000000);
+    //    vp->focalPoint() = gp;
+    //    mLocations.append(new LocationItem{vp, "North of Earth", "qrc:/Resources/airplane1.jpg", "red"});
     // ENDTEST
 }
 
