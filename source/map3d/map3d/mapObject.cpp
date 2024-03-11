@@ -139,9 +139,6 @@ MapObject::MapObject(QObject *parent):
 
 MapObject::~MapObject()
 {
-    for (auto &i: mLayerMap) {
-        delete i;
-    }
     qDebug() << "~MapObject";
 }
 
@@ -232,6 +229,12 @@ ParenticAnnotationLayer *MapObject::getServiceLayerBiId(int id)
     if (mLayerMap.find(id) != mLayerMap.end())
         p = mLayerMap[id];
     return p;
+}
+
+void MapObject::clearLayers()
+{
+    clear();
+    mLayerMap.clear();
 }
 
 void MapObject::filterNodes()

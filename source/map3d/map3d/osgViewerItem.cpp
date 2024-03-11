@@ -12,8 +12,6 @@ OsgViewerItem::OsgViewerItem(QQuickItem *parent) :
     setFlags(ItemHasContents/*|ItemAcceptsDrops*/);
     setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
     mOSGRenderNode = new OSGRenderNode(this);
-//    mOSGRenderNode->setThreadingModel( mOSGRenderNode->SingleThreaded );
-//    mOSGRenderNode->setRunFrameScheme( mOSGRenderNode->ON_DEMAND );
 }
 
 OsgViewerItem::~OsgViewerItem()
@@ -41,15 +39,7 @@ QSGNode *OsgViewerItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 
     if (!n)
     {
-        //        mOSGRenderNode = new OSGRenderNode(this);
-        //        createOsgRenderer();
-        ////        mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
-
-        ////        setNode(mSource);
-        //        initializeOsgEarth();
-
         mOSGRenderNode->setupOSG(0, 0, 800, 620, 1);
-
         n = mOSGRenderNode;
     }
     static_cast<OSGRenderNode *>(n)->sync(this);

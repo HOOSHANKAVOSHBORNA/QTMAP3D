@@ -14,16 +14,7 @@
 MapItem::MapItem(QQuickItem *parent) :
     OsgViewerItem(parent)
 {
-//    setMouseTracking(true);
-//    setFlag(QQuickItem::ItemAcceptsDrops, true);
-//    setAcceptHoverEvents(true);
-//    setFlags(ItemHasContents/*|ItemAcceptsDrops*/);
-//    setAcceptedMouseButtons(Qt::MouseButton::AllButtons);
-//    mOSGRenderNode = new OSGRenderNode(this);
     getViewer()->getCamera()->setClearColor(osg::Vec4(0.15f, 0.15f, 0.15f, 1.0f));
-    //    createOsgRenderer();
-
-//    initializeOsgEarth();
 }
 
 MapItem::~MapItem()
@@ -42,16 +33,9 @@ void MapItem::setMap(osgEarth::Map *map)
 
     createCameraManipulator();
     getViewer()->setCameraManipulator(mCameraController);
-    //    mMapNode->getMap()->clear();
     emit mapCleared();
-    //    mMapNode->getMap()->setLayersFromMap(map);
     mCameraController->home(0);
 }
-
-//osgViewer::Viewer *MapItem::getViewer() const
-//{
-//    return dynamic_cast<osgViewer::Viewer*>(mOSGRenderNode);
-//}
 
 const osg::Group *MapItem::getRoot() const
 {
@@ -155,33 +139,29 @@ void MapItem::worldToOSGScreen(osg::Vec3d worldPoint, float &outX, float &outY) 
     outY = point.y();
 }
 
-//QSGNode *MapItem::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
-//{
-//    QSGRenderNode *n = static_cast<QSGRenderNode *>(node);
-//    QSGRendererInterface *ri = window()->rendererInterface();
-//    if (!ri)
-//        return nullptr;
+void MapItem::addBaselayers()
+{
+    osgEarth::Drivers::GDALOptions gdal;
+    gdal.maxDataLevelOverride() = 700000;
+    gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
+    gdal.L2CacheSize() = 2048;
+    gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
+    osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
+    mMapObject->addLayer(imlayer);
 
-//    if (!n)
-//    {
-//        //        mOSGRenderNode = new OSGRenderNode(this);
-//        //        createOsgRenderer();
-//        ////        mOSGRenderNode->setupOSG(x(), y(), width(), height(), 1);
+    osgEarth::Drivers::GDALOptions  opt;
+    opt.url() = "../../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
+    osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
+    getMapObject()->addLayer(layer);
 
-//        ////        setNode(mSource);
-//        //        initializeOsgEarth();
-
-//        mOSGRenderNode->setupOSG(0, 0, 800, 620, 1);
-
-//        n = mOSGRenderNode;
-//    }
-//    static_cast<OSGRenderNode *>(n)->sync(this);
-
-//    if (!n)
-//        qWarning("QSGRendererInterface reports unknown graphics API %d", ri->graphicsApi());
-
-//    return n;
-//}
+    osgEarth::Drivers::XYZOptions optxyz;
+    optxyz.url() = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
+    optxyz.profile() = { "spherical-mercator" };
+    auto imageLayerOptions = osgEarth::ImageLayerOptions("Google S", optxyz);
+    osg::ref_ptr<osgEarth::ImageLayer> layerImage2 = new osgEarth::ImageLayer(imageLayerOptions);
+    layerImage2->setName("Google S");
+    getMapObject()->addLayer(layerImage2);
+}
 
 void MapItem::changeMode()
 {
@@ -232,27 +212,6 @@ void MapItem::initializeOsgEarth()
     createMapNode(true);
     getViewer()->setSceneData(mMapRoot);
 
-    osgEarth::Drivers::GDALOptions gdal;
-    gdal.maxDataLevelOverride() = 700000;
-    gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
-    gdal.L2CacheSize() = 2048;
-    gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
-    osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
-    mMapObject->addLayer(imlayer);
-
-    osgEarth::Drivers::GDALOptions  opt;
-    opt.url() = "../../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
-    osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
-    getMapObject()->addLayer(layer);
-
-    osgEarth::Drivers::XYZOptions optxyz;
-    optxyz.url() = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
-    optxyz.profile() = { "spherical-mercator" };
-    auto imageLayerOptions = osgEarth::ImageLayerOptions("Google S", optxyz);
-    osg::ref_ptr<osgEarth::ImageLayer> layerImage2 = new osgEarth::ImageLayer(imageLayerOptions);
-    layerImage2->setName("Google S");
-    getMapObject()->addLayer(layerImage2);
-
     //create camera after create map node
     createCameraManipulator();
     getViewer()->setCameraManipulator(mCameraController);
@@ -284,12 +243,8 @@ void MapItem::createMapNode(bool geocentric, osgEarth::Map *map)
     }
     else
         mMapNode = new osgEarth::MapNode(map);
-    //    osg::Node* globe = osgDB::readNodeFile("/home/client112/Desktop/QTMAP3D/source/map3d/data/earth_files/geocentric.earth");
-    //    mMapNode = osgEarth::MapNode::get( globe );
     mSkyNode->addChild(mMapNode);
     mMapRoot->addChild(mSkyNode);
-    //    mMapRoot->addChild(mMapNode);
-//    mMapNode->getMap()->addMapCallback(new MainMapCallback(this));
 }
 
 void MapItem::createCameraManipulator()
@@ -303,10 +258,6 @@ void MapItem::createCameraManipulator()
         settings->setMinMaxPitch(-90, 0);
     else
         settings->setMinMaxPitch(-90, -90);
-    //    settings->setMaxOffset(5000.0, 5000.0);
-    //    settings->setMinMaxPitch(-90, 90);
-    //    settings->setTerrainAvoidanceEnabled(true);
-    //    settings->setThrowingEnabled(false);
 
     //    // set home to tehran
     osgEarth::GeoPoint  geoPoint(getMapSRS()->getGeographicSRS(), 51.3347, 35.7219,0);
@@ -344,61 +295,3 @@ void MapItem::frame()
     spos *= -1.0f;
     sunLight->setDirection(spos);
 }
-
-//void MapItem::keyPressEvent(QKeyEvent *event)
-//{
-//    if (mOSGRenderNode)
-//        mOSGRenderNode->keyPressEvent(event);
-//}
-
-//void MapItem::keyReleaseEvent(QKeyEvent *event)
-//{
-//    if (mOSGRenderNode)
-//        mOSGRenderNode->keyReleaseEvent(event);
-//}
-
-//void MapItem::mousePressEvent(QMouseEvent *event)
-//{
-//    if (mOSGRenderNode) {
-//        mOSGRenderNode->mousePressEvent(event);
-//    }
-
-//}
-
-//void MapItem::mouseReleaseEvent(QMouseEvent *event)
-//{
-//    if (mOSGRenderNode) {
-//        mOSGRenderNode->mouseReleaseEvent(event);
-//    }
-//}
-
-//void MapItem::mouseDoubleClickEvent(QMouseEvent *event)
-//{
-//    if (mOSGRenderNode)
-//        mOSGRenderNode->mouseDoubleClickEvent(event);
-//}
-
-//void MapItem::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (mOSGRenderNode) {
-//        mOSGRenderNode->mouseMoveEvent(event);
-//    }
-//}
-
-//void MapItem::wheelEvent(QWheelEvent *event)
-//{
-//    if (mOSGRenderNode)
-//        mOSGRenderNode->wheelEvent(event);
-//}
-
-//void MapItem::hoverMoveEvent(QHoverEvent *event)
-//{
-//    if (mOSGRenderNode) {
-//        mOSGRenderNode->hoverMoveEvent(event);
-//    }
-//}
-
-//OSGRenderNode *MapItem::oSGRenderNode() const
-//{
-//    return mOSGRenderNode;
-//}
