@@ -3,19 +3,6 @@
 
 LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
 {
-//    mTimer = new QTimer(this);
-
-//    connect(mTimer, &QTimer::timeout, [this](){
-
-//        if(mLoadingDataItem.size() && !mLoadingDataItem[0].isError){
-//            removeItem(0);
-//            mTimer->stop();
-//        }
-//        updateData(mLoadingDataItem.size() - 1);
-//    });
-
-//    mTimer->start(1000);
-
 }
 
 int LoadingPage::rowCount(const QModelIndex &parent) const
@@ -55,6 +42,9 @@ void LoadingPage::addItem(const QString &message, bool isError)
     beginInsertRows(QModelIndex(), 0, 0);
     mLoadingDataItem.insert(0, {message, isError});
     endInsertRows();
+
+    mPluginFraction = mLoadingDataItem.size()/(mPluginsCount+0.01);
+    setpluginFraction(mPluginFraction);
 }
 
 void LoadingPage::removeItem(int index)
@@ -63,6 +53,7 @@ void LoadingPage::removeItem(int index)
         beginRemoveRows(QModelIndex(),index,index);
         mLoadingDataItem.erase(mLoadingDataItem.begin() + index);
         endRemoveRows();
+        emit pluginFractionChanged();
     }
     else
         return;
@@ -85,19 +76,20 @@ void LoadingPage::updateData(int index)
     for(int m = index; m > 0; m--)
         if(!mLoadingDataItem[m].isError && mLoadingDataItem[m-1].isError)
             swapItem(m , m - 1);
-
-    //    mTimer->start(1000);
 }
 
-int LoadingPage::pluginCounter() const
+float LoadingPage::pluginFraction() const
 {
-    return mPluginCounter;
+    return mPluginFraction;
 }
 
-void LoadingPage::setPluginCounter(int pluginCounter)
+void LoadingPage::setpluginFraction(float pluginFrac)
 {
-    if (mPluginCounter == pluginCounter)
-        return;
-    mPluginCounter = pluginCounter;
-    emit pluginCounterChanged();
+    mPluginFraction = pluginFrac;
+    emit pluginFractionChanged();
+}
+
+void LoadingPage::setPluginsCount(int count)
+{
+    mPluginsCount = count;
 }

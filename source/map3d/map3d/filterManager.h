@@ -125,6 +125,7 @@ class FilterManager : public QObject
 public:
 
     FilterManager(QObject* parent = nullptr);
+    ~FilterManager();
     void addColorFilterField(QSet<QString> &fields);
     void setColorFilterField(QSet<QString> &fields);
     void addColorFilterField(QString fields);

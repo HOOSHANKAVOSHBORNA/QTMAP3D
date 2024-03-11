@@ -88,12 +88,12 @@ Item {
                 text: "Connection"
                 font.pixelSize: Style.titleFontSize
                 color: Style.foregroundColor
-                                Layout.fillWidth: true
+                Layout.fillWidth: true
             }
 
             IconImage {
                 id: connectionStatus
-                source: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: (connectionConfigCpp && connectionConfigCpp.isConnected) ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
             }
@@ -279,7 +279,7 @@ Item {
     }
 
     Connections {
-        target: connectionConfigCpp
+        target: applicationCpp.connectionConfigCpp
 
         function onIsConnectedChanged() {
             if (connectionButtonClicked && connectionConfigCpp.isConnected) {

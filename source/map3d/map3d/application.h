@@ -36,6 +36,7 @@ public:
     inline QQmlApplicationEngine *qmlEngine() const { return mQmlEngine; }
     inline PluginManager *pluginManager() const { return mPluginManager; }
     inline ServiceManager *serviceManager() const{return mServiceManager;}
+
     void setPageIndex(int index);
     inline int pageIndex() const{return mPageIndex;}
 
@@ -43,8 +44,6 @@ public:
     Q_INVOKABLE ConnectionConfiguration* connectionConfigCpp();
     Q_INVOKABLE LoadingPage* loadingPageCpp();
     Q_INVOKABLE MainWindow* mainPageCpp();
-
-    Q_INVOKABLE void saveDataInFile();
 
 signals:
     void pageIndexChanged();
@@ -72,7 +71,6 @@ private:
     LoadingPage *mLoadingPage{nullptr};
     NetworkManager *mNetworkManager{nullptr};
 
-//    QQuickWindow *mApplicationWindow = nullptr;
     int mPageIndex {0};
 };
 

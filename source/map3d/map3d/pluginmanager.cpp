@@ -101,6 +101,9 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
     mPluginLoader = new QPluginLoader(this);
+    mPluginsDir = QCoreApplication::applicationDirPath();
+    mPluginsDir.cd("../plugins/bin");
+    mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
 }
 
 PluginManager::~PluginManager()
@@ -116,10 +119,6 @@ PluginManager::~PluginManager()
 
 void PluginManager::loadPlugins()
 {
-    mPluginsDir = QCoreApplication::applicationDirPath();
-    mPluginsDir.cd("../plugins/bin");
-    mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
-    emit plugunCount(mPluginFileNameList.size());
     mPluginTimer = new QTimer(this);
     connect(mPluginTimer, &QTimer::timeout, this, [&](){
         parsePlugin(mPluginFileNameList[mIndex], mPluginsDir);
@@ -139,6 +138,11 @@ void PluginManager::unLoadPlugins()
         mPluginLoader->setFileName(i);
         mPluginLoader->unload();
     }
+}
+
+QStringList PluginManager::pluginFileNameList() const
+{
+    return mPluginFileNameList;
 }
 
 void PluginManager::setup()

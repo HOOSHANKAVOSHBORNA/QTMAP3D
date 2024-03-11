@@ -4,20 +4,16 @@
 #include "filterManager.h"
 #include "mapControllerItem.h"
 #include "qqmlcontext.h"
-// #include "searchNodeModel.h"
 
 MapControllerItem::MapControllerItem(QQuickItem *parent):
     MapItem(parent)
 {
     initializeOsgEarth();
-    mSearchNodeManager = new SearchNodeManager(this, this);
-
 //--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-    mFilterManager = mSearchNodeManager->getFilterManager();
-    getMapObject()->setFilterManager(mFilterManager);
 
+    createSearchNodeManager();
     StatusBar *status = new StatusBar(this);
     mStatusBar = new StatusBarSearchModel(this);
     mStatusBar->setSourceModel(status);
@@ -121,6 +117,13 @@ void MapControllerItem::calculateFps()
     }
 }
 
+void MapControllerItem::createSearchNodeManager()
+{
+    mSearchNodeManager = new SearchNodeManager(this);
+    mFilterManager = mSearchNodeManager->getFilterManager();
+    getMapObject()->setFilterManager(mFilterManager);
+}
+
 FilterManager *MapControllerItem::filterManager() const
 {
     return mFilterManager;
@@ -129,12 +132,18 @@ FilterManager *MapControllerItem::filterManager() const
 void MapControllerItem::clearMap()
 {
     getMapObject()->clearLayers();
+    delete mSearchNodeManager;
+    // clear mapnode children
+    if (getMapNode()->getNumChildren() > 3)
+        getMapNode()->removeChild(3, getMapNode()->getNumChildren());
+    qDebug() << "MapControllerItem::clearMap";
 }
 
-//SearchNodeManager *MapControllerItem::getSearchNodeManager() const
-//{
-//    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
-//}
+void MapControllerItem::initialize()
+{
+    createSearchNodeManager();
+    addBaselayers();
+}
 
 StatusBarSearchModel *MapControllerItem::statusBar() const
 {
@@ -149,32 +158,6 @@ SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 {
     mQmlEngine = newQmlEngine;
-
-    // TEST
-    // QQmlComponent* comp = new QQmlComponent(mQmlEngine);
-
-    // QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-    //     if(status == QQmlComponent::Error) {
-    //         qDebug() << "Can not load this: " << comp->errorString();
-    //     }
-
-    //     if(status == QQmlComponent::Ready) {
-    //         QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-    //         item->setProperty("title", "Test Controller");
-
-    //         setTopMenuItem(item);
-    //     }
-    // });
-
-    // comp->loadUrl(QUrl("qrc:/TestItem.qml"));
-    // END TEST
-
-
-//    mSmallMap = dynamic_cast<SmallMap*>(findChild<QObject*>("SmallMap"));
-//    mSmallMap.
-//    osgEarth::GeoPoint p{mSmallMap->getMapSRS(), getCameraController()->getViewpoint().focalPoint().get()};
-//    mSmallMap->setLocation(p);
-
 }
 
 
