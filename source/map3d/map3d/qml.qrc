@@ -53,5 +53,6 @@
         <file>MiniMap.qml</file>
         <file>Components/LoadingButton.qml</file>
         <file>Components/CustomButton.qml</file>
+        <file>Components/IconButton.qml</file>
     </qresource>
 </RCC>

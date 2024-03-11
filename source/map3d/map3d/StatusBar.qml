@@ -140,6 +140,7 @@ Rectangle {
         Label {
             id: altitudevalue
             Layout.minimumWidth: 28/Style.monitorRatio + 80/Style.monitorRatio
+            Layout.leftMargin:3 / Style.monitorRatio
             Layout.preferredHeight: 20/Style.monitorRatio
             background: Rectangle {
                 color: "transparent"
@@ -148,7 +149,7 @@ Rectangle {
             Text {
                 color: Style.foregroundColor
                 font.pixelSize:Style.smallFontSize
-                text: Math.floor(root.model.range / 1000  )+ " KM"
+                text:(root.model.range / 1000  ).toFixed(2)+ " KM"
                 font.family: Style.fontFamily
             }
         }
@@ -163,7 +164,7 @@ Rectangle {
             Text {
                 color: Style.foregroundColor
                 font.pixelSize: Style.smallFontSize
-                text: "Altitude: "
+                text: "Range: "
                 font.family: Style.fontFamily
             }
         }
