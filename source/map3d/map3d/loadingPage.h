@@ -25,27 +25,25 @@ class LoadingPage : public QAbstractListModel
        errorStatus = Qt::UserRole,
     };
 public:
-   explicit LoadingPage(QObject* parent = nullptr);
+    explicit LoadingPage(QObject* parent = nullptr);
 
-   Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-   virtual QVariant data(const QModelIndex &index, int role) const override;
-   virtual QHash<int, QByteArray> roleNames() const override;
-   Q_INVOKABLE void addItem(const QString &message, bool isError);
-   Q_INVOKABLE void removeItem(int index);
-   void swapItem(int sourceIndex, int destinationIndex);
-   void updateData(int index);
+    Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual QVariant data(const QModelIndex &index, int role) const override;
+    virtual QHash<int, QByteArray> roleNames() const override;
+    Q_INVOKABLE void addItem(const QString &message, bool isError);
+    Q_INVOKABLE void removeItem(int index);
+    void swapItem(int sourceIndex, int destinationIndex);
+    void updateData(int index);
 
-   int pluginCounter() const;
-   void setPluginCounter(int pluginCounter);
+    int pluginCounter() const;
+    void setPluginCounter(int pluginCounter);
 
-   signals:
+signals:
+    void pluginCounterChanged();
 
-       void pluginCounterChanged();
-
-   private:
-   QVector<LoadingInfoItem> mLoadingDataItem;
-       QTimer* mTimer;
-   int mPluginCounter;
+private:
+    QVector<LoadingInfoItem> mLoadingDataItem;
+    int mPluginCounter;
 };
 
 #endif // LOADINGPAGE_H

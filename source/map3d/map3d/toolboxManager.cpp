@@ -72,7 +72,6 @@ int TreeItem::row() const
 {
     if (m_parentItem)
         return m_parentItem->m_childItems.indexOf(const_cast<TreeItem*>(this));
-
     return 0;
 }
 
@@ -87,6 +86,7 @@ Toolbox::~Toolbox()
     for (auto &i: mItems)
         delete i;
     delete rootItem;
+    qDebug() << "~Toolbox";
 }
 
 void Toolbox::addItem(ToolboxItem *toolboxItem)
@@ -242,6 +242,11 @@ ToolboxProxyModel::ToolboxProxyModel(QObject *parent): QSortFilterProxyModel(par
     setSourceModel(myModel);
 }
 
+ToolboxProxyModel::~ToolboxProxyModel()
+{
+    qDebug() << "~ToolboxProxyModel";
+}
+
 
 int ToolboxProxyModel::childCount(QModelIndex index)
 {
@@ -290,8 +295,7 @@ ToolboxManager::ToolboxManager(QObject *parent) : QObject(parent)
 
 ToolboxManager::~ToolboxManager()
 {
-    delete mToolboxModel;
-    delete mPropertyItem;
+    qDebug() << "~ToolboxManager";
 }
 
 ToolboxProxyModel *ToolboxManager::toolboxProxyModel() const

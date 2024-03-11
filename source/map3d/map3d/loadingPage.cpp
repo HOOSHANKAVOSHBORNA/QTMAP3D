@@ -3,19 +3,6 @@
 
 LoadingPage::LoadingPage(QObject *parent):QAbstractListModel(parent)
 {
-//    mTimer = new QTimer(this);
-
-//    connect(mTimer, &QTimer::timeout, [this](){
-
-//        if(mLoadingDataItem.size() && !mLoadingDataItem[0].isError){
-//            removeItem(0);
-//            mTimer->stop();
-//        }
-//        updateData(mLoadingDataItem.size() - 1);
-//    });
-
-//    mTimer->start(1000);
-
 }
 
 int LoadingPage::rowCount(const QModelIndex &parent) const
@@ -85,8 +72,6 @@ void LoadingPage::updateData(int index)
     for(int m = index; m > 0; m--)
         if(!mLoadingDataItem[m].isError && mLoadingDataItem[m-1].isError)
             swapItem(m , m - 1);
-
-    //    mTimer->start(1000);
 }
 
 int LoadingPage::pluginCounter() const

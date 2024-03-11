@@ -116,7 +116,7 @@ class ToolboxProxyModel : public QSortFilterProxyModel
 
 public:
     explicit ToolboxProxyModel(QObject *parent = nullptr);
-
+    ~ToolboxProxyModel();
     Q_INVOKABLE int childCount(QModelIndex index);
     QString filterString() const;
 
