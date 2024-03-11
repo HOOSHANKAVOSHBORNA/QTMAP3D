@@ -37,8 +37,7 @@ ColumnLayout {
         interval: 5000
         onTriggered: {
             signInBtn.enabled = true
-            //            signInBtn.isWaiting = false
-            //   signInBtn.loadingAnimation.stop()
+            signInBtn.background.color = Style.foregroundColor
             signInBtn.loadingRec.anchors.leftMargin = 0
             signInBtn.loadingRec.anchors.topMargin = 0
             signInBtn.loadingTimer.stop()
@@ -172,12 +171,12 @@ ColumnLayout {
         Layout.topMargin: 14 / Style.monitorRatio
         hoverEnabled: true
 
-        //        onHoveredChanged: {
-        //            if (hovered && enabled)
-        //                shadow.shadowEnabled = true
-        //            else
-        //                shadow.shadowEnabled = false
-        //        }
+        onHoveredChanged: {
+            if (hovered && enabled)
+                shadow.shadowEnabled = true
+            else
+                shadow.shadowEnabled = false
+        }
         contentItem: Text {
             id: signInBtnTxt
             text: "Sign in"
@@ -189,32 +188,31 @@ ColumnLayout {
 
         onClicked: {
             signInBtn.enabled = false
-            signInBtn.background.color = "gray"
+            signInBtn.background.color = "silver"
             userManager.setMessage("")
 
             loadingRec.anchors.topMargin = -2 / Style.monitorRatio
             loadingTimer.start()
-            //loadingAnimation.start()
-            //            isWaiting = true
             serverResponseTimer.start()
         }
     }
 
-    //    MultiEffect {
-    //        id: shadow
-    //        source: signInBtn
-    //        z: signInBtn.z - 1
-    //        Layout.fillWidth: true
-    //        enabled: true
-    //        anchors.fill: signInBtn
-    //        shadowColor: "black"
-    //        shadowEnabled: false
-    //        shadowHorizontalOffset: 10 / Style.monitorRatio
-    //        shadowVerticalOffset: 10 / Style.monitorRatio
-    //        shadowBlur: 1
-    //        shadowOpacity: 1
-    //        shadowScale: 0.98
-    //        paddingRect: Qt.rect(signInBtn.x, signInBtn.y, signInBtn.width,
-    //                             signInBtn.height)
-    //    }
+    MultiEffect {
+        id: shadow
+        source: signInBtn
+        z: signInBtn.z - 1
+        Layout.fillWidth: true
+        enabled: true
+        //        anchors.fill: signInBtn
+        Layout.alignment: signInBtn
+        shadowColor: "black"
+        shadowEnabled: false
+        shadowHorizontalOffset: 10 / Style.monitorRatio
+        shadowVerticalOffset: 10 / Style.monitorRatio
+        shadowBlur: 1
+        shadowOpacity: 1
+        shadowScale: 0.98
+        paddingRect: Qt.rect(signInBtn.x, signInBtn.y, signInBtn.width,
+                             signInBtn.height)
+    }
 }
