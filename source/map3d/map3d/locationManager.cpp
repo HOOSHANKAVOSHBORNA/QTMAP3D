@@ -11,7 +11,8 @@
 LocationManager::LocationManager(MapItem *mapItem, QObject *parent)
     : QObject(parent)
 {
-    mLocationModel = new LocationModel(mapItem);
+    mLocationProxyModel = new LocationProxyModel(this);
+    mLocationModel = new LocationModel(mapItem, mLocationProxyModel);
 
     // ------------------------------------------------- loading models from file
     if (mLocationModel->readFromFile()) {
@@ -22,7 +23,7 @@ LocationManager::LocationManager(MapItem *mapItem, QObject *parent)
                 << "some error in reading location file";
     }
 
-    mLocationProxyModel = new LocationProxyModel(this);
+
     mLocationProxyModel->setSourceModel(mLocationModel);
 }
 
@@ -192,6 +193,7 @@ LocationModel::LocationModel(MapItem *mapItem, QObject *parent)
 
 LocationModel::~LocationModel()
 {
+    writeToFile();
     qDebug()<<"~LocationModel";
 }
 
