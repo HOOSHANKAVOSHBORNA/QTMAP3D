@@ -173,25 +173,6 @@ Item {
                     currentItemIndex = 4
                 }
             }
-
-            DockWindow {
-                id: settingsDocItem
-                windowTitle: sideModel.get(5).name
-                isWindow: sideModel.get(5).isWindow
-
-                containerItem: ConnectionConfiguration {
-                    id: settingsItem
-                    closeBtn.visible: false
-                    connectionConfigCpp: applicationWindow.connectionConfigCpp
-                    //                    Layout.leftMargin: 50 / Style.monitorRatio
-                    //                    Layout.rightMargin: 50 / Style.monitorRatio
-                }
-
-                onWindowClose: {
-                    sideModel.get(5).isWindow = false
-                    currentItemIndex = 5
-                }
-            }
         }
     }
 }
