@@ -10,6 +10,8 @@ LogManager::LogManager(QObject *parent)
     QString toWrite = QString("\n\n=================== App Started at:"
                               + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")
                               + "===================");
+
+    savedFileName = findFileName();
     writeLogToFile(toWrite);
 }
 
@@ -20,6 +22,38 @@ void LogManager::setNewSavedFileName()
     savedFileName = QString::number(QDateTime::currentSecsSinceEpoch());
 }
 
+QString LogManager::findFileName()
+{
+    QString founded = "";
+
+    QDir dir(getSavingFolderPath());
+
+    if (!dir.exists()) {
+        dir.mkpath(getSavingFolderPath());
+        return founded;
+    }
+
+    int maxNum = -1;
+    int num = 0;
+    bool isInt = false;
+    for (int i = 0; i < dir.entryList().size(); ++i) {
+        num = dir.entryList().at(i).toInt(&isInt);
+        if (!isInt) {
+            continue;
+        }
+
+        if (num > maxNum) {
+            maxNum = num;
+        }
+    }
+
+    if (maxNum != -1) {
+        founded = QString::number(maxNum);
+    }
+
+    return founded;
+}
+
 QString LogManager::getSavingFolderPath()
 {
     return appDir + "/" + appName + "/" + savedDir;
@@ -27,7 +61,7 @@ QString LogManager::getSavingFolderPath()
 
 QString LogManager::getSavingFilePath()
 {
-    // my system path: home/.local/share/LoggingExample/logs/mainLogs.txt
+    // my system path: home/.local/share/LoggingExample/logs/234234343.txt
     return getSavingFolderPath() + "/" + savedFileName;
 }
 
@@ -37,25 +71,25 @@ void LogManager::messageHandler(QtMsgType type,
 {
     QString txt;
     if (std::strcmp(context.category, "qml") == 0) { // category is qml
-        txt += "qml: ";
+        txt += "qml-";
     } else {
-        txt += "cpp: ";
+        txt += "cpp-";
     }
 
     switch (type) {
     case QtDebugMsg:
         return;
     case QtWarningMsg:
-        txt += "Warning: %1";
+        txt += "Warning: ";
         break;
     case QtCriticalMsg:
-        txt += "Critical: %1";
+        txt += "Critical: ";
         break;
     case QtFatalMsg:
-        txt += "Fatal: %1";
+        txt += "Fatal: ";
         abort();
     case QtInfoMsg:
-        txt += "Info: %1";
+        txt += "Info: ";
         break;
     }
 
@@ -74,10 +108,7 @@ bool LogManager::writeLogToFile(QString textToWrite)
         dir.mkpath(getSavingFolderPath());
     }
 
-    dir.setSorting(QDir::Name);
-    savedFileName = dir.entryList().last();
-
-    if (".." == savedFileName) {
+    if (savedFileName == "") {
         setNewSavedFileName();
     }
 
