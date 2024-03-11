@@ -56,14 +56,9 @@ Item {
         stepSize: root.stepSize * decimalFactor
         contentItem: TextInput {
             id: textInput
-            onLengthChanged: {
-                if (length > 8) {
-                    undo()
-                }
-            }
-
+maximumLength: 8
             text: textFromValue()
-            font.pixelSize: Style.regularFontSize
+            font.pixelSize: Style.smallFontSize
             color: Style.foregroundColor
             selectionColor: Style.backgroundColor
             selectedTextColor: Style.foregroundColor
@@ -81,11 +76,14 @@ Item {
             x: spinBox.mirrored ? parent.width - width : 0
             height: parent.height
             width: 15 / Style.monitorRatio
-            Image {
-                width: 15
-                height: 15
+            IconImage {
+                id:iconMinus
+                width: 15 / Style.monitorRatio
+                height: 15 / Style.monitorRatio
                 anchors.centerIn: parent
                 source: "qrc:/Resources/minus.png"
+
+                color: spinBox.down.hovered ? Style.hoverColor : Style.foregroundColor
             }
         }
 
@@ -96,11 +94,13 @@ Item {
             height: parent.height
             width: 15 / Style.monitorRatio
 
-            Image {
+            IconImage {
+                id:iconPlus
                 width: 20 / Style.monitorRatio
                 height:  20 / Style.monitorRatio
                 anchors.centerIn: parent
                 source: "qrc:/Resources/add.png"
+                color: spinBox.up.hovered ? Style.hoverColor : Style.foregroundColor
             }
         }
 
