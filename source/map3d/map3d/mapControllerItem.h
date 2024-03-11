@@ -33,8 +33,8 @@ class MapControllerItem : public MapItem
     Q_PROPERTY(bool topMenuVisible READ topMenuVisible WRITE setTopMenuVisible NOTIFY topMenuVisibleChanged FINAL)
 
 public:
-    explicit MapControllerItem(QQuickItem *parent = nullptr);
     ~MapControllerItem();
+    static MapControllerItem *instance();
     QVector3D mapMouseGeoLocation() const;
     QVector3D mapMouseLocation() const;
     virtual void frame() override;
@@ -59,6 +59,7 @@ public:
     void setTopMenuVisible(bool newTopMenuVisible);
 
     Q_INVOKABLE FilterManager *filterManager() const;
+    void clearMap();
 
 public slots:
     void setFps(double fps);
@@ -89,6 +90,7 @@ signals:
     void topMenuVisibleChanged();
 
 private:
+    MapControllerItem(QQuickItem *parent = nullptr);
     void tickNavigation(double deltaTime);
     void calculateNavigationStep();
     void calculateFps();
@@ -120,6 +122,7 @@ private:
     QQuickItem *mTopMenuItem = nullptr;
     bool mTopMenuVisible = false;
     FilterManager *mFilterManager{nullptr};
+    static inline MapControllerItem *mInstance{nullptr};
 };
 
 #endif // MAPCONTROLLERITEM_H

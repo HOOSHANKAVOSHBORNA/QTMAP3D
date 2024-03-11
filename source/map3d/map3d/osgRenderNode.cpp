@@ -45,74 +45,9 @@ void OSGRenderNode::releaseResources()
 void OSGRenderNode::render(const RenderState *state)
 {
     if(mOSGItem) {
-
-
-
-       // if (!mGLFunctions) {
-       //     mGLFunctions = new QOpenGLFunctions_2_0;
-       //     mGLFunctions->initializeOpenGLFunctions();
-       // }
-
-
         QQuickOpenGLUtils::resetOpenGLState();
-//        mGLFunctions->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-
-//        mGLFunctions->glViewport(0, 0, mOSGItem->window()->width(), mOSGItem->window()->height());
-
-//        mGLFunctions->glMatrixMode(GL_MODELVIEW);
-//        mGLFunctions->glLoadIdentity();
-
-//        mGLFunctions->glMatrixMode(GL_PROJECTION);
-//        mGLFunctions->glLoadIdentity();
-
-//        mGLFunctions->glMatrixMode(GL_TEXTURE);
-//        mGLFunctions->glLoadIdentity();
-
-
-
-
-
-
-//        mOSGItem->update();
         frame();
         mOSGItem->frame();
-
-//        QQuickOpenGLUtils::resetOpenGLState();
-//        QMatrix4x4 mat = (*state->projectionMatrix()) * (*matrix());
-
-
-//        QVector3D p1(0, 0, 0);
-//        QVector3D p2 = mat * p1;
-
-
-//        mGLFunctions->glViewport(0, 0, mOSGItem->window()->width(), mOSGItem->window()->height());
-
-//        mGLFunctions->glMatrixMode(GL_MODELVIEW);
-//        mGLFunctions->glLoadIdentity();
-
-//        mGLFunctions->glMatrixMode(GL_PROJECTION);
-//        mGLFunctions->glLoadIdentity();
-
-//        mGLFunctions->glEnable(GL_DEPTH_TEST);
-//        mGLFunctions->glDepthFunc(GL_ALWAYS);
-
-//        mGLFunctions->glEnable(GL_BLEND);
-//        mGLFunctions->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-//        mGLFunctions->glBegin(GL_TRIANGLE_STRIP);
-//        mGLFunctions->glColor4f(0.1f, 0.2f, 0.3f, 0.0f);
-//        mGLFunctions->glVertex3d(-1.0, -1.0, 1);
-//        mGLFunctions->glVertex3d( 1.0, -1.0, 1);
-//        mGLFunctions->glVertex3d(-1.0,  1.0, 1);
-//        mGLFunctions->glVertex3d( 1.0,  1.0, 1);
-//        mGLFunctions->glEnd();
-
-//        mGLFunctions->glEnable(GL_DEPTH_TEST);
-//        mGLFunctions->glDepthFunc(GL_LESS);
-
-
         QQuickOpenGLUtils::resetOpenGLState();
     }
 }

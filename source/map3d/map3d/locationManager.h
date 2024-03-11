@@ -34,7 +34,7 @@ class LocationManager : public QObject
     Q_OBJECT
 
 public:
-    explicit LocationManager(MapItem *mapItem, UserManager *userManager, QObject *parent = nullptr);
+    explicit LocationManager(MapItem *mapItem, QObject *parent = nullptr);
     ~LocationManager();
     void myRemoveRow(int index);
     void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
@@ -57,7 +57,8 @@ class LocationProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(QString searchedName READ searchedName WRITE setSearchedName NOTIFY searchedNameChanged FINAL)
 
 public:
-    explicit LocationProxyModel();
+    explicit LocationProxyModel(QObject *parent = nullptr);
+    ~LocationProxyModel();
 
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
     virtual bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override;
@@ -86,7 +87,7 @@ class LocationModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit LocationModel(MapItem *mapItem, UserManager *userManager, QObject *parent = nullptr);
+    explicit LocationModel(MapItem *mapItem, QObject *parent = nullptr);
     ~LocationModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -104,8 +105,8 @@ public:
                                QString newImageSource,
                                QString newColor);
 
-    QVector<LocationItem *> locations() const;
-    void setLocations(const QVector<LocationItem *> &newLocations);
+//    QVector<LocationItem *> locations() const;
+//    void setLocations(const QVector<LocationItem *> &newLocations);
 
     MapItem *mapItem() const;
 
@@ -126,8 +127,7 @@ public:
 
 private:
     MapItem *mMapItem;
-    QVector<LocationItem *> mLocations;
-    UserManager *mUserManager;
+    QVector<LocationItem> mLocations;
 };
 
 // ------------------------------------------------------------ structs
@@ -135,12 +135,12 @@ struct LocationItem
 {
 public:
     ~LocationItem();
-    osgEarth::Viewpoint *viewpoint;
+    osgEarth::Viewpoint viewpoint;
     QString description;
     QString imageSource;
     QString color;
 
-    static LocationItem *fromJson(const QJsonObject &json);
+    void fromJson(const QJsonObject &json);
     QJsonObject toJson();
 };
 

@@ -40,7 +40,7 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     mServiceManager = new ServiceManager(mNetworkManager);
 
     mQmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(this)}});
-
+    mQmlEngine->rootContext()->setContextProperty("mapControllerCpp", QVariant::fromValue(MapControllerItem::instance()));
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
     mUserManager = UserManager::instance();
     mUserManager->initialize(mServiceManager);
@@ -94,17 +94,17 @@ void Application::onLoadingPage()
 {
     initializeSurfaceFormat();
     mLoadingPage = new LoadingPage();
-    mPluginManager = new PluginManager;
+    emit loadingPageCppChanged();
 
     mMainWindow = new MainWindow(mUserManager);
     mMainWindow->getMapItem()->getMapObject()->setServiceManager(mServiceManager);
     emit mainPageCppChanged();
-    emit loadingPageCppChanged();
+
+    mPluginManager = new PluginManager;
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
         setPageIndex(2);
     });
-
 
     setPageIndex(1);
     mPluginManager->loadPlugins();
