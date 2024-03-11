@@ -24,6 +24,13 @@ bool Screen::setup()
 
 void Screen::onSnapShotClicked()
 {
+//    auto point = mapItem()->mapToScene(QPoint(0,0));
+//    auto mapHeight =  mapItem()->boundingRect().height();
+//    auto mapWidth =  mapItem()->boundingRect().width();
+//    CaptureCallback *captureCallback = new CaptureCallback("/home/client110/Pictures/capTest.png",point,mapWidth, mapHeight);
+//    mapItem()->addCaptureCallback(captureCallback);
+//    captureCallback->capture();
+
     mSnapShot = new SnapShot(mapItem());
 }
 
