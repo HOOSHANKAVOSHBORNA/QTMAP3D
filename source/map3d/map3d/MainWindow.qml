@@ -110,7 +110,11 @@ Item {
             id: settingsItem
             anchors.fill: parent
             closeBtn.visible: false
-            connectionConfigCpp: applicationCpp.connectionConfig
+            connectionConfigCpp: applicationCpp.connectionConfigCpp
+        }
+
+        onClosing: {
+            sideBar.connectionConfigChecked = false
         }
     }
 }
