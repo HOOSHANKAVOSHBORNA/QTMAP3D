@@ -260,11 +260,12 @@ Rectangle {
                                 Layout.fillHeight: true
                                 placeholderText: qsTr("subject")
                                 placeholderTextColor: rootObj.fg30
-                                color: rootObj.fg30
+                                color: Style.foregroundColor
                                 font.family: Style.fontFamily
                                 font.pixelSize: Style.smallFontSize
                                 selectedTextColor: Style.backgroundColor
                                 selectionColor: Style.foregroundColor
+
                                 background: Rectangle {
                                     id: redBackG
                                     color: "transparent"
@@ -285,6 +286,7 @@ Rectangle {
                                     control.popup.open()
                                     var searchFilter = txtContentItem.text
                                     control.model.setFilterFixedString(searchFilter)
+
                                 }
                             }
                         }
@@ -418,7 +420,7 @@ Rectangle {
                                 Layout.fillHeight: true
                                 placeholderText: qsTr("subject")
                                 placeholderTextColor: rootObj.fg30
-                                color: rootObj.fg30
+                                color: Style.foregroundColor
                                 font.family: Style.fontFamily
                                 font.pixelSize: Style.smallFontSize
                                 selectedTextColor: Style.backgroundColor
