@@ -139,6 +139,30 @@ void MapItem::worldToOSGScreen(osg::Vec3d worldPoint, float &outX, float &outY) 
     outY = point.y();
 }
 
+void MapItem::addBaselayers()
+{
+    osgEarth::Drivers::GDALOptions gdal;
+    gdal.maxDataLevelOverride() = 700000;
+    gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
+    gdal.L2CacheSize() = 2048;
+    gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
+    osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
+    mMapObject->addLayer(imlayer);
+
+    osgEarth::Drivers::GDALOptions  opt;
+    opt.url() = "../../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
+    osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
+    getMapObject()->addLayer(layer);
+
+    osgEarth::Drivers::XYZOptions optxyz;
+    optxyz.url() = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
+    optxyz.profile() = { "spherical-mercator" };
+    auto imageLayerOptions = osgEarth::ImageLayerOptions("Google S", optxyz);
+    osg::ref_ptr<osgEarth::ImageLayer> layerImage2 = new osgEarth::ImageLayer(imageLayerOptions);
+    layerImage2->setName("Google S");
+    getMapObject()->addLayer(layerImage2);
+}
+
 void MapItem::changeMode()
 {
     mIs3DView = !mIs3DView;
@@ -187,27 +211,6 @@ void MapItem::initializeOsgEarth()
     mSkyNode = osgEarth::Util::SkyNode::create(sopts);
     createMapNode(true);
     getViewer()->setSceneData(mMapRoot);
-
-    osgEarth::Drivers::GDALOptions gdal;
-    gdal.maxDataLevelOverride() = 700000;
-    gdal.interpolation() = osgEarth::ElevationInterpolation::INTERP_CUBICSPLINE;
-    gdal.L2CacheSize() = 2048;
-    gdal.url() = (QString(EXTERNAL_RESOURCE_DIR) + QString("/world.tif")).toStdString();
-    osg::ref_ptr<osgEarth::ImageLayer> imlayer = new osgEarth::ImageLayer("base-world", gdal);
-    mMapObject->addLayer(imlayer);
-
-    osgEarth::Drivers::GDALOptions  opt;
-    opt.url() = "../../../../QTMAP3D-DATA/dataosgearth/Tehranelevation/tehran1.tif";
-    osg::ref_ptr<osgEarth::ElevationLayer>  layer = new osgEarth::ElevationLayer(osgEarth::ElevationLayerOptions("Terrain", opt));
-    getMapObject()->addLayer(layer);
-
-    osgEarth::Drivers::XYZOptions optxyz;
-    optxyz.url() = "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}";
-    optxyz.profile() = { "spherical-mercator" };
-    auto imageLayerOptions = osgEarth::ImageLayerOptions("Google S", optxyz);
-    osg::ref_ptr<osgEarth::ImageLayer> layerImage2 = new osgEarth::ImageLayer(imageLayerOptions);
-    layerImage2->setName("Google S");
-    getMapObject()->addLayer(layerImage2);
 
     //create camera after create map node
     createCameraManipulator();

@@ -25,16 +25,18 @@ MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 
     mMapItem = MapControllerItem::instance();
-    mLocationManager = new LocationManager(mMapItem, userManager, this);
+    mLocationManager = new LocationManager(mMapItem, this);
     mToolboxManager = new ToolboxManager(this);
     mBookmarkManager = new BookmarkManager(this);
     mListWindow = new ListWindow(this);
     mLayerManager = new LayerManager(mMapItem, this);
+    mMapItem->addBaselayers();
 }
 
 MainWindow::~MainWindow()
 {
     qDebug() << "~MainWindow!";
+    mMapItem->clearMap();
 }
 
 MapControllerItem *MainWindow::getMapItem()

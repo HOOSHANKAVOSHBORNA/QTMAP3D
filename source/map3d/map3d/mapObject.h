@@ -64,6 +64,7 @@ public:
     void setFilterManager(FilterManager *newFilterManager);
 
     ParenticAnnotationLayer *getServiceLayerBiId(int id);
+    void clearLayers();
 public slots:
     void filterNodes();
     void onLayerDataReceived(const LayerData &layerData);
