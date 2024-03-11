@@ -51,7 +51,6 @@ Rectangle {
                     verticalLayoutDirection: ListView.BottomToTop
 
                     onCountChanged: {
-                        print(loadingPageCpp.pluginFraction)
                         progressBar.value = loadingPageCpp ? loadingPageCpp.pluginFraction : 0
                     }
 
