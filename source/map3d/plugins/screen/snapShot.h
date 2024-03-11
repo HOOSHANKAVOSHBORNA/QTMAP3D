@@ -2,8 +2,7 @@
 #define SNAPSHOT_H
 
 #include <QObject>
-#include "qqmlengine.h"
-#include "viewCaptureCallback.h"
+//#include "viewCaptureCallback.h"
 #include "QStandardPaths"
 #include "mapItem.h"
 
@@ -11,20 +10,17 @@ class SnapShot : public QObject
 {
     Q_OBJECT
 public:
-    SnapShot(MapItem *map);
+    SnapShot(MapItem *mapItem, QObject *parent = nullptr);
+    ~SnapShot();
 
+    void capture();
 private slots:
-    void onImageProcessComplete(osg::Image *iImage);
-    void takingProcessFinished();
+    void onImageProcessComplete(QString filePath);
 
 private:
-    osg::Camera* mCamera;
-    ViewCaptureCallback* mViewCaptureCallback{nullptr};
-    std::string mFileDialog;
-    QQmlEngine mEngine;
-    QObject *mObject;
-    bool mReadyStatus;
-    QTimer *timer;
+    CaptureCallback * mCaptureCallback{nullptr};
+    MapItem *mMapItem{nullptr};
+    QObject *mCaptureWindow{nullptr};
 };
 
 #endif // SNAPSHOT_H

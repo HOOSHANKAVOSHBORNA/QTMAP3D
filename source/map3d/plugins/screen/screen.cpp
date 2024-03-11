@@ -18,13 +18,14 @@ bool Screen::setup()
     QObject::connect(toolboxItemSnipTool, &ToolboxItem::itemClicked, this, &Screen::onSnipToolClicked);
     toolbox()->addItem(toolboxItemSnipTool);
     //////////////////////////////////////////////////////////////////////////////////////////////
+    mSnapShot = new SnapShot(mapItem(), this);
     return true;
 }
 
 
 void Screen::onSnapShotClicked()
 {
-    mSnapShot = new SnapShot(mapItem());
+    mSnapShot->capture();
 }
 
 
