@@ -79,12 +79,6 @@ void MainWindow::setListWindow(ListWindow *listWindow)
     mListWindow = listWindow;
 }
 
-
-void MainWindow::clearData()
-{
-
-}
-
 ListWindow *MainWindow::getListWindow() const
 {
     return mListWindow;

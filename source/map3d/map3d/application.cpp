@@ -29,7 +29,6 @@ void Application::performStartupConfiguration()
 {
     qputenv("QSG_RENDER_LOOP", "basic"); // This line is very important and can not be removed
     initializeSurfaceFormat();
-    //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 }
 
 void Application::initialize(QQmlApplicationEngine *newQmlEngine)
@@ -41,10 +40,12 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
 
     mQmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(this)}});
     mQmlEngine->rootContext()->setContextProperty("mapControllerCpp", QVariant::fromValue(MapControllerItem::instance()));
+
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
     mUserManager = UserManager::instance();
     mUserManager->initialize(mServiceManager);
     emit userManagerChanged();
+
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
     connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
 }
@@ -75,12 +76,6 @@ MainWindow *Application::mainPageCpp()
     return mMainWindow;
 }
 
-void Application::saveDataInFile()
-{
-    // TODO: clean save in file
-    dynamic_cast<LocationModel *>(mMainWindow->getLocationManager()->sourceModel())->writeToFile();
-}
-
 void Application::initializeSurfaceFormat()
 {
     QSurfaceFormat fmt;
@@ -92,7 +87,6 @@ void Application::initializeSurfaceFormat()
 
 void Application::onLoadingPage()
 {
-    initializeSurfaceFormat();
     mLoadingPage = new LoadingPage();
     emit loadingPageCppChanged();
 
@@ -113,8 +107,17 @@ void Application::onLoadingPage()
 void Application::clearMainWindow()
 {
     qDebug() << "logout----------------";
-    delete mPluginManager;
-    delete mMainWindow;
-    delete mLoadingPage;
     setPageIndex(0);
+    if (mLoadingPage) {
+        delete mLoadingPage;
+        mLoadingPage = nullptr;
+    }
+    if (mPluginManager) {
+        delete mPluginManager;
+        mPluginManager = nullptr;
+    }
+    if (mMainWindow) {
+        delete mMainWindow;
+        mMainWindow = nullptr;
+    }
 }

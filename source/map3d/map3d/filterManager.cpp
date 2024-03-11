@@ -41,6 +41,11 @@ FilterManager::FilterManager(QObject *parent) : QObject(parent)
 
 }
 
+FilterManager::~FilterManager()
+{
+    qDebug() << "~FilterManager!";
+}
+
 void FilterManager::addColorFilterField(QSet<QString> &fields)
 {
     for (auto &i: fields)
