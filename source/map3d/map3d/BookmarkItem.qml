@@ -72,7 +72,7 @@ Item {
                 model: rootItem.bookmarkCpp
                 rowSpacing: 5 / Style.monitorRatio
 
-                selectionModel: rootItem.bookmarkCpp.selectioModel()
+                selectionModel: rootItem.bookmarkCpp ? rootItem.bookmarkCpp.selectioModel() : null
 
                 MouseArea {
                     anchors.fill: parent

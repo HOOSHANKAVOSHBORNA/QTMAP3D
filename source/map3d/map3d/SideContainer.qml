@@ -124,6 +124,7 @@ Item {
                 containerItem: ToolboxManagerItem {
                     id: toolbox
                     toolboxCpp: rootItem.toolboxCpp
+                    toolboxModel: rootItem.toolboxCpp ? rootItem.toolboxCpp.toolboxProxyModel() : null
                 }
 
                 onWindowClose: {
@@ -138,6 +139,7 @@ Item {
                 containerItem: LayerManagerItem {
                     id: layers
                     layerCpp: rootItem.layerCpp
+                    layerModel: rootItem.layerCpp ? rootItem.layerCpp.layerModel() : null
                 }
 
                 onWindowClose: {
@@ -151,7 +153,8 @@ Item {
                 windowTitle: sideModel.get(3).name
                 containerItem: BookmarkItem {
                     id: bookmark
-                    bookmarkCpp: rootItem.bookmarkCpp.getBookmarkProxyModel()
+                    bookmarkCpp: rootItem.bookmarkCpp ? rootItem.bookmarkCpp.getBookmarkProxyModel() : null
+                    bookmarkSelectionModel: rootItem.bookmarkCpp ? rootItem.bookmarkCpp.getBookmarkProxyModel().selectioModel() : null
                 }
 
                 onWindowClose: {

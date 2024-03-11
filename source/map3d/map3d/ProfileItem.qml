@@ -34,7 +34,7 @@ Item {
         }
 
         Label {
-            text: userManager.name
+            text: applicationCpp.userManager.name
             font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
@@ -50,7 +50,7 @@ Item {
         }
 
         Label {
-            text: userManager.userName
+            text: applicationCpp.userManager.name
             font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
@@ -66,7 +66,7 @@ Item {
         }
 
         Label {
-            text: userManager.roleName
+            text: applicationCpp.userManager.name
             font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
