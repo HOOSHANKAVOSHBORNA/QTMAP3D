@@ -30,11 +30,13 @@ MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
     mBookmarkManager = new BookmarkManager(this);
     mListWindow = new ListWindow(this);
     mLayerManager = new LayerManager(mMapItem, this);
+    mMapItem->addBaselayers();
 }
 
 MainWindow::~MainWindow()
 {
     qDebug() << "~MainWindow!";
+    mMapItem->clearMap();
 }
 
 MapControllerItem *MainWindow::getMapItem()

@@ -126,6 +126,11 @@ FilterManager *MapControllerItem::filterManager() const
     return mFilterManager;
 }
 
+void MapControllerItem::clearMap()
+{
+    getMapObject()->clearLayers();
+}
+
 //SearchNodeManager *MapControllerItem::getSearchNodeManager() const
 //{
 //    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
