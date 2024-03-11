@@ -78,8 +78,7 @@ Item {
             }
 
             MapControllerItem {
-                mapItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.getMapItem(
-                                                    ) : undefined
+                mapItem: mapControllerCpp
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
             }

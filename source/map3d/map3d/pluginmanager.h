@@ -50,6 +50,7 @@ private:
     int mIndex{0};
     QDir mPluginsDir;
     QTimer *mPluginTimer;
+    EventHandler *mEventHandler;
 };
 
 #endif // PluginManager_H

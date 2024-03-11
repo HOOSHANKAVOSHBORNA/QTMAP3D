@@ -53,15 +53,11 @@ public:
 
     void setupOSG(int windowX, int windowY, int windowWidth, int windowHeight, float windowScale);
 
-    // overrided from osgViewer::Viewer
     virtual bool checkNeedToDoFrame() override;
 
-    // overrided from osgViewer::ViewerBase
     void frame(double simulationTime = USE_REFERENCE_TIME) override;
 
-    // overrided from osgViewer::Viewer
     void requestRedraw() override;
-    // overrided from osgViewer::Viewer
     bool checkEvents() override;
     void update();
 
@@ -71,7 +67,7 @@ protected:
 private:
     friend class eveBIM::ViewerWidget;
     bool mosgInitialized {false};
-    osg::ref_ptr<osgViewer::GraphicsWindow> mosgWinEmb;
+    osg::ref_ptr<osgViewer::GraphicsWindow> mosgWinEmb{nullptr};
     float mwindowScale {1.0f};
     // bool mcontinuousUpdate {true};
     int  _timerId{0};
