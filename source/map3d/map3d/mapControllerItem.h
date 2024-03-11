@@ -59,6 +59,7 @@ public:
     void setTopMenuVisible(bool newTopMenuVisible);
 
     Q_INVOKABLE FilterManager *filterManager() const;
+    void clearMap();
 
 public slots:
     void setFps(double fps);
