@@ -17,12 +17,8 @@ class CaptureCallback :public QObject, public osg::Camera::DrawCallback
 {
     Q_OBJECT
 public:
-    CaptureCallback(QString filePath, QPointF sceneStartPoint, double width , double height) :
-        mSceneStartPoint(sceneStartPoint),
-        mFilePath(filePath),
-        mWidth(width),
-        mHeight(height)
-    {}
+    CaptureCallback(){}
+
     virtual void operator () (osg::RenderInfo& renderInfo) const override
     {
         if(mCapture)
@@ -38,8 +34,12 @@ public:
         }
     }
 
-    inline void capture()
+    inline void capture(QString filePath, QPointF sceneStartPoint, double width , double height)
     {
+        mSceneStartPoint = sceneStartPoint;
+        mFilePath = filePath;
+        mWidth = width;
+        mHeight = height;
         mCapture = true;
     }
 signals:

@@ -18,20 +18,14 @@ bool Screen::setup()
     QObject::connect(toolboxItemSnipTool, &ToolboxItem::itemClicked, this, &Screen::onSnipToolClicked);
     toolbox()->addItem(toolboxItemSnipTool);
     //////////////////////////////////////////////////////////////////////////////////////////////
+    mSnapShot = new SnapShot(mapItem(), this);
     return true;
 }
 
 
 void Screen::onSnapShotClicked()
 {
-//    auto point = mapItem()->mapToScene(QPoint(0,0));
-//    auto mapHeight =  mapItem()->boundingRect().height();
-//    auto mapWidth =  mapItem()->boundingRect().width();
-//    CaptureCallback *captureCallback = new CaptureCallback("/home/client110/Pictures/capTest.png",point,mapWidth, mapHeight);
-//    mapItem()->addCaptureCallback(captureCallback);
-//    captureCallback->capture();
-
-    mSnapShot = new SnapShot(mapItem());
+    mSnapShot->capture();
 }
 
 
