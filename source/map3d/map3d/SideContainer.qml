@@ -64,7 +64,7 @@ Item {
                 color: Style.foregroundColor
                 font.pixelSize: Style.titleFontSize
                 font.family: Style.fontFamily
-                font.weight: 450 / Style.monitorRatio
+                font.weight: 500 / Style.monitorRatio
                 Layout.fillWidth: true
             }
 

@@ -19,7 +19,7 @@ Rectangle {
 
     property real heightFactor : 0.0
 
-    property double massageFontSize: Style.regularFontSize
+    property double massageFontSize: Style.smallFontSize
     property var model
     property var sourceModel
     property string modeMap: "geocentric"
@@ -52,53 +52,53 @@ Rectangle {
         height: parent.height
         visible: true
 
-        Button {
-            id: messageLogo
-            //            topPadding: 0
-            anchors.verticalCenter: parent.verticalCenter
-            icon{
-                source : "qrc:/Resources/message.png"
-                height: 20/Style.monitorRatio
-                width: 20/Style.monitorRatio
-                color: hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
-                                 (pressed ? Style.hoverColor : Style.foregroundColor);
+//        Button {
+//            id: messageLogo
+//            //            topPadding: 0
+//            anchors.verticalCenter: parent.verticalCenter
+//            icon{
+//                source : "qrc:/Resources/message.png"
+//                height: 20/Style.monitorRatio
+//                width: 20/Style.monitorRatio
+//                color: "red" /*hovered ? (pressed ? Style.foregroundColor: Style.hoverColor) :
+//                                 (pressed ? Style.hoverColor : Style.foregroundColor);*/
 
-            }
-            background:Rectangle {
-                color:"transparent"
-            }
-            onClicked: {
-                if(root.heightFactor == 0){
-                    showRect.start()
-                    root.heightVisiblity = true
-                    heading.visible = true}
-                else{
+//            }
+//            background:Rectangle {
+//                color:"transparent"
+//            }
+////            onClicked: {
+////                if(root.heightFactor == 0){
+////                    showRect.start()
+////                    root.heightVisiblity = true
+////                    heading.visible = true}
+////                else{
 
-                    hideRect.start()
-                    heading.visible = false
-                    root.heightVisiblity = false}
-            }
+////                    hideRect.start()
+////                    heading.visible = false
+////                    root.heightVisiblity = false}
+////            }
 
-        }
-        TextField{
-            id:messageTextField
-            wrapMode: Text.WrapAnywhere
-            readOnly: true
-            selectByMouse: false
-            anchors.left: messageLogo.right
-            anchors.verticalCenter: parent.verticalCenter
-            implicitWidth:messegeLogoItem.width - messageTextField.x
-            placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100)? root.model.data(root.model.index(0, 0), Qt.UserRole + 100): "Messages" : "Messages"
-            color: Style.backgroundColor
-            font.family: Style.fontFamily
-            font.pointSize: Style.regularFontSize
-            selectedTextColor: Style.backgroundColor
-            selectionColor: Style.selectColor
-            placeholderTextColor: Style.foregroundColor
-            background: Rectangle{
-                color: "transparent"
-            }
-        }
+//        }
+//        TextField{
+//            id:messageTextField
+//            wrapMode: Text.WrapAnywhere
+//            readOnly: true
+//            selectByMouse: false
+//            anchors.left: messageLogo.right
+//            anchors.verticalCenter: parent.verticalCenter
+//            implicitWidth:messegeLogoItem.width - messageTextField.x
+//            placeholderText: implicitWidth? root.model.data(root.model.index(0, 0), Qt.UserRole + 100)? root.model.data(root.model.index(0, 0), Qt.UserRole + 100): "Messages" : "Messages"
+//            color: red
+//            font.family: Style.fontFamily
+//            font.pointSize: Style.smallFontSize
+//            selectedTextColor: Style.backgroundColor
+//            selectionColor: Style.selectColor
+//            placeholderTextColor: Style.foregroundColor
+//            background: Rectangle{
+//                color: "transparent"
+//            }
+//        }
 
         Connections {
             target: root.sourceModel
@@ -109,20 +109,20 @@ Rectangle {
                 messageTextField.placeholderText = root.sourceModel.data(root.model.index(0, 0), Qt.UserRole + 100) ?? 0
             }
         }
-         MouseArea{
-             anchors.fill: messageTextField
-             onClicked: {
-                 if(root.heightFactor == 0){
-                     showRect.start()
-                     root.heightVisiblity = true
-                     heading.visible = true}
-                 else{
+//         MouseArea{
+//             anchors.fill: messageTextField
+//             onClicked: {
+//                 if(root.heightFactor == 0){
+//                     showRect.start()
+//                     root.heightVisiblity = true
+//                     heading.visible = true}
+//                 else{
 
-                     hideRect.start()
-                     heading.visible = false
-                     root.heightVisiblity = false}
-             }
-         }
+//                     hideRect.start()
+//                     heading.visible = false
+//                     root.heightVisiblity = false}
+//             }
+//         }
     }
 
 
@@ -147,8 +147,8 @@ Rectangle {
 
             Text {
                 color: Style.foregroundColor
-                font.pixelSize:Style.regularFontSize
-                text: root.model.range
+                font.pixelSize:Style.smallFontSize
+                text: Math.floor(root.model.range / 1000  )+ " KM"
                 font.family: Style.fontFamily
             }
         }
@@ -162,7 +162,7 @@ Rectangle {
 
             Text {
                 color: Style.foregroundColor
-                font.pixelSize: Style.regularFontSize
+                font.pixelSize: Style.smallFontSize
                 text: "Altitude: "
                 font.family: Style.fontFamily
             }
@@ -216,7 +216,7 @@ Rectangle {
 
             Text {
                 color: Style.foregroundColor
-                font.pixelSize: Style.regularFontSize
+                font.pixelSize: Style.smallFontSize
                 text: "1000 KM "
                 font.family: Style.fontFamily
             }
@@ -247,7 +247,7 @@ Rectangle {
                     color: lightBlue
                     text: Number(modelData).toLocaleString(Qt.locale(), root.fe[index], 3)
                     font.family: Style.fontFamily
-                    font.pixelSize: Style.regularFontSize
+                    font.pixelSize: Style.smallFontSize
 
 
                 }
@@ -284,7 +284,7 @@ Rectangle {
                           : modelData
                     color: Style.foregroundColor
                     font.family: Style.fontFamily
-                    font.pixelSize: Style.regularFontSize
+                    font.pixelSize: Style.smallFontSize
                 }
                 highlighted: control.highlightedIndex === index
             }
@@ -319,7 +319,7 @@ Rectangle {
 
                 text: control.displayText
                 font.family: Style.fontFamily
-                font.pixelSize: Style.regularFontSize
+                font.pixelSize: Style.smallFontSize
                 color:Style.foregroundColor
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -358,7 +358,7 @@ leftPadding:3
 height: control.displayText !== name?implicitHeight : 1
                              text: name
                              font{
-                                 pixelSize: Style.regularFontSize
+                                 pixelSize: Style.smallFontSize
                                  family: Style.fontFamily
                              }
 
@@ -434,7 +434,7 @@ height: control.displayText !== name?implicitHeight : 1
                     color: Style.foregroundColor
                     text: "Messages"
                     font.family: Style.fontFamily
-                    font.weight: Font.Medium
+//                    font.weight: Font.Medium
                     font.pixelSize: Style.titleFontSize
 
                 }
@@ -515,7 +515,7 @@ height: control.displayText !== name?implicitHeight : 1
                     placeholderText: implicitWidth? qsTr("Search ..." ) : ""
                     color: Style.foregroundColor
                     font.family: Style.fontFamily
-                    font.pixelSize: Style.regularFontSize
+                    font.pixelSize: Style.smallFontSize
                     selectByMouse: true
                     selectedTextColor: Style.foregroundColor
                     selectionColor: Style.selectColor
@@ -612,7 +612,7 @@ height: control.displayText !== name?implicitHeight : 1
                 text:"Subject"
                 color: Style.foregroundColor
                 font.family:Style.fontFamily
-                font.pixelSize:  Style.regularFontSize
+                font.pixelSize:  Style.smallFontSize
                 selectedTextColor: Style.foregroundColor
                 selectionColor: Style.selectColor
                 placeholderTextColor: Style.disableColor
@@ -748,7 +748,7 @@ height: control.displayText !== name?implicitHeight : 1
                             text: messageText
                             color: model.isnewMessage?Style.foregroundColor:Qt.rgba(Style.foregroundColor.r, Style.foregroundColor.g, Style.foregroundColor.b, 0.75)
                             font.family:Style.fontFamily
-                            font.pixelSize:  Style.regularFontSize
+                            font.pixelSize:  Style.smallFontSize
                             selectedTextColor: Style.foregroundColor
                             selectionColor: Style.selectColor
                             placeholderTextColor: Style.disableColor

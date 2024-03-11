@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Effects
 import "style"
 import "Components"
 
@@ -162,16 +163,22 @@ ColumnLayout {
 
     LoadingButton {
         id: signInBtn
+        z: 0
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
         Layout.topMargin: 14 / Style.monitorRatio
         hoverEnabled: true
+        onHoveredChanged: {
+            if (hovered)
+                shadow.shadowEnabled = true
+            else
+                shadow.shadowEnabled = false
+        }
 
         contentItem: Text {
             id: signInBtnTxt
             text: "Sign in"
-            color: parent.hovered
-                   && parent.enabled ? "#01AED6" : Style.backgroundColor
+            color: Style.backgroundColor
             font.pixelSize: Style.regularFontSize
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -184,5 +191,22 @@ ColumnLayout {
             isWaiting = true
             serverResponseTimer.start()
         }
+    }
+
+    MultiEffect {
+        id: shadow
+        source: signInBtn
+        z: signInBtn.z - 1
+        enabled: true
+        anchors.fill: signInBtn
+        shadowColor: "black"
+        shadowEnabled: false
+        shadowHorizontalOffset: 10 / Style.monitorRatio
+        shadowVerticalOffset: 10 / Style.monitorRatio
+        shadowBlur: 1
+        shadowOpacity: 0.7
+        shadowScale: 0.98
+        paddingRect: Qt.rect(signInBtn.x, signInBtn.y, signInBtn.width,
+                             signInBtn.height)
     }
 }
