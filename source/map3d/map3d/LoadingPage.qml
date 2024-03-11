@@ -123,19 +123,19 @@ Rectangle {
                 Layout.alignment: Qt.AlignHCenter
                 background: Rectangle {
                     implicitWidth: 200
-                    implicitHeight: 6
-                    color: "#e6e6e6"
-                    radius: 3
+                    implicitHeight: 8
+                    color: "#D9D9D9"
+                    radius: 5 / Style.monitorRatio
                 }
                 contentItem: Item {
-                    implicitWidth: 200
-                    implicitHeight: 4
+                    implicitWidth: 200 / Style.monitorRatio
+                    implicitHeight: 8 / Style.monitorRatio
 
                     Rectangle {
                         width: progressBar.visualPosition * parent.width
                         height: parent.height
-                        radius: 2
-                        color: "#17a81a"
+                        radius: 5 / Style.monitorRatio
+                        color: "#01AED6"
                     }
                 }
             }

@@ -3,21 +3,16 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs
-// import Crystal 1.0
 
+// import Crystal 1.0
 Item {
     id: rootItem
     implicitHeight: parent ? parent.height : 0
-
-
 
     property BoxProperties boxProperties
     property string headerTitleSTR: "box Properties"
     property string fillColor: "#91001d"
     property string lineColor: "#ffffff"
-
-
-
 
     onVisibleChanged: {
         boxProperties.color = fillColor
@@ -27,14 +22,10 @@ Item {
         boxProperties.length = lengthValue.value
     }
 
-
-
-
     Item {
         id: dialog
         width: 250
         height: rootItem.height
-
 
         //////////////////////////Main Content////////////////////////
         Rectangle {
@@ -48,9 +39,9 @@ Item {
             anchors.margins: 6
             radius: 10
 
-            Rectangle{
-                id:header
-                width: parent.width -2
+            Rectangle {
+                id: header
+                width: parent.width - 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: 2
                 height: 30
@@ -80,33 +71,31 @@ Item {
                     width: 240
 
                     Rectangle {
-                        id : innerContainer
+                        id: innerContainer
                         color: "transparent"
                         anchors.fill: parent
 
-
                         /////////////////////// components Grid ////////////////////////////
-                        GridLayout{
+                        GridLayout {
                             id: props
                             width: 235
-                            y: innerContainer.y +3
+                            y: innerContainer.y + 3
                             anchors.horizontalCenter: parent.horizontalCenter
                             columnSpacing: 0
                             rowSpacing: 2
-                            columns:2
+                            columns: 2
                             rows: 6
 
                             layoutDirection: Qt.RightToLeft
 
                             ////////////////////////////////////fill Color Property//////////////////////////////////
-                            Rectangle{
+                            Rectangle {
                                 Layout.fillWidth: true
-                                width: parent.width/1.9
+                                width: parent.width / 1.9
                                 color: "#404040"
                                 height: 35
 
-
-                                Rectangle{
+                                Rectangle {
                                     height: 20
                                     width: 20
                                     color: fillColor
@@ -116,14 +105,13 @@ Item {
                                     radius: 5
                                     anchors.verticalCenter: parent.verticalCenter
 
-                                    MouseArea{
+                                    MouseArea {
                                         anchors.fill: parent
                                         cursorShape: Qt.PointingHandCursor
                                         onClicked: fillColorDialog.visible = true
-
                                     }
                                 }
-                                Rectangle{
+                                Rectangle {
                                     height: 20
                                     width: 100
                                     color: "#c9c9c9"
@@ -136,99 +124,95 @@ Item {
                                         text: fillColor
                                         anchors.centerIn: parent
                                         font.pointSize: 10
-
                                     }
                                 }
                                 ColorDialog {
                                     visible: false
-                                    id:  fillColorDialog
-                                    selectedColor:  fillColor
+                                    id: fillColorDialog
+                                    selectedColor: fillColor
                                     title: "Please choose a color"
                                     onAccepted: {
                                         fillColor = fillColorDialog.selectedColor
-                                        boxProperties.color= fillColor.toString()
+                                        boxProperties.color = fillColor.toString()
                                     }
-
                                 }
                             }
-                            Rectangle{
+                            Rectangle {
                                 Layout.fillWidth: true
-                                width: parent.width/3
+                                width: parent.width / 3
                                 color: "#404040"
                                 height: 35
-
 
                                 Text {
                                     id: fillColorBox
                                     text: qsTr("Color :")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    x: 7
                                 }
                             }
-                            ///////////////////////////////////opacity/////////////////////////////////////
 
-                            Rectangle{
+                            ///////////////////////////////////opacity/////////////////////////////////////
+                            Rectangle {
                                 id: opacityContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
-                                z:10
-                                                                //                                border.color: "#5f5f5f"
-                                //                                border.width: 1
+                                z: 10
 
+                                //                                border.color: "#5f5f5f"
+                                //                                border.width: 1
                                 QSpinBox {
                                     id: opacityValue
                                     value: 50
                                     from: 0
                                     to: 100
-//                                    step: 10
-                                    z:10
-                                    anchors.fill:parent
+                                    //                                    step: 10
+                                    z: 10
+                                    anchors.fill: parent
                                     onValueChanged: {
-                                        if(boxProperties){
+                                        if (boxProperties) {
                                             boxProperties.opacity = opacityValue.value
                                         }
                                     }
                                 }
                             }
 
-
-                            Rectangle{
+                            Rectangle {
                                 id: opacityTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
+
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
-
                                 Text {
                                     id: opacityBox
                                     text: qsTr("Opacity:")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    x: 7
                                 }
                             }
 
                             ///////////////////////////////////Location Property///////////////////////////////
-                            Rectangle{
-                                id:locationContainer
+                            Rectangle {
+                                id: locationContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 100
                                 border.color: "#5f5f5f"
                                 border.width: 1
-                                z:9
+                                z: 9
 
-                                Column{
-                                    Row{
+                                Column {
+                                    Row {
                                         spacing: 8
                                         //                                        leftPadding: 5
                                         topPadding: 2
-                                        z:9
+                                        z: 9
                                         anchors.horizontalCenter: parent.horizontalCenter
 
                                         //                                        Text {
@@ -236,7 +220,7 @@ Item {
                                         //                                            text: qsTr("X:")
                                         //                                            font.pointSize: 10
                                         //                                        }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 30
                                             width: locationContainer.width
                                             color: "transparent"
@@ -247,22 +231,21 @@ Item {
                                                 id: mlocationX
                                                 anchors.fill: parent
                                                 decimals: 4
-//                                                step: 0.01
+
+                                                //                                                step: 0.01
                                                 //                                                value: xLoc
-
-
-                                                value:  boxProperties ? boxProperties.location.x  : 0
+                                                value: boxProperties ? boxProperties.location.x : 0
                                                 onValueChanged: {
                                                     boxProperties.location.x = value
                                                 }
                                             }
                                         }
                                     }
-                                    Row{
+                                    Row {
                                         spacing: 8
                                         //                                        leftPadding: 5
                                         //                                        topPadding: 5
-                                        z:8
+                                        z: 8
                                         anchors.horizontalCenter: parent.horizontalCenter
 
                                         //                                        Text {
@@ -270,7 +253,7 @@ Item {
                                         //                                            text: qsTr("Y:")
                                         //                                            font.pointSize: 10
                                         //                                        }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 30
                                             width: locationContainer.width
                                             color: "transparent"
@@ -281,20 +264,20 @@ Item {
                                                 id: mlocationY
                                                 anchors.fill: parent
                                                 decimals: 4
-//                                                step: 0.01
+                                                //                                                step: 0.01
                                                 //                                                value: yLoc
-                                                value : boxProperties ? boxProperties.location.y  : 0
+                                                value: boxProperties ? boxProperties.location.y : 0
                                                 onValueChanged: {
                                                     boxProperties.location.y = value
                                                 }
                                             }
                                         }
                                     }
-                                    Row{
+                                    Row {
                                         spacing: 8
                                         //                                        leftPadding: 5
                                         //                                        topPadding: 5
-                                        z:7
+                                        z: 7
                                         anchors.horizontalCenter: parent.horizontalCenter
 
                                         //                                        Text {
@@ -302,7 +285,7 @@ Item {
                                         //                                            text: qsTr("Y:")
                                         //                                            font.pointSize: 10
                                         //                                        }
-                                        Rectangle{
+                                        Rectangle {
                                             height: 30
                                             width: locationContainer.width
                                             color: "transparent"
@@ -313,8 +296,8 @@ Item {
                                                 id: mlocationZ
                                                 anchors.fill: parent
                                                 decimals: 4
-//                                                step: 10
-                                                value : boxProperties ? boxProperties.location.z  : 0
+                                                //                                                step: 10
+                                                value: boxProperties ? boxProperties.location.z : 0
                                                 onValueChanged: {
                                                     boxProperties.location.z = value
                                                 }
@@ -324,7 +307,7 @@ Item {
                                 }
                             }
 
-                            Rectangle{
+                            Rectangle {
                                 id: locationTitle
                                 Layout.fillWidth: true
                                 color: "#404040"
@@ -338,7 +321,7 @@ Item {
                                     font.pointSize: 10
                                     color: "white"
                                     y: 10
-                                    x:7
+                                    x: 7
                                 }
                                 CheckBox {
                                     id: relative
@@ -346,10 +329,9 @@ Item {
                                     font.pointSize: 10
                                     checked: false
                                     anchors.bottom: locationTitle.bottom
-                                    onCheckStateChanged: if(checked === true){
+                                    onCheckStateChanged: if (checked === true) {
                                                              boxProperties.relative = true
-                                                         }
-                                                         else{
+                                                         } else {
                                                              boxProperties.relative = false
                                                          }
 
@@ -383,125 +365,127 @@ Item {
                             }
 
                             ///////////////////////////////////length/////////////////////////////////////
-                            Rectangle{
+                            Rectangle {
                                 id: lengthContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
-                                z:6
+                                z: 6
+
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
-
                                 QSpinBox {
                                     id: lengthValue
                                     value: 40000.00
-                                    from : 0
+                                    from: 0
 
-//                                    step: 1000
-                                    z:6
-                                    anchors.fill:parent
+                                    //                                    step: 1000
+                                    z: 6
+                                    anchors.fill: parent
                                     onValueChanged: {
-                                        if(boxProperties && lengthValue && (lengthValue.value === 0 || lengthValue.value)){
+                                        if (boxProperties && lengthValue
+                                                && (lengthValue.value === 0
+                                                    || lengthValue.value)) {
                                             boxProperties.length = lengthValue.value
                                         }
                                     }
-
                                 }
                             }
-                            Rectangle{
+                            Rectangle {
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
-
 
                                 Text {
                                     text: qsTr("Length:")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    x: 7
                                 }
                             }
 
-
                             ///////////////////////////////////width/////////////////////////////////////
-                            Rectangle{
+                            Rectangle {
                                 id: widthContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
-                                z:5
+                                z: 5
+
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
-
                                 QSpinBox {
                                     id: widthValue
                                     value: 40000.00
-                                    from:0
-//                                    step: 1000
-                                    z:5
-                                    anchors.fill:parent
+                                    from: 0
+                                    //                                    step: 1000
+                                    z: 5
+                                    anchors.fill: parent
                                     onValueChanged: {
-                                        if(boxProperties && widthValue && (widthValue.value === 0 || widthValue.value)){
+                                        if (boxProperties && widthValue
+                                                && (widthValue.value === 0
+                                                    || widthValue.value)) {
                                             boxProperties.width = widthValue.value
                                         }
                                     }
                                 }
                             }
-                            Rectangle{
+                            Rectangle {
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
+
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
-
                                 Text {
                                     text: qsTr("Width:")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    x: 7
                                 }
                             }
 
-
                             ///////////////////////////////////height/////////////////////////////////////
-                            Rectangle{
+                            Rectangle {
                                 id: heightContainer
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
-                                z:4
+                                z: 4
+
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
-
                                 QSpinBox {
                                     id: heightValue
                                     value: 40000.00
-                                    from:0
-//                                    step: 1000
-                                    z:4
-                                    anchors.fill:parent
+                                    from: 0
+                                    //                                    step: 1000
+                                    z: 4
+                                    anchors.fill: parent
                                     onValueChanged: {
-                                        if(boxProperties && heightValue && (heightValue.value === 0 || heightValue.value)){
+                                        if (boxProperties && heightValue
+                                                && (heightValue.value === 0
+                                                    || heightValue.value)) {
                                             boxProperties.height = heightValue.value
                                         }
                                     }
                                 }
                             }
-                            Rectangle{
+                            Rectangle {
                                 Layout.fillWidth: true
                                 color: "#404040"
                                 height: 30
+
                                 //                                border.color: "#5f5f5f"
                                 //                                border.width: 1
-
                                 Text {
                                     text: qsTr("Height:")
                                     font.pointSize: 10
                                     color: "white"
-                                    anchors.verticalCenter:  parent.verticalCenter
-                                    x:7
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    x: 7
                                 }
                             }
                         }

@@ -109,6 +109,8 @@ PluginManager::~PluginManager()
     unLoadPlugins();
     for (auto &i : mPluginsMap)
         delete i;
+    mPluginsMap.clear();
+    Application::instance()->mainWindow()->getMapItem()->getViewer()->removeEventHandler(mEventHandler);
     delete mPluginLoader;
 }
 
@@ -145,7 +147,8 @@ void PluginManager::setup()
     auto mainWindow = Application::instance()->mainWindow();
     PluginInterface::setMainWindow(mainWindow);
     auto mapItem = mainWindow->getMapItem();
-    mapItem->getViewer()->addEventHandler(new EventHandler(this));
+    mEventHandler = new EventHandler(this);
+    mapItem->getViewer()->addEventHandler(mEventHandler);
     //----------------------------------
     PluginInterface::setPluginsMap(mPluginsMap);
     //--------------------------------

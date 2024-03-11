@@ -12,30 +12,11 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
     initializeOsgEarth();
     mSearchNodeManager = new SearchNodeManager(this, this);
 
-    //    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
-
-    //    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
-    //------------
-    // Create an instance of SearchNodeManager
-    //    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
-
-    // Set the context property to expose to QML
-   // mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", mSearchNodeManager);
-//    qmlRegisterType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManager");
 //--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
     mFilterManager = mSearchNodeManager->getFilterManager();
     getMapObject()->setFilterManager(mFilterManager);
-    // connect(getMapObject(), &MapObject::nodeToLayerAdded, [this](osg::Node *node, osgEarth::Layer *layer){
-    //     auto data = node->getUserData();
-    //     NodeData *nodeData = dynamic_cast<NodeData*>(data);
-    //     if (nodeData){
-    //         mFilterManager->addFilterField(nodeData);
-    //     }
-    // });
-
-//    mSearchNodeManager = new SearchNodeManager();
 
     StatusBar *status = new StatusBar(this);
     mStatusBar = new StatusBarSearchModel(this);
@@ -50,12 +31,6 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
     this->setWidth(300);
     this->setHeight(300);
     // --------------------- I don't know why anyway :) ------------------------------------------
-}
-
-MapControllerItem::~MapControllerItem()
-{
-    qDebug() << "mapcontroller Deleted!";
-
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -201,6 +176,19 @@ void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 SearchNodeManager *MapControllerItem::searchNodeManager() const
 {
     return mSearchNodeManager;
+}
+
+MapControllerItem::~MapControllerItem()
+{
+    qDebug() << "~MapControllerItem";
+}
+
+MapControllerItem *MapControllerItem::instance()
+{
+    if (mInstance)
+        return mInstance;
+    mInstance = new MapControllerItem();
+    return mInstance;
 }
 
 QVector3D MapControllerItem::mapMouseGeoLocation() const

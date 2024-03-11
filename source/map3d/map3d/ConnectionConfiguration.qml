@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQml
 import "style"
+import "Components"
 
 Item {
     id: rootItem
@@ -249,25 +250,28 @@ Item {
                 testConnectionBtn.enabled = false
             }
         }
-        Button {
+        CustomButton {
             id: saveBtn
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 25 / Style.monitorRatio
             hoverEnabled: true
+            buttonText: "Save Changes"
+            buttonColor: Style.foregroundColor
+            buttonTextColor: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
 
-            contentItem: Text {
-                text: "Save changes"
-                font.pixelSize: Style.regularFontSize
-                color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            background: Rectangle {
-                radius: width / (Style.monitorRatio * 2)
-                color: Style.foregroundColor
-            }
+            //            contentItem: Text {
+            //                text: "Save changes"
+            //                font.pixelSize: Style.regularFontSize
+            //                color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
+            //                horizontalAlignment: Text.AlignHCenter
+            //                verticalAlignment: Text.AlignVCenter
+            //            }
+            //            background: Rectangle {
+            //                radius: width / (Style.monitorRatio * 2)
+            //                color: Style.foregroundColor
+            //            }
             onClicked: {
                 rootItem.connectionConfigCpp.saveSettings()
             }
@@ -286,7 +290,7 @@ Item {
                 connectionButtonClicked = false
             }
             if (connectionButtonClicked && !connectionConfigCpp.isConnected) {
-                testConnectionTxt.text = "Connection Failed"
+                testConnectionTxt.text = "Connection Failure"
                 testConnectionTxt.color = "#690000"
                 backgroundRec.color = "#690000"
                 testConnectionAnimationStatus.start()

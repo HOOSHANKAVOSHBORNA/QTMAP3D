@@ -52,5 +52,6 @@
         <file>LoadingPage.qml</file>
         <file>MiniMap.qml</file>
         <file>Components/LoadingButton.qml</file>
+        <file>Components/CustomButton.qml</file>
     </qresource>
 </RCC>

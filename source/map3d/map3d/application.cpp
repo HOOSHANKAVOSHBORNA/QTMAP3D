@@ -40,7 +40,7 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     mServiceManager = new ServiceManager(mNetworkManager);
 
     mQmlEngine->setInitialProperties({{"applicationCpp", QVariant::fromValue(this)}});
-
+    mQmlEngine->rootContext()->setContextProperty("mapControllerCpp", QVariant::fromValue(MapControllerItem::instance()));
     mConnectionConfig = new ConnectionConfiguration(mNetworkManager);
     mUserManager = UserManager::instance();
     mUserManager->initialize(mServiceManager);
