@@ -88,7 +88,7 @@ Item {
                 text: "Connection"
                 font.pixelSize: Style.titleFontSize
                 color: Style.foregroundColor
-                                Layout.fillWidth: true
+                Layout.fillWidth: true
             }
 
             IconImage {
