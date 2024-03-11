@@ -259,7 +259,7 @@ Rectangle {
                             contentItem: Text {
                                 id: tooltipConnection
                                 anchors.margins: 7 / Style.monitorRatio
-                                text: connectionConfigChecked ? "Connected" : "Not Connected"
+                                text: applicationCpp.connectionConfigCpp.isConnected ? "Connected" : "Not Connected"
                                 font.pixelSize: Style.regularFontSize
                                 color: 'white'
                             }
