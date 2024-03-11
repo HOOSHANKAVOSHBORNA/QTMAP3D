@@ -36,32 +36,33 @@ void LogManager::messageHandler(QtMsgType type,
                                 const QString &msg)
 {
     QString txt;
+    if (std::strcmp(context.category, "qml") == 0) { // category is qml
+        txt += "qml: ";
+    } else {
+        txt += "cpp: ";
+    }
+
     switch (type) {
     case QtDebugMsg:
-        if (std::strcmp(context.category, "qml") == 0) { // category is qml
-            txt += "qml: ";
-        } else {
-            txt += "cpp: ";
-        }
-        txt += QString("%1").arg(msg);
-        std::cout << txt.toStdString() << std::endl;
         return;
     case QtWarningMsg:
-        txt = QString("Warning: %1").arg(msg);
+        txt += "Warning: %1";
         break;
     case QtCriticalMsg:
-        txt = QString("Critical: %1").arg(msg);
+        txt += "Critical: %1";
         break;
     case QtFatalMsg:
-        txt = QString("Fatal: %1").arg(msg);
+        txt += "Fatal: %1";
         abort();
     case QtInfoMsg:
-        txt = QString("Info: %1").arg(msg);
+        txt += "Info: %1";
         break;
     }
 
-    txt += QDateTime::currentDateTime().toString(" yyyy-MM-dd hh:mm:ss");
+    txt += QString("%1").arg(msg);
+    std::cout << txt.toStdString() << std::endl;
 
+    txt += QDateTime::currentDateTime().toString(" yyyy-MM-dd hh:mm:ss");
     writeLogToFile(txt);
 }
 
