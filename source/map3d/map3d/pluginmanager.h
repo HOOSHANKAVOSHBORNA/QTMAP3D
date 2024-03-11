@@ -28,8 +28,9 @@ public:
     void loadPlugins();
 
     QMap<QString, PluginInterface *> pluginsMap() const;
+    QStringList pluginFileNameList() const;
+
 signals:
-    void plugunCount(int count);
     void pluginMessage(QString message, bool isError);
     void setupFinished();
 

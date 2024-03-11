@@ -100,6 +100,7 @@ void Application::onLoadingPage()
         setPageIndex(2);
     });
 
+    mLoadingPage->setPluginsCount(mPluginManager->pluginFileNameList().count());
     setPageIndex(1);
     mPluginManager->loadPlugins();
 }

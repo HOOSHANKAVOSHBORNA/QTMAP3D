@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import "style"
 
 Rectangle {
-    // property var loadingPageCpp: undefined
+    property var loadingPageCpp: applicationCpp.loadingPageCpp
     color: "transparent"
     Rectangle {
         width: parent.width / 2
@@ -46,12 +46,13 @@ Rectangle {
                 clip: true
                 ListView {
                     id: listView
-                    model: applicationCpp.loadingPageCpp ? applicationCpp.loadingPageCpp : 0
+                    model: loadingPageCpp ? loadingPageCpp : 0
                     anchors.fill: parent
                     verticalLayoutDirection: ListView.BottomToTop
+
                     onCountChanged: {
-                        progressBar.value = loadingPageCpp.rowCount(
-                                    ) / loadingPageCpp.pluginCounter
+                        print(loadingPageCpp.pluginFraction)
+                        progressBar.value = loadingPageCpp ? loadingPageCpp.pluginFraction : 0
                     }
 
                     delegate: Text {
@@ -64,55 +65,6 @@ Rectangle {
                         horizontalAlignment: Text.AlignHCenter
                         width: listView.width
                     }
-
-                    //                    populate: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 10000
-                    //                        }
-                    //                    }
-
-                    //                    add: Transition {
-                    //                        NumberAnimation {
-                    //                            property: "opacity"
-                    //                            from: 0
-                    //                            to: 1.0
-                    //                            duration: 200
-                    //                        }
-                    //                        NumberAnimation {
-                    //                            property: "scale"
-                    //                            from: 0
-                    //                            to: 1.0
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-
-                    //                    move: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-
-                    //                    remove: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-
-                    //                    removeDisplaced: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-                    //                    displaced: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
                 }
             }
 

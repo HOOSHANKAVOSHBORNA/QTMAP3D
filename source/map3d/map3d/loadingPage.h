@@ -20,7 +20,7 @@ struct LoadingInfoItem
 class LoadingPage : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(int pluginCounter READ pluginCounter WRITE setPluginCounter NOTIFY pluginCounterChanged)
+    Q_PROPERTY(float pluginFraction READ pluginFraction WRITE setpluginFraction NOTIFY pluginFractionChanged)
     enum CustomRoles {
        errorStatus = Qt::UserRole,
     };
@@ -35,15 +35,17 @@ public:
     void swapItem(int sourceIndex, int destinationIndex);
     void updateData(int index);
 
-    int pluginCounter() const;
-    void setPluginCounter(int pluginCounter);
+    float pluginFraction() const;
+    void setpluginFraction(float pluginFrac);
+    void setPluginsCount(int count);
 
 signals:
-    void pluginCounterChanged();
+    void pluginFractionChanged();
 
 private:
     QVector<LoadingInfoItem> mLoadingDataItem;
-    int mPluginCounter;
+    float mPluginFraction{0.0};
+    int mPluginsCount{0};
 };
 
 #endif // LOADINGPAGE_H

@@ -42,6 +42,9 @@ void LoadingPage::addItem(const QString &message, bool isError)
     beginInsertRows(QModelIndex(), 0, 0);
     mLoadingDataItem.insert(0, {message, isError});
     endInsertRows();
+
+    mPluginFraction = mLoadingDataItem.size()/(mPluginsCount+0.01);
+    setpluginFraction(mPluginFraction);
 }
 
 void LoadingPage::removeItem(int index)
@@ -50,6 +53,7 @@ void LoadingPage::removeItem(int index)
         beginRemoveRows(QModelIndex(),index,index);
         mLoadingDataItem.erase(mLoadingDataItem.begin() + index);
         endRemoveRows();
+        emit pluginFractionChanged();
     }
     else
         return;
@@ -74,15 +78,18 @@ void LoadingPage::updateData(int index)
             swapItem(m , m - 1);
 }
 
-int LoadingPage::pluginCounter() const
+float LoadingPage::pluginFraction() const
 {
-    return mPluginCounter;
+    return mPluginFraction;
 }
 
-void LoadingPage::setPluginCounter(int pluginCounter)
+void LoadingPage::setpluginFraction(float pluginFrac)
 {
-    if (mPluginCounter == pluginCounter)
-        return;
-    mPluginCounter = pluginCounter;
-    emit pluginCounterChanged();
+    mPluginFraction = pluginFrac;
+    emit pluginFractionChanged();
+}
+
+void LoadingPage::setPluginsCount(int count)
+{
+    mPluginsCount = count;
 }
