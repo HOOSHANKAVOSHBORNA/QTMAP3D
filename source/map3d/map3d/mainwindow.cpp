@@ -30,7 +30,7 @@ MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
     mBookmarkManager = new BookmarkManager(this);
     mListWindow = new ListWindow(this);
     mLayerManager = new LayerManager(mMapItem, this);
-    mMapItem->addBaselayers();
+    mMapItem->initialize();
 }
 
 MainWindow::~MainWindow()

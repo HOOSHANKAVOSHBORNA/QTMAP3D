@@ -133,7 +133,10 @@ void MapControllerItem::clearMap()
 {
     getMapObject()->clearLayers();
     delete mSearchNodeManager;
-    // delete mFilterManager;
+    // clear mapnode children
+    if (getMapNode()->getNumChildren() > 3)
+        getMapNode()->removeChild(3, getMapNode()->getNumChildren());
+    qDebug() << "MapControllerItem::clearMap";
 }
 
 void MapControllerItem::initialize()
