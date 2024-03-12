@@ -174,12 +174,6 @@ ColumnLayout {
             anchors.fill: parent
             hoverEnabled: true
 
-            //            onHoveredChanged: {
-            //                if (hovered && enabled)
-            //                    shadow.shadowEnabled = true
-            //                else
-            //                    shadow.shadowEnabled = false
-            //            }
             contentItem: Text {
                 id: signInBtnTxt
                 text: "Sign in"
