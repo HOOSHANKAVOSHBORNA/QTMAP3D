@@ -29,7 +29,7 @@ ColumnLayout {
     spacing: 0
 
     function resetSignInBtn() {
-        signInBtn.background.color = Style.foregroundColor
+        signInBtn.buttonColor = Style.foregroundColor
         signInBtn.loadingRec.anchors.leftMargin = 0
         signInBtn.loadingRec.anchors.topMargin = 0
         signInBtn.loadingTimer.stop()
@@ -44,10 +44,6 @@ ColumnLayout {
         interval: 5000
         onTriggered: {
             signInBtn.enabled = true
-            //            signInBtn.background.color = Style.foregroundColor
-            //            signInBtn.loadingRec.anchors.leftMargin = 0
-            //            signInBtn.loadingRec.anchors.topMargin = 0
-            //            signInBtn.loadingTimer.stop()
             resetSignInBtn()
             userManager.setMessage("No Response")
         }
@@ -181,19 +177,12 @@ ColumnLayout {
             z: 0
             anchors.fill: parent
             hoverEnabled: true
-
-            contentItem: Text {
-                id: signInBtnTxt
-                text: "Sign in"
-                color: Style.backgroundColor
-                font.pixelSize: Style.regularFontSize
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-
+            buttonColor: Style.foregroundColor
+            buttonText: "Sign in"
+            loadingRecVisible: true
             onClicked: {
                 signInBtn.enabled = false
-                signInBtn.background.color = "silver"
+                signInBtn.buttonColor = "silver"
                 userManager.setMessage("")
                 loadingRec.anchors.topMargin = -2 / Style.monitorRatio
                 loadingTimer.start()

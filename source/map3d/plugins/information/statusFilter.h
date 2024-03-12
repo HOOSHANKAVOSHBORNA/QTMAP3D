@@ -25,7 +25,7 @@ public:
 
 private:
     StatusFieldModel *mFilterModel{nullptr};
-    StatusNodeData data;
+    StatusNodeData mData;
 };
 
 class StatusFieldModel : public QAbstractListModel
