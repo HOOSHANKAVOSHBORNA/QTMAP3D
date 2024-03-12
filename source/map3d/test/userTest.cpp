@@ -4,16 +4,23 @@
 UserTest::UserTest(ServiceManager *serviceManager):
     mServiceManager(serviceManager)
 {
-    mUserData1.name = "Test1 Name";
-    mUserData1.userName = "test1";
-    mUserData1.password = "1234";
-    mUserData1.roles.append("Admin");
-    mUserData1.roles.append("User");
-    mUserData1.roles.append("Reviewer");
+    //----------- user data 1 ----------------
+    UserData userData1;
+    userData1.name = "Test1 Name";
+    userData1.userName = "test1";
+    userData1.password = "1234";
+    userData1.roles.append("Admin");
+    userData1.roles.append("User");
+    userData1.roles.append("Reviewer");
 
-    mUserData2.name = "Test2 Name";
-    mUserData2.userName = "test2";
-    mUserData2.password = "1234";
+    //----------- user data 2 ----------------
+    UserData userData2;
+    userData2.name = "Test2 Name";
+    userData2.userName = "test2";
+    userData2.password = "1234";
+
+    mUserDatas.append(userData1);
+    mUserDatas.append(userData2);
 
     QObject::connect(mServiceManager, &ServiceManager::userDataReceived, this, &UserTest::onUserDataReceived);
 }
@@ -24,44 +31,25 @@ void UserTest::onUserDataReceived(const UserData &userData)
     mIsLogin = false;
     UserData responsUserData = userData;
 
-    if(userData.userName == mUserData1.userName){
-        if(userData.password == mUserData1.password){
-            responsUserData.name = mUserData1.name;
-            responsUserData.response.status = Response::Status::Success;
-            responsUserData.response.message = "";
-            if(userData.command == UserData::UserCommand::Login){
-                responsUserData.roles.clear();
-                responsUserData.roles = mUserData1.roles;
-            }
-            else if(userData.command == UserData::UserCommand::SelectRole){
-                mUserData1.selectRoleIndex = userData.selectRoleIndex;
-                mIsLogin = true;
-                emit login();
-            }
-            else if(userData.command == UserData::UserCommand::Logout)
-                emit logout();
-        }
-        else{
-            responsUserData.response.status = Response::Status::Failed;
-            responsUserData.response.message = "Password is wrong.";
-        }
+    if(userData.command == UserData::UserCommand::Logout) {
+        emit logout();
     }
-    else if(userData.userName == mUserData2.userName){
-        if(userData.password == mUserData2.password){
-            responsUserData.name = mUserData2.name;
+    // find user data
+    auto it = std::find(mUserDatas.begin(), mUserDatas.end(), userData);
+    if(it != mUserDatas.end()){
+        if(userData.password == it->password){
+            responsUserData.name = it->name;
             responsUserData.response.status = Response::Status::Success;
             responsUserData.response.message = "";
             if(userData.command == UserData::UserCommand::Login){
                 responsUserData.roles.clear();
-                responsUserData.roles = mUserData2.roles;
+                responsUserData.roles = it->roles;
+            }
+            else if(userData.command == UserData::UserCommand::SelectRole){
+                it->selectRoleIndex = userData.selectRoleIndex;
                 mIsLogin = true;
                 emit login();
             }
-            else if(userData.command == UserData::UserCommand::SelectRole){
-                mUserData2.selectRoleIndex = userData.selectRoleIndex;
-            }
-            else if(userData.command == UserData::UserCommand::Logout)
-                emit logout();
         }
         else{
             responsUserData.response.status = Response::Status::Failed;
