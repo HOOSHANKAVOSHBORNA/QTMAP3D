@@ -622,7 +622,7 @@ Rectangle {
                                 anchors.right: borderRect.left
                                 anchors.rightMargin: 5 / Style.monitorRatio
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: modelData.logicalOperator === Tag.And ? "&&" : "||"
+                                text: modelData.logicalOperator === 0 ? "&&" : "||"
                                 font.pixelSize: Style.smallFontSize
 
                                 font.family: "Roboto"
