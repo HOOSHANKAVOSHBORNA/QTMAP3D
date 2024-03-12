@@ -93,7 +93,7 @@ Item {
         anchors.rightMargin: itemMargin
         anchors.top: parent.top
         anchors.topMargin: itemMargin + 3
-        filterManager: map.mapItem ? map.mapItem.filterManager() : undefined
+        filterManager: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp.getMapItem().filterManager : undefined
         model: map.mapItem ? mapItem.searchNodeManager().searchNodeProxyModel() : undefined
     }
 

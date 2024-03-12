@@ -76,8 +76,8 @@ void LayerPropertyItem::setIsVisible(bool newIsVisible)
         return;
 
 
-    auto layerVisible = dynamic_cast<osgEarth::VisibleLayer *>(mModelNodeLayer.get());
-    layerVisible->setVisible(newIsVisible);
+    // auto layerVisible = dynamic_cast<osgEarth::VisibleLayer *>(mModelNodeLayer.get());
+    // layerVisible->setVisible(newIsVisible);
 
     emit isVisibleChanged();
 

@@ -12,8 +12,6 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
 //--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-
-    createSearchNodeManager();
     StatusBar *status = new StatusBar(this);
     mStatusBar = new StatusBarSearchModel(this);
     mStatusBar->setSourceModel(status);
@@ -121,7 +119,7 @@ void MapControllerItem::createSearchNodeManager()
 {
     mSearchNodeManager = new SearchNodeManager(this);
     mFilterManager = mSearchNodeManager->getFilterManager();
-    getMapObject()->setFilterManager(mFilterManager);
+    setFilterManager(mFilterManager);
 }
 
 FilterManager *MapControllerItem::filterManager() const
@@ -132,7 +130,9 @@ FilterManager *MapControllerItem::filterManager() const
 void MapControllerItem::clearMap()
 {
     getMapObject()->clearLayers();
-    delete mSearchNodeManager;
+    if (mSearchNodeManager)
+        delete mSearchNodeManager;
+    mSearchNodeManager = nullptr;
     // clear mapnode children
     if (getMapNode()->getNumChildren() > 3)
         getMapNode()->removeChild(3, getMapNode()->getNumChildren());
@@ -323,6 +323,15 @@ void MapControllerItem::setTopMenuItem(QQuickItem *newTopMenuItem)
         return;
     mTopMenuItem = newTopMenuItem;
     emit topMenuItemChanged();
+}
+
+void MapControllerItem::setFilterManager(FilterManager *filterManager)
+{
+    getMapObject()->setFilterManager(mFilterManager);
+    if (mFilterManager == filterManager)
+        return;
+    mFilterManager = filterManager;
+    emit filterManagerChanged();
 }
 
 bool MapControllerItem::topMenuVisible() const
