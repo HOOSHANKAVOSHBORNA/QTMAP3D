@@ -77,11 +77,11 @@ void FilterManager::removeStringFilterField(QString field)
     mFilterFieldsStrModel->removeFilterField(field);
 }
 
-void FilterManager::addFilterField(NodeData *nodeData)
+void FilterManager::addFilterField(const NodeData& nodeData)
 {
-    for (auto &field : nodeData->fieldData){
+    for (auto &field : nodeData.fieldData){
         // addFilterField(field.name, field.value);
-        for (auto &field : nodeData->fieldData) {
+        for (auto &field : nodeData.fieldData) {
             if (field.name.toLower() == "color")
                 addColorFilterField(field.value.toString());
             else if (std::strcmp(field.value.typeName(), "double") == 0

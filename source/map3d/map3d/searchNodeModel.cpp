@@ -67,7 +67,7 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
         }
 
         // ToDo: optimize it
-        mFilterManager->addFilterField(nodeData);
+        mFilterManager->addFilterField(*nodeData);
     }
 }
 
