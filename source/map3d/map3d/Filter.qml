@@ -250,7 +250,7 @@ Rectangle {
                             }
                             onCurrentIndexChanged: {
                                 txtContentItem.text = control.textAt(control.highlightedIndex)
-                                control.currentText = txtContentItem.text
+//                                control.currentText = txtContentItem.text
                             }
 
                             indicator: Rectangle {}
@@ -270,7 +270,7 @@ Rectangle {
                                     id: redBackG
                                     color: "transparent"
                                 }
-                                validator: DoubleValidator {}
+//                                validator: DoubleValidator {}
                                 PropertyAnimation {
                                     id: rbg
                                     target: redBackG
@@ -430,7 +430,7 @@ Rectangle {
                                     id: redBackG3
                                     color: "transparent"
                                 }
-                                validator: DoubleValidator {}
+//                                validator: DoubleValidator {}
                                 PropertyAnimation {
                                     id: rbg3
                                     target: redBackG3
