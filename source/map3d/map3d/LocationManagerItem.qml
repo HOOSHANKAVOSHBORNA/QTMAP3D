@@ -55,7 +55,6 @@ Rectangle {
         anchors.rightMargin: 18 / Style.monitorRatio
         spacing: 12 / Style.monitorRatio
 
-        // ----------------------------------------------- search bar & add place button
         // TEST: viewpoint changes connection
         //        Label {
         //            Layout.fillWidth: true
@@ -74,46 +73,11 @@ Rectangle {
         //                font.pixelSize: Style.regularFontSize
         //            }
         //        }
+
+        // ----------------------------------------------- search bar & add place button
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5 / Style.monitorRatio
-
-            Rectangle {
-                Layout.fillWidth: true
-                height: 30 / Style.monitorRatio
-                radius: height / 2
-                color: bg20
-
-                IconImage {
-                    id: searchIcon
-                    source: "qrc:/Resources/search.png"
-                    width: 24 / Style.monitorRatio
-                    height: 24 / Style.monitorRatio
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 10 / Style.monitorRatio
-                    color: Style.foregroundColor
-                }
-
-                TextField {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: searchIcon.right
-                    anchors.right: parent.right
-                    verticalAlignment: Text.AlignVCenter
-                    font.family: Style.fontFamily
-                    font.pixelSize: Style.regularFontSize
-
-                    background: Rectangle {
-                        color: 'transparent'
-                    }
-
-                    onAccepted: lvLocationManger.model.searchedName = text
-                    onTextChanged: lvLocationManger.model.searchedName = text
-
-                    placeholderText: "Name..."
-                    placeholderTextColor: Style.disableColor
-                }
-            }
 
             RowLayout {
                 Layout.fillWidth: true
@@ -136,7 +100,7 @@ Rectangle {
                         font.family: Style.fontFamily
                         font.pixelSize: Style.regularFontSize
                         color: fg75
-                        text: "0.0"
+                        text: "50"
 
                         validator: RegularExpressionValidator {
                             regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
@@ -144,7 +108,8 @@ Rectangle {
 
                         onAccepted: {
                             listModel.goToLocation(parseFloat(tiLat.text),
-                                                   parseFloat(tiLang.text))
+                                                   parseFloat(tiLang.text),
+                                                   parseFloat(tiAlt.text))
                         }
                     }
                 }
@@ -166,7 +131,7 @@ Rectangle {
                         font.family: Style.fontFamily
                         font.pixelSize: Style.regularFontSize
                         color: fg75
-                        text: "0.0"
+                        text: "50"
 
                         validator: RegularExpressionValidator {
                             regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
@@ -174,9 +139,70 @@ Rectangle {
 
                         onAccepted: {
                             listModel.goToLocation(parseFloat(tiLat.text),
-                                                   parseFloat(tiLang.text))
+                                                   parseFloat(tiLang.text),
+                                                   parseFloat(tiAlt.text))
                         }
                     }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 30 / Style.monitorRatio
+                    radius: height / 2
+                    color: bg20
+                    clip: true
+
+                    TextInput {
+                        id: tiAlt
+
+                        anchors.fill: parent
+                        anchors.leftMargin: 15 / Style.monitorRatio
+                        anchors.rightMargin: 15 / Style.monitorRatio
+                        verticalAlignment: Text.AlignVCenter
+                        font.family: Style.fontFamily
+                        font.pixelSize: Style.regularFontSize
+                        color: fg75
+                        text: "1000"
+
+                        validator: RegularExpressionValidator {
+                            regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
+                        }
+
+                        onAccepted: {
+                            listModel.goToLocation(parseFloat(tiLat.text),
+                                                   parseFloat(tiLang.text),
+                                                   parseFloat(tiAlt.text))
+                        }
+                    }
+                }
+            }
+
+            Button {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 20
+
+                padding: 0
+
+                background: Rectangle {
+                    color: 'transparent'
+                }
+
+                contentItem: Rectangle {
+                    anchors.fill: parent
+                    color: fg80
+                    radius: 25
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: 'Go To Location...'
+                        color: Style.backgroundColor
+                    }
+                }
+
+                onClicked: {
+                    listModel.goToLocation(parseFloat(tiLat.text),
+                                           parseFloat(tiLang.text),
+                                           parseFloat(tiAlt.text))
                 }
             }
 
@@ -212,6 +238,43 @@ Rectangle {
                         rPopup.editIndex = -1
                         rPopup.myOpen()
                     }
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                height: 30 / Style.monitorRatio
+                radius: height / 2
+                color: bg20
+
+                IconImage {
+                    id: searchIcon
+                    source: "qrc:/Resources/search.png"
+                    width: 24 / Style.monitorRatio
+                    height: 24 / Style.monitorRatio
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10 / Style.monitorRatio
+                    color: Style.foregroundColor
+                }
+
+                TextField {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: searchIcon.right
+                    anchors.right: parent.right
+                    verticalAlignment: Text.AlignVCenter
+                    font.family: Style.fontFamily
+                    font.pixelSize: Style.regularFontSize
+
+                    background: Rectangle {
+                        color: 'transparent'
+                    }
+
+                    onAccepted: lvLocationManger.model.searchedName = text
+                    onTextChanged: lvLocationManger.model.searchedName = text
+
+                    placeholderText: "Name..."
+                    placeholderTextColor: Style.disableColor
                 }
             }
         }

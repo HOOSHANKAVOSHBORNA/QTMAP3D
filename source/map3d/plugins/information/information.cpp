@@ -11,6 +11,7 @@ Information::Information(QObject *parent): PluginInterface(parent)
 
 bool Information::setup()
 {
+    mStatusFilter = new StatusFilter(qmlEngine(),mainWindow());
    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::statusNodeReceived);
 
     mInformationLayer = new CompositeAnnotationLayer;
@@ -216,6 +217,7 @@ void Information::addUpdateStatusNode(const StatusNodeData &statusnNodeData)
 
 void Information::statusNodeReceived(const StatusNodeData &statusNodeData)
 {
+    StatusNodeData filteredData = mStatusFilter->filterStatusData(statusNodeData);
     if (statusNodeData.command == Command::Remove){
         if (mStatusNodeMap.contains(statusNodeData.id)){
             auto layer = mapItem()->getMapObject()->getLayerByUserId(statusNodeData.layerId);
