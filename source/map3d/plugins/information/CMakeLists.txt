@@ -18,9 +18,11 @@ add_library(information SHARED
     information.qrc
     mapPin.h mapPin.cpp
     statusNode.cpp statusNode.h
+    statusFilter.cpp statusFilter.h
 )
 
-target_include_directories(information PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")
+target_include_directories(information PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d"
+"${CMAKE_CURRENT_SOURCE_DIR}/../../map3d/style")
 #target_include_directories(information PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
 
 target_link_libraries(information PRIVATE Qt6::Gui Qt6::Quick Qt6::Widgets)

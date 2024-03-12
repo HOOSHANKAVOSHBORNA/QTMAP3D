@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "style"
+import "Components"
 
 ColumnLayout {
     property var roleSelectionModel: undefined
@@ -126,27 +127,32 @@ ColumnLayout {
             Layout.leftMargin: 5 / Style.monitorRatio
         }
     }
-    Button {
+    CustomButton {
         id: signInBtn
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
         Layout.topMargin: Style.smallFontSize
         hoverEnabled: true
-        background: Rectangle {
-            color: Style.foregroundColor
-            radius: width / (Style.monitorRatio * 2)
-        }
-        contentItem: Text {
-            text: "Sign in"
-            font.pixelSize: Style.regularFontSize
-            color: parent.hovered
-                   && parent.enabled ? "#01AED6" : Style.backgroundColor
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
+        buttonColor: Style.foregroundColor
+        buttonTextColor: signInBtn.hovered
+                         && signInBtn.enabled ? "#01AED6" : Style.backgroundColor
+        buttonText: "Sign in"
 
-        onClicked: {
+        //        background: Rectangle {
+        //            color: Style.foregroundColor
+        //            radius: width / (Style.monitorRatio * 2)
+        //        }
+        //        contentItem: Text {
+        //            text: "Sign in"
+        //            font.pixelSize: Style.regularFontSize
+        //            color: parent.hovered
+        //                   && parent.enabled ? "#01AED6" : Style.backgroundColor
+        //            horizontalAlignment: Text.AlignHCenter
+        //            verticalAlignment: Text.AlignVCenter
+        //        }
 
-        }
+        //        onClicked: {
+
+        //        }
     }
 }

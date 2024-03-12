@@ -16,6 +16,7 @@ Item {
     property var connectionConfigurationCpp
     property var profileCpp
     property var bookmarkCpp
+    property var settingItem
 
     property alias currentItemIndex: stackLayout.currentIndex
 
@@ -174,6 +175,22 @@ Item {
                 onWindowClose: {
                     sideModel.get(4).isWindow = false
                     currentItemIndex = 4
+                }
+            }
+
+
+            DockWindow {
+                id: settingsDocItem
+                windowTitle: sideModel.get(5).name
+                isWindow: sideModel.get(5).isWindow
+
+                containerItem: Item{
+                    data: rootItem.settingItem
+                }
+
+                onWindowClose: {
+                    sideModel.get(5).isWindow = false
+                    currentItemIndex = 5
                 }
             }
         }

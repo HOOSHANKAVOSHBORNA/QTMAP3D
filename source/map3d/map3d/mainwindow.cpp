@@ -25,12 +25,12 @@ MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
     qmlRegisterType<QmlNode>("Crystal", 1, 0, "QmlNode");
 
     mMapItem = MapControllerItem::instance();
+    mMapItem->initialize();
     mLocationManager = new LocationManager(mMapItem, this);
     mToolboxManager = new ToolboxManager(this);
     mBookmarkManager = new BookmarkManager(this);
     mListWindow = new ListWindow(this);
     mLayerManager = new LayerManager(mMapItem, this);
-    mMapItem->initialize();
 }
 
 MainWindow::~MainWindow()
@@ -77,6 +77,23 @@ void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
+}
+
+
+void MainWindow::clearData()
+{
+
+}
+
+void MainWindow::setSettingsItem(QQuickItem *item)
+{
+    mSettingsItem = item;
+    emit settingsItemChanged();
+}
+
+QQuickItem *MainWindow::getSettingsItem()
+{
+    return mSettingsItem;
 }
 
 ListWindow *MainWindow::getListWindow() const

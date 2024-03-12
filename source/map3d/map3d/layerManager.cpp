@@ -143,8 +143,10 @@ void LayerModel::onVisibleItemClicked(const QModelIndex &current)
     auto layer = item->data(LayerRole).value<osgEarth::Layer*>();
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     if(visibleLayer){
+        bool isVisible = visibleLayer->getVisible();
+        visibleLayer->setVisible(!isVisible);
         setLayerVisible(visibleLayer);
-        setItemVisible(item, visibleLayer->getVisible());
+        setItemVisible(item, !isVisible);
     }
 }
 

@@ -98,6 +98,9 @@ void Application::onLoadingPage()
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
         setPageIndex(2);
+        ReadyForData ready;
+        ready.message = "Ready";
+        mServiceManager->sendReady(ready);
     });
 
     mLoadingPage->setPluginsCount(mPluginManager->pluginFileNameList().count());
