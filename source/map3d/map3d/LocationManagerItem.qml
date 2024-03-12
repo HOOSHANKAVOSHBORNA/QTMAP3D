@@ -214,10 +214,7 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 20
                 padding: 0
-
-                buttonColor: Style.foregroundColor
                 buttonText: "Go To Location"
-                buttonTextColor: Style.backgroundColor
                 onClicked: {
                     listModel.goToLocation(parseFloat(tiLat.text),
                                            parseFloat(tiLang.text),
@@ -235,10 +232,7 @@ Rectangle {
             CustomButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30 / Style.monitorRatio
-                buttonColor: Style.foregroundColor
                 buttonText: "Add place"
-                buttonTextColor: Style.backgroundColor
-                iconImageColor: Style.backgroundColor
                 iconImageVisible: true
                 iconImageSource: "qrc:/Resources/location-add.png"
 

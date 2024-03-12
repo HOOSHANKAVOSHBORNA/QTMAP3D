@@ -105,7 +105,6 @@ Window {
                     CustomButton {
                         Layout.fillWidth: true
                         buttonText: "Track"
-                        buttonColor: "transparent"
                         iconImageVisible: true
                         iconImageSource: "qrc:/Resources/track-icon.png"
                         onClicked: {
@@ -123,7 +122,6 @@ Window {
                     CustomButton {
                         Layout.fillWidth: true
                         buttonText: "Go to"
-                        buttonColor: "transparent"
                         iconImageVisible: true
                         iconImageSource: "qrc:/Resources/easy-to-find.png"
                         onClicked: {
