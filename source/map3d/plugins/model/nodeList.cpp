@@ -374,6 +374,12 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
     //    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
     //    QString categoryTab = dataManager->categoryTagNames().at(ifDataFromQmlIsIndexNotString);
     NodeData nodeData = mDataManager->getNodeAtIndex(sourceRow)->nodeData();
+    if(mFilterSearch == ""){
+        return true;
+    }else{
+        return nodeData.name.contains(mFilterSearch, Qt::CaseInsensitive);
+    }
+
     if (!mDataManager->filterManager()->checkNodeToShow(&nodeData)) {
         return false;
     }
@@ -382,11 +388,23 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
         return true;
     }
 
+
 //    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
     QString rowCategory = mDataManager->getNodeAtIndex(sourceRow)->nodeData().category;
 
     return rowCategory.contains(mFilterCategoryTag, Qt::CaseInsensitive);
 }
+
+QString NodeProxyModel::filterSearch() const
+{
+    return mFilterSearch;
+}
+
+void NodeProxyModel::setFilterSearch(const QString &newFilterSearch)
+{
+    mFilterSearch = newFilterSearch;
+}
+
 
 
 //--------------------------------NodeList-----------------------
