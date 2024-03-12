@@ -14,6 +14,10 @@ Rectangle {
     property int locationColorIconWidth: 13
     property int locationColorIconMargin: 3
 
+    property real coordinate1: 0.0
+    property real coordinate2: 0.0
+    property real coordinate3: 0.0
+
     // colors
     readonly property color bg40: Qt.rgba(Style.backgroundColor.r,
                                           Style.backgroundColor.g,
@@ -205,9 +209,9 @@ Rectangle {
             property int editIndex: -1
 
             function myOpen() {
-                txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(
-                            6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
 
+                //                txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(
+                //                            6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
                 rPopup.visible = true
             }
 
@@ -300,13 +304,20 @@ Rectangle {
                             icon.color: Style.foregroundColor
                         }
 
-                        Text {
-                            id: txtPlaceName
+                        Label {
+                            Layout.preferredWidth: 55 / Style.monitorRatio
+                            Layout.preferredHeight: 20 / Style.monitorRatio
+                            background: Rectangle {
+                                color: "transparent"
+                            }
 
-                            text: "set before opening :)"
-                            font.family: Style.fontFamily
-                            font.pixelSize: Style.regularFontSize
-                            color: Style.foregroundColor
+                            Text {
+                                Layout.alignment: Qt.AlignVCenter
+                                color: Style.foregroundColor
+                                text: coordinate1 + ", " + coordinate2 + ", " + coordinate3
+                                font.family: Style.fontFamily
+                                font.pixelSize: Style.regularFontSize
+                            }
                         }
                     }
 
