@@ -46,47 +46,15 @@ FilterManager::~FilterManager()
     qDebug() << "~FilterManager!";
 }
 
-void FilterManager::addColorFilterField(QSet<QString> &fields)
-{
-    for (auto &i: fields)
-        addColorFilterField(i);
-}
-
-void FilterManager::setColorFilterField(QSet<QString> &fields)
-{
-    mFilterFieldsColorModel->setFilterField(fields);
-}
 
 void FilterManager::addColorFilterField(QString fields)
 {
     mFilterFieldsColorModel->addFilterField(fields);
 }
 
-void FilterManager::addNumFilterField(QSet<QString> &fields)
-{
-    for (auto &i: fields)
-        addNumFilterField(i);
-}
-
-void FilterManager::setNumFilterField(QSet<QString> &fields)
-{
-    mFilterFieldsNumModel->setFilterField(fields);
-}
-
 void FilterManager::addNumFilterField(QString fields)
 {
     mFilterFieldsNumModel->addFilterField(fields);
-}
-
-void FilterManager::addStringFilterField(QSet<QString> &fields)
-{
-    for (auto &i: fields)
-        addStringFilterField(i);
-}
-
-void FilterManager::setStringFilterField(QSet<QString> &fields)
-{
-    mFilterFieldsStrModel->setFilterField(fields);
 }
 
 void FilterManager::addStringFilterField(QString fields)
@@ -109,24 +77,22 @@ void FilterManager::removeStringFilterField(QString field)
     mFilterFieldsStrModel->removeFilterField(field);
 }
 
-// void FilterManager::addFilterField(NodeData *nodeData)
-// {
-//     for (auto &field : nodeData->fieldData){
-//         addFilterField(field.name, field.value);
-//     }
-// }
-
-// void FilterManager::addFilterField(QString field, QVariant value)
-// {
-//     if (field.toLower() == "color" && mFilterFieldsColor.indexOf(value.toString()) == -1)
-//         mFilterFieldsColor.push_back(value.toString());
-//     else if (mFilterFieldsNum.indexOf(field) == -1 && (std::strcmp(value.typeName(), "double") == 0 || std::strcmp(value.typeName(), "qlonglong") == 0))
-//         mFilterFieldsNum.push_back(field);
-//     else if (mFilterFieldsStr.indexOf(field) == -1 && std::strcmp(value.typeName(), "QString") == 0)
-//         mFilterFieldsStr.push_back(field);
-
-//     emit filterFieldsChanged();
-// }
+void FilterManager::addFilterField(const NodeData& nodeData)
+{
+    for (auto &field : nodeData.fieldData){
+        // addFilterField(field.name, field.value);
+        for (auto &field : nodeData.fieldData) {
+            if (field.name.toLower() == "color")
+                addColorFilterField(field.value.toString());
+            else if (std::strcmp(field.value.typeName(), "double") == 0
+                     || std::strcmp(field.value.typeName(), "qlonglong") == 0
+                     || std::strcmp(field.value.typeName(), "int") == 0)
+                addNumFilterField(field.name);
+            else if (std::strcmp(field.value.typeName(), "QString") == 0)
+                addStringFilterField(field.name);
+        }
+    }
+}
 
 bool FilterManager::checkNodeToShow(NodeData *nodeData, Tag *tag)
 {
@@ -300,19 +266,6 @@ void FilterFieldModel::addFilterField(QString field)
     beginInsertRows(QModelIndex(), mFilterFields.size(), mFilterFields.size());
     mFilterFields.push_back(field);
     endInsertRows();
-}
-
-void FilterFieldModel::addFilterField(QSet<QString> &fields)
-{
-    for (auto &i: fields)
-        addFilterField(i);
-}
-
-void FilterFieldModel::setFilterField(QSet<QString> &fields)
-{
-    beginResetModel();
-    mFilterFields = fields.values().toVector();
-    endResetModel();
 }
 
 void FilterFieldModel::removeFilterField(QString field)

@@ -25,19 +25,19 @@ int main(int argc, char *argv[])
     AssignmentTest *assignmentTest;
     ParticleTest *particleTest;
 
-    QObject::connect(userTest, &UserTest::login,[&]{
+    QObject::connect(userTest, &UserTest::login,[&layerTest, &nodeTest, &assignmentTest, &particleTest, &serviceManager]{
         qDebug()<<"login";
-       // layerTest = new LayerTest(&serviceManager);
-       // nodeTest = new NodeTest(&serviceManager);
-//        assignmentTest = new AssignmentTest(&serviceManager);
-//        particleTest = new ParticleTest(&serviceManager);
+       layerTest = new LayerTest(&serviceManager);
+       nodeTest = new NodeTest(&serviceManager);
+       assignmentTest = new AssignmentTest(&serviceManager);
+       particleTest = new ParticleTest(&serviceManager);
     });
-    QObject::connect(userTest, &UserTest::logout,[&]{
+    QObject::connect(userTest, &UserTest::logout, [layerTest, nodeTest, assignmentTest, particleTest]{
         qDebug()<<"logout";
-       // delete layerTest;
-       // delete nodeTest;
-//        delete assignmentTest;
-//        delete particleTest;
+       delete layerTest;
+       delete nodeTest;
+       delete assignmentTest;
+       delete particleTest;
     });
 
 

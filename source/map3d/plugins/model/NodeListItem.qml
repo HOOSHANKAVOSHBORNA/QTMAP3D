@@ -611,13 +611,6 @@ Item {
             Layout.minimumWidth: 130
             Layout.fillHeight: true
 
-            //            Rectangle {
-            //                width: parent.width
-            //                height: 1
-            //                color: Style.foregroundColor
-            //                opacity: 0.2
-            //                anchors.bottom: parent.bottom
-            //            }
             ListView {
                 id: sideFixedIconsListView
                 y: -tableview.contentY
@@ -663,16 +656,10 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        //console.log(lvDelegate.lvIndex)
-                                        console.log(index)
                                         if (tableview.isAttackecd) {
-
-                                            //                                            iconAttackerButton.color = "transparent"
-                                            //                                            tableview.isAttackecd = false
+                                    tableview.isAttackecd = false
                                         } else {
-
-                                            //                                            iconAttackerButton.color = "#01AED6"
-                                            //                                            tableview.isAttackecd = true
+                                  tableview.isAttackecd = true
                                         }
                                         if(index === 2){
                                             tableModel.goToPosition(
@@ -682,8 +669,6 @@ Item {
                                         }
 
 
-                                        //tableview.checkAttackIconColumn = model.column
-                                        //tableview.checkAttackIconRow = model.row
                                     }
                                 }
                             }

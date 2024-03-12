@@ -67,16 +67,7 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
         }
 
         // ToDo: optimize it
-        for (auto &field : nodeData->fieldData) {
-            if (field.name.toLower() == "color")
-                mFilterManager->addColorFilterField(field.value.toString());
-            else if (std::strcmp(field.value.typeName(), "double") == 0
-                     || std::strcmp(field.value.typeName(), "qlonglong") == 0
-                     || std::strcmp(field.value.typeName(), "int") == 0)
-                mFilterManager->addNumFilterField(field.name);
-            else if (std::strcmp(field.value.typeName(), "QString") == 0)
-                mFilterManager->addStringFilterField(field.name);
-        }
+        mFilterManager->addFilterField(*nodeData);
     }
 }
 

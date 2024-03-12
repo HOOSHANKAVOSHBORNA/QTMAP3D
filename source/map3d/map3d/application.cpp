@@ -47,7 +47,7 @@ void Application::initialize(QQmlApplicationEngine *newQmlEngine)
     emit userManagerChanged();
 
     connect(mUserManager, &UserManager::signedIn, this, &Application::onLoadingPage);
-    connect(mUserManager, &UserManager::signedOut, this, &Application::clearMainWindow);
+    connect(mUserManager, &UserManager::signedOut, this, &Application::onLogoutUser);
 }
 
 void Application::setPageIndex(int index)
@@ -98,6 +98,9 @@ void Application::onLoadingPage()
     connect(mPluginManager, &PluginManager::pluginMessage, mLoadingPage, &LoadingPage::addItem);
     connect(mPluginManager, &PluginManager::setupFinished,this , [this](){
         setPageIndex(2);
+        ReadyForData ready;
+        ready.message = "Ready";
+        mServiceManager->sendReady(ready);
     });
 
     mLoadingPage->setPluginsCount(mPluginManager->pluginFileNameList().count());
@@ -105,8 +108,9 @@ void Application::onLoadingPage()
     mPluginManager->loadPlugins();
 }
 
-void Application::clearMainWindow()
+void Application::onLogoutUser()
 {
+    mUserManager->logOut();
     qDebug() << "logout----------------";
     setPageIndex(0);
     if (mLoadingPage) {

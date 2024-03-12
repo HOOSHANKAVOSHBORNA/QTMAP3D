@@ -21,8 +21,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     void addFilterField(QString field);
-    void addFilterField(QSet<QString> &fields);
-    void setFilterField(QSet<QString> &fields);
     void removeFilterField(QString field);
 private:
     QVector<QString> mFilterFields;
@@ -126,14 +124,8 @@ public:
 
     FilterManager(QObject* parent = nullptr);
     ~FilterManager();
-    void addColorFilterField(QSet<QString> &fields);
-    void setColorFilterField(QSet<QString> &fields);
     void addColorFilterField(QString fields);
-    void addNumFilterField(QSet<QString> &fields);
-    void setNumFilterField(QSet<QString> &fields);
     void addNumFilterField(QString fields);
-    void addStringFilterField(QSet<QString> &fields);
-    void setStringFilterField(QSet<QString> &fields);
     void addStringFilterField(QString fields);
 
     void removeColorFilterField(QString field);
@@ -151,11 +143,13 @@ public:
     Q_INVOKABLE QSortFilterProxyModel *stringFilterFields() const;
     Q_INVOKABLE QSortFilterProxyModel *numFilterFields() const;
 
+    void addFilterField(const NodeData &nodeData);
 signals:
     void filterFieldsChanged();
     void filterTagsEdited();
 private:
     bool checkNodeToShow(NodeData *nodeData, Tag* tag);
+    void addFilterField(QString field, QVariant value);
 
 private:
     QSortFilterProxyModel *mFilterFieldsColor;

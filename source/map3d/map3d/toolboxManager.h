@@ -49,15 +49,18 @@ public:
         QString _name      = QString(),
         QString _category  = QString(),
         QString _iconUrl   = QString(),
-        bool    _checkable = false
+        bool    _checkable = false,
+        QObject *parent = nullptr
     ):
         name     (_name     ),
         category (_category ),
         iconUrl  (_iconUrl  ),
-        checkable(_checkable)
+        checkable(_checkable),
+        QObject(parent)
     {
 
     }
+    ~ToolboxItem() {qDebug() << "~ToolboxItem";}
 
     QString name;
     QString category;
