@@ -33,8 +33,11 @@ class MapControllerItem : public MapItem
     Q_PROPERTY(bool topMenuVisible READ topMenuVisible WRITE setTopMenuVisible NOTIFY topMenuVisibleChanged FINAL)
 
 public:
-    ~MapControllerItem();
     static MapControllerItem *instance();
+    ~MapControllerItem();
+    void clearMap();
+    void initialize();
+
     QVector3D mapMouseGeoLocation() const;
     QVector3D mapMouseLocation() const;
     virtual void frame() override;
@@ -42,7 +45,6 @@ public:
     virtual void mousePressEvent(QMouseEvent* event) override;
     virtual void mouseReleaseEvent(QMouseEvent *event) override;
     virtual void hoverMoveEvent(QHoverEvent *event) override;
-    double fps() const;
 
     QVector2D compassDirection() const;
     void setCompassDirection(const QVector2D &newCompassDirection);
@@ -57,24 +59,20 @@ public:
 
     bool topMenuVisible() const;
     void setTopMenuVisible(bool newTopMenuVisible);
+    double fps() const;
 
+    Q_INVOKABLE void setFps(double fps);
+    Q_INVOKABLE void home();
+    Q_INVOKABLE void setHeadingToNorth();
+    Q_INVOKABLE void setZoomInButtonPressed(bool pressed);
+    Q_INVOKABLE void setZoomOutButtonPressed(bool pressed);
+    Q_INVOKABLE void setMovePosition(QVector2D &position);
+    Q_INVOKABLE void setRotatePosition(QVector2D &position);
+
+    Q_INVOKABLE StatusBarSearchModel *statusBar() const;
+    Q_INVOKABLE SearchNodeProxyModel *searchNodeProxyModel() const;
+    Q_INVOKABLE SearchNodeManager *searchNodeManager() const;
     Q_INVOKABLE FilterManager *filterManager() const;
-    void clearMap();
-
-public slots:
-    void setFps(double fps);
-    void home();
-    void setHeadingToNorth();
-    void setZoomInButtonPressed(bool pressed);
-    void setZoomOutButtonPressed(bool pressed);
-
-    void setMovePosition(QVector2D &position);
-    void setRotatePosition(QVector2D &position);
-    StatusBarSearchModel *statusBar() const;
-
-
-    SearchNodeProxyModel *searchNodeProxyModel() const;
-    SearchNodeManager *searchNodeManager() const;
 
 signals:
     void fpsChanged();
@@ -94,6 +92,7 @@ private:
     void tickNavigation(double deltaTime);
     void calculateNavigationStep();
     void calculateFps();
+    void createSearchNodeManager();
 private:
     bool mZoomInButtonPressed{false};
     bool mZoomOutButtonPressed{false};
@@ -110,14 +109,10 @@ private:
     bool mMousePressOusideClickProcess = false;
     bool mInClickProcess = false;
     double mFps = 0.0f;
-    // SearchNodeProxyModel* mSearchNodeProxyModel{nullptr};
     SearchNodeManager* mSearchNodeManager{nullptr};
-//    SearchNodeManager *getSearchNodeManager() const;
-    // TypeListModel* mTypeListModel{nullptr};
     StatusBarSearchModel *mStatusBar{nullptr};
     QVector2D mCompassDirection;
     QVector3D mMapRotation;
-    // SmallMap *mSmallMap{nullptr};
     QQmlEngine *mQmlEngine{nullptr};
     QQuickItem *mTopMenuItem = nullptr;
     bool mTopMenuVisible = false;

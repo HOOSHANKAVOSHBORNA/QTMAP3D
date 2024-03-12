@@ -21,7 +21,6 @@ Window {
     height: 800
 
     onClosing: {
-        applicationCpp.saveDataInFile()
     }
 
     Image {

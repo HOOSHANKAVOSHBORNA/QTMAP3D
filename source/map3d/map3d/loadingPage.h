@@ -20,32 +20,32 @@ struct LoadingInfoItem
 class LoadingPage : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(int pluginCounter READ pluginCounter WRITE setPluginCounter NOTIFY pluginCounterChanged)
+    Q_PROPERTY(float pluginFraction READ pluginFraction WRITE setpluginFraction NOTIFY pluginFractionChanged)
     enum CustomRoles {
        errorStatus = Qt::UserRole,
     };
 public:
-   explicit LoadingPage(QObject* parent = nullptr);
+    explicit LoadingPage(QObject* parent = nullptr);
 
-   Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-   virtual QVariant data(const QModelIndex &index, int role) const override;
-   virtual QHash<int, QByteArray> roleNames() const override;
-   Q_INVOKABLE void addItem(const QString &message, bool isError);
-   Q_INVOKABLE void removeItem(int index);
-   void swapItem(int sourceIndex, int destinationIndex);
-   void updateData(int index);
+    Q_INVOKABLE virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual QVariant data(const QModelIndex &index, int role) const override;
+    virtual QHash<int, QByteArray> roleNames() const override;
+    Q_INVOKABLE void addItem(const QString &message, bool isError);
+    Q_INVOKABLE void removeItem(int index);
+    void swapItem(int sourceIndex, int destinationIndex);
+    void updateData(int index);
 
-   int pluginCounter() const;
-   void setPluginCounter(int pluginCounter);
+    float pluginFraction() const;
+    void setpluginFraction(float pluginFrac);
+    void setPluginsCount(int count);
 
-   signals:
+signals:
+    void pluginFractionChanged();
 
-       void pluginCounterChanged();
-
-   private:
-   QVector<LoadingInfoItem> mLoadingDataItem;
-       QTimer* mTimer;
-   int mPluginCounter;
+private:
+    QVector<LoadingInfoItem> mLoadingDataItem;
+    float mPluginFraction{0.0};
+    int mPluginsCount{0};
 };
 
 #endif // LOADINGPAGE_H

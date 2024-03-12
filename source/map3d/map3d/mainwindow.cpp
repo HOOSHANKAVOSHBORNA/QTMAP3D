@@ -30,7 +30,7 @@ MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
     mBookmarkManager = new BookmarkManager(this);
     mListWindow = new ListWindow(this);
     mLayerManager = new LayerManager(mMapItem, this);
-    mMapItem->addBaselayers();
+    mMapItem->initialize();
 }
 
 MainWindow::~MainWindow()
@@ -77,12 +77,6 @@ void MainWindow::addTabToListWindow(const QString tabTitle, QQuickItem *tabItem)
 void MainWindow::setListWindow(ListWindow *listWindow)
 {
     mListWindow = listWindow;
-}
-
-
-void MainWindow::clearData()
-{
-
 }
 
 ListWindow *MainWindow::getListWindow() const
