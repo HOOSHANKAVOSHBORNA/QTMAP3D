@@ -327,10 +327,10 @@ Rectangle {
                             Text {
                                 Layout.alignment: Qt.AlignVCenter
                                 color: Style.foregroundColor
-                                text: locationCpp.viewPoint.x.toFixed(
-                                          3) + ", " + locationCpp.viewPoint.y.toFixed(
-                                          3) + ", " + locationCpp.viewPoint.z.toFixed(
-                                          3)
+                                text: locationCpp ? locationCpp.viewPoint.x.toFixed(
+                                                        3) + ", " + locationCpp.viewPoint.y.toFixed(
+                                                        3) + ", " + locationCpp.viewPoint.z.toFixed(
+                                                        3) : "locationCpp is undefined"
                                 font.family: Style.fontFamily
                                 font.pixelSize: Style.regularFontSize
                             }
