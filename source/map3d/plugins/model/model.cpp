@@ -47,19 +47,19 @@ bool Model::setup()
     connect(serviceManager(), &ServiceManager::nodeDataReceived, mDataManager, &DataManager::onNodeDataReceived);
 
     //--toolbox item---------------------------------------------------------------------
-    auto treeToolboxItem =  new ToolboxItem{TREE, MODEL, "qrc:/resources/tree.png", true};
+    auto treeToolboxItem =  new ToolboxItem{TREE, MODEL, "qrc:/resources/tree.png", true, this};
     QObject::connect(treeToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTreeItemCheck);
     toolbox()->addItem(treeToolboxItem);
 
-    auto carToolboxItem =  new ToolboxItem{CAR, MODEL, "qrc:/resources/car.png", true};
+    auto carToolboxItem =  new ToolboxItem{CAR, MODEL, "qrc:/resources/car.png", true, this};
     QObject::connect(carToolboxItem, &ToolboxItem::itemChecked, this, &Model::onCarItemCheck);
     toolbox()->addItem(carToolboxItem);
 
-    auto airplaneToolboxItem =  new ToolboxItem{AIRPLANE, MODEL, "qrc:/resources/airplane.png", true};
+    auto airplaneToolboxItem =  new ToolboxItem{AIRPLANE, MODEL, "qrc:/resources/airplane.png", true, this};
     QObject::connect(airplaneToolboxItem, &ToolboxItem::itemChecked, this, &Model::onAirplanItemCheck);
     toolbox()->addItem(airplaneToolboxItem);
 
-    auto tankToolboxItem =  new ToolboxItem{"Tank", MODEL, "qrc:/resources/tank.png", true};
+    auto tankToolboxItem =  new ToolboxItem{"Tank", MODEL, "qrc:/resources/tank.png", true, this};
     QObject::connect(tankToolboxItem, &ToolboxItem::itemChecked, this, &Model::onTankItemCheck);
     toolbox()->addItem(tankToolboxItem);
     //--layer data---------------------------------------------------------------------------

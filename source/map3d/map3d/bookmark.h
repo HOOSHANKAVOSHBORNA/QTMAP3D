@@ -13,7 +13,7 @@ struct BookmarkItem: public QObject {
 
 public:
     BookmarkItem(QObject *parent = nullptr): QObject(parent){};
-    ~BookmarkItem(){qDebug()<<"~BookmarkItem";}
+    ~BookmarkItem();
 
     void setInfo(QString category, QString text, QQuickWindow *window, QString categoryIconUrl)
     {
