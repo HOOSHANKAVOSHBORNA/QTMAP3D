@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "style"
 
 Item {
     id: root
@@ -8,6 +9,11 @@ Item {
 
 
     property var filterModel
+
+    Label{
+        text: "Status Fileds"
+        color: Style.foregroundColor
+    }
 
 
 
@@ -28,14 +34,14 @@ Item {
                     implicitHeight: 20
                     anchors.verticalCenter: parent.verticalCenter
                     radius: 3
-                    border.color: control.checked ?  "#01AED6" : "#003569"
+                    border.color: control.checked ?  Style.uiHover : Style.uiBlue
 
                     Rectangle {
                         width: 10
                         height: 10
                         anchors.centerIn: parent
                         radius: 2
-                        color: control.checked ?  "#01AED6" : "#003569"
+                        color: control.checked ?  Style.uiHover : Style.uiBlue
                         visible: control.checked
                     }
                 }
@@ -44,7 +50,7 @@ Item {
                     text: control.text
                     font: control.font
                     opacity: enabled ? 1.0 : 0.3
-                    color: control.checked ? "#01AED6" : "#003569"
+                    color: control.checked ? Style.uiHover : Style.uiBlue
                     verticalAlignment: Text.AlignVCenter
                     leftPadding: control.indicator.width + control.spacing
 
