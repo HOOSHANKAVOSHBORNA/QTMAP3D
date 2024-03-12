@@ -663,7 +663,8 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        console.log(lvDelegate.lvIndex)
+                                        //console.log(lvDelegate.lvIndex)
+                                        console.log(index)
                                         if (tableview.isAttackecd) {
 
                                             //                                            iconAttackerButton.color = "transparent"
@@ -673,8 +674,14 @@ Item {
                                             //                                            iconAttackerButton.color = "#01AED6"
                                             //                                            tableview.isAttackecd = true
                                         }
-                                        tableModel.goToPosition(
-                                                    lvDelegate.lvIndex)
+                                        if(index === 2){
+                                            tableModel.goToPosition(
+                                                        lvDelegate.lvIndex)
+                                        }else if(index === 3){
+                                            tableModel.trackPosition(lvDelegate.lvIndex)
+                                        }
+
+
                                         //tableview.checkAttackIconColumn = model.column
                                         //tableview.checkAttackIconRow = model.row
                                     }
