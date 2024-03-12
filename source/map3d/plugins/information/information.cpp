@@ -218,18 +218,18 @@ void Information::addUpdateStatusNode(const StatusNodeData &statusnNodeData)
 void Information::statusNodeReceived(const StatusNodeData &statusNodeData)
 {
     StatusNodeData filteredData = mStatusFilter->filterStatusData(statusNodeData);
-    if (statusNodeData.command == Command::Remove){
-        if (mStatusNodeMap.contains(statusNodeData.id)){
-            auto layer = mapItem()->getMapObject()->getLayerByUserId(statusNodeData.layerId);
+    if (filteredData.command == Command::Remove){
+        if (mStatusNodeMap.contains(filteredData.id)){
+            auto layer = mapItem()->getMapObject()->getLayerByUserId(filteredData.layerId);
             if (layer)
-                layer->removeChild(mStatusNodeMap[statusNodeData.id]);
-            mStatusNodeMap[statusNodeData.id].release();
-            mStatusNodeMap.remove(statusNodeData.id);
+                layer->removeChild(mStatusNodeMap[filteredData.id]);
+            mStatusNodeMap[filteredData.id].release();
+            mStatusNodeMap.remove(filteredData.id);
         }
-    } else if (statusNodeData.command == Command::Update){
-        addUpdateStatusNode(statusNodeData);
+    } else if (filteredData.command == Command::Update){
+        addUpdateStatusNode(filteredData);
     } else {
-        addUpdateStatusNode(statusNodeData);
+        addUpdateStatusNode(filteredData);
     }
 }
 
