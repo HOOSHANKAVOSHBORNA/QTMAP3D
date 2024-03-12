@@ -28,6 +28,13 @@ ColumnLayout {
     signal signInResponse
     spacing: 0
 
+    function resetSignInBtn() {
+        signInBtn.background.color = Style.foregroundColor
+        signInBtn.loadingRec.anchors.leftMargin = 0
+        signInBtn.loadingRec.anchors.topMargin = 0
+        signInBtn.loadingTimer.stop()
+    }
+
     onSignInResponse: {
         signInBtn.enabled = true
     }
@@ -37,10 +44,11 @@ ColumnLayout {
         interval: 5000
         onTriggered: {
             signInBtn.enabled = true
-            signInBtn.background.color = Style.foregroundColor
-            signInBtn.loadingRec.anchors.leftMargin = 0
-            signInBtn.loadingRec.anchors.topMargin = 0
-            signInBtn.loadingTimer.stop()
+            //            signInBtn.background.color = Style.foregroundColor
+            //            signInBtn.loadingRec.anchors.leftMargin = 0
+            //            signInBtn.loadingRec.anchors.topMargin = 0
+            //            signInBtn.loadingTimer.stop()
+            resetSignInBtn()
             userManager.setMessage("No Response")
         }
     }
@@ -187,7 +195,6 @@ ColumnLayout {
                 signInBtn.enabled = false
                 signInBtn.background.color = "silver"
                 userManager.setMessage("")
-
                 loadingRec.anchors.topMargin = -2 / Style.monitorRatio
                 loadingTimer.start()
                 serverResponseTimer.start()
