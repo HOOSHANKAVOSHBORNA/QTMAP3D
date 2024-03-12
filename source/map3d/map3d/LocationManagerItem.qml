@@ -219,6 +219,7 @@ Rectangle {
                 rPopup.close()
             }
 
+            title: 'Add Place'
             flags: Qt.Window | Qt.FramelessWindowHint
             width: 400 / Style.monitorRatio
             height: 523 / Style.monitorRatio
@@ -594,6 +595,7 @@ Rectangle {
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.bottomMargin: 10 / Style.monitorRatio
             spacing: 10 / Style.monitorRatio
             clip: true
 

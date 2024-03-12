@@ -237,7 +237,7 @@ Rectangle {
                         padding: 0
 
                         icon {
-                            source: "qrc:/Resources/plugged.png"
+                            source: applicationCpp.connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
                             width: Math.ceil(35 / Style.monitorRatio)
                             height: Math.ceil(35 / Style.monitorRatio)
                         }
@@ -259,7 +259,7 @@ Rectangle {
                             contentItem: Text {
                                 id: tooltipConnection
                                 anchors.margins: 7 / Style.monitorRatio
-                                text: connectionConfigChecked ? "Connected" : "Not Connected"
+                                text: applicationCpp.connectionConfigCpp.isConnected ? "Connected" : "Not Connected"
                                 font.pixelSize: Style.regularFontSize
                                 color: 'white'
                             }
