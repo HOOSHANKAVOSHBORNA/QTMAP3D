@@ -169,7 +169,7 @@ Rectangle {
 
             Rectangle {
                 id: stringFilter
-                width: 204 / Style.monitorRatio
+                width: 254 / Style.monitorRatio
                 height: 28 / Style.monitorRatio
                 Layout.leftMargin: 15 / Style.monitorRatio
                 radius: 10
@@ -187,8 +187,10 @@ Rectangle {
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.leftMargin: 5 / Style.monitorRatio
+//                        Layout.alignment: Qt.AlignVCenter
+//                        anchors.verticalCenter: stringFilter.verticalCenter
                         // anchors.right: parent.right
-                        spacing: 5 / Style.monitorRatio
+                        spacing: 30 / Style.monitorRatio
                         ComboBox {
                             id: control
                             model: rootObj.filterManager ? filterManager.stringFilterFields: 0
@@ -329,7 +331,7 @@ Rectangle {
 
             Rectangle {
                 id: filterCompare
-                width: 204 / Style.monitorRatio
+                width: 254 / Style.monitorRatio
                 height: 28 / Style.monitorRatio
                 Layout.leftMargin: 15 / Style.monitorRatio
                 radius: 15
@@ -347,7 +349,7 @@ Rectangle {
                         anchors.leftMargin: 5 / Style.monitorRatio
                         anchors.top: parent.top
                         anchors.topMargin: -3
-                        spacing: 5 / Style.monitorRatio
+                        spacing: 30 / Style.monitorRatio
                         ComboBox {
                             id: control3
                             textRole: "display"
@@ -384,7 +386,6 @@ Rectangle {
                             delegate: ItemDelegate {
                                 hoverEnabled: true
                                 width: 100
-                                // height: 20
                                 background: Rectangle {
                                     height: parent.height
                                     color: "white"
@@ -430,7 +431,6 @@ Rectangle {
                                     id: redBackG3
                                     color: "transparent"
                                 }
-//                                validator: DoubleValidator {}
                                 PropertyAnimation {
                                     id: rbg3
                                     target: redBackG3
