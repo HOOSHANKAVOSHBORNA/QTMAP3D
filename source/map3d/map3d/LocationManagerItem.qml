@@ -510,36 +510,54 @@ Rectangle {
                         radius: 10 / Style.monitorRatio
                         height: 180 / Style.monitorRatio
 
-                        Column {
-                            anchors.centerIn: parent
-                            spacing: 3 / Style.monitorRatio
+                        StackLayout {
+                            id: locationImage
 
-                            Button {
-                                topPadding: 0
-                                rightPadding: 0
-                                bottomPadding: 0
-                                leftPadding: 0
+                            anchors.fill: parent
 
-                                background: Rectangle {
-                                    color: "transparent"
+                            currentIndex: locationCpp.imagePath === '' ? 0 : 1
+
+                            Rectangle {
+                                color: 'transparent'
+
+                                Column {
+                                    anchors.centerIn: parent
+                                    spacing: 3 / Style.monitorRatio
+
+                                    Button {
+                                        padding: 0
+
+                                        background: Rectangle {
+                                            color: "transparent"
+                                        }
+
+                                        opacity: 0.75
+                                        anchors.horizontalCenter: txtTakePhoto.horizontalCenter
+                                        icon.source: "qrc:/Resources/add-place-add-camera.png"
+                                        icon.width: 30 / Style.monitorRatio
+                                        icon.height: 30 / Style.monitorRatio
+                                        icon.color: Style.foregroundColor
+
+                                        onClicked: {
+                                            locationCpp.capture()
+                                        }
+                                    }
+
+                                    Text {
+                                        id: txtTakePhoto
+
+                                        text: "Take photo for place"
+                                        font.underline: true
+                                        font.family: Style.fontFamily
+                                        font.pixelSize: Style.regularFontSize
+                                        color: fg50
+                                    }
                                 }
-
-                                opacity: 0.75
-                                anchors.horizontalCenter: txtTakePhoto.horizontalCenter
-                                icon.source: "qrc:/Resources/add-place-add-camera.png"
-                                icon.width: 30 / Style.monitorRatio
-                                icon.height: 30 / Style.monitorRatio
-                                icon.color: Style.foregroundColor
                             }
 
-                            Text {
-                                id: txtTakePhoto
-
-                                text: "Take photo for place"
-                                font.underline: true
-                                font.family: Style.fontFamily
-                                font.pixelSize: Style.regularFontSize
-                                color: fg50
+                            Image {
+                                source: locationCpp !== undefined
+                                        && locationImage.currentIndex === 1 ? 'file:////home/client111/.local/share/Map3d/locatoins/shot.png' : 'qrc:/Resources/hand.png'
                             }
                         }
                     }

@@ -66,6 +66,13 @@ LocationProxyModel::LocationProxyModel(MapItem *mapItem, QObject *parent)
     : QSortFilterProxyModel(parent)
 {
     mMapItem = mapItem;
+
+    mCaptureCallback = new CaptureCallback();
+    mMapItem->addCaptureCallback(mCaptureCallback);
+    connect(mCaptureCallback,
+            &CaptureCallback::imageProcessComplete,
+            this,
+            &LocationProxyModel::onImageProcessComplete);
 }
 
 LocationProxyModel::~LocationProxyModel()
@@ -199,6 +206,30 @@ void LocationProxyModel::addPlaceWindowOpened()
             &CameraController::viewPointChanged,
             this,
             &LocationProxyModel::updateCurrentViewPoint);
+}
+
+void LocationProxyModel::capture()
+{
+    QDir dir;
+    if (!dir.exists(appDir + "/" + savedDir)) {
+        dir.mkpath(appDir + "/" + savedDir);
+    }
+
+    QString filePath = QString::fromStdString(
+        osgDB::getRealPath(appDir.toStdString() + "/" + savedDir.toStdString() + "/shot.png"));
+
+    auto point = mMapItem->mapToScene(QPoint(0, 0));
+    auto mapHeight = mMapItem->boundingRect().height();
+    auto mapWidth = mMapItem->boundingRect().width();
+
+    mCaptureCallback->capture(filePath, point, mapWidth, mapHeight);
+}
+
+void LocationProxyModel::onImageProcessComplete()
+{
+    QString filePath = QString::fromStdString(
+        osgDB::getRealPath(appDir.toStdString() + "/" + savedDir.toStdString() + "/shot.png"));
+    setImagePath(filePath);
 }
 
 void LocationProxyModel::addPlaceWindowClosed()
@@ -336,6 +367,11 @@ void LocationModel::myEditRow(QModelIndex index,
     li.color = newColor;
 
     emit dataChanged(this->index(index.row(), 0), this->index(index.row(), 0));
+}
+
+QString LocationModel::getFilePath()
+{
+    return appDir + "/" + savedDir;
 }
 
 //QVector<LocationItem *> LocationModel::locations() const
@@ -533,4 +569,17 @@ QJsonObject LocationItem::toJson()
     json["color"] = this->color;
 
     return json;
+}
+
+QString LocationProxyModel::imagePath() const
+{
+    return mImagePath;
+}
+
+void LocationProxyModel::setImagePath(const QString &newImagePath)
+{
+    if (mImagePath == newImagePath)
+        return;
+    mImagePath = newImagePath;
+    emit imagePathChanged();
 }
