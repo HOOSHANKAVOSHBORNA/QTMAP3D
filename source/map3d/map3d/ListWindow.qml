@@ -11,6 +11,7 @@ Window {
     property var listWindowCpp: undefined
     property var tabbarModel: listWindowCpp ? listWindowCpp.tabbarModel : undefined
 
+    title:"Node List"
     width: 1000
     height: 600
 
