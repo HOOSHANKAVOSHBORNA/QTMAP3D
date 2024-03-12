@@ -100,7 +100,7 @@ void LocationProxyModel::goToLocation(const QModelIndex &index)
     dynamic_cast<LocationModel*>(sourceModel())->goToLocation(mapToSource(index));
 }
 
-void LocationProxyModel::goToLocation(double lat, double lon)
+void LocationProxyModel::goToLocation(double lat, double lon, double range)
 {
     osgEarth::Viewpoint vp = dynamic_cast<LocationModel *>(sourceModel())
                                  ->mapItem()
@@ -112,10 +112,10 @@ void LocationProxyModel::goToLocation(double lat, double lon)
         ->setViewpoint(osgEarth::Viewpoint("somewhere",
                                            lon,
                                            lat,
-                                           vp.focalPoint().value().z(),
+                                           vp.focalPoint()->z(),
                                            vp.heading()->getValue(),
                                            vp.pitch()->getValue(),
-                                           vp.getRange()),
+                                           range * 10000),
                        1);
 }
 
@@ -190,13 +190,11 @@ void LocationProxyModel::updateCurrentViewPoint()
 {
     osgEarth::Viewpoint vp = mMapItem->getCameraController()->getViewpoint();
     setViewPoint(
-        {(float) vp.focalPoint()->x(), (float) vp.focalPoint()->y(), (float) vp.focalPoint()->z()});
+        {(float) vp.focalPoint()->x(), (float) vp.focalPoint()->y(), (float) vp.getRange()});
 }
 
 void LocationProxyModel::addPlaceWindowOpened()
 {
-    qDebug() << "ay-debug ------ "
-             << "opened";
     connect(mMapItem->getCameraController(),
             &CameraController::viewPointChanged,
             this,
@@ -205,8 +203,6 @@ void LocationProxyModel::addPlaceWindowOpened()
 
 void LocationProxyModel::addPlaceWindowClosed()
 {
-    qDebug() << "ay-debug ------ "
-             << "closed";
     disconnect(mMapItem->getCameraController(), nullptr, this, nullptr);
 }
 
