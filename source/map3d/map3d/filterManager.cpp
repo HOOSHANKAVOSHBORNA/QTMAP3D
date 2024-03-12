@@ -5,7 +5,7 @@
 
 FilterManager::FilterManager(QObject *parent) : QObject(parent)
 {
-
+    qDebug()<<"constructor FilterManager";
     mFilterFieldsColor = new QSortFilterProxyModel(this);
     mFilterFieldsColor->setFilterRole(Qt::DisplayRole);
     mFilterFieldsColor->setFilterCaseSensitivity(Qt::CaseInsensitive);
