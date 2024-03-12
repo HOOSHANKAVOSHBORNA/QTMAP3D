@@ -25,17 +25,23 @@ StatusFilter::StatusFilter(QQmlEngine *engine, MainWindow *window) {
 
 StatusNodeData StatusFilter::filterStatusData(const StatusNodeData &statusNodeData)
 {
-    data = statusNodeData;
+    mData = statusNodeData;
+    mData.fieldData.clear();
     for (int var = 0; var < statusNodeData.fieldData.size(); ++var) {
         mFilterModel->addField(statusNodeData.fieldData[var].name);
     }
     QVector<QString> names = mFilterModel->getStatusActiveFields();
-    for (int var = 0; var < data.fieldData.size(); ++var) {
-        if(!names.contains(data.fieldData[var].name)){
-            std::remove(data.fieldData.begin(),data.fieldData.end(),data.fieldData[var].name);
+    for (int var = 0; var < statusNodeData.fieldData.size(); ++var) {
+        if(names.contains(statusNodeData.fieldData[var].name)){
+            NodeFieldData fieldData;
+            fieldData.name = statusNodeData.fieldData[var].name;
+            fieldData.value = statusNodeData.fieldData[var].value;
+            fieldData.category = statusNodeData.fieldData[var].category;
+            fieldData.categoryIconUrl = statusNodeData.fieldData[var].categoryIconUrl;
+            mData.fieldData.push_back(fieldData);
         }
     }
-    return data;
+    return mData;
 }
 
 

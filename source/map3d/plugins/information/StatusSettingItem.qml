@@ -15,11 +15,10 @@ Item {
         color: Style.foregroundColor
     }
 
-
-
     ListView{
         id:listView
         anchors.fill: parent
+        topMargin: 50
         // anchors.fill: parent
         model: filterModel
         delegate: RowLayout{
