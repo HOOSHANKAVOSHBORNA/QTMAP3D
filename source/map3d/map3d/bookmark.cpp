@@ -194,3 +194,8 @@ BookmarkProxyModel *BookmarkManager::getBookmarkProxyModel() const
 {
     return mBookmarkProxyModel;
 }
+
+BookmarkItem::~BookmarkItem()
+{
+    qDebug()<<"~BookmarkItem";
+}

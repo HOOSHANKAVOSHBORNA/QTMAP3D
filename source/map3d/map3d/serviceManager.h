@@ -9,6 +9,21 @@
 
 class NetworkManager;
 
+struct ReadyForData {
+    QString message{"Ready"};
+
+    QJsonObject toJson() const{
+        QJsonObject jsonObject;
+        jsonObject.insert("Message", message);
+        return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        message = json["Message"].toString();
+    }
+};
+
 struct Command
 {
     enum Cmd{
@@ -678,6 +693,7 @@ public:
     ServiceManager(NetworkManager *networkManager, QObject *parent = nullptr);
     void sendAssignment(const AssignmentData &assignmentData);
     void sendUser(const UserData &UserData);
+    void sendReady(const ReadyForData &readyForData);
 
 private slots:
     void onMessageReceived(const QString &message);

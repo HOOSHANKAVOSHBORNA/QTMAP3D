@@ -55,47 +55,29 @@ Rectangle {
         anchors.rightMargin: 18 / Style.monitorRatio
         spacing: 12 / Style.monitorRatio
 
+        // TEST: viewpoint changes connection
+        //        Label {
+        //            Layout.fillWidth: true
+        //            Layout.preferredHeight: 20 / Style.monitorRatio
+        //            background: Rectangle {
+        //                color: "transparent"
+        //            }
+
+        //            Text {
+        //                Layout.alignment: Qt.AlignVCenter
+        //                color: Style.foregroundColor
+        //                text: locationCpp.viewPoint.x.toFixed(
+        //                          3) + ", " + locationCpp.viewPoint.y.toFixed(
+        //                          3) + ", " + locationCpp.viewPoint.z.toFixed(3)
+        //                font.family: Style.fontFamily
+        //                font.pixelSize: Style.regularFontSize
+        //            }
+        //        }
+
         // ----------------------------------------------- search bar & add place button
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5 / Style.monitorRatio
-
-            Rectangle {
-                Layout.fillWidth: true
-                height: 30 / Style.monitorRatio
-                radius: height / 2
-                color: bg20
-
-                IconImage {
-                    id: searchIcon
-                    source: "qrc:/Resources/search.png"
-                    width: 24 / Style.monitorRatio
-                    height: 24 / Style.monitorRatio
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 10 / Style.monitorRatio
-                    color: Style.foregroundColor
-                }
-
-                TextField {
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: searchIcon.right
-                    anchors.right: parent.right
-                    verticalAlignment: Text.AlignVCenter
-                    font.family: Style.fontFamily
-                    font.pixelSize: Style.regularFontSize
-
-                    background: Rectangle {
-                        color: 'transparent'
-                    }
-
-                    onAccepted: lvLocationManger.model.searchedName = text
-                    onTextChanged: lvLocationManger.model.searchedName = text
-
-                    placeholderText: "Name..."
-                    placeholderTextColor: Style.disableColor
-                }
-            }
 
             RowLayout {
                 Layout.fillWidth: true
@@ -118,7 +100,7 @@ Rectangle {
                         font.family: Style.fontFamily
                         font.pixelSize: Style.regularFontSize
                         color: fg75
-                        text: "0.0"
+                        text: "50"
 
                         validator: RegularExpressionValidator {
                             regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
@@ -126,7 +108,8 @@ Rectangle {
 
                         onAccepted: {
                             listModel.goToLocation(parseFloat(tiLat.text),
-                                                   parseFloat(tiLang.text))
+                                                   parseFloat(tiLang.text),
+                                                   parseFloat(tiAlt.text))
                         }
                     }
                 }
@@ -148,7 +131,7 @@ Rectangle {
                         font.family: Style.fontFamily
                         font.pixelSize: Style.regularFontSize
                         color: fg75
-                        text: "0.0"
+                        text: "50"
 
                         validator: RegularExpressionValidator {
                             regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
@@ -156,9 +139,70 @@ Rectangle {
 
                         onAccepted: {
                             listModel.goToLocation(parseFloat(tiLat.text),
-                                                   parseFloat(tiLang.text))
+                                                   parseFloat(tiLang.text),
+                                                   parseFloat(tiAlt.text))
                         }
                     }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 30 / Style.monitorRatio
+                    radius: height / 2
+                    color: bg20
+                    clip: true
+
+                    TextInput {
+                        id: tiAlt
+
+                        anchors.fill: parent
+                        anchors.leftMargin: 15 / Style.monitorRatio
+                        anchors.rightMargin: 15 / Style.monitorRatio
+                        verticalAlignment: Text.AlignVCenter
+                        font.family: Style.fontFamily
+                        font.pixelSize: Style.regularFontSize
+                        color: fg75
+                        text: "1000"
+
+                        validator: RegularExpressionValidator {
+                            regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
+                        }
+
+                        onAccepted: {
+                            listModel.goToLocation(parseFloat(tiLat.text),
+                                                   parseFloat(tiLang.text),
+                                                   parseFloat(tiAlt.text))
+                        }
+                    }
+                }
+            }
+
+            Button {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 20
+
+                padding: 0
+
+                background: Rectangle {
+                    color: 'transparent'
+                }
+
+                contentItem: Rectangle {
+                    anchors.fill: parent
+                    color: fg80
+                    radius: 25
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: 'Go To Location...'
+                        color: Style.backgroundColor
+                    }
+                }
+
+                onClicked: {
+                    listModel.goToLocation(parseFloat(tiLat.text),
+                                           parseFloat(tiLang.text),
+                                           parseFloat(tiAlt.text))
                 }
             }
 
@@ -196,6 +240,43 @@ Rectangle {
                     }
                 }
             }
+
+            Rectangle {
+                Layout.fillWidth: true
+                height: 30 / Style.monitorRatio
+                radius: height / 2
+                color: bg20
+
+                IconImage {
+                    id: searchIcon
+                    source: "qrc:/Resources/search.png"
+                    width: 24 / Style.monitorRatio
+                    height: 24 / Style.monitorRatio
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10 / Style.monitorRatio
+                    color: Style.foregroundColor
+                }
+
+                TextField {
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: searchIcon.right
+                    anchors.right: parent.right
+                    verticalAlignment: Text.AlignVCenter
+                    font.family: Style.fontFamily
+                    font.pixelSize: Style.regularFontSize
+
+                    background: Rectangle {
+                        color: 'transparent'
+                    }
+
+                    onAccepted: lvLocationManger.model.searchedName = text
+                    onTextChanged: lvLocationManger.model.searchedName = text
+
+                    placeholderText: "Name..."
+                    placeholderTextColor: Style.disableColor
+                }
+            }
         }
 
         // -------------------------------------- Popup
@@ -205,10 +286,8 @@ Rectangle {
             property int editIndex: -1
 
             function myOpen() {
-                txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(
-                            6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
-
                 rPopup.visible = true
+                locationCpp.addPlaceWindowOpened()
             }
 
             function myClose() {
@@ -217,9 +296,11 @@ Rectangle {
                 lvColors.selectedColor = "black"
 
                 rPopup.close()
+                locationCpp.addPlaceWindowClosed()
             }
 
-            flags: Qt.Window | Qt.FramelessWindowHint
+            title: 'Add Place'
+            flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
             width: 400 / Style.monitorRatio
             height: 523 / Style.monitorRatio
             color: "transparent"
@@ -299,13 +380,23 @@ Rectangle {
                             icon.color: Style.foregroundColor
                         }
 
-                        Text {
-                            id: txtPlaceName
+                        Label {
+                            Layout.preferredWidth: 55 / Style.monitorRatio
+                            Layout.preferredHeight: 20 / Style.monitorRatio
+                            background: Rectangle {
+                                color: "transparent"
+                            }
 
-                            text: "set before opening :)"
-                            font.family: Style.fontFamily
-                            font.pixelSize: Style.regularFontSize
-                            color: Style.foregroundColor
+                            Text {
+                                Layout.alignment: Qt.AlignVCenter
+                                color: Style.foregroundColor
+                                text: locationCpp ? locationCpp.viewPoint.x.toFixed(
+                                                        3) + ", " + locationCpp.viewPoint.y.toFixed(
+                                                        3) + ", " + locationCpp.viewPoint.z.toFixed(
+                                                        3) : "locationCpp is undefined"
+                                font.family: Style.fontFamily
+                                font.pixelSize: Style.regularFontSize
+                            }
                         }
                     }
 
@@ -426,82 +517,51 @@ Rectangle {
                             color: fg80
                         }
 
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 5 / Style.monitorRatio
+                        Row {
+                            spacing: 0 / Style.monitorRatio
 
-                            Row {
-                                spacing: 0 / Style.monitorRatio
+                            Repeater {
+                                id: lvColors
+                                model: ["red", "blue", "yellow", "green", "white", "black", "orange", "pink", "purple"]
 
-                                Repeater {
-                                    id: lvColors
-                                    model: ["red", "blue", "yellow", "green", "white", "black", "orange", "pink", "purple"]
+                                property string selectedColor: "black"
 
-                                    property string selectedColor: "black"
+                                Rectangle {
+                                    required property string modelData
+
+                                    width: 26 / Style.monitorRatio
+                                    height: 26 / Style.monitorRatio
+                                    radius: width / 2
+                                    color: "transparent"
+                                    border.color: modelData
+                                    border.width: lvColors.selectedColor === modelData ? 1 : 0
 
                                     Rectangle {
-                                        required property string modelData
-
-                                        width: 26 / Style.monitorRatio
-                                        height: 26 / Style.monitorRatio
+                                        anchors.centerIn: parent
+                                        color: parent.modelData
+                                        width: 21 / Style.monitorRatio
+                                        height: 21 / Style.monitorRatio
                                         radius: width / 2
-                                        color: "transparent"
-                                        border.color: modelData
-                                        border.width: lvColors.selectedColor === modelData ? 1 : 0
+                                    }
 
-                                        Rectangle {
-                                            anchors.centerIn: parent
-                                            color: parent.modelData
-                                            width: 21 / Style.monitorRatio
-                                            height: 21 / Style.monitorRatio
-                                            radius: width / 2
-                                        }
+                                    Image {
+                                        visible: lvColors.selectedColor === modelData
+                                        anchors.centerIn: parent
+                                        source: "qrc:/Resources/add-place-color-select.png"
+                                        width: 22 / Style.monitorRatio
+                                        height: 22 / Style.monitorRatio
+                                    }
 
-                                        Image {
-                                            visible: lvColors.selectedColor === modelData
-                                            anchors.centerIn: parent
-                                            source: "qrc:/Resources/add-place-color-select.png"
-                                            width: 22 / Style.monitorRatio
-                                            height: 22 / Style.monitorRatio
-                                        }
+                                    MouseArea {
+                                        anchors.fill: parent
 
-                                        MouseArea {
-                                            anchors.fill: parent
-
-                                            onClicked: {
-                                                console.log("color: " + parent.modelData)
-                                                //                                                console.log(index)
-                                                lvColors.selectedColor = parent.modelData
-                                            }
+                                        onClicked: {
+                                            console.log("color: " + parent.modelData)
+                                            //                                                console.log(index)
+                                            lvColors.selectedColor = parent.modelData
                                         }
                                     }
                                 }
-                            }
-
-                            Rectangle {
-                                Layout.fillWidth: true
-                            }
-
-                            Text {
-                                text: "More colors"
-                                font.pixelSize: Style.regularFontSize
-                                font.family: Style.fontFamily
-                                color: fg50
-                            }
-
-                            Button {
-                                topPadding: 0
-                                rightPadding: 0
-                                bottomPadding: 0
-                                leftPadding: 0
-
-                                background: Rectangle {
-                                    color: "transparent"
-                                }
-
-                                icon.source: "qrc:/Resources/add-place-more-color.png"
-                                icon.width: 22 / Style.monitorRatio
-                                icon.height: 22 / Style.monitorRatio
                             }
                         }
                     }
@@ -594,6 +654,7 @@ Rectangle {
 
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.bottomMargin: 10 / Style.monitorRatio
             spacing: 10 / Style.monitorRatio
             clip: true
 

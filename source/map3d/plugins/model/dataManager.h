@@ -11,43 +11,37 @@ class DataManager : public QObject
 public:
     DataManager(QQmlEngine *engine, MapItem *mapItem, MainWindow *mainWindow, QObject *parent = nullptr);
     ~DataManager();
-//    void removeFlyableNodeData(NodeData *nodeData);
-//    void removeMovableNodeData(NodeData *nodeData);
 
     int nodeCount();
     SimpleModelNode* getNodeAtIndex(int index);
-
-//    FlyableModelNode* addUpdateFlyableNode(NodeData *nodeData);
-
-//    MoveableModelNode* addUpdateMovableNode(NodeData *nodeData);
     QMap<int, osg::ref_ptr<SimpleModelNode>> *getNodeMap();
 
     QVector<QString> uniqueAddedColumnNames() const;
-    void setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames);
+//    void setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames);
 
     QVector<QString> uniqueCategoryNames();
-    void setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames);
+//    void setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames);
     QVector<QString> *getUniqueCategoryNames();
 
     QMap<QString, QString> columnToCategory() const;
-    void setColumnToCategory(const QMap<QString, QString> &newColumnToCategory);
+//    void setColumnToCategory(const QMap<QString, QString> &newColumnToCategory);
 
     int getNodeIndexById(int id);
 
     QVector<QString> fixedColumnNames() const;
-    void setFixedColumnNames(const QVector<QString> &newFixedColumnNames);
+//    void setFixedColumnNames(const QVector<QString> &newFixedColumnNames);
 
     QVector<QString> categoryTagNames() const;
-    void setCategoryTagNames(const QVector<QString> &newCategoryTagNames);
+//    void setCategoryTagNames(const QVector<QString> &newCategoryTagNames);
 
     QVector<QString> essentialColumnNames() const;
-    void setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames);
+//    void setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames);
 
     MapItem *mapItem() const;
-    void setMapItem(MapItem *newMapItem);
+//    void setMapItem(MapItem *newMapItem);
 
     FilterManager *filterManager() const;
-    void setFilterManager(FilterManager *newFilterManager);
+//    void setFilterManager(FilterManager *newFilterManager);
 
 signals:
     void nodeAppendingStart(QModelIndex, int, int);
@@ -79,9 +73,7 @@ private:
     QQmlEngine *mQmlEngine = nullptr;
     MapItem* mMapItem;
 
-//    QMap<int, osg::ref_ptr<FlyableModelNode>> mFlyableNodeMap;
     QMap<int, osg::ref_ptr<SimpleModelNode>> mNodeMap;
-//    QMap<int, osg::ref_ptr<MoveableModelNode>> mMovableNodeMap;
     QVector<QString> mUniqueTabNames = {"Essential"};
     QVector<QString> mCategoryTagNames = {"All"};
     QVector<QString> mFixedColumnNames = {"Color", "Icon", "Id", "Name"};

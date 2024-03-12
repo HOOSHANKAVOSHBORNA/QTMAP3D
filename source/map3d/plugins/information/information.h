@@ -3,6 +3,7 @@
 
 
 #include "statusNode.h"
+#include "statusFilter.h"
 #include "compositeAnnotationLayer.h"
 #include "mapPin.h"
 #include "plugininterface.h"
@@ -67,7 +68,7 @@ private:
 
     osg::ref_ptr<StatusNode> mStatusNode {nullptr};
     QMap<int, osg::ref_ptr<StatusNode>> mStatusNodeMap;
-
+    StatusFilter *mStatusFilter{nullptr};
 };
 
 

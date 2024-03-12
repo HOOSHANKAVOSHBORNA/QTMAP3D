@@ -2,11 +2,13 @@
 #define CAMERACONTROLLER_H
 
 #include <osgEarthUtil/EarthManipulator>
+#include <QObject>
 
 #define MAX_CAM_DISTANCE 30000000.0
 class MapItem;
-class CameraController: public osgEarth::Util::EarthManipulator
+class CameraController:public QObject, public osgEarth::Util::EarthManipulator
 {
+    Q_OBJECT
 public:
     CameraController(MapItem* mapItem);
     ~CameraController();
@@ -54,8 +56,10 @@ public:
 //    void untrack();
     virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us) override;
     bool getEventHandled() const;
-
+signals:
+    void viewPointChanged();
 private:
+    osgEarth::Viewpoint mCurrentVP;
     MapItem* mMapItem{nullptr};
     bool eventHandled{false};
 };

@@ -83,6 +83,16 @@ bool MapItem::removeNode(osg::Node *node)
     return mMapNode->removeChild(node);
 }
 
+void MapItem::addCaptureCallback(CaptureCallback *captureCallback)
+{
+    getViewer()->getCamera()->addFinalDrawCallback(captureCallback);
+}
+
+void MapItem::removeCaptureCallback(CaptureCallback *captureCallback)
+{
+    getViewer()->getCamera()->removeFinalDrawCallback(captureCallback);
+}
+
 void MapItem::screenToWorld(float x, float y, osg::Vec3d &outWorldPoint) const
 {
     //    float height = static_cast<float>(mOSGRenderNode->getCamera()->getViewport()->height());

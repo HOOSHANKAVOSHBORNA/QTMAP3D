@@ -7,6 +7,23 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+
+struct ReadyForData {
+    QString message{"Ready"};
+
+    QJsonObject toJson() const{
+        QJsonObject jsonObject;
+        jsonObject.insert("Message", message);
+        return jsonObject;
+    }
+
+    void fromJson(const QJsonObject &json)
+    {
+        message = json["Message"].toString();
+    }
+};
+
+
 struct Command
 {
     static inline QString Add{"Add"};
@@ -332,6 +349,11 @@ struct UserData
     QString command;
     QVector<QString> roles;
     int selectRoleIndex;
+
+    // operator== for UserData: check only userName
+    bool operator==(const UserData& user) const{
+        return userName == user.userName;
+    }
 
     QJsonObject toJson() const{
         QJsonObject jsonObject;

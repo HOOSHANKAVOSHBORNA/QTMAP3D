@@ -23,6 +23,7 @@ class SearchNodeModel : public QAbstractListModel
 public:
     enum myRoles { iD_ = Qt::UserRole, text_, type_ };
     SearchNodeModel(MapItem *mapItem, QObject *parent = nullptr);
+    ~SearchNodeModel();
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     void onNodeClicked(const QModelIndex &current);
@@ -68,6 +69,7 @@ class SearchNodeProxyModel : public QSortFilterProxyModel
 
 public:
     explicit SearchNodeProxyModel(QObject *parent = nullptr);
+    ~SearchNodeProxyModel();
     QString filterString() const;
     Q_INVOKABLE void toggleItem(const QString &itemText);
 
@@ -97,7 +99,8 @@ class SearchNodeManager : public QObject
     Q_OBJECT
 
 public:
-    explicit SearchNodeManager(MapItem *mapItem, QObject* parent = nullptr);
+    explicit SearchNodeManager(MapItem *mapItem);
+    ~SearchNodeManager();
 
     void setMapItem(MapItem *mapItem);
     Q_INVOKABLE SearchNodeProxyModel *searchNodeProxyModel() const;

@@ -5,11 +5,54 @@
 #include "mapObject.h"
 #include "cameraController.h"
 
+#include <osgDB/WriteFile>
 #include <osgEarth/MapNode>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
+
+class CaptureCallback :public QObject, public osg::Camera::DrawCallback
+
+{
+    Q_OBJECT
+public:
+    CaptureCallback(){}
+
+    virtual void operator () (osg::RenderInfo& renderInfo) const override
+    {
+        if(mCapture)
+        {
+            osg::ref_ptr<osg::Image> img = new osg::Image();
+            img->readPixels(mSceneStartPoint.x(), mSceneStartPoint.y(), mWidth , mHeight , GL_RGB, GL_UNSIGNED_BYTE);
+            bool resultSnap = osgDB::writeImageFile(*img, mFilePath.toStdString());
+            if(resultSnap)
+                emit imageProcessComplete(mFilePath);
+            else
+                emit error(mFilePath);
+            mCapture = false;
+        }
+    }
+
+    inline void capture(QString filePath, QPointF sceneStartPoint, double width , double height)
+    {
+        mSceneStartPoint = sceneStartPoint;
+        mFilePath = filePath;
+        mWidth = width;
+        mHeight = height;
+        mCapture = true;
+    }
+signals:
+    void imageProcessComplete(QString filePath) const;
+    void error(QString filePath) const;
+
+protected:
+    mutable bool mCapture{false};
+    QPointF mSceneStartPoint;
+    QString mFilePath;
+    double mHeight;
+    double mWidth;
+};
 
 class MapItem : public OsgViewerItem
 {
@@ -32,6 +75,8 @@ public:
 
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);
+    void addCaptureCallback(CaptureCallback *captureCallback);
+    void removeCaptureCallback(CaptureCallback *captureCallback);
 
 public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;

@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>resources/mappin.png</file>
         <file>resources/status.png</file>
+        <file>StatusSettingItem.qml</file>
     </qresource>
 </RCC>

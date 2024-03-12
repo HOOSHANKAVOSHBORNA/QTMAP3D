@@ -41,6 +41,8 @@ public:
     Q_INVOKABLE void signIn(const QString username, const QString password);
     Q_INVOKABLE void signIn(int selectRoleIndex);
 
+    void logOut();
+
     Q_INVOKABLE UserData userData() const;
 
     Q_INVOKABLE RoleSelectionModel *roleSelectionModel() const;

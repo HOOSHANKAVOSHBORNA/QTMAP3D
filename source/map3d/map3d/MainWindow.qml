@@ -47,6 +47,8 @@ Item {
                 sideContainer.bookmarkCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getBookmarkManager(
                                                                       ) : undefined
 
+                sideContainer.settingItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.settingsItem :  undefined
+
                 listWindowVisible: mainItem.listWindowVisible
                 onListWindowVisibleChanged: mainItem.listWindowVisible = listWindowVisible
 
@@ -110,7 +112,11 @@ Item {
             id: settingsItem
             anchors.fill: parent
             closeBtn.visible: false
-            connectionConfigCpp: applicationCpp.connectionConfig
+            connectionConfigCpp: applicationCpp.connectionConfigCpp
+        }
+
+        onClosing: {
+            sideBar.connectionConfigChecked = false
         }
     }
 }

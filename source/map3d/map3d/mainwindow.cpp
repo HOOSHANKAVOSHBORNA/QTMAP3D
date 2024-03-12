@@ -30,7 +30,7 @@ MainWindow::MainWindow(UserManager *userManager, QWindow *parent)
     mBookmarkManager = new BookmarkManager(this);
     mListWindow = new ListWindow(this);
     mLayerManager = new LayerManager(mMapItem, this);
-    mMapItem->addBaselayers();
+    mMapItem->initialize();
 }
 
 MainWindow::~MainWindow()
@@ -83,6 +83,17 @@ void MainWindow::setListWindow(ListWindow *listWindow)
 void MainWindow::clearData()
 {
 
+}
+
+void MainWindow::setSettingsItem(QQuickItem *item)
+{
+    mSettingsItem = item;
+    emit settingsItemChanged();
+}
+
+QQuickItem *MainWindow::getSettingsItem()
+{
+    return mSettingsItem;
 }
 
 ListWindow *MainWindow::getListWindow() const

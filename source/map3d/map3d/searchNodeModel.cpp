@@ -16,8 +16,13 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent)
             &MapObject::nodeFromLayerRemoved,
             this,
             &SearchNodeModel::removeNode);
-    mTypeListModel = new TypeListModel;
-    mFilterManager = new FilterManager;
+    mTypeListModel = new TypeListModel(this);
+    mFilterManager = new FilterManager(this);
+}
+
+SearchNodeModel::~SearchNodeModel()
+{
+    qDebug() << "~SearchNodeModel()";
 }
 
 int SearchNodeModel::rowCount(const QModelIndex &parent) const
@@ -62,16 +67,7 @@ void SearchNodeModel::addNode(osg::Node *node, osgEarth::Layer *layer)
         }
 
         // ToDo: optimize it
-        for (auto &field : nodeData->fieldData) {
-            if (field.name.toLower() == "color")
-                mFilterManager->addColorFilterField(field.value.toString());
-            else if (std::strcmp(field.value.typeName(), "double") == 0
-                     || std::strcmp(field.value.typeName(), "qlonglong") == 0
-                     || std::strcmp(field.value.typeName(), "int") == 0)
-                mFilterManager->addNumFilterField(field.name);
-            else if (std::strcmp(field.value.typeName(), "QString") == 0)
-                mFilterManager->addStringFilterField(field.name);
-        }
+        mFilterManager->addFilterField(nodeData);
     }
 }
 
@@ -159,6 +155,11 @@ SearchNodeProxyModel::SearchNodeProxyModel(QObject *parent)
     setDynamicSortFilter(true);
 }
 
+SearchNodeProxyModel::~SearchNodeProxyModel()
+{
+    qDebug() << "~SearchNodeProxyModel()";
+}
+
 bool SearchNodeProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
@@ -243,11 +244,16 @@ int TypeListModel::rowCount(const QModelIndex &parent) const
 }
 
 // -------------------------------------------------------------------------- manager
-SearchNodeManager::SearchNodeManager(MapItem *mapItem, QObject *parent)
-    : QObject(parent)
+SearchNodeManager::SearchNodeManager(MapItem *mapItem)
+    : QObject(mapItem)
 {
-    mSearchNodeProxyModel = new SearchNodeProxyModel();
+    mSearchNodeProxyModel = new SearchNodeProxyModel(this);
     setMapItem(mapItem);
+}
+
+SearchNodeManager::~SearchNodeManager()
+{
+    qDebug() << "~SearchNodeManager()";
 }
 
 void SearchNodeManager::setMapItem(MapItem *mapItem)
