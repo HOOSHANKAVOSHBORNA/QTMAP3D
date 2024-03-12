@@ -46,6 +46,8 @@ Item {
                 sideContainer.bookmarkCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getBookmarkManager(
                                                                       ) : undefined
 
+                sideContainer.settingItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.settingsItem :  undefined
+
                 listWindowVisible: mainItem.listWindowVisible
 
                 onListWindowVisibleChanged: mainItem.listWindowVisible = listWindowVisible

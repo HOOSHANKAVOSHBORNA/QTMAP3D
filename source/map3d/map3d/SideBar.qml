@@ -351,5 +351,12 @@ Rectangle {
             checked: false
             isWindow: false
         }
+
+        ListElement {
+            name: "Settings"
+            iconSource: "qrc:/Resources/settings.png"
+            checked: false
+            isWindow: false
+        }
     }
 }

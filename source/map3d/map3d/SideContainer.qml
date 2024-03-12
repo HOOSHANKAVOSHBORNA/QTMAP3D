@@ -16,6 +16,7 @@ Item {
     property var connectionConfigurationCpp
     property var profileCpp
     property var bookmarkCpp
+    property var settingItem
 
     property alias currentItemIndex: stackLayout.currentIndex
 
@@ -175,12 +176,12 @@ Item {
             }
 
             DockWindow {
-                id: settingsDocItem
+                id: connectionDocItem
                 windowTitle: sideModel.get(5).name
                 isWindow: sideModel.get(5).isWindow
 
                 containerItem: ConnectionConfiguration {
-                    id: settingsItem
+                    id: connectionItem
                     closeBtn.visible: false
                     connectionConfigCpp: applicationWindow.connectionConfigCpp
                     //                    Layout.leftMargin: 50 / Style.monitorRatio
@@ -190,6 +191,22 @@ Item {
                 onWindowClose: {
                     sideModel.get(5).isWindow = false
                     currentItemIndex = 5
+                }
+            }
+
+
+            DockWindow {
+                id: settingsDocItem
+                windowTitle: sideModel.get(6).name
+                isWindow: sideModel.get(6).isWindow
+
+                containerItem: Item{
+                    data: rootItem.settingItem
+                }
+
+                onWindowClose: {
+                    sideModel.get(6).isWindow = false
+                    currentItemIndex = 6
                 }
             }
         }

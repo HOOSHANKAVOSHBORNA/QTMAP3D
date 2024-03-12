@@ -25,7 +25,7 @@ QMap<int, osg::ref_ptr<SimpleModelNode> > *DataManager::getNodeMap()
 
 SimpleModelNode* DataManager::onNodeDataReceived(const NodeData &nodeData)
 {
-    qDebug()<<"color DataManager: "<<nodeData.color;
+    // qDebug()<<"color DataManager: "<<nodeData.color;
     SimpleModelNode* node{nullptr};
     if (nodeData.command == Command::Remove){
         removeNode(nodeData);

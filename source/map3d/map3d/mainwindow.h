@@ -21,6 +21,7 @@ Q_DECLARE_METATYPE(MapItem)
 class MainWindow : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QQuickItem* settingsItem READ getSettingsItem WRITE setSettingsItem NOTIFY settingsItemChanged)
 
 public:
     MainWindow(UserManager *userManager, QWindow *parent = nullptr);
@@ -37,6 +38,11 @@ public:
     void addTabToListWindow(const QString tabTitle, QQuickItem *tabItem);
     void setListWindow(ListWindow *listWindow);
     void clearData();
+    void setSettingsItem(QQuickItem *item);
+    Q_INVOKABLE QQuickItem *getSettingsItem();
+
+signals:
+    void settingsItemChanged();
 
 private:
     MapControllerItem *mMapItem = nullptr;
@@ -45,6 +51,7 @@ private:
     ToolboxManager *mToolboxManager = nullptr;
     LayerManager *mLayerManager = nullptr;
     BookmarkManager *mBookmarkManager = nullptr;
+    QQuickItem *mSettingsItem = nullptr;
 };
 
 #endif // MainWindow_H

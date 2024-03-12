@@ -85,6 +85,17 @@ void MainWindow::clearData()
 
 }
 
+void MainWindow::setSettingsItem(QQuickItem *item)
+{
+    mSettingsItem = item;
+    emit settingsItemChanged();
+}
+
+QQuickItem *MainWindow::getSettingsItem()
+{
+    return mSettingsItem;
+}
+
 ListWindow *MainWindow::getListWindow() const
 {
     return mListWindow;

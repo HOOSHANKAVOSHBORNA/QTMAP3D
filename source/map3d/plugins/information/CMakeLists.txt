@@ -18,6 +18,7 @@ add_library(information SHARED
     information.qrc
     mapPin.h mapPin.cpp
     statusNode.cpp statusNode.h
+    statusFilter.cpp statusFilter.h
 )
 
 target_include_directories(information PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../map3d")

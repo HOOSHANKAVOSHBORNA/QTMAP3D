@@ -24,6 +24,7 @@ class Application : public QObject
     Q_PROPERTY(LoadingPage* loadingPageCpp READ loadingPageCpp NOTIFY loadingPageCppChanged)
     Q_PROPERTY(MainWindow* mainPageCpp READ mainPageCpp NOTIFY mainPageCppChanged)
 
+
 private:
     explicit Application();
 
@@ -43,8 +44,8 @@ public:
     Q_INVOKABLE ConnectionConfiguration* connectionConfigCpp();
     Q_INVOKABLE LoadingPage* loadingPageCpp();
     Q_INVOKABLE MainWindow* mainPageCpp();
-
     Q_INVOKABLE void saveDataInFile();
+
 
 signals:
     void pageIndexChanged();
