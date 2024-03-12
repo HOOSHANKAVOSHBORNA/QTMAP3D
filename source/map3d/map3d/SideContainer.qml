@@ -64,7 +64,7 @@ Item {
                 color: Style.foregroundColor
                 font.pixelSize: Style.titleFontSize
                 font.family: Style.fontFamily
-                font.weight: 450 / Style.monitorRatio
+                font.weight: 500 / Style.monitorRatio
                 Layout.fillWidth: true
             }
 
@@ -124,6 +124,7 @@ Item {
                 containerItem: ToolboxManagerItem {
                     id: toolbox
                     toolboxCpp: rootItem.toolboxCpp
+                    toolboxModel: rootItem.toolboxCpp ? rootItem.toolboxCpp.toolboxProxyModel() : null
                 }
 
                 onWindowClose: {
@@ -138,6 +139,7 @@ Item {
                 containerItem: LayerManagerItem {
                     id: layers
                     layerCpp: rootItem.layerCpp
+                    layerModel: rootItem.layerCpp ? rootItem.layerCpp.layerModel() : null
                 }
 
                 onWindowClose: {
@@ -151,7 +153,8 @@ Item {
                 windowTitle: sideModel.get(3).name
                 containerItem: BookmarkItem {
                     id: bookmark
-                    bookmarkCpp: rootItem.bookmarkCpp.getBookmarkProxyModel()
+                    bookmarkCpp: rootItem.bookmarkCpp ? rootItem.bookmarkCpp.getBookmarkProxyModel() : null
+                    bookmarkSelectionModel: rootItem.bookmarkCpp ? rootItem.bookmarkCpp.getBookmarkProxyModel().selectioModel() : null
                 }
 
                 onWindowClose: {
@@ -171,25 +174,6 @@ Item {
                 onWindowClose: {
                     sideModel.get(4).isWindow = false
                     currentItemIndex = 4
-                }
-            }
-
-            DockWindow {
-                id: settingsDocItem
-                windowTitle: sideModel.get(5).name
-                isWindow: sideModel.get(5).isWindow
-
-                containerItem: ConnectionConfiguration {
-                    id: settingsItem
-                    closeBtn.visible: false
-                    connectionConfigCpp: applicationWindow.connectionConfigCpp
-                    //                    Layout.leftMargin: 50 / Style.monitorRatio
-                    //                    Layout.rightMargin: 50 / Style.monitorRatio
-                }
-
-                onWindowClose: {
-                    sideModel.get(5).isWindow = false
-                    currentItemIndex = 5
                 }
             }
         }

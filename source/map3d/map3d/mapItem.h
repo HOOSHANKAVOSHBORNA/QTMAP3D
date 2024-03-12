@@ -5,17 +5,53 @@
 #include "mapObject.h"
 #include "cameraController.h"
 
+#include <osgDB/WriteFile>
 #include <osgEarth/MapNode>
 #include <osgEarthDrivers/gdal/GDALOptions>
 #include <osgEarth/ImageLayer>
 #include <osgEarthUtil/Sky>
 #include <osgEarthAnnotation/AnnotationLayer>
 
-class Root: public osg::Group {
-    Root() : osg::Group(){}
-    ~Root() {
-        qDebug() << "~Root";
+class CaptureCallback :public QObject, public osg::Camera::DrawCallback
+
+{
+    Q_OBJECT
+public:
+    CaptureCallback(){}
+
+    virtual void operator () (osg::RenderInfo& renderInfo) const override
+    {
+        if(mCapture)
+        {
+            osg::ref_ptr<osg::Image> img = new osg::Image();
+            img->readPixels(mSceneStartPoint.x(), mSceneStartPoint.y(), mWidth , mHeight , GL_RGB, GL_UNSIGNED_BYTE);
+            bool resultSnap = osgDB::writeImageFile(*img, mFilePath.toStdString());
+            if(resultSnap)
+                emit imageProcessComplete(mFilePath);
+            else
+                emit error(mFilePath);
+            mCapture = false;
+        }
     }
+
+    inline void capture(QString filePath, QPointF sceneStartPoint, double width , double height)
+    {
+        mSceneStartPoint = sceneStartPoint;
+        mFilePath = filePath;
+        mWidth = width;
+        mHeight = height;
+        mCapture = true;
+    }
+signals:
+    void imageProcessComplete(QString filePath) const;
+    void error(QString filePath) const;
+
+protected:
+    mutable bool mCapture{false};
+    QPointF mSceneStartPoint;
+    QString mFilePath;
+    double mHeight;
+    double mWidth;
 };
 
 class MapItem : public OsgViewerItem
@@ -26,7 +62,6 @@ public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem();
     void setMap(osgEarth::Map *map);
-//    Q_INVOKABLE osgViewer::Viewer *getViewer()const;
     const osg::Group *getRoot() const;
     osgEarth::MapNode *getMapNode() const;
 
@@ -35,79 +70,35 @@ public:
 
     Q_INVOKABLE CameraController *getCameraController();
     const CameraController *getCameraController() const;
-//    MapObject *operator->(){return mMapObject.get();}
-//    const MapObject *operator->()const {return mMapObject;}
 
     const osgEarth::SpatialReference* getMapSRS() const;
 
-    //    LayersModel *getLayersModel() const;
     bool addNode(osg::Node *node);
     bool removeNode(osg::Node *node);
+    void addCaptureCallback(CaptureCallback *captureCallback);
+    void removeCaptureCallback(CaptureCallback *captureCallback);
 
-public://camera functions
-//    osgEarth::Util::EarthManipulator *getEarthManipulator() const;
-//    void setViewpoint(const osgEarth::Viewpoint& vp, double duration_s = 0.0);
-//    osgEarth::Viewpoint getViewpoint() const;
-//    void setTrackNode(osg::Node *node, double minDistance);
-    //    void untrackNode(osg::Node *node);
-//    void untrack();
-//    qreal headingAngle() const;
 public:
     void screenToWorld(float x, float y, osg::Vec3d& outWorldPoint ) const;
     osgEarth::GeoPoint screenToGeoPoint(float x, float y) const;
     void worldToScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
     void worldToOSGScreen(osg::Vec3d worldPoint, float& outX, float& outY) const;
-
+    void addBaselayers();
     bool getMode() const;
-    //--layer function---------------------------------
-//    void addLayer(osgEarth::Layer* layer);
-//    void removeLayer(osgEarth::Layer* layer);
-//    bool addNodeToLayer(osg::Node *node, std::string layerName);
-//    bool removeNodeFromLayer(osg::Node *node, std::string layerName);
-//    bool addLayerToLayer(osgEarth::Layer *layer, std::string layerName);
-//    bool removeLayerFromLayer(osgEarth::Layer *layer, std::string layerName);
-
-//    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 public slots:
-//    void zoom(double);
-//    void goToHome();
-//    void goToPosition(double latitude, double longitude, double range);
-//    void goToPosition(osgEarth::GeoPoint mapPoint, double range, double duration = 3.0);
     void changeMode();
 
     void setGeocentric(bool isGeocentric);
-    //    void toggle3DView();
-    //void pan(double xVal, double yVal);
-//    void rotate(double xVal, double yVal);
-//    void travelToViewpoint(qreal latitude,
-//                           qreal longitude,
-//                           qreal range,
-//                           qreal pitch,
-//                           qreal heading);
-
-//    void orientCameraToNorth();
 
 signals:
-//    void focalPointLatChanged  (qreal focalPointLat);
-//    void focalPointLongChanged (qreal focalPointLong);
-//    void focalPointRangeChanged(qreal focalPointRange);
-//    void focalPointPitchChanged(qreal focalPointPitch);
-//    void focalPointHeadChanged(qreal focalPointHead);
-
     void modeChanged(bool is3DView);
-//    void layerChanged();
     void mapCleared();
-//    void frameChanged();
-    //    void mapSRSChanged();
-//    void mouseLocationChanged();
 protected:
     virtual void initializeOsgEarth();
 private:
     void createMapNode(bool geocentric, osgEarth::Map *map = nullptr);
     void createCameraManipulator();
 
-//    void layerAdded(osgEarth::Layer* layer, unsigned index);
-//    void layerRemoved(osgEarth::Layer* layer, unsigned index);
 
     friend class MainWindow;
     friend class MainMapCallback;
@@ -118,35 +109,11 @@ private:
     osg::ref_ptr<MapObject> mMapObject;
 
 private:
-    bool mIsFirstFrame{true};
-//    GLuint mRenderTargetId{0};
-//    osgEarth::Util::EarthManipulator *mEarthManipulator{nullptr};
     osg::ref_ptr<CameraController> mCameraController{nullptr};
     bool mIsGeocentric{true};
     bool mIs3DView{true};
-//    osgEarth::GeoPoint mCurrentMouseGeoPoint;
-    //--renderer------------------------------------------------------------------------------------------------------
 public:
-    //    void cleanup();
-    //    void initializeGL(int width, int height, QScreen *screen, GLuint renderTargetId);
-    //    void resizeGL(int width, int height, QScreen *screen);
-    //    void paintGL();
-    //    void createOsgRenderer();
     virtual void frame() override;
-    //events------------------------------
-//    virtual void keyPressEvent(QKeyEvent* event) override;
-//    virtual void keyReleaseEvent(QKeyEvent* event) override;
-//    virtual void mousePressEvent(QMouseEvent* event) override;
-//    virtual void mouseReleaseEvent(QMouseEvent* event) override;
-//    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
-//    virtual void mouseMoveEvent(QMouseEvent* event) override;
-//    virtual void wheelEvent(QWheelEvent* event) override;
-//    virtual void hoverMoveEvent(QHoverEvent *event) override;
-//    OSGRenderNode *oSGRenderNode() const;
-
-private:
-//    OSGRenderNode *mOSGRenderNode{nullptr};
-    //    QQuickWindow *mWindow{nullptr};
 };
 
 #endif // MapController_H

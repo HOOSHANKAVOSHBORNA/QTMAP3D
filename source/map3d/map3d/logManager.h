@@ -13,6 +13,7 @@ public:
     ~LogManager();
 
     static void setNewSavedFileName();
+    QString findFileName();
     static QString getSavingFolderPath();
     static QString getSavingFilePath();
     static void messageHandler(QtMsgType type,
@@ -23,7 +24,7 @@ private:
     static bool writeLogToFile(QString textToWrite);
 
 private:
-    static const inline int maxSize = 50000;
+    static const inline int maxSize = 100000;
     static const inline QString appDir = QStandardPaths::writableLocation(
         QStandardPaths::AppDataLocation);
     static inline const QString appName = QString("Map3d");

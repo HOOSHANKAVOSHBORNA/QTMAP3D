@@ -87,12 +87,13 @@ Item {
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    selectedColor: rootItem.cppInterface.color
+                    selectedColor: rootItem.cppInterface ? rootItem.cppInterface.color : 'blue'
 
                     onSelectedColorChanged: {
-                        rootItem.cppInterface.color = selectedColor
+                        if (rootItem.cppInterface) {
+                            rootItem.cppInterface.color = selectedColor
+                        }
                     }
-
                 }
                 Binding {
                     target: fillColorPick
@@ -284,8 +285,7 @@ Item {
                 spacing: 0
                 Layout.fillWidth: true
 
-//                visible: rootItem.cppInterface ? rootItem.cppInterface.isMovable : false
-
+                //                visible: rootItem.cppInterface ? rootItem.cppInterface.isMovable : false
                 Text {
                     Layout.preferredWidth: lblWidth / Style.monitorRatio
                     text: "Speed"
@@ -323,8 +323,6 @@ Item {
                     }
                 }
             }
-
-
         }
     }
 }

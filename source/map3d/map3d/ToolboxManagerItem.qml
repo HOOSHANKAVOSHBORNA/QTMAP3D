@@ -9,7 +9,7 @@ Item {
     id: rootItem
 
     property var toolboxCpp
-    property var toolboxModel: toolboxCpp.toolboxProxyModel()
+    property var toolboxModel
 
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
@@ -218,7 +218,7 @@ Item {
                         color: Style.foregroundColor
                         Layout.fillWidth: true
                         Layout.preferredHeight: contentHeight
-                        text: toolboxCpp.propertyItemTitle
+                        text: toolboxCpp ? toolboxCpp.propertyItemTitle : ""
                         font.family: Style.fontFamily
                         font.pixelSize: Style.titleFontSize
 
@@ -249,7 +249,7 @@ Item {
                             clip: true
 
                             anchors.fill: parent
-                            data: toolboxCpp.propertyItem
+                            data: toolboxCpp? toolboxCpp.propertyItem : null
                         }
                     }
                 }

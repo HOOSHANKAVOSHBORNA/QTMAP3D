@@ -2,6 +2,7 @@ import QtQuick 2.13
 import QtQuick.Layouts
 import QtQuick.Controls
 import "style"
+import "Components"
 
 Item {
     id: rootItem
@@ -33,7 +34,7 @@ Item {
         }
 
         Label {
-            text: userManager.name
+            text: applicationCpp.userManager.name
             font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
@@ -49,7 +50,7 @@ Item {
         }
 
         Label {
-            text: userManager.userName
+            text: applicationCpp.userManager.name
             font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
@@ -65,7 +66,7 @@ Item {
         }
 
         Label {
-            text: userManager.roleName
+            text: applicationCpp.userManager.name
             font.pixelSize: Style.regularFontSize
             Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
@@ -73,36 +74,20 @@ Item {
             color: Style.foregroundColor
         }
 
-        Button {
+        CustomButton {
             id: logoutBtn
             Layout.preferredHeight: 30 / Style.monitorRatio
             Layout.preferredWidth: 270 / Style.monitorRatio
             Layout.topMargin: 10 / Style.monitorRatio
             Layout.fillWidth: true
+
             hoverEnabled: true
-
-            background: Rectangle {
-                color: logoutBtn.hovered ? "#01AED6" : "transparent"
-                border.width: 2 / Style.monitorRatio
-                border.color: Style.foregroundColor
-                radius: 15 / Style.monitorRatio
-
-                IconImage {
-                    width: 20 / Style.monitorRatio
-                    height: 20 / Style.monitorRatio
-                    source: "qrc:/Resources/circular-logout.png"
-                    anchors.right: logout.left
-                    anchors.bottom: logout.bottom
-                }
-
-                Text {
-                    id: logout
-                    anchors.centerIn: parent
-                    text: "Log out"
-                    font.pixelSize: Style.regularFontSize
-                    color: Style.foregroundColor
-                }
-            }
+            iconImageSource: "qrc:/Resources/circular-logout.png"
+            iconImageVisible: true
+            buttonText: "Log out"
+            buttonColor: logoutBtn.hovered ? "#01AED6" : "transparent"
+            buttonTextColor: Style.foregroundColor
+            buttonBorder.color: Style.foregroundColor
 
             onClicked: {
                 applicationCpp.userManager.signedOut()

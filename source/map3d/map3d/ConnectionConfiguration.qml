@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQml
 import "style"
+import "Components"
 
 Item {
     id: rootItem
@@ -87,12 +88,12 @@ Item {
                 text: "Connection"
                 font.pixelSize: Style.titleFontSize
                 color: Style.foregroundColor
-                                Layout.fillWidth: true
+                Layout.fillWidth: true
             }
 
             IconImage {
                 id: connectionStatus
-                source: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: (connectionConfigCpp && connectionConfigCpp.isConnected) ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
             }
@@ -249,25 +250,28 @@ Item {
                 testConnectionBtn.enabled = false
             }
         }
-        Button {
+        CustomButton {
             id: saveBtn
             padding: 0
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 25 / Style.monitorRatio
             hoverEnabled: true
+            buttonText: "Save Changes"
+            buttonColor: Style.foregroundColor
+            buttonTextColor: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
 
-            contentItem: Text {
-                text: "Save changes"
-                font.pixelSize: Style.regularFontSize
-                color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            background: Rectangle {
-                radius: width / (Style.monitorRatio * 2)
-                color: Style.foregroundColor
-            }
+            //            contentItem: Text {
+            //                text: "Save changes"
+            //                font.pixelSize: Style.regularFontSize
+            //                color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
+            //                horizontalAlignment: Text.AlignHCenter
+            //                verticalAlignment: Text.AlignVCenter
+            //            }
+            //            background: Rectangle {
+            //                radius: width / (Style.monitorRatio * 2)
+            //                color: Style.foregroundColor
+            //            }
             onClicked: {
                 rootItem.connectionConfigCpp.saveSettings()
             }
@@ -275,7 +279,7 @@ Item {
     }
 
     Connections {
-        target: connectionConfigCpp
+        target: applicationCpp.connectionConfigCpp
 
         function onIsConnectedChanged() {
             if (connectionButtonClicked && connectionConfigCpp.isConnected) {
@@ -286,7 +290,7 @@ Item {
                 connectionButtonClicked = false
             }
             if (connectionButtonClicked && !connectionConfigCpp.isConnected) {
-                testConnectionTxt.text = "Connection Failed"
+                testConnectionTxt.text = "Connection Failure"
                 testConnectionTxt.color = "#690000"
                 backgroundRec.color = "#690000"
                 testConnectionAnimationStatus.start()
