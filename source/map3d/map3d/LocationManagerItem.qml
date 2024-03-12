@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import "style"
+import "Components"
 
 Rectangle {
     id: rLocationManager
@@ -77,128 +78,146 @@ Rectangle {
         // ----------------------------------------------- search bar & add place button
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 5 / Style.monitorRatio
+            spacing: 10 / Style.monitorRatio
 
-            RowLayout {
+            ColumnLayout {
+                id: golocationform
                 Layout.fillWidth: true
-                Layout.preferredHeight: 30 / Style.monitorRatio
-
-                Rectangle {
+                spacing: 5 / Style.monitorRatio
+                property int textWidth: 40
+                //                Layout.preferredHeight: 30 / Style.monitorRatio
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 30 / Style.monitorRatio
-                    radius: height / 2
-                    color: bg20
-                    clip: true
 
-                    TextInput {
-                        id: tiLat
+                    Text {
+                        text: 'lat:   '
+                        color: Style.foregroundColor
+                        Layout.preferredWidth: golocationform.textWidth
+                    }
 
-                        anchors.fill: parent
-                        anchors.leftMargin: 15 / Style.monitorRatio
-                        anchors.rightMargin: 15 / Style.monitorRatio
-                        verticalAlignment: Text.AlignVCenter
-                        font.family: Style.fontFamily
-                        font.pixelSize: Style.regularFontSize
-                        color: fg75
-                        text: "50"
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30 / Style.monitorRatio
+                        radius: height / 2
+                        color: bg20
+                        clip: true
 
-                        validator: RegularExpressionValidator {
-                            regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
-                        }
+                        TextInput {
+                            id: tiLat
 
-                        onAccepted: {
-                            listModel.goToLocation(parseFloat(tiLat.text),
-                                                   parseFloat(tiLang.text),
-                                                   parseFloat(tiAlt.text))
+                            anchors.fill: parent
+                            anchors.leftMargin: 15 / Style.monitorRatio
+                            anchors.rightMargin: 15 / Style.monitorRatio
+                            verticalAlignment: Text.AlignVCenter
+                            font.family: Style.fontFamily
+                            font.pixelSize: Style.regularFontSize
+                            color: fg75
+                            text: "50"
+
+                            validator: RegularExpressionValidator {
+                                regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
+                            }
+
+                            onAccepted: {
+                                listModel.goToLocation(parseFloat(tiLat.text),
+                                                       parseFloat(tiLang.text),
+                                                       parseFloat(tiAlt.text))
+                            }
                         }
                     }
                 }
 
-                Rectangle {
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 30 / Style.monitorRatio
-                    radius: height / 2
-                    color: bg20
-                    clip: true
 
-                    TextInput {
-                        id: tiLang
+                    Text {
+                        text: 'lon:   '
+                        color: Style.foregroundColor
+                        Layout.preferredWidth: golocationform.textWidth
+                    }
 
-                        anchors.fill: parent
-                        anchors.leftMargin: 15 / Style.monitorRatio
-                        anchors.rightMargin: 15 / Style.monitorRatio
-                        verticalAlignment: Text.AlignVCenter
-                        font.family: Style.fontFamily
-                        font.pixelSize: Style.regularFontSize
-                        color: fg75
-                        text: "50"
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30 / Style.monitorRatio
+                        radius: height / 2
+                        color: bg20
+                        clip: true
 
-                        validator: RegularExpressionValidator {
-                            regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
-                        }
+                        TextInput {
+                            id: tiLang
 
-                        onAccepted: {
-                            listModel.goToLocation(parseFloat(tiLat.text),
-                                                   parseFloat(tiLang.text),
-                                                   parseFloat(tiAlt.text))
+                            anchors.fill: parent
+                            anchors.leftMargin: 15 / Style.monitorRatio
+                            anchors.rightMargin: 15 / Style.monitorRatio
+                            verticalAlignment: Text.AlignVCenter
+                            font.family: Style.fontFamily
+                            font.pixelSize: Style.regularFontSize
+                            color: fg75
+                            text: "50"
+
+                            validator: RegularExpressionValidator {
+                                regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
+                            }
+
+                            onAccepted: {
+                                listModel.goToLocation(parseFloat(tiLat.text),
+                                                       parseFloat(tiLang.text),
+                                                       parseFloat(tiAlt.text))
+                            }
                         }
                     }
                 }
 
-                Rectangle {
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 30 / Style.monitorRatio
-                    radius: height / 2
-                    color: bg20
-                    clip: true
 
-                    TextInput {
-                        id: tiAlt
+                    Text {
+                        text: 'range:   '
+                        color: Style.foregroundColor
+                        Layout.preferredWidth: golocationform.textWidth
+                    }
 
-                        anchors.fill: parent
-                        anchors.leftMargin: 15 / Style.monitorRatio
-                        anchors.rightMargin: 15 / Style.monitorRatio
-                        verticalAlignment: Text.AlignVCenter
-                        font.family: Style.fontFamily
-                        font.pixelSize: Style.regularFontSize
-                        color: fg75
-                        text: "1000"
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30 / Style.monitorRatio
+                        radius: height / 2
+                        color: bg20
+                        clip: true
 
-                        validator: RegularExpressionValidator {
-                            regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
-                        }
+                        TextInput {
+                            id: tiAlt
 
-                        onAccepted: {
-                            listModel.goToLocation(parseFloat(tiLat.text),
-                                                   parseFloat(tiLang.text),
-                                                   parseFloat(tiAlt.text))
+                            anchors.fill: parent
+                            anchors.leftMargin: 15 / Style.monitorRatio
+                            anchors.rightMargin: 15 / Style.monitorRatio
+                            verticalAlignment: Text.AlignVCenter
+                            font.family: Style.fontFamily
+                            font.pixelSize: Style.regularFontSize
+                            color: fg75
+                            text: "1000"
+
+                            validator: RegularExpressionValidator {
+                                regularExpression: /[+-]?([0-9]{1,6}[.])?[0-9]{0,6}/
+                            }
+
+                            onAccepted: {
+                                listModel.goToLocation(parseFloat(tiLat.text),
+                                                       parseFloat(tiLang.text),
+                                                       parseFloat(tiAlt.text))
+                            }
                         }
                     }
                 }
             }
 
-            Button {
+            CustomButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 20
-
                 padding: 0
 
-                background: Rectangle {
-                    color: 'transparent'
-                }
-
-                contentItem: Rectangle {
-                    anchors.fill: parent
-                    color: fg80
-                    radius: 25
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: 'Go To Location...'
-                        color: Style.backgroundColor
-                    }
-                }
-
+                buttonColor: Style.foregroundColor
+                buttonText: "Go To Location"
+                buttonTextColor: Style.backgroundColor
                 onClicked: {
                     listModel.goToLocation(parseFloat(tiLat.text),
                                            parseFloat(tiLang.text),
@@ -208,36 +227,24 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
+                Layout.preferredHeight: 2
+                color: Style.foregroundColor
+                radius: 1
+            }
+
+            CustomButton {
+                Layout.fillWidth: true
                 Layout.preferredHeight: 30 / Style.monitorRatio
-                radius: height / 2
-                color: fg80
+                buttonColor: Style.foregroundColor
+                buttonText: "Add place"
+                buttonTextColor: Style.backgroundColor
+                iconImageColor: Style.backgroundColor
+                iconImageVisible: true
+                iconImageSource: "qrc:/Resources/location-add.png"
 
-                RowLayout {
-                    anchors.centerIn: parent
-                    spacing: 4 / Style.monitorRatio
-
-                    IconImage {
-                        Layout.preferredWidth: 22 / Style.monitorRatio
-                        Layout.preferredHeight: 22 / Style.monitorRatio
-                        source: "qrc:/Resources/location-add.png"
-                        color: Style.backgroundColor
-                    }
-
-                    Text {
-                        text: "Add place"
-                        font.family: Style.fontFamily
-                        font.pixelSize: Style.regularFontSize
-                        color: Style.backgroundColor
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        rPopup.editIndex = -1
-                        rPopup.myOpen()
-                    }
+                onClicked: {
+                    rPopup.editIndex = -1
+                    rPopup.myOpen()
                 }
             }
 

@@ -22,43 +22,6 @@ Item {
     property alias closeBtn: closeBtn
     property alias saveBtn: saveBtn
 
-    Timer {
-        id: animationTimer
-        interval: 2000
-        onTriggered: {
-            testConnectionTxt.text = "Connect"
-            testConnectionTxt.color = Style.backgroundColor
-            backgroundRec.color = Style.foregroundColor
-            reverseAnimation.start()
-        }
-    }
-
-    PropertyAnimation {
-        id: testConnectionAnimationStatus
-        target: testConnectionBtn
-        property: "backgroundColorOpacity"
-        from: 0
-        to: 0.2
-        duration: 100
-        onFinished: {
-            animationTimer.start()
-        }
-    }
-
-    PropertyAnimation {
-        id: reverseAnimation
-        target: testConnectionBtn
-        property: "backgroundColorOpacity"
-        from: 0.2
-        to: 1
-        duration: 100
-        onFinished: {
-            backgroundRec.color.a = 1
-            testConnectionBtn.enabled = true
-            testConnectionBtn.hoverEnabled = true
-        }
-    }
-
     ColumnLayout {
         Layout.fillWidth: true
         Layout.maximumHeight: 745 / Style.monitorRatio
@@ -137,7 +100,6 @@ Item {
         TextField {
             id: password
             Layout.preferredWidth: 320 / Style.monitorRatio
-            //            Layout.fillWidth: true
             Layout.topMargin: 5 / Style.monitorRatio
             Layout.preferredHeight: 43 / Style.monitorRatio
             font.pixelSize: Style.regularFontSize
@@ -209,46 +171,34 @@ Item {
             }
         }
 
-        Button {
-            id: testConnectionBtn
-            property alias backgroundColorOpacity: backgroundRec.color.a
-            property alias textColor: testConnectionTxt.color
-            padding: 0
+        LoadingButton {
+            id: connectBtn
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 48 / Style.monitorRatio
             hoverEnabled: true
-
-            contentItem: Text {
-                id: testConnectionTxt
-                text: "Connect"
-                font.pixelSize: Style.regularFontSize
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-            background: Rectangle {
-                id: backgroundRec
-                radius: width / (Style.monitorRatio * 2)
-                color: Style.foregroundColor
-            }
+            buttonText: "Connect"
+            buttonColor: Style.foregroundColor
+            loadingRecVisible: false
 
             Binding {
-                target: testConnectionTxt
+                target: connectBtn.textId
                 property: "color"
                 value: {
-                    if (animationTimer.running)
+                    if (connectBtn.waitingTimer.running)
                         return connectionConfigCpp.isConnected ? "#206900" : "#690000"
                     else
-                        return testConnectionBtn.hovered
-                                && backgroundRec.color.a == 1 ? "#01AED6" : Style.backgroundColor
+                        return connectBtn.hovered
+                                && connectBtn.backgroundColorOpacity
+                                == 1 ? "#01AED6" : Style.backgroundColor
                 }
             }
 
             onClicked: {
-                backgroundRec.color.a = 0.5
+                backgroundColorOpacity = 0.5
                 connectionButtonClicked = true
                 connectionConfigCpp.testConnection()
-                testConnectionBtn.enabled = false
+                connectBtn.enabled = false
             }
         }
         CustomButton {
@@ -272,17 +222,17 @@ Item {
 
         function onIsConnectedChanged() {
             if (connectionButtonClicked && connectionConfigCpp.isConnected) {
-                testConnectionTxt.text = "Connection Success"
-                testConnectionTxt.color = "#206900"
-                backgroundRec.color = "#206900"
-                testConnectionAnimationStatus.start()
+                connectBtn.buttonText = "Connection Success"
+                connectBtn.buttonTextColor = "#206900"
+                connectBtn.buttonColor = "#206900"
+                connectBtn.opacityAnimation.start()
                 connectionButtonClicked = false
             }
             if (connectionButtonClicked && !connectionConfigCpp.isConnected) {
-                testConnectionTxt.text = "Connection Failure"
-                testConnectionTxt.color = "#690000"
-                backgroundRec.color = "#690000"
-                testConnectionAnimationStatus.start()
+                connectBtn.buttonText = "Connection Failure"
+                connectBtn.buttonTextColor = "#690000"
+                connectBtn.buttonColor = "#690000"
+                connectBtn.opacityAnimation.start()
                 connectionButtonClicked = false
             }
         }

@@ -31,6 +31,7 @@ class MapControllerItem : public MapItem
 
     Q_PROPERTY(QQuickItem* topMenuItem READ topMenuItem WRITE setTopMenuItem NOTIFY topMenuItemChanged FINAL)
     Q_PROPERTY(bool topMenuVisible READ topMenuVisible WRITE setTopMenuVisible NOTIFY topMenuVisibleChanged FINAL)
+    Q_PROPERTY(FilterManager* filterManager READ filterManager WRITE setFilterManager NOTIFY filterManagerChanged FINAL)
 
 public:
     static MapControllerItem *instance();
@@ -56,6 +57,7 @@ public:
 
     QQuickItem *topMenuItem() const;
     void setTopMenuItem(QQuickItem *newTopMenuItem);
+    void setFilterManager(FilterManager *filterManager);
 
     bool topMenuVisible() const;
     void setTopMenuVisible(bool newTopMenuVisible);
@@ -86,6 +88,7 @@ signals:
     void topMenuItemChanged();
 
     void topMenuVisibleChanged();
+    void filterManagerChanged();
 
 private:
     MapControllerItem(QQuickItem *parent = nullptr);
