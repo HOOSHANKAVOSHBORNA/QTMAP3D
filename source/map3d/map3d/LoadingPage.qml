@@ -26,45 +26,15 @@ Rectangle {
         }
 
         ColumnLayout {
-            anchors.fill: parent
-            anchors.topMargin: 30
-            anchors.bottomMargin: 30
-            spacing: 50
-
+            anchors.left: parent.left
+            anchors.right: parent.right
+            spacing: 0
             Image {
                 source: "qrc:/Resources/Qarch.png"
-                Layout.preferredWidth: 100 / Style.monitorRatio
-                Layout.preferredHeight: 100 / Style.monitorRatio
+                Layout.preferredWidth: 150 / Style.monitorRatio
+                Layout.preferredHeight: 150 / Style.monitorRatio
                 Layout.alignment: Qt.AlignHCenter
-            }
-
-            Rectangle {
-                id: loadingContainer
-                Layout.fillWidth: true
-                Layout.preferredHeight: 200 / Style.monitorRatio
-                color: "transparent"
-                clip: true
-                ListView {
-                    id: listView
-                    model: loadingPageCpp ? loadingPageCpp : 0
-                    anchors.fill: parent
-                    verticalLayoutDirection: ListView.BottomToTop
-
-                    onCountChanged: {
-                        progressBar.value = loadingPageCpp ? loadingPageCpp.pluginFraction : 0
-                    }
-
-                    delegate: Text {
-                        id: loadingText
-
-                        font.pixelSize: Style.smallFontSize
-                        color: errorStatus ? "white" : "red"
-
-                        text: display
-                        horizontalAlignment: Text.AlignHCenter
-                        width: listView.width
-                    }
-                }
+                Layout.topMargin: 344 / Style.monitorRatio
             }
 
             ProgressBar {
@@ -72,6 +42,7 @@ Rectangle {
                 value: 0
                 padding: 2
                 Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 30 / Style.monitorRatio
                 background: Rectangle {
                     implicitWidth: 200
                     implicitHeight: 8
@@ -87,6 +58,23 @@ Rectangle {
                         height: parent.height
                         radius: 5 / Style.monitorRatio
                         color: "#01AED6"
+                    }
+                }
+            }
+
+            Text {
+                id: loadingText
+                font.pixelSize: Style.regularFontSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 30 / Style.monitorRatio
+                Connections {
+                    target: loadingPageCpp
+                    function onItemAdded() {
+                        loadingText.text = loadingPageCpp.firstItem()
+                        loadingText.color
+                                = loadingPageCpp ? (loadingPageCpp.firstItemErrorStatus(
+                                                        ) ? "red" : "white") : "transparent"
+                        progressBar.value = loadingPageCpp ? loadingPageCpp.pluginFraction : 0
                     }
                 }
             }

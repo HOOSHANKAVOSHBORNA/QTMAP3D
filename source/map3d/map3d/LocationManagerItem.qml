@@ -56,6 +56,24 @@ Rectangle {
         spacing: 12 / Style.monitorRatio
 
         // ----------------------------------------------- search bar & add place button
+        // TEST: viewpoint changes connection
+        //        Label {
+        //            Layout.fillWidth: true
+        //            Layout.preferredHeight: 20 / Style.monitorRatio
+        //            background: Rectangle {
+        //                color: "transparent"
+        //            }
+
+        //            Text {
+        //                Layout.alignment: Qt.AlignVCenter
+        //                color: Style.foregroundColor
+        //                text: locationCpp.viewPoint.x.toFixed(
+        //                          3) + ", " + locationCpp.viewPoint.y.toFixed(
+        //                          3) + ", " + locationCpp.viewPoint.z.toFixed(3)
+        //                font.family: Style.fontFamily
+        //                font.pixelSize: Style.regularFontSize
+        //            }
+        //        }
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5 / Style.monitorRatio
@@ -205,10 +223,8 @@ Rectangle {
             property int editIndex: -1
 
             function myOpen() {
-                txtPlaceName.text = listModel.getCurrentXYZ().x.toFixed(
-                            6) + ", " + listModel.getCurrentXYZ().y.toFixed(6)
-
                 rPopup.visible = true
+                locationCpp.addPlaceWindowOpened()
             }
 
             function myClose() {
@@ -217,10 +233,11 @@ Rectangle {
                 lvColors.selectedColor = "black"
 
                 rPopup.close()
+                locationCpp.addPlaceWindowClosed()
             }
 
             title: 'Add Place'
-            flags: Qt.Window | Qt.FramelessWindowHint
+            flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
             width: 400 / Style.monitorRatio
             height: 523 / Style.monitorRatio
             color: "transparent"
@@ -300,13 +317,23 @@ Rectangle {
                             icon.color: Style.foregroundColor
                         }
 
-                        Text {
-                            id: txtPlaceName
+                        Label {
+                            Layout.preferredWidth: 55 / Style.monitorRatio
+                            Layout.preferredHeight: 20 / Style.monitorRatio
+                            background: Rectangle {
+                                color: "transparent"
+                            }
 
-                            text: "set before opening :)"
-                            font.family: Style.fontFamily
-                            font.pixelSize: Style.regularFontSize
-                            color: Style.foregroundColor
+                            Text {
+                                Layout.alignment: Qt.AlignVCenter
+                                color: Style.foregroundColor
+                                text: locationCpp ? locationCpp.viewPoint.x.toFixed(
+                                                        3) + ", " + locationCpp.viewPoint.y.toFixed(
+                                                        3) + ", " + locationCpp.viewPoint.z.toFixed(
+                                                        3) : "locationCpp is undefined"
+                                font.family: Style.fontFamily
+                                font.pixelSize: Style.regularFontSize
+                            }
                         }
                     }
 
@@ -427,82 +454,51 @@ Rectangle {
                             color: fg80
                         }
 
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 5 / Style.monitorRatio
+                        Row {
+                            spacing: 0 / Style.monitorRatio
 
-                            Row {
-                                spacing: 0 / Style.monitorRatio
+                            Repeater {
+                                id: lvColors
+                                model: ["red", "blue", "yellow", "green", "white", "black", "orange", "pink", "purple"]
 
-                                Repeater {
-                                    id: lvColors
-                                    model: ["red", "blue", "yellow", "green", "white", "black", "orange", "pink", "purple"]
+                                property string selectedColor: "black"
 
-                                    property string selectedColor: "black"
+                                Rectangle {
+                                    required property string modelData
+
+                                    width: 26 / Style.monitorRatio
+                                    height: 26 / Style.monitorRatio
+                                    radius: width / 2
+                                    color: "transparent"
+                                    border.color: modelData
+                                    border.width: lvColors.selectedColor === modelData ? 1 : 0
 
                                     Rectangle {
-                                        required property string modelData
-
-                                        width: 26 / Style.monitorRatio
-                                        height: 26 / Style.monitorRatio
+                                        anchors.centerIn: parent
+                                        color: parent.modelData
+                                        width: 21 / Style.monitorRatio
+                                        height: 21 / Style.monitorRatio
                                         radius: width / 2
-                                        color: "transparent"
-                                        border.color: modelData
-                                        border.width: lvColors.selectedColor === modelData ? 1 : 0
+                                    }
 
-                                        Rectangle {
-                                            anchors.centerIn: parent
-                                            color: parent.modelData
-                                            width: 21 / Style.monitorRatio
-                                            height: 21 / Style.monitorRatio
-                                            radius: width / 2
-                                        }
+                                    Image {
+                                        visible: lvColors.selectedColor === modelData
+                                        anchors.centerIn: parent
+                                        source: "qrc:/Resources/add-place-color-select.png"
+                                        width: 22 / Style.monitorRatio
+                                        height: 22 / Style.monitorRatio
+                                    }
 
-                                        Image {
-                                            visible: lvColors.selectedColor === modelData
-                                            anchors.centerIn: parent
-                                            source: "qrc:/Resources/add-place-color-select.png"
-                                            width: 22 / Style.monitorRatio
-                                            height: 22 / Style.monitorRatio
-                                        }
+                                    MouseArea {
+                                        anchors.fill: parent
 
-                                        MouseArea {
-                                            anchors.fill: parent
-
-                                            onClicked: {
-                                                console.log("color: " + parent.modelData)
-                                                //                                                console.log(index)
-                                                lvColors.selectedColor = parent.modelData
-                                            }
+                                        onClicked: {
+                                            console.log("color: " + parent.modelData)
+                                            //                                                console.log(index)
+                                            lvColors.selectedColor = parent.modelData
                                         }
                                     }
                                 }
-                            }
-
-                            Rectangle {
-                                Layout.fillWidth: true
-                            }
-
-                            Text {
-                                text: "More colors"
-                                font.pixelSize: Style.regularFontSize
-                                font.family: Style.fontFamily
-                                color: fg50
-                            }
-
-                            Button {
-                                topPadding: 0
-                                rightPadding: 0
-                                bottomPadding: 0
-                                leftPadding: 0
-
-                                background: Rectangle {
-                                    color: "transparent"
-                                }
-
-                                icon.source: "qrc:/Resources/add-place-more-color.png"
-                                icon.width: 22 / Style.monitorRatio
-                                icon.height: 22 / Style.monitorRatio
                             }
                         }
                     }

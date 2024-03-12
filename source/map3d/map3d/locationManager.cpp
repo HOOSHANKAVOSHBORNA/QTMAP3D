@@ -11,7 +11,7 @@
 LocationManager::LocationManager(MapItem *mapItem, QObject *parent)
     : QObject(parent)
 {
-    mLocationProxyModel = new LocationProxyModel(this);
+    mLocationProxyModel = new LocationProxyModel(mapItem, this);
     mLocationModel = new LocationModel(mapItem, mLocationProxyModel);
 
     // ------------------------------------------------- loading models from file
@@ -22,7 +22,6 @@ LocationManager::LocationManager(MapItem *mapItem, QObject *parent)
         qInfo() << "info - fail: "
                 << "some error in reading location file";
     }
-
 
     mLocationProxyModel->setSourceModel(mLocationModel);
 }
@@ -63,10 +62,10 @@ void LocationManager::loadModelFromFile()
 }
 
 // ------------------------------------------------------- proxy model methods
-LocationProxyModel::LocationProxyModel(QObject *parent):
-    QSortFilterProxyModel(parent)
+LocationProxyModel::LocationProxyModel(MapItem *mapItem, QObject *parent)
+    : QSortFilterProxyModel(parent)
 {
-
+    mMapItem = mapItem;
 }
 
 LocationProxyModel::~LocationProxyModel()
@@ -171,6 +170,44 @@ void LocationProxyModel::setSearchedName(const QString &newSearchedName)
     emit searchedNameChanged();
 
     invalidateFilter();
+}
+
+QVector3D LocationProxyModel::viewPoint() const
+{
+    return mViewPoint;
+}
+
+void LocationProxyModel::setViewPoint(const QVector3D &newViewPoint)
+{
+    if (mViewPoint == newViewPoint)
+        return;
+
+    mViewPoint = newViewPoint;
+    emit viewPointChanged();
+}
+
+void LocationProxyModel::updateCurrentViewPoint()
+{
+    osgEarth::Viewpoint vp = mMapItem->getCameraController()->getViewpoint();
+    setViewPoint(
+        {(float) vp.focalPoint()->x(), (float) vp.focalPoint()->y(), (float) vp.focalPoint()->z()});
+}
+
+void LocationProxyModel::addPlaceWindowOpened()
+{
+    qDebug() << "ay-debug ------ "
+             << "opened";
+    connect(mMapItem->getCameraController(),
+            &CameraController::viewPointChanged,
+            this,
+            &LocationProxyModel::updateCurrentViewPoint);
+}
+
+void LocationProxyModel::addPlaceWindowClosed()
+{
+    qDebug() << "ay-debug ------ "
+             << "closed";
+    disconnect(mMapItem->getCameraController(), nullptr, this, nullptr);
 }
 
 // ------------------------------------------------------------ model

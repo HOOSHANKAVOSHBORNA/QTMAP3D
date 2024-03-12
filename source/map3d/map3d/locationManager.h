@@ -55,9 +55,10 @@ class LocationProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_PROPERTY(QString searchedName READ searchedName WRITE setSearchedName NOTIFY searchedNameChanged FINAL)
+    Q_PROPERTY(QVector3D viewPoint READ viewPoint WRITE setViewPoint NOTIFY viewPointChanged FINAL)
 
 public:
-    explicit LocationProxyModel(QObject *parent = nullptr);
+    explicit LocationProxyModel(MapItem *mapItem, QObject *parent = nullptr);
     ~LocationProxyModel();
 
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
@@ -74,11 +75,21 @@ public:
     QString searchedName() const;
     void setSearchedName(const QString &newSearchedName);
 
+    QVector3D viewPoint() const;
+    void setViewPoint(const QVector3D &newViewPoint);
+    void updateCurrentViewPoint();
+
+    Q_INVOKABLE void addPlaceWindowClosed();
+    Q_INVOKABLE void addPlaceWindowOpened();
+
 signals:
     void searchedNameChanged();
+    void viewPointChanged();
 
 private:
+    MapItem *mMapItem;
     QString mSearchedWord;
+    QVector3D mViewPoint;
 };
 
 // ------------------------------------------------------------ model
