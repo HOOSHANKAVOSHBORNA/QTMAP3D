@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import "style"
+import "Components"
 
 Rectangle {
     id: rLocationManager
@@ -209,28 +210,14 @@ Rectangle {
                 }
             }
 
-            Button {
+            CustomButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 20
-
                 padding: 0
 
-                background: Rectangle {
-                    color: 'transparent'
-                }
-
-                contentItem: Rectangle {
-                    anchors.fill: parent
-                    color: fg80
-                    radius: 25
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: 'Go To Location...'
-                        color: Style.backgroundColor
-                    }
-                }
-
+                buttonColor: Style.foregroundColor
+                buttonText: "Go To Location"
+                buttonTextColor: Style.backgroundColor
                 onClicked: {
                     listModel.goToLocation(parseFloat(tiLat.text),
                                            parseFloat(tiLang.text),
@@ -245,38 +232,19 @@ Rectangle {
                 radius: 1
             }
 
-            Rectangle {
+            CustomButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30 / Style.monitorRatio
-                radius: height / 2
-                color: fg80
+                buttonColor: Style.foregroundColor
+                buttonText: "Add place"
+                buttonTextColor: Style.backgroundColor
+                iconImageColor: Style.backgroundColor
+                iconImageVisible: true
+                iconImageSource: "qrc:/Resources/location-add.png"
 
-                RowLayout {
-                    anchors.centerIn: parent
-                    spacing: 4 / Style.monitorRatio
-
-                    IconImage {
-                        Layout.preferredWidth: 22 / Style.monitorRatio
-                        Layout.preferredHeight: 22 / Style.monitorRatio
-                        source: "qrc:/Resources/location-add.png"
-                        color: Style.backgroundColor
-                    }
-
-                    Text {
-                        text: "Add place"
-                        font.family: Style.fontFamily
-                        font.pixelSize: Style.regularFontSize
-                        color: Style.backgroundColor
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        rPopup.editIndex = -1
-                        rPopup.myOpen()
-                    }
+                onClicked: {
+                    rPopup.editIndex = -1
+                    rPopup.myOpen()
                 }
             }
 
