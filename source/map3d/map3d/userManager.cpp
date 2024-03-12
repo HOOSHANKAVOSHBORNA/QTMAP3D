@@ -73,7 +73,7 @@ void UserManager::signIn(const QString username, const QString password)
     //   setUserName(username);
     //   emit selectRole();
     //   emit signedIn();
-    //    emit signInFailed();
+     //   emit signInFailed();
 
     //--test------
         QVector<QString> testvec;
@@ -89,6 +89,15 @@ void UserManager::signIn(int selectRoleIndex)
     mUserData.command = UserData::UserCommand::SelectRole;
     mServiceManager->sendUser(mUserData);
 
+}
+
+void UserManager::logOut()
+{
+    UserData userData;
+    userData.command = UserData::UserCommand::Logout;
+    userData.userName = mUserData.userName;
+    mServiceManager->sendUser(userData);
+    qDebug() << "sent logout message";
 }
 
 UserData UserManager::userData() const

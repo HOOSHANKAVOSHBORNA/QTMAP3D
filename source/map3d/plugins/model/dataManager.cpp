@@ -25,7 +25,7 @@ QMap<int, osg::ref_ptr<SimpleModelNode> > *DataManager::getNodeMap()
 
 SimpleModelNode* DataManager::onNodeDataReceived(const NodeData &nodeData)
 {
-    // qDebug()<<"color DataManager: "<<nodeData.color;
+
     SimpleModelNode* node{nullptr};
     if (nodeData.command == Command::Remove){
         removeNode(nodeData);
@@ -44,18 +44,18 @@ SimpleModelNode *DataManager::addUpdateNode(const NodeData &nodeData)
 
     if (!mNodeMap.contains(nodeData.id)) {
         // TODO: setup filter needed data mUniqueColorss
-        NodeData movedNode(nodeData);
+//        NodeData movedNode(nodeData);
 
         // adding new uniuqe category name
         for (int i = 0; i < nodeData.fieldData.size(); ++i) {
             QString category = nodeData.fieldData.at(i).category;
             bool found = false;
             if (!mUniqueTabNames.contains(category)) {
-                emit tabNameAppendingStart(QModelIndex(),
-                                           mUniqueTabNames.size(),
-                                           mUniqueTabNames.size());
+//                emit tabNameAppendingStart(QModelIndex(),
+//                                           mUniqueTabNames.size(),
+//                                           mUniqueTabNames.size());
                 mUniqueTabNames.append(category);
-                emit tabNameAppendingEnd();
+//                emit tabNameAppendingEnd();
             }
         }
 
@@ -152,24 +152,14 @@ void DataManager::removeNode(const NodeData &nodeData)
     }
 }
 
-FilterManager *DataManager::filterManager() const
-{
-    return mFilterManager;
-}
-
-void DataManager::setFilterManager(FilterManager *newFilterManager)
-{
-    mFilterManager = newFilterManager;
-}
-
 MapItem *DataManager::mapItem() const
 {
     return mMapItem;
 }
 
-void DataManager::setMapItem(MapItem *newMapItem)
+FilterManager *DataManager::filterManager() const
 {
-    mMapItem = newMapItem;
+    return mFilterManager;
 }
 
 QVector<QString> DataManager::essentialColumnNames() const
@@ -177,40 +167,40 @@ QVector<QString> DataManager::essentialColumnNames() const
     return mEssentialColumnNames;
 }
 
-void DataManager::setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames)
-{
-    mEssentialColumnNames = newEssentialColumnNames;
-}
+//void DataManager::setEssentialColumnNames(const QVector<QString> &newEssentialColumnNames)
+//{
+//    mEssentialColumnNames = newEssentialColumnNames;
+//}
 
 QVector<QString> DataManager::categoryTagNames() const
 {
     return mCategoryTagNames;
 }
 
-void DataManager::setCategoryTagNames(const QVector<QString> &newCategoryTagNames)
-{
-    mCategoryTagNames = newCategoryTagNames;
-}
+//void DataManager::setCategoryTagNames(const QVector<QString> &newCategoryTagNames)
+//{
+//    mCategoryTagNames = newCategoryTagNames;
+//}
 
 QVector<QString> DataManager::fixedColumnNames() const
 {
     return mFixedColumnNames;
 }
 
-void DataManager::setFixedColumnNames(const QVector<QString> &newFixedColumnNames)
-{
-    mFixedColumnNames = newFixedColumnNames;
-}
+//void DataManager::setFixedColumnNames(const QVector<QString> &newFixedColumnNames)
+//{
+//    mFixedColumnNames = newFixedColumnNames;
+//}
 
 QMap<QString, QString> DataManager::columnToCategory() const
 {
     return mColumnToCategory;
 }
 
-void DataManager::setColumnToCategory(const QMap<QString, QString> &newColumnToCategory)
-{
-    mColumnToCategory = newColumnToCategory;
-}
+//void DataManager::setColumnToCategory(const QMap<QString, QString> &newColumnToCategory)
+//{
+//    mColumnToCategory = newColumnToCategory;
+//}
 
 int DataManager::getNodeIndexById(int id)
 {
@@ -233,20 +223,20 @@ QVector<QString> *DataManager::getUniqueCategoryNames()
     return &mUniqueTabNames;
 }
 
-void DataManager::setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames)
-{
-    mUniqueTabNames = newUniqueCategoryNames;
-}
+//void DataManager::setUniqueCategoryNames(const QVector<QString> &newUniqueCategoryNames)
+//{
+//    mUniqueTabNames = newUniqueCategoryNames;
+//}
 
 QVector<QString> DataManager::uniqueAddedColumnNames() const
 {
     return mUniqueAddedColumnNames;
 }
 
-void DataManager::setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames)
-{
-    mUniqueAddedColumnNames = newUniqueColumnNames;
-}
+//void DataManager::setUniqueAddedColumnNames(const QVector<QString> &newUniqueColumnNames)
+//{
+//    mUniqueAddedColumnNames = newUniqueColumnNames;
+//}
 
 int DataManager::nodeCount()
 {

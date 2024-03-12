@@ -13,6 +13,7 @@ Item {
     //--properties--------------------------------------
     property var mainPageCpp: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp : undefined
     property bool listWindowVisible: false
+    property bool connectionConfigVisible: false
 
     property real widgetsPositionFactor: 1.0
     property bool widgetsVisible: true
@@ -49,12 +50,14 @@ Item {
                 sideContainer.settingItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.settingsItem :  undefined
 
                 listWindowVisible: mainItem.listWindowVisible
-
                 onListWindowVisibleChanged: mainItem.listWindowVisible = listWindowVisible
 
+                onConnectionConfigCheckedChanged: mainItem.connectionConfigVisible
+                                                  = connectionConfigChecked
+
                 //                pin: true
-                onPinChanged: {
-                    if (pin) {
+                onPinCheckedChanged: {
+                    if (pinChecked) {
                         parent = pinContainer
                         pinContainer.visible = true
                         unPinContainer.visible = false
@@ -80,8 +83,7 @@ Item {
             }
 
             MapControllerItem {
-                mapItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.getMapItem(
-                                                    ) : undefined
+                mapItem: mapControllerCpp
                 SplitView.fillWidth: true
                 SplitView.fillHeight: true
             }
@@ -95,6 +97,26 @@ Item {
 
         onClosing: {
             listWindowVisible = false
+        }
+    }
+
+    Window {
+        id: connectionConfigWindow
+
+        width: 440 / Style.monitorRatio
+        height: 745 / Style.monitorRatio
+
+        visible: mainItem.connectionConfigVisible
+
+        ConnectionConfiguration {
+            id: settingsItem
+            anchors.fill: parent
+            closeBtn.visible: false
+            connectionConfigCpp: applicationCpp.connectionConfigCpp
+        }
+
+        onClosing: {
+            sideBar.connectionConfigChecked = false
         }
     }
 }

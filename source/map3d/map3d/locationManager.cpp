@@ -8,10 +8,11 @@
 #include "locationManager.h"
 
 // ----------------------------------------------------- model manager
-LocationManager::LocationManager(MapItem *mapItem, UserManager *userManager, QObject *parent)
+LocationManager::LocationManager(MapItem *mapItem, QObject *parent)
     : QObject(parent)
 {
-    mLocationModel = new LocationModel(mapItem, userManager);
+    mLocationProxyModel = new LocationProxyModel(mapItem, this);
+    mLocationModel = new LocationModel(mapItem, mLocationProxyModel);
 
     // ------------------------------------------------- loading models from file
     if (mLocationModel->readFromFile()) {
@@ -22,12 +23,12 @@ LocationManager::LocationManager(MapItem *mapItem, UserManager *userManager, QOb
                 << "some error in reading location file";
     }
 
-    mLocationProxyModel = new LocationProxyModel;
     mLocationProxyModel->setSourceModel(mLocationModel);
 }
 
 LocationManager::~LocationManager()
 {
+    qDebug()<<"~LocationManager";
 }
 
 void LocationManager::myRemoveRow(int index)
@@ -61,9 +62,15 @@ void LocationManager::loadModelFromFile()
 }
 
 // ------------------------------------------------------- proxy model methods
-LocationProxyModel::LocationProxyModel()
+LocationProxyModel::LocationProxyModel(MapItem *mapItem, QObject *parent)
+    : QSortFilterProxyModel(parent)
 {
+    mMapItem = mapItem;
+}
 
+LocationProxyModel::~LocationProxyModel()
+{
+    qDebug()<<"~LocationProxyModel";
 }
 
 bool LocationProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -165,12 +172,49 @@ void LocationProxyModel::setSearchedName(const QString &newSearchedName)
     invalidateFilter();
 }
 
+QVector3D LocationProxyModel::viewPoint() const
+{
+    return mViewPoint;
+}
+
+void LocationProxyModel::setViewPoint(const QVector3D &newViewPoint)
+{
+    if (mViewPoint == newViewPoint)
+        return;
+
+    mViewPoint = newViewPoint;
+    emit viewPointChanged();
+}
+
+void LocationProxyModel::updateCurrentViewPoint()
+{
+    osgEarth::Viewpoint vp = mMapItem->getCameraController()->getViewpoint();
+    setViewPoint(
+        {(float) vp.focalPoint()->x(), (float) vp.focalPoint()->y(), (float) vp.focalPoint()->z()});
+}
+
+void LocationProxyModel::addPlaceWindowOpened()
+{
+    qDebug() << "ay-debug ------ "
+             << "opened";
+    connect(mMapItem->getCameraController(),
+            &CameraController::viewPointChanged,
+            this,
+            &LocationProxyModel::updateCurrentViewPoint);
+}
+
+void LocationProxyModel::addPlaceWindowClosed()
+{
+    qDebug() << "ay-debug ------ "
+             << "closed";
+    disconnect(mMapItem->getCameraController(), nullptr, this, nullptr);
+}
+
 // ------------------------------------------------------------ model
-LocationModel::LocationModel(MapItem *mapItem, UserManager *userManager, QObject *parent)
+LocationModel::LocationModel(MapItem *mapItem, QObject *parent)
     : QAbstractListModel(parent)
 {
     mMapItem = mapItem;
-    mUserManager = userManager;
 
     // TEST
     //    osgEarth::GeoPoint gp{mapItem->getMapSRS(), -165, 90, 0};
@@ -186,8 +230,8 @@ LocationModel::LocationModel(MapItem *mapItem, UserManager *userManager, QObject
 
 LocationModel::~LocationModel()
 {
-    for (auto & it: mLocations)
-        delete it;
+    writeToFile();
+    qDebug()<<"~LocationModel";
 }
 
 int LocationModel::rowCount(const QModelIndex &parent) const
@@ -197,29 +241,29 @@ int LocationModel::rowCount(const QModelIndex &parent) const
 
 QVariant LocationModel::data(const QModelIndex &index, int role) const
 {
-    const LocationItem *ld = mLocations.at(index.row());
+    const LocationItem& ld = mLocations.at(index.row());
 
     switch (role) {
     case NameRole:
-        return QVariant(QString::fromStdString(ld->viewpoint->name().get()));
+        return QVariant(QString::fromStdString(ld.viewpoint.name().get()));
     case LonRole:
-        return QVariant(ld->viewpoint->focalPoint().get().x());
+        return QVariant(ld.viewpoint.focalPoint().get().x());
     case LatRole:
-        return QVariant(ld->viewpoint->focalPoint().get().y());
+        return QVariant(ld.viewpoint.focalPoint().get().y());
     case ZRole:
-        return QVariant(ld->viewpoint->focalPoint().get().z());
+        return QVariant(ld.viewpoint.focalPoint().get().z());
     case HeadingRole:
-        return QVariant(ld->viewpoint->heading()->as(osgEarth::Units::DEGREES));
+        return QVariant(ld.viewpoint.heading()->as(osgEarth::Units::DEGREES));
     case PitchRole:
-        return QVariant(ld->viewpoint->pitch()->as(osgEarth::Units::DEGREES));
+        return QVariant(ld.viewpoint.pitch()->as(osgEarth::Units::DEGREES));
     case RangeRole:
-        return QVariant(ld->viewpoint->range()->as(osgEarth::Units::METERS));
+        return QVariant(ld.viewpoint.range()->as(osgEarth::Units::METERS));
     case DescriptionRole:
-        return QVariant(ld->description);
+        return QVariant(ld.description);
     case ImageSourceRole:
-        return QVariant(ld->imageSource);
+        return QVariant(ld.imageSource);
     case ColorRole:
-        return QVariant(ld->color);
+        return QVariant(ld.color);
     default:
         break;
     }
@@ -236,7 +280,7 @@ void LocationModel::myRemoveRow(QModelIndex index)
 
 void LocationModel::goToLocation(QModelIndex index)
 {
-    mMapItem->getCameraController()->setViewpoint(*(mLocations.at(index.row())->viewpoint), 1);
+    mMapItem->getCameraController()->setViewpoint((mLocations.at(index.row()).viewpoint), 1);
 }
 
 // DEBUG
@@ -265,13 +309,13 @@ void LocationModel::myAppendRow(QString newName,
                           currentVp.focalPoint()->y(),
                           currentVp.focalPoint()->z()};
 
-    osgEarth::Viewpoint *vp = new osgEarth::Viewpoint;
-    vp->name() = newName.toStdString();
-    vp->setHeading(currentVp.getHeading());
-    vp->setPitch(currentVp.getPitch());
-    vp->setRange(currentVp.getRange());
-    vp->focalPoint() = gp;
-    mLocations.append(new LocationItem{vp, newDescription, newImageSource, newColor});
+    osgEarth::Viewpoint vp;
+    vp.name() = newName.toStdString();
+    vp.setHeading(currentVp.getHeading());
+    vp.setPitch(currentVp.getPitch());
+    vp.setRange(currentVp.getRange());
+    vp.focalPoint() = gp;
+    mLocations.append(LocationItem{vp, newDescription, newImageSource, newColor});
 
     endInsertRows();
 }
@@ -283,30 +327,30 @@ void LocationModel::myEditRow(QModelIndex index,
                               QString newColor)
 {
     osgEarth::Viewpoint vp = mapItem()->getCameraController()->getViewpoint();
-    LocationItem *li = mLocations[index.row()];
-    li->viewpoint->name() = newName.toStdString();
-    li->viewpoint->focalPoint()->x() = vp.focalPoint()->x();
-    li->viewpoint->focalPoint()->y() = vp.focalPoint()->y();
-    li->viewpoint->focalPoint()->z() = vp.focalPoint()->z();
-    li->viewpoint->setHeading(vp.getHeading());
-    li->viewpoint->setPitch(vp.getPitch());
-    li->viewpoint->setRange(vp.getRange());
-    li->description = newDescription;
-    li->imageSource = newImageSource;
-    li->color = newColor;
+    LocationItem& li = mLocations[index.row()];
+    li.viewpoint.name() = newName.toStdString();
+    li.viewpoint.focalPoint()->x() = vp.focalPoint()->x();
+    li.viewpoint.focalPoint()->y() = vp.focalPoint()->y();
+    li.viewpoint.focalPoint()->z() = vp.focalPoint()->z();
+    li.viewpoint.setHeading(vp.getHeading());
+    li.viewpoint.setPitch(vp.getPitch());
+    li.viewpoint.setRange(vp.getRange());
+    li.description = newDescription;
+    li.imageSource = newImageSource;
+    li.color = newColor;
 
     emit dataChanged(this->index(index.row(), 0), this->index(index.row(), 0));
 }
 
-QVector<LocationItem *> LocationModel::locations() const
-{
-    return mLocations;
-}
+//QVector<LocationItem *> LocationModel::locations() const
+//{
+//    return mLocations;
+//}
 
-void LocationModel::setLocations(const QVector<LocationItem *> &newLocations)
-{
-    mLocations = newLocations;
-}
+//void LocationModel::setLocations(const QVector<LocationItem *> &newLocations)
+//{
+//    mLocations = newLocations;
+//}
 
 MapItem *LocationModel::mapItem() const
 {
@@ -336,8 +380,10 @@ bool LocationModel::appendLocationsFromJson(const QJsonObject &json)
     if (const QJsonValue v = json["locations"]; v.isArray()) {
         QJsonArray locationsArray = v.toArray();
         for (const QJsonValue &location : locationsArray) {
-            QJsonDocument doc(location.toObject());
-            mLocations.append(LocationItem::fromJson(location.toObject()));
+//            QJsonDocument doc(location.toObject());
+            LocationItem locationItem;
+            locationItem.fromJson(location.toObject());
+            mLocations.append(locationItem);
         }
     }
 
@@ -349,8 +395,8 @@ QJsonObject LocationModel::toJson()
     QJsonObject json;
 
     QJsonArray locationsArray;
-    for (LocationItem *li : mLocations)
-        locationsArray.append(li->toJson());
+    for (LocationItem& li : mLocations)
+        locationsArray.append(li.toJson());
     json["locations"] = locationsArray;
 
     return json;
@@ -363,8 +409,8 @@ bool LocationModel::readFromFile()
         dir.mkpath(appDir + "/" + savedDir);
     }
 
-    savedFileName = mUserManager->userName();
-    if (mUserManager->userName() == "") {
+    savedFileName = UserManager::instance()->userName();
+    if (UserManager::instance()->userName() == "") {
         savedFileName = "NoUser";
     }
 
@@ -389,8 +435,8 @@ bool LocationModel::writeToFile()
         dir.mkpath(savedDir);
     }
 
-    savedFileName = mUserManager->userName();
-    if (mUserManager->userName() == "") {
+    savedFileName = UserManager::instance()->userName();
+    if (UserManager::instance()->userName() == "") {
         savedFileName = "NoUser";
     }
 
@@ -411,21 +457,18 @@ bool LocationModel::writeToFile()
 // ---------------------------------------------------------------------- structs
 LocationItem::~LocationItem()
 {
-    delete viewpoint;
+    qDebug()<<"~LocationItem";
 }
 
-LocationItem *LocationItem::fromJson(const QJsonObject &json)
+void LocationItem::fromJson(const QJsonObject &json)
 {
-    LocationItem *result = new LocationItem;
 
     if (const QJsonValue v = json["viewpoint"]; v.isObject()) {
 
         QJsonObject viewpointJson = v.toObject();
 
-        osgEarth::Viewpoint *viewpoint = new osgEarth::Viewpoint;
-
         if (const QJsonValue v = viewpointJson["name"]; v.isString()) {
-            viewpoint->name() = v.toString().toStdString();
+            viewpoint.name() = v.toString().toStdString();
         }
 
         double lon = 0, lat = 0, z = 0;
@@ -443,36 +486,32 @@ LocationItem *LocationItem::fromJson(const QJsonObject &json)
         }
 
         osgEarth::GeoPoint gp{osgEarth::SpatialReference::get("wgs84"), lon, lat, z};
-        viewpoint->focalPoint() = gp;
+        viewpoint.focalPoint() = gp;
 
         if (const QJsonValue v = viewpointJson["heading"]; v.isDouble()) {
-            viewpoint->setHeading(v.toDouble());
+            viewpoint.setHeading(v.toDouble());
         }
 
         if (const QJsonValue v = viewpointJson["pitch"]; v.isDouble()) {
-            viewpoint->setPitch(v.toDouble());
+            viewpoint.setPitch(v.toDouble());
         }
 
         if (const QJsonValue v = viewpointJson["range"]; v.isDouble()) {
-            viewpoint->setRange(v.toDouble());
+            viewpoint.setRange(v.toDouble());
         }
-
-        result->viewpoint = viewpoint;
     }
 
     if (const QJsonValue v = json["description"]; v.isString()) {
-        result->description = v.toString();
+        description = v.toString();
     }
 
     if (const QJsonValue v = json["imageSource"]; v.isString()) {
-        result->imageSource = v.toString();
+        imageSource = v.toString();
     }
 
     if (const QJsonValue v = json["color"]; v.isString()) {
-        result->color = v.toString();
+        color = v.toString();
     }
-
-    return result;
 }
 
 QJsonObject LocationItem::toJson()
@@ -481,15 +520,15 @@ QJsonObject LocationItem::toJson()
 
     QJsonObject viewpointObject;
 
-    viewpointObject["name"] = QString::fromStdString(this->viewpoint->name().get());
+    viewpointObject["name"] = QString::fromStdString(this->viewpoint.name().get());
 
-    viewpointObject["lon"] = this->viewpoint->focalPoint().get().x();
-    viewpointObject["lat"] = this->viewpoint->focalPoint().get().y();
-    viewpointObject["z"] = this->viewpoint->focalPoint().get().z();
+    viewpointObject["lon"] = this->viewpoint.focalPoint().get().x();
+    viewpointObject["lat"] = this->viewpoint.focalPoint().get().y();
+    viewpointObject["z"] = this->viewpoint.focalPoint().get().z();
 
-    viewpointObject["heading"] = this->viewpoint->heading()->as(osgEarth::Units::DEGREES);
-    viewpointObject["pitch"] = this->viewpoint->pitch()->as(osgEarth::Units::DEGREES);
-    viewpointObject["range"] = this->viewpoint->range()->as(osgEarth::Units::METERS);
+    viewpointObject["heading"] = this->viewpoint.heading()->as(osgEarth::Units::DEGREES);
+    viewpointObject["pitch"] = this->viewpoint.pitch()->as(osgEarth::Units::DEGREES);
+    viewpointObject["range"] = this->viewpoint.range()->as(osgEarth::Units::METERS);
 
     json["viewpoint"] = viewpointObject;
 

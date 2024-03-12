@@ -4,39 +4,16 @@
 #include "filterManager.h"
 #include "mapControllerItem.h"
 #include "qqmlcontext.h"
-// #include "searchNodeModel.h"
 
 MapControllerItem::MapControllerItem(QQuickItem *parent):
     MapItem(parent)
 {
     initializeOsgEarth();
-    mSearchNodeManager = new SearchNodeManager(this, this);
-
-    //    qmlRegisterType<SearchNodeModel>("Crystal", 1, 0, "SearchModel");
-
-    //    qmlRegisterType<TypeListModel>("Crystal", 1, 0, "TypeListModel");
-    //------------
-    // Create an instance of SearchNodeManager
-    //    SearchNodeManager* searchNodeManager = new SearchNodeManager(this);
-
-    // Set the context property to expose to QML
-   // mQmlEngine->rootContext()->setContextProperty("SearchNodeManagerInstance", mSearchNodeManager);
-//    qmlRegisterType<SearchNodeManager>("Crystal", 1, 0, "SearchNodeManager");
 //--------------------
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-    mFilterManager = mSearchNodeManager->getFilterManager();
-    getMapObject()->setFilterManager(mFilterManager);
-    // connect(getMapObject(), &MapObject::nodeToLayerAdded, [this](osg::Node *node, osgEarth::Layer *layer){
-    //     auto data = node->getUserData();
-    //     NodeData *nodeData = dynamic_cast<NodeData*>(data);
-    //     if (nodeData){
-    //         mFilterManager->addFilterField(nodeData);
-    //     }
-    // });
 
-//    mSearchNodeManager = new SearchNodeManager();
-
+    createSearchNodeManager();
     StatusBar *status = new StatusBar(this);
     mStatusBar = new StatusBarSearchModel(this);
     mStatusBar->setSourceModel(status);
@@ -50,12 +27,6 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
     this->setWidth(300);
     this->setHeight(300);
     // --------------------- I don't know why anyway :) ------------------------------------------
-}
-
-MapControllerItem::~MapControllerItem()
-{
-    qDebug() << "mapcontroller Deleted!";
-
 }
 
 void MapControllerItem::setZoomInButtonPressed(bool pressed)
@@ -146,15 +117,33 @@ void MapControllerItem::calculateFps()
     }
 }
 
+void MapControllerItem::createSearchNodeManager()
+{
+    mSearchNodeManager = new SearchNodeManager(this);
+    mFilterManager = mSearchNodeManager->getFilterManager();
+    getMapObject()->setFilterManager(mFilterManager);
+}
+
 FilterManager *MapControllerItem::filterManager() const
 {
     return mFilterManager;
 }
 
-//SearchNodeManager *MapControllerItem::getSearchNodeManager() const
-//{
-//    return SearchNodeManager::createSingletonInstance(nullptr, nullptr);
-//}
+void MapControllerItem::clearMap()
+{
+    getMapObject()->clearLayers();
+    delete mSearchNodeManager;
+    // clear mapnode children
+    if (getMapNode()->getNumChildren() > 3)
+        getMapNode()->removeChild(3, getMapNode()->getNumChildren());
+    qDebug() << "MapControllerItem::clearMap";
+}
+
+void MapControllerItem::initialize()
+{
+    createSearchNodeManager();
+    addBaselayers();
+}
 
 StatusBarSearchModel *MapControllerItem::statusBar() const
 {
@@ -169,38 +158,25 @@ SearchNodeProxyModel *MapControllerItem::searchNodeProxyModel() const
 void MapControllerItem::setQmlEngine(QQmlEngine *newQmlEngine)
 {
     mQmlEngine = newQmlEngine;
-
-    // TEST
-    // QQmlComponent* comp = new QQmlComponent(mQmlEngine);
-
-    // QObject::connect(comp, &QQmlComponent::statusChanged, [&](QQmlComponent::Status status) {
-    //     if(status == QQmlComponent::Error) {
-    //         qDebug() << "Can not load this: " << comp->errorString();
-    //     }
-
-    //     if(status == QQmlComponent::Ready) {
-    //         QQuickItem *item = qobject_cast<QQuickItem*>(comp->create());
-    //         item->setProperty("title", "Test Controller");
-
-    //         setTopMenuItem(item);
-    //     }
-    // });
-
-    // comp->loadUrl(QUrl("qrc:/TestItem.qml"));
-    // END TEST
-
-
-//    mSmallMap = dynamic_cast<SmallMap*>(findChild<QObject*>("SmallMap"));
-//    mSmallMap.
-//    osgEarth::GeoPoint p{mSmallMap->getMapSRS(), getCameraController()->getViewpoint().focalPoint().get()};
-//    mSmallMap->setLocation(p);
-
 }
 
 
 SearchNodeManager *MapControllerItem::searchNodeManager() const
 {
     return mSearchNodeManager;
+}
+
+MapControllerItem::~MapControllerItem()
+{
+    qDebug() << "~MapControllerItem";
+}
+
+MapControllerItem *MapControllerItem::instance()
+{
+    if (mInstance)
+        return mInstance;
+    mInstance = new MapControllerItem();
+    return mInstance;
 }
 
 QVector3D MapControllerItem::mapMouseGeoLocation() const

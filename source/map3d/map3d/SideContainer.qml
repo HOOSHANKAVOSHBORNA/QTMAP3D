@@ -125,6 +125,7 @@ Item {
                 containerItem: ToolboxManagerItem {
                     id: toolbox
                     toolboxCpp: rootItem.toolboxCpp
+                    toolboxModel: rootItem.toolboxCpp ? rootItem.toolboxCpp.toolboxProxyModel() : null
                 }
 
                 onWindowClose: {
@@ -139,6 +140,7 @@ Item {
                 containerItem: LayerManagerItem {
                     id: layers
                     layerCpp: rootItem.layerCpp
+                    layerModel: rootItem.layerCpp ? rootItem.layerCpp.layerModel() : null
                 }
 
                 onWindowClose: {
@@ -152,7 +154,8 @@ Item {
                 windowTitle: sideModel.get(3).name
                 containerItem: BookmarkItem {
                     id: bookmark
-                    bookmarkCpp: rootItem.bookmarkCpp.getBookmarkProxyModel()
+                    bookmarkCpp: rootItem.bookmarkCpp ? rootItem.bookmarkCpp.getBookmarkProxyModel() : null
+                    bookmarkSelectionModel: rootItem.bookmarkCpp ? rootItem.bookmarkCpp.getBookmarkProxyModel().selectioModel() : null
                 }
 
                 onWindowClose: {
@@ -175,38 +178,19 @@ Item {
                 }
             }
 
-            DockWindow {
-                id: connectionDocItem
-                windowTitle: sideModel.get(5).name
-                isWindow: sideModel.get(5).isWindow
-
-                containerItem: ConnectionConfiguration {
-                    id: connectionItem
-                    closeBtn.visible: false
-                    connectionConfigCpp: applicationWindow.connectionConfigCpp
-                    //                    Layout.leftMargin: 50 / Style.monitorRatio
-                    //                    Layout.rightMargin: 50 / Style.monitorRatio
-                }
-
-                onWindowClose: {
-                    sideModel.get(5).isWindow = false
-                    currentItemIndex = 5
-                }
-            }
-
 
             DockWindow {
                 id: settingsDocItem
-                windowTitle: sideModel.get(6).name
-                isWindow: sideModel.get(6).isWindow
+                windowTitle: sideModel.get(5).name
+                isWindow: sideModel.get(5).isWindow
 
                 containerItem: Item{
                     data: rootItem.settingItem
                 }
 
                 onWindowClose: {
-                    sideModel.get(6).isWindow = false
-                    currentItemIndex = 6
+                    sideModel.get(5).isWindow = false
+                    currentItemIndex = 5
                 }
             }
         }

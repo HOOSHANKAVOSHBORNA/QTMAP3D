@@ -11,6 +11,10 @@ Rectangle {
     property alias sideContainer: sideContainer
 
     property alias listWindowVisible: btnList.checked
+    property alias connectionConfigChecked: btnConnection.checked
+    property alias pinChecked: btnPin.checked
+    property alias themeChecked: btnTheme.checked
+
     property int minWidth
 
     readonly property color fg50: Qt.rgba(Style.foregroundColor.r,
@@ -19,8 +23,6 @@ Rectangle {
     readonly property color bg50: Qt.rgba(Style.backgroundColor.r,
                                           Style.backgroundColor.g,
                                           Style.backgroundColor.b, 0.50)
-
-    property bool pin: btnPin.checked
 
     //    property var bookmarkItem: null
 
@@ -177,7 +179,9 @@ Rectangle {
 
                     Button {
                         id: btnList
+
                         padding: 0
+
                         icon {
                             source: "qrc:/Resources/list.png"
                             width: Math.ceil(35 / Style.monitorRatio)
@@ -189,15 +193,9 @@ Rectangle {
                         }
 
                         display: AbstractButton.IconOnly
-                        //onClicked: {
-                        //    print(applicationWindow.connectionConfigCpp.isConnected)
-                        //}
+
                         checkable: true
 
-                        //                        checked: this take value by alias property
-                        //                        onToggled: {
-                        //                            listWindowVisible = !listWindowVisible
-                        //                        }
                         ToolTip {
                             y: 0
                             x: 35
@@ -205,7 +203,7 @@ Rectangle {
                             visible: btnList.hovered
 
                             contentItem: Text {
-                                id: tooltipText2
+                                id: tooltipList
                                 anchors.margins: 7 / Style.monitorRatio
                                 text: 'List'
                                 font.pixelSize: Style.regularFontSize
@@ -215,7 +213,7 @@ Rectangle {
                             background: Rectangle {
                                 visible: btnList.hovered
                                 height: btnList.height
-                                width: tooltipText2.contentWidth + 14
+                                width: tooltipList.contentWidth + 14
                                 radius: 10 / Style.monitorRatio
 
                                 color: "#01AED6"
@@ -224,53 +222,147 @@ Rectangle {
                     }
                 }
 
-                Button {
-                    id: btnPin
+                ColumnLayout {
+                    id: bottomButtons
+
                     anchors.bottom: parent.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.bottomMargin: Math.ceil(100 / Style.monitorRatio)
-                    padding: 0
-                    icon {
-                        source: pin ? "qrc:/Resources/sidebar-unpin.png" : "qrc:/Resources/sidebar-pin.png"
-                        width: Math.ceil(35 / Style.monitorRatio)
-                        height: Math.ceil(35 / Style.monitorRatio)
-                    }
-                    background: Rectangle {
-                        radius: Math.ceil(10 / Style.monitorRatio)
-                        color: btnPin.checked ? fg50 : "transparent"
-                    }
 
-                    display: AbstractButton.IconOnly
-                    checkable: true
-                    checked: false
-                    onToggled: {
+                    spacing: 20 / Style.monitorRatio
 
-                    }
+                    Button {
+                        id: btnConnection
 
-                    ToolTip {
-                        y: 0
-                        x: 35
-                        visible: btnPin.hovered
+                        padding: 0
 
-                        contentItem: Text {
-                            id: tooltipText3
-                            anchors.margins: 7 / Style.monitorRatio
-                            text: pin ? "Pin" : "Unpin"
-                            font.pixelSize: Style.regularFontSize
-                            color: 'white'
+                        icon {
+                            source: applicationCpp.connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                            width: Math.ceil(35 / Style.monitorRatio)
+                            height: Math.ceil(35 / Style.monitorRatio)
                         }
 
                         background: Rectangle {
-                            visible: btnPin.hovered
-                            height: btnPin.height
-                            width: tooltipText3.contentWidth + 14
-                            radius: 10 / Style.monitorRatio
+                            radius: Math.ceil(10 / Style.monitorRatio)
+                            color: connectionConfigChecked ? fg50 : "transparent"
+                        }
 
-                            color: "#01AED6"
+                        display: AbstractButton.IconOnly
+                        checkable: true
+                        checked: false
+
+                        ToolTip {
+                            y: 0
+                            x: 35
+                            visible: btnConnection.hovered
+
+                            contentItem: Text {
+                                id: tooltipConnection
+                                anchors.margins: 7 / Style.monitorRatio
+                                text: applicationCpp.connectionConfigCpp.isConnected ? "Connected" : "Not Connected"
+                                font.pixelSize: Style.regularFontSize
+                                color: 'white'
+                            }
+
+                            background: Rectangle {
+                                visible: btnConnection.hovered
+                                height: btnConnection.height
+                                width: tooltipConnection.contentWidth + 14
+                                radius: 10 / Style.monitorRatio
+
+                                color: "#01AED6"
+                            }
+                        }
+                    }
+
+                    Button {
+                        id: btnPin
+
+                        padding: 0
+
+                        icon {
+                            source: pinChecked ? "qrc:/Resources/sidebar-unpin.png" : "qrc:/Resources/sidebar-pin.png"
+                            width: Math.ceil(35 / Style.monitorRatio)
+                            height: Math.ceil(35 / Style.monitorRatio)
+                        }
+                        background: Rectangle {
+                            radius: Math.ceil(10 / Style.monitorRatio)
+                            color: btnPin.checked ? fg50 : "transparent"
+                        }
+
+                        display: AbstractButton.IconOnly
+                        checkable: true
+                        checked: false
+
+                        ToolTip {
+                            y: 0
+                            x: 35
+                            visible: btnPin.hovered
+
+                            contentItem: Text {
+                                id: tooltipPin
+                                anchors.margins: 7 / Style.monitorRatio
+                                text: pinChecked ? "Pin" : "Unpin"
+                                font.pixelSize: Style.regularFontSize
+                                color: 'white'
+                            }
+
+                            background: Rectangle {
+                                visible: btnPin.hovered
+                                height: btnPin.height
+                                width: tooltipPin.contentWidth + 14
+                                radius: 10 / Style.monitorRatio
+
+                                color: "#01AED6"
+                            }
+                        }
+                    }
+
+                    Button {
+                        id: btnTheme
+
+                        padding: 0
+
+                        icon {
+                            source: themeChecked ? "qrc:/Resources/hand.png" : "qrc:/Resources/eye.png"
+                            width: Math.ceil(35 / Style.monitorRatio)
+                            height: Math.ceil(35 / Style.monitorRatio)
+                        }
+                        background: Rectangle {
+                            radius: Math.ceil(10 / Style.monitorRatio)
+                            color: themeChecked ? fg50 : "transparent"
+                        }
+
+                        display: AbstractButton.IconOnly
+                        checkable: true
+                        checked: false
+
+                        ToolTip {
+                            y: 0
+                            x: 35
+                            visible: btnTheme.hovered
+
+                            contentItem: Text {
+                                id: tooltipTheme
+                                anchors.margins: 7 / Style.monitorRatio
+                                text: themeChecked ? "Dark" : "Light"
+                                font.pixelSize: Style.regularFontSize
+                                color: 'white'
+                            }
+
+                            background: Rectangle {
+                                visible: btnTheme.hovered
+                                height: btnTheme.height
+                                width: tooltipTheme.contentWidth + 14
+                                radius: 10 / Style.monitorRatio
+
+                                color: "#01AED6"
+                            }
                         }
                     }
                 }
             }
+
             MultiEffect {
                 source: toolBar
                 enabled: true
@@ -344,13 +436,6 @@ Rectangle {
             isWindow: false
         }
 
-        ListElement {
-            //            iconSource: connectionConfigCpp.isConnected ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
-            name: "Connection Configuration"
-            iconSource: "qrc:/Resources/plugged.png"
-            checked: false
-            isWindow: false
-        }
 
         ListElement {
             name: "Settings"

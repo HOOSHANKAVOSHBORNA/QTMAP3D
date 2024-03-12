@@ -9,7 +9,7 @@ Item {
     id: rootItem
 
     property var layerCpp
-    property var layerModel: layerCpp.layerModel()
+    property var layerModel
 
     readonly property color backgroundColor: Qt.rgba(Style.foregroundColor.r,
                                                      Style.foregroundColor.g,
@@ -501,7 +501,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
-                        cppInterface: rootItem.layerCpp.propertyInterface
+                        cppInterface: rootItem.layerCpp ? rootItem.layerCpp.propertyInterface : null
                     }
                 }
             }

@@ -101,6 +101,9 @@ bool EventHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdap
 PluginManager::PluginManager(QObject *parent) : QObject(parent)
 {
     mPluginLoader = new QPluginLoader(this);
+    mPluginsDir = QCoreApplication::applicationDirPath();
+    mPluginsDir.cd("../plugins/bin");
+    mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
 }
 
 PluginManager::~PluginManager()
@@ -109,15 +112,13 @@ PluginManager::~PluginManager()
     unLoadPlugins();
     for (auto &i : mPluginsMap)
         delete i;
+    mPluginsMap.clear();
+    Application::instance()->mainWindow()->getMapItem()->getViewer()->removeEventHandler(mEventHandler);
     delete mPluginLoader;
 }
 
 void PluginManager::loadPlugins()
 {
-    mPluginsDir = QCoreApplication::applicationDirPath();
-    mPluginsDir.cd("../plugins/bin");
-    mPluginFileNameList = mPluginsDir.entryList(QDir::Files);
-    emit plugunCount(mPluginFileNameList.size());
     mPluginTimer = new QTimer(this);
     connect(mPluginTimer, &QTimer::timeout, this, [&](){
         parsePlugin(mPluginFileNameList[mIndex], mPluginsDir);
@@ -139,13 +140,19 @@ void PluginManager::unLoadPlugins()
     }
 }
 
+QStringList PluginManager::pluginFileNameList() const
+{
+    return mPluginFileNameList;
+}
+
 void PluginManager::setup()
 {
     PluginInterface::setQmlEngine(Application::instance()->qmlEngine());
     auto mainWindow = Application::instance()->mainWindow();
     PluginInterface::setMainWindow(mainWindow);
     auto mapItem = mainWindow->getMapItem();
-    mapItem->getViewer()->addEventHandler(new EventHandler(this));
+    mEventHandler = new EventHandler(this);
+    mapItem->getViewer()->addEventHandler(mEventHandler);
     //----------------------------------
     PluginInterface::setPluginsMap(mPluginsMap);
     //--------------------------------

@@ -4,7 +4,7 @@ import QtQuick.Layouts
 import "style"
 
 Rectangle {
-    // property var loadingPageCpp: undefined
+    property var loadingPageCpp: applicationCpp.loadingPageCpp
     color: "transparent"
     Rectangle {
         width: parent.width / 2
@@ -26,94 +26,15 @@ Rectangle {
         }
 
         ColumnLayout {
-            anchors.fill: parent
-            anchors.topMargin: 30
-            anchors.bottomMargin: 30
-            spacing: 50
-
+            anchors.left: parent.left
+            anchors.right: parent.right
+            spacing: 0
             Image {
                 source: "qrc:/Resources/Qarch.png"
-                Layout.preferredWidth: 100 / Style.monitorRatio
-                Layout.preferredHeight: 100 / Style.monitorRatio
+                Layout.preferredWidth: 150 / Style.monitorRatio
+                Layout.preferredHeight: 150 / Style.monitorRatio
                 Layout.alignment: Qt.AlignHCenter
-            }
-
-            Rectangle {
-                id: loadingContainer
-                Layout.fillWidth: true
-                Layout.preferredHeight: 200 / Style.monitorRatio
-                color: "transparent"
-                clip: true
-                ListView {
-                    id: listView
-                    model: applicationCpp.loadingPageCpp ? applicationCpp.loadingPageCpp : 0
-                    anchors.fill: parent
-                    verticalLayoutDirection: ListView.BottomToTop
-                    onCountChanged: {
-                        progressBar.value = loadingPageCpp.rowCount(
-                                    ) / loadingPageCpp.pluginCounter
-                    }
-
-                    delegate: Text {
-                        id: loadingText
-
-                        font.pixelSize: Style.smallFontSize
-                        color: errorStatus ? "white" : "red"
-
-                        text: display
-                        horizontalAlignment: Text.AlignHCenter
-                        width: listView.width
-                    }
-
-                    //                    populate: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 10000
-                    //                        }
-                    //                    }
-
-                    //                    add: Transition {
-                    //                        NumberAnimation {
-                    //                            property: "opacity"
-                    //                            from: 0
-                    //                            to: 1.0
-                    //                            duration: 200
-                    //                        }
-                    //                        NumberAnimation {
-                    //                            property: "scale"
-                    //                            from: 0
-                    //                            to: 1.0
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-
-                    //                    move: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-
-                    //                    remove: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-
-                    //                    removeDisplaced: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-                    //                    displaced: Transition {
-                    //                        NumberAnimation {
-                    //                            properties: "x,y"
-                    //                            duration: 200
-                    //                        }
-                    //                    }
-                }
+                Layout.topMargin: 344 / Style.monitorRatio
             }
 
             ProgressBar {
@@ -121,21 +42,39 @@ Rectangle {
                 value: 0
                 padding: 2
                 Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 30 / Style.monitorRatio
                 background: Rectangle {
                     implicitWidth: 200
-                    implicitHeight: 6
-                    color: "#e6e6e6"
-                    radius: 3
+                    implicitHeight: 8
+                    color: "#D9D9D9"
+                    radius: 5 / Style.monitorRatio
                 }
                 contentItem: Item {
-                    implicitWidth: 200
-                    implicitHeight: 4
+                    implicitWidth: 200 / Style.monitorRatio
+                    implicitHeight: 8 / Style.monitorRatio
 
                     Rectangle {
                         width: progressBar.visualPosition * parent.width
                         height: parent.height
-                        radius: 2
-                        color: "#17a81a"
+                        radius: 5 / Style.monitorRatio
+                        color: "#01AED6"
+                    }
+                }
+            }
+
+            Text {
+                id: loadingText
+                font.pixelSize: Style.regularFontSize
+                Layout.alignment: Qt.AlignHCenter
+                Layout.topMargin: 30 / Style.monitorRatio
+                Connections {
+                    target: loadingPageCpp
+                    function onItemAdded() {
+                        loadingText.text = loadingPageCpp.firstItem()
+                        loadingText.color
+                                = loadingPageCpp ? (loadingPageCpp.firstItemErrorStatus(
+                                                        ) ? "red" : "white") : "transparent"
+                        progressBar.value = loadingPageCpp ? loadingPageCpp.pluginFraction : 0
                     }
                 }
             }

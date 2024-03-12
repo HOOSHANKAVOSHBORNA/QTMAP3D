@@ -6,7 +6,7 @@
 CameraController::CameraController(MapItem *mapItem)
     :mMapItem(mapItem)
 {
-
+    mCurrentVP = getViewpoint();
 }
 CameraController::~CameraController() {
     qDebug() << "~CameraController";
@@ -103,6 +103,16 @@ bool CameraController::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
     if(ea.getEventType() == osgGA::GUIEventAdapter::PUSH){
         eventHandled = ea.getHandled();
 //        qDebug()<<"push";
+    }
+    if(ea.getEventType() == osgGA::GUIEventAdapter::FRAME){
+        auto vp = getViewpoint();
+        if(mCurrentVP.focalPoint().value() != vp.focalPoint().value() ||
+            mCurrentVP.range().value() != vp.range().value())
+        {
+//            qDebug()<<"view point changed";
+            emit viewPointChanged();
+            mCurrentVP = getViewpoint();
+        }
     }
 //    if(ea.getEventType() == osgGA::GUIEventAdapter::DRAG){
 //        qDebug()<<"drag";
