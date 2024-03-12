@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import "style"
+import "Components"
 
 Window {
     id: window
@@ -101,33 +102,12 @@ Window {
                     anchors.fill: parent
                     spacing: 0
 
-                    Button {
+                    CustomButton {
                         Layout.fillWidth: true
-                        text: "Track"
-                        contentItem: Row {
-                            leftPadding: 40 / Style.monitorRatio
-                            IconImage {
-                                anchors.verticalCenter: parent.verticalCenter
-                                source: "qrc:/Resources/track-icon.png"
-                                width: 28 / Style.monitorRatio
-                                height: 28 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "Track"
-                                color: Style.foregroundColor
-                                font.pixelSize: Style.regularFontSize
-                                Layout.fillWidth: true
-                                Layout.leftMargin: 2 / Style.monitorRatio
-                                font.family: Style.fontFamily
-                            }
-                        }
-
-                        background: Rectangle {
-                            color: "transparent"
-                        }
+                        buttonText: "Track"
+                        buttonColor: "transparent"
+                        iconImageVisible: true
+                        iconImageSource: "qrc:/Resources/track-icon.png"
                         onClicked: {
                             track()
                         }
@@ -140,33 +120,12 @@ Window {
                         Layout.preferredWidth: 2 / Style.monitorRatio
                         Layout.alignment: Qt.AlignCenter
                     }
-                    Button {
+                    CustomButton {
                         Layout.fillWidth: true
-
-                        contentItem: Row {
-                            leftPadding: 40 / Style.monitorRatio
-                            IconImage {
-                                anchors.verticalCenter: parent.verticalCenter
-                                source: "qrc:/Resources/easy-to-find.png"
-                                width: 28 / Style.monitorRatio
-                                height: 28 / Style.monitorRatio
-                                color: Style.foregroundColor
-                            }
-
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: "Go to"
-                                color: Style.foregroundColor
-                                font.pixelSize: Style.regularFontSize
-                                Layout.fillWidth: true
-                                Layout.leftMargin: 2
-                                font.family: Style.fontFamily
-                            }
-                        }
-
-                        background: Rectangle {
-                            color: "transparent"
-                        }
+                        buttonText: "Go to"
+                        buttonColor: "transparent"
+                        iconImageVisible: true
+                        iconImageSource: "qrc:/Resources/easy-to-find.png"
                         onClicked: {
                             goToPosition()
                         }

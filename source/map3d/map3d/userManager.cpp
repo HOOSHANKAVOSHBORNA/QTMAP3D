@@ -71,7 +71,7 @@ void UserManager::signIn(const QString username, const QString password)
     mServiceManager->sendUser(userData);
 
     //   setUserName(username);
-       emit selectRole();
+    //   emit selectRole();
     //   emit signedIn();
      //   emit signInFailed();
 
