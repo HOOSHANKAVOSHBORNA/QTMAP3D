@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
 import "style"
+import "Components"
 
 Item {
     id: rootItem
@@ -32,21 +33,17 @@ Item {
             color: Style.backgroundColor
             radius: 30 / Style.monitorRatio
 
-            Button {
-                id: zoomInBtn
+            IconButton{
+                id:zoomInBtn
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 40 / Style.monitorRatio
                 height: 40 / Style.monitorRatio
-
-                icon.source: "qrc:/Resources/add.png"
-                icon.width: iconSize
-                icon.height: iconSize
-                icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-                background: Rectangle {
-                    color: "transparent"
-                }
+                iconImageSource:"qrc:/Resources/add.png"
+                iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                backgroundColor: "transparent"
             }
+
             Rectangle {
                 id: seperator
                 anchors.top: zoomInBtn.bottom
@@ -57,41 +54,27 @@ Item {
                 height: 2 / Style.monitorRatio
             }
 
-            Button {
-                id: zoomOutBtn
+            IconButton{
+                id:zoomOutBtn
                 anchors.top: seperator.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 40 / Style.monitorRatio
                 height: 40 / Style.monitorRatio
-
-                icon.source: "qrc:/Resources/minus.png"
-                icon.width: iconSize
-                icon.height: iconSize
-                icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-                background: Rectangle {
-                    color: "transparent"
-                }
+                iconImageSource:"qrc:/Resources/minus.png"
+                iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                backgroundColor: "transparent"
             }
         }
 
-        Button {
-            id: directionBtn
-
+        IconButton{
+            id:directionBtn
             Layout.alignment: Qt.AlignCenter
-            width: 26 / Style.monitorRatio
-            height: 26 / Style.monitorRatio
+            Layout.preferredHeight: 40 / Style.monitorRatio
+            Layout.preferredWidth: 40 / Style.monitorRatio
 
-            hoverEnabled: true
-            display: AbstractButton.IconOnly
-            icon.source: "qrc:/Resources/direction.png"
-            icon.width: iconSize
-            icon.height: iconSize
-            icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-
-            background: Rectangle {
-                color: Style.backgroundColor
-                radius: 30 / Style.monitorRatio
-            }
+            iconImageSource:"qrc:/Resources/direction.png"
+            iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+            backgroundColor: Style.backgroundColor
             onClicked: {
                 rotateCameraHandler.visible = true
                 moveCameraHandler.visible = true
@@ -105,39 +88,29 @@ Item {
                     showSlider.start()
                 }
             }
+
         }
-        Button {
-            id: homeBtn
-            width: 40 / Style.monitorRatio
-            height: 40 / Style.monitorRatio
+
+        IconButton{
+            id:homeBtn
             Layout.alignment: Qt.AlignCenter
-            hoverEnabled: true
-            display: AbstractButton.IconOnly
-            icon.source: "qrc:/Resources/home.png"
-            icon.width: iconSize
-            icon.height: iconSize
-            icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-            background: Rectangle {
-                color: Style.uiWhite
-                radius: 30 / Style.monitorRatio
-            }
+            Layout.preferredHeight: 40 / Style.monitorRatio
+            Layout.preferredWidth: 40 / Style.monitorRatio
+            iconImageSource:"qrc:/Resources/home.png"
+            iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+            backgroundColor: Style.backgroundColor
+
             onClicked: btnHomeClicked()
         }
-        Button {
-            id: modeBtn
+
+        IconButton{
+            id:modeBtn
             Layout.alignment: Qt.AlignCenter
-            width: 40 / Style.monitorRatio
-            height: 40 / Style.monitorRatio
-            display: AbstractButton.IconOnly
-            icon.source: mode === "projection" ? "qrc:///Resources/threeD.png" : "qrc:/Resources/twoD.png"
-            icon.width: iconSize
-            icon.height: iconSize
-            icon.color: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
-            background: Rectangle {
-                color: Style.backgroundColor
-                radius:30 / Style.monitorRatio
-            }
-            smooth: true
+            Layout.preferredHeight: 40 / Style.monitorRatio
+            Layout.preferredWidth: 40 / Style.monitorRatio
+            iconImageSource:mode === "projection" ? "qrc:///Resources/threeD.png" : "qrc:/Resources/twoD.png"
+            iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+            backgroundColor: Style.backgroundColor
 
             onClicked: {
                 if (mode === "projection")
@@ -147,6 +120,7 @@ Item {
                 btnProjectionClicked()
             }
         }
+
     }
     RowLayout {
         id: cameraPositionLayout

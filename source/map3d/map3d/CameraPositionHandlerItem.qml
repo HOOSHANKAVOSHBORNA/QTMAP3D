@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 import "style"
+import "Components"
 
 Item {
     readonly property double positionX: (mainCircle.width/2 - draggableCircle.x-draggableCircle.width/2)
@@ -77,8 +78,7 @@ Item {
                 GradientStop { position: 1.0; color: "white" }
             }
         }
-
-        RoundButton {
+        IconButton{
             property double radiusDiff : mainCircle.width/2 - draggableCircle.width /2
 
             id: draggableCircle
@@ -86,15 +86,10 @@ Item {
             height: 30/Style.monitorRatio
             x: radiusDiff
             y: radiusDiff
-            icon.source : source
-            icon.color : Style.backgroundColor
-            icon.width: 20/Style.monitorRatio
-            icon.height: 20/Style.monitorRatio
-            clip: true
-            background: Rectangle{
-                color: Style.foregroundColor
-                radius: parent.radius
-            }
+            iconImageSource:source
+            iconColor:  hovered ? (pressed ? Style.backgroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.backgroundColor)
+            backgroundColor: Style.foregroundColor
+            iconSize: Qt.size(20/Style.monitorRatio,20/Style.monitorRatio)
             Component.onCompleted: function (){
                 dragArea.drag.minimumX = radiusDiff -Math.max(Math.sqrt(radiusDiff *radiusDiff -Math.pow(radiusDiff -draggableCircle.y,2)), radiusDiff )
                 dragArea.drag.maximumX = /*Math.min(*/Math.sqrt(radiusDiff*radiusDiff-Math.pow(radiusDiff -draggableCircle.y,2)/*)*/)+radiusDiff
@@ -113,6 +108,7 @@ Item {
                 }
             }
         }
+
         MultiEffect {
             source: draggableCircle
             enabled: true

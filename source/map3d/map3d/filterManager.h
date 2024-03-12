@@ -143,7 +143,7 @@ public:
     Q_INVOKABLE QSortFilterProxyModel *stringFilterFields() const;
     Q_INVOKABLE QSortFilterProxyModel *numFilterFields() const;
 
-    void addFilterField(NodeData *nodeData);
+    void addFilterField(const NodeData &nodeData);
 signals:
     void filterFieldsChanged();
     void filterTagsEdited();
