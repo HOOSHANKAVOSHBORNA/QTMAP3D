@@ -11,6 +11,7 @@ Information::Information(QObject *parent): PluginInterface(parent)
 
 bool Information::setup()
 {
+    mStatusFilter = new StatusFilter(qmlEngine(),mainWindow());
    connect(serviceManager(), &ServiceManager::statusNodeDataReceived, this, &Information::statusNodeReceived);
 
     mInformationLayer = new CompositeAnnotationLayer;
@@ -216,18 +217,19 @@ void Information::addUpdateStatusNode(const StatusNodeData &statusnNodeData)
 
 void Information::statusNodeReceived(const StatusNodeData &statusNodeData)
 {
-    if (statusNodeData.command == Command::Remove){
-        if (mStatusNodeMap.contains(statusNodeData.id)){
-            auto layer = mapItem()->getMapObject()->getLayerByUserId(statusNodeData.layerId);
+    StatusNodeData filteredData = mStatusFilter->filterStatusData(statusNodeData);
+    if (filteredData.command == Command::Remove){
+        if (mStatusNodeMap.contains(filteredData.id)){
+            auto layer = mapItem()->getMapObject()->getLayerByUserId(filteredData.layerId);
             if (layer)
-                layer->removeChild(mStatusNodeMap[statusNodeData.id]);
-            mStatusNodeMap[statusNodeData.id].release();
-            mStatusNodeMap.remove(statusNodeData.id);
+                layer->removeChild(mStatusNodeMap[filteredData.id]);
+            mStatusNodeMap[filteredData.id].release();
+            mStatusNodeMap.remove(filteredData.id);
         }
-    } else if (statusNodeData.command == Command::Update){
-        addUpdateStatusNode(statusNodeData);
+    } else if (filteredData.command == Command::Update){
+        addUpdateStatusNode(filteredData);
     } else {
-        addUpdateStatusNode(statusNodeData);
+        addUpdateStatusNode(filteredData);
     }
 }
 
