@@ -233,9 +233,10 @@ Item {
                                 width: 24 / Style.monitorRatio
                                 height: 24 / Style.monitorRatio
                                 color: Style.foregroundColor
-                                visible: !(rootItem.layerCpp.propertyInterface.name
-                                           === display ? (propertySection.visible
-                                                          === false ? true : false) : true)
+                                // visible: !(rootItem.layerCpp.propertyInterface.name
+                                //            === display ? (propertySection.visible
+                                //                           === false ? true : false) : true)
+                                visible: false
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
