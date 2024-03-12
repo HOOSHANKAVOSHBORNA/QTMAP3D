@@ -18,8 +18,9 @@ signals:
 
 private:
     ServiceManager *mServiceManager;
-    UserData mUserData1;
-    UserData mUserData2;
+    QVector<UserData> mUserDatas;
+    // UserData mUserData1;
+    // UserData mUserData2;
     bool mIsLogin{false};
 };
 

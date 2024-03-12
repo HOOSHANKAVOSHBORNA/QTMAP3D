@@ -9,8 +9,8 @@ ServiceManager::ServiceManager(NetworkManager *networkManager, QObject *parent):
 {
     connect(mNetworkManager, &NetworkManager::messageReceived, this, &ServiceManager::onMessageReceived);
     connect(mNetworkManager, &NetworkManager::map3dQueueDeclared, [this](){
-        mIsReadyForSendData = true;
-        emit readyForSendData();
+        // mIsReadyForSendData = true;
+        // emit readyForSendData();
     });
 }
 
@@ -132,6 +132,16 @@ void ServiceManager::onMessageReceived(const QString &message)
                 UserData userData;
                 userData.fromJson(data);
                 emit userDataReceived(userData);
+            }
+            else if (type == "Ready") {
+                ReadyForData readyForData;
+                readyForData.fromJson(data);
+                if (readyForData.message == "Ready") {
+                    mIsReadyForSendData = true;
+                    readyForSendData();
+                }
+                else
+                    mIsReadyForSendData = false;
             }
             else
                 qDebug() << "type of data is unknown";

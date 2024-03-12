@@ -32,6 +32,17 @@ void ServiceManager::sendUser(const UserData &UserData)
     mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
 }
 
+void ServiceManager::sendReady(const ReadyForData &readyForData)
+{
+    auto inputJsonObject = readyForData.toJson();
+    QJsonObject jsonObject;
+    jsonObject.insert("Type", "Ready");
+    jsonObject.insert("Data", inputJsonObject);
+    QJsonDocument jsonDoc;
+    jsonDoc.setObject(jsonObject);
+    mNetworkManager->sendMessage(jsonDoc.toJson(QJsonDocument::Compact));
+}
+
 void ServiceManager::onMessageReceived(const QString &message)
 {
 //    qDebug() << "Receive message: "<<message;

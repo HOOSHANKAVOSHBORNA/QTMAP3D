@@ -8,14 +8,14 @@ LayerTest::LayerTest(ServiceManager *serviceManager):
     mServiceManager(serviceManager)
 {
     createLayers();
-    QObject::connect(mServiceManager, &ServiceManager::readyForSendData,[this](){
+    if (mServiceManager->isReadyForSendData())
         for(auto& layerdata: LayerDataList)
             mServiceManager->sendLayer(layerdata);
-    });
-    if(mServiceManager->isReadyForSendData()){
-        for(auto& layerdata: LayerDataList)
-            mServiceManager->sendLayer(layerdata);
-    }
+    else
+        QObject::connect(mServiceManager, &ServiceManager::readyForSendData,[this](){
+            for(auto& layerdata: LayerDataList)
+                mServiceManager->sendLayer(layerdata);
+        });
 
    QTimer *timerUpdateMovable = new QTimer();
    QObject::connect(timerUpdateMovable, &QTimer::timeout, [this](){
