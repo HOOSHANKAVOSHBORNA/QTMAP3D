@@ -91,6 +91,15 @@ void UserManager::signIn(int selectRoleIndex)
 
 }
 
+void UserManager::logOut()
+{
+    UserData userData;
+    userData.command = UserData::UserCommand::Logout;
+    userData.userName = mUserData.userName;
+    mServiceManager->sendUser(userData);
+    qDebug() << "sent logout message";
+}
+
 UserData UserManager::userData() const
 {
     return mUserData;
