@@ -149,14 +149,20 @@ Item {
                     topToBottomRole.start()
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
+                    signInPage.signInBtn.loadingTimer.stop()
+                    signInPage.resetSignInBtn()
                 }
                 function onSignedIn() {
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
+                    signInPage.signInBtn.loadingTimer.stop()
+                    signInPage.resetSignInBtn()
                 }
                 function onSignInFailed() {
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
+                    signInPage.signInBtn.loadingTimer.stop()
+                    signInPage.resetSignInBtn()
                     userManager.setMessage("")
                 }
             }

@@ -93,7 +93,8 @@ Item {
 
             IconImage {
                 id: connectionStatus
-                source: (connectionConfigCpp && connectionConfigCpp.isConnected) ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
+                source: (connectionConfigCpp
+                         && connectionConfigCpp.isConnected) ? "qrc:/Resources/plugged.png" : "qrc:/Resources/unplugged.png"
                 Layout.preferredHeight: 39 / Style.monitorRatio
                 Layout.preferredWidth: 39 / Style.monitorRatio
             }
@@ -260,18 +261,6 @@ Item {
             buttonText: "Save Changes"
             buttonColor: Style.foregroundColor
             buttonTextColor: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
-
-            //            contentItem: Text {
-            //                text: "Save changes"
-            //                font.pixelSize: Style.regularFontSize
-            //                color: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
-            //                horizontalAlignment: Text.AlignHCenter
-            //                verticalAlignment: Text.AlignVCenter
-            //            }
-            //            background: Rectangle {
-            //                radius: width / (Style.monitorRatio * 2)
-            //                color: Style.foregroundColor
-            //            }
             onClicked: {
                 rootItem.connectionConfigCpp.saveSettings()
             }
