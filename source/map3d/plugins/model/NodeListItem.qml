@@ -663,8 +663,6 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        //console.log(lvDelegate.lvIndex)
-                                        console.log(index)
                                         if (tableview.isAttackecd) {
 
                                             //                                            iconAttackerButton.color = "transparent"
