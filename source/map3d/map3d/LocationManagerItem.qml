@@ -220,7 +220,7 @@ Rectangle {
             }
 
             title: 'Add Place'
-            flags: Qt.Window | Qt.FramelessWindowHint
+            flags: Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
             width: 400 / Style.monitorRatio
             height: 523 / Style.monitorRatio
             color: "transparent"
