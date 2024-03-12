@@ -10,6 +10,7 @@ Button {
     property alias buttonTextColor: buttonText.color
     property alias iconImageVisible: iconImage.visible
     property alias buttonBorder: backgroundBtn.border
+    property alias iconImageColor: iconImage.color
     background: Rectangle {
         id: backgroundBtn
         radius: width / (Style.monitorRatio * 2)
