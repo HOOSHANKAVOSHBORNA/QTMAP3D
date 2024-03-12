@@ -611,13 +611,6 @@ Item {
             Layout.minimumWidth: 130
             Layout.fillHeight: true
 
-            //            Rectangle {
-            //                width: parent.width
-            //                height: 1
-            //                color: Style.foregroundColor
-            //                opacity: 0.2
-            //                anchors.bottom: parent.bottom
-            //            }
             ListView {
                 id: sideFixedIconsListView
                 y: -tableview.contentY
@@ -663,20 +656,19 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
-                                        console.log(lvDelegate.lvIndex)
                                         if (tableview.isAttackecd) {
-
-                                            //                                            iconAttackerButton.color = "transparent"
-                                            //                                            tableview.isAttackecd = false
+                                    tableview.isAttackecd = false
                                         } else {
-
-                                            //                                            iconAttackerButton.color = "#01AED6"
-                                            //                                            tableview.isAttackecd = true
+                                  tableview.isAttackecd = true
                                         }
-                                        tableModel.goToPosition(
-                                                    lvDelegate.lvIndex)
-                                        //tableview.checkAttackIconColumn = model.column
-                                        //tableview.checkAttackIconRow = model.row
+                                        if(index === 2){
+                                            tableModel.goToPosition(
+                                                        lvDelegate.lvIndex)
+                                        }else if(index === 3){
+                                            tableModel.trackPosition(lvDelegate.lvIndex)
+                                        }
+
+
                                     }
                                 }
                             }

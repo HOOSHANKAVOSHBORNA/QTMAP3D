@@ -26,7 +26,6 @@ Rectangle {
         }
 
         ColumnLayout {
-            //            anchors.fill: parent
             anchors.left: parent.left
             anchors.right: parent.right
             spacing: 0
