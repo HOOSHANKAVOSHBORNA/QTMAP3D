@@ -57,7 +57,7 @@ private:
 
 private slots:
     void onLoadingPage();
-    void clearMainWindow();
+    void onLogoutUser();
 
 private:
     QQmlApplicationEngine *mQmlEngine = nullptr;
