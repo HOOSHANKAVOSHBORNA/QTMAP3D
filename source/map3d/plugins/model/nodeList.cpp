@@ -393,6 +393,7 @@ void NodeProxyModel::revokeSettings()
             op = Tag::And;
         }
         mDataManager->filterManager()->addFilterTag(key,data[0],data[1].toString(),op);
+        mDataManager->filterManager()->getFilterTagAt(var)->isEnabled = false;
     }
     mlistSettings->endGroup();
 }
