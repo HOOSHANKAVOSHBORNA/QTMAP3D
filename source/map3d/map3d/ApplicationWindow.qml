@@ -21,6 +21,7 @@ Window {
     height: 800
 
     onClosing: {
+        applicationCpp.userManager.signedOut();
     }
 
     Image {

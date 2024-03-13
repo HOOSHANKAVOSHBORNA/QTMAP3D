@@ -238,6 +238,7 @@ Rectangle {
 
                 onClicked: {
                     rPopup.editIndex = -1
+                    locationCpp.setImagePath('')
                     rPopup.myOpen()
                 }
             }
@@ -288,6 +289,7 @@ Rectangle {
 
             function myOpen() {
                 rPopup.visible = true
+
                 locationCpp.addPlaceWindowOpened()
             }
 
@@ -297,6 +299,8 @@ Rectangle {
                 lvColors.selectedColor = "black"
 
                 rPopup.close()
+                locationCpp.setImageCaptured(false)
+                locationCpp.setImagePath('')
                 locationCpp.addPlaceWindowClosed()
             }
 
@@ -328,15 +332,14 @@ Rectangle {
                     font.pixelSize: Style.titleFontSize
                 }
 
-
-                IconButton{
+                IconButton {
                     anchors.verticalCenter: txtAddPlace.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 20 / Style.monitorRatio
-                    width: 26  / Style.monitorRatio
+                    width: 26 / Style.monitorRatio
                     height: 26 / Style.monitorRatio
-                    anchors.horizontalCenter: txtTakePhoto.horizontalCenter
-                    iconImageSource:"qrc:/Resources/add-place-close.png"
+                    Layout.alignment: Qt.AlignHCenter
+                    iconImageSource: "qrc:/Resources/add-place-close.png"
                     backgroundColor: "transparent"
                     onClicked: rPopup.myClose()
                 }
@@ -356,12 +359,12 @@ Rectangle {
                         spacing: 1 / Style.monitorRatio
                         Layout.bottomMargin: 2 / Style.monitorRatio
 
-                        IconButton{
+                        IconButton {
                             id: iconLocation
-                            width: 26  / Style.monitorRatio
+                            width: 26 / Style.monitorRatio
                             height: 26 / Style.monitorRatio
-                            anchors.horizontalCenter: txtTakePhoto.horizontalCenter
-                            iconImageSource:"qrc:/Resources/add-place-location.png"
+                            Layout.alignment: Qt.AlignHCenter
+                            iconImageSource: "qrc:/Resources/add-place-location.png"
                             backgroundColor: "transparent"
                         }
 
@@ -456,29 +459,66 @@ Rectangle {
                         radius: 10 / Style.monitorRatio
                         height: 180 / Style.monitorRatio
 
-                        Column {
-                            anchors.centerIn: parent
-                            spacing: 3 / Style.monitorRatio
+                        StackLayout {
+                            id: locationImage
 
+                            anchors.fill: parent
 
-                            IconButton{
-                                width: 30 / Style.monitorRatio
-                                height: 30 / Style.monitorRatio
-                                opacity: 0.75
-                                anchors.horizontalCenter: txtTakePhoto.horizontalCenter
-                                iconColor: hovered ? Style.hoverColor : Style.backgroundColor
-                                iconImageSource:"qrc:/Resources/add-place-add-camera.png"
-                                backgroundColor: "transparent"
+                            currentIndex: locationCpp === undefined
+                                          || !locationCpp.imageCaptured ? 0 : 1
+
+                            Rectangle {
+                                color: 'transparent'
+
+                                Column {
+                                    anchors.centerIn: parent
+                                    spacing: 3 / Style.monitorRatio
+
+                                    IconButton {
+                                        width: 30 / Style.monitorRatio
+                                        height: 30 / Style.monitorRatio
+                                        opacity: 0.75
+                                        anchors.horizontalCenter: txtTakePhoto.horizontalCenter
+                                        iconColor: hovered ? Style.hoverColor : fg80
+                                        iconImageSource: "qrc:/Resources/add-place-add-camera.png"
+                                        backgroundColor: "transparent"
+
+                                        onClicked: {
+                                            locationCpp.capture()
+                                        }
+                                    }
+
+                                    Text {
+                                        id: txtTakePhoto
+
+                                        text: "Take photo for place"
+                                        font.underline: true
+                                        font.family: Style.fontFamily
+                                        font.pixelSize: Style.regularFontSize
+                                        color: fg50
+                                    }
+                                }
                             }
 
-                            Text {
-                                id: txtTakePhoto
+                            Image {
+                                source: locationCpp !== undefined
+                                        && locationCpp.imageCaptured ? 'file:///' + locationCpp.imagePath : 'qrc:/Resources/hand.png'
 
-                                text: "Take photo for place"
-                                font.underline: true
-                                font.family: Style.fontFamily
-                                font.pixelSize: Style.regularFontSize
-                                color: fg50
+                                Button {
+                                    padding: 0
+                                    width: 50 / Style.monitorRatio
+                                    height: 50 / Style.monitorRatio
+                                    anchors.right: parent.right
+
+                                    background: IconImage {
+                                        source: 'qrc:/Resources/close.png'
+                                        color: Style.foregroundColor
+                                    }
+
+                                    onClicked: {
+                                        locationCpp.setImageCaptured(false)
+                                    }
+                                }
                             }
                         }
                     }
@@ -598,7 +638,6 @@ Rectangle {
                                     lvLocationManger.model.addNewLocation(
                                                 tiLocationName.text,
                                                 tiLocationDescription.text,
-                                                "qrc:/Resources/airplane1.jpg",
                                                 lvColors.selectedColor)
                                 } else {
                                     lvLocationManger.model.editLocation(
@@ -606,11 +645,13 @@ Rectangle {
                                                     rPopup.editIndex, 0),
                                                 tiLocationName.text,
                                                 tiLocationDescription.text,
-                                                "qrc:/Resources/airplane1.jpg",
                                                 lvColors.selectedColor)
                                 }
 
-                                lvLocationManger.model.sourceModel.writeToFile()
+                                if (locationCpp.imageCaptured === '') {
+                                    locationCpp.imagePath = ''
+                                }
+
                                 rPopup.myClose()
                             }
                         }
@@ -664,10 +705,14 @@ Rectangle {
                     Image {
                         id: imgLocation
 
+                        visible: model.imageSource !== ""
+                                 && model.imageSource.substring(0,
+                                                                4) !== 'qrc:/'
+
                         anchors.left: rDelegateContent.left
                         anchors.right: rDelegateContent.right
                         height: 138 / Style.monitorRatio
-                        source: model.imageSource
+                        source: "file:///" + model.imageSource
                     }
 
                     // ----------------------------------------------- Location Name Row
@@ -708,12 +753,12 @@ Rectangle {
                                 }
                             }
                         }
-                        IconButton{
+                        IconButton {
                             width: 25 / Style.monitorRatio
                             height: 25 / Style.monitorRatio
                             opacity: 0.75
                             iconColor: hovered ? Style.hoverColor : Style.backgroundColor
-                            iconImageSource:"qrc:/Resources/location-edit.png"
+                            iconImageSource: "qrc:/Resources/location-edit.png"
                             backgroundColor: "transparent"
                             onClicked: {
                                 lvLocationManger.model.goToLocation(
@@ -725,17 +770,21 @@ Rectangle {
                                 lvColors.selectedColor = model.color
                                 rPopup.editIndex = model.index
 
+                                if (model.imageSource !== '') {
+                                    locationCpp.setImagePath(model.imageSource)
+                                    locationCpp.setImageCaptured(true)
+                                }
+
                                 rPopup.myOpen()
                             }
                         }
 
-
-                        IconButton{
+                        IconButton {
                             width: 25 / Style.monitorRatio
                             height: 25 / Style.monitorRatio
                             opacity: 0.75
                             iconColor: hovered ? Style.hoverColor : Style.backgroundColor
-                            iconImageSource:"qrc:/Resources/location-delete.png"
+                            iconImageSource: "qrc:/Resources/location-delete.png"
                             backgroundColor: "transparent"
                             onClicked: lvLocationManger.model.myRemoveRow(
                                            lvLocationManger.model.index(index,

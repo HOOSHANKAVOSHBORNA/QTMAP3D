@@ -70,7 +70,7 @@ Cloud::Cloud(MapItem *map, double duration):
     rootStyle.getOrCreate<osgEarth::Symbology::ModelSymbol>()->setModel(mRoot);
     setStyle(rootStyle);
     //--duration---------------------------------------------------------------
-    mTimerDuration = new QTimer();
+    mTimerDuration = new QTimer(this);
     QObject::connect(mTimerDuration, &QTimer::timeout, [&](){
         mAutoScaler->setScaled(false);
         setCullCallback(nullptr);//cancel auto scale

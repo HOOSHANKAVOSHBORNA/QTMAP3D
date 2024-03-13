@@ -238,9 +238,9 @@ Item {
             width: parent.width
             anchors.left: parent.left
             anchors.right: parent.right
-            //            currentIndex: categoryRect.currentIndex
+            currentIndex: categoryRect.currentIndex
             Component.onCompleted: {
-
+                console.log(currentIndex)
                 //tableModel.filterStringColumn(repeater.itemAt(0).text)
                 //console.log(tabMain.modelData)
             }
@@ -257,6 +257,8 @@ Item {
 
                     Component.onCompleted: {
 
+                        //categoryRect.currentIndex = categoryRect.currentIndex
+                        //tabBar.currentIndex = categoryRect.currentIndex
                         //tableModel.filterStringColumn(repeater.itemAt(0).text)
                         //console.log(repeater.itemAt(0).text)
                     }
@@ -277,7 +279,7 @@ Item {
                             id: rectBackTabbar
                             width: parent.width
                             height: 2
-                            color: tabBar.currentIndex
+                            color: categoryRect.currentIndex
                                    === model.index ? Style.foregroundColor : Style.disableColor
                             anchors.bottom: parent.bottom
                         }
@@ -291,7 +293,7 @@ Item {
                         text: tabMain.text
                         font.family: Style.fontFamily
                         font.pixelSize: Style.regularFontSize
-                        color: tabBar.currentIndex
+                        color: categoryRect.currentIndex
                                === model.index ? Style.foregroundColor : Style.disableColor
                     }
                 }
