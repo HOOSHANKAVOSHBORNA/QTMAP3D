@@ -129,6 +129,7 @@ FilterManager *MapControllerItem::filterManager() const
 
 void MapControllerItem::clearMap()
 {
+    getMapObject()->setRefreshStatus(false);
     getMapObject()->clearLayers();
     if (mSearchNodeManager)
         delete mSearchNodeManager;
@@ -142,6 +143,7 @@ void MapControllerItem::clearMap()
 void MapControllerItem::initialize()
 {
     createSearchNodeManager();
+    getMapObject()->setRefreshStatus(true);
     addBaselayers();
 }
 
