@@ -80,8 +80,6 @@ Item {
             Layout.preferredWidth: 270 / Style.monitorRatio
             Layout.topMargin: 10 / Style.monitorRatio
             Layout.fillWidth: true
-
-            hoverEnabled: true
             iconImageSource: "qrc:/Resources/circular-logout.png"
             iconImageVisible: true
             buttonText: "Log out"
