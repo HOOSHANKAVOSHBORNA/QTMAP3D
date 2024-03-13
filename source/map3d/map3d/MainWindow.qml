@@ -131,6 +131,18 @@ Item {
             }
         }
     }
+    MultiEffect {
+        source: btnList
+        enabled: true
+        anchors.fill: btnList
+        shadowColor: "black"
+        shadowEnabled: true
+        shadowBlur: 0.6
+        shadowHorizontalOffset: 3.5
+        shadowVerticalOffset: 2.5
+        shadowOpacity: .2
+        shadowScale: 1
+    }
 
     ListWindow {
         visible: mainItem.listWindowVisible
