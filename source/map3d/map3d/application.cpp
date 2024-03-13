@@ -34,6 +34,10 @@ void Application::performStartupConfiguration()
 void Application::initialize(QQmlApplicationEngine *newQmlEngine)
 {
     mQmlEngine = newQmlEngine;
+
+    // removing default "qrc:/"
+    mQmlEngine->rootContext()->setBaseUrl(QUrl::fromLocalFile(""));
+
     //--network----------------------------------------------
     mNetworkManager = new NetworkManager();
     mServiceManager = new ServiceManager(mNetworkManager);

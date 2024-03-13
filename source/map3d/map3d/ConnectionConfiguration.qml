@@ -241,9 +241,25 @@ Item {
         function onIsConnectedChanged() {
             if (connectionButtonClicked && connectionConfigCpp.isConnected) {
                 connectionButtonClicked = false
+
+                connectBtn.loadingTimer.stop()
+                connectBtn.enabled = true
+                connectBtn.buttonColor = Style.foregroundColor
+                if (connectionConfigCpp.isConnected)
+                    messageText.text = "Connection Success"
+                else
+                    messageText.text = "Connection Failure"
             }
             if (connectionButtonClicked && !connectionConfigCpp.isConnected) {
                 connectionButtonClicked = false
+
+                connectBtn.loadingTimer.stop()
+                connectBtn.enabled = true
+                connectBtn.buttonColor = Style.foregroundColor
+                if (connectionConfigCpp.isConnected)
+                    messageText.text = "Connection Success"
+                else
+                    messageText.text = "Connection Failure"
             }
         }
     }
