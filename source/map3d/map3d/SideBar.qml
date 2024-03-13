@@ -392,7 +392,6 @@ Rectangle {
             isWindow: false
         }
 
-
         ListElement {
             name: "Settings"
             iconSource: "qrc:/Resources/settings.png"

@@ -135,7 +135,7 @@ Item {
                 connectionPopUp.visible = true
                 containerRect.enabled = false
             }
-            signInBtn.onClicked: {
+            signInBtn.button.onClicked: {
                 userManager.signIn(signInPage.usernameTxt,
                                    signInPage.passwordTxt)
             }
@@ -150,19 +150,19 @@ Item {
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
                     signInPage.signInBtn.loadingTimer.stop()
-                    signInPage.resetSignInBtn()
+                    signInPage.signInBtn.resetSignInBtn()
                 }
                 function onSignedIn() {
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
                     signInPage.signInBtn.loadingTimer.stop()
-                    signInPage.resetSignInBtn()
+                    signInPage.signInBtn.resetSignInBtn()
                 }
                 function onSignInFailed() {
                     signInPage.signInResponse()
                     signInPage.serverResponseTimer.stop()
                     signInPage.signInBtn.loadingTimer.stop()
-                    signInPage.resetSignInBtn()
+                    signInPage.signInBtn.resetSignInBtn()
                     userManager.setMessage("")
                 }
             }
@@ -171,6 +171,7 @@ Item {
         RoleSelectPage {
             id: rolePage
             connectionConfigCpp: loginPage.connectionConfigCpp
+            userManager: loginPage.userManager
             roleSelectionModel: userManager.roleSelectionModel()
             visible: false
             usernameTxt: signInPage.usernameTxt
@@ -184,7 +185,7 @@ Item {
                 topToBottomConnection.start()
                 containerRect.enabled = false
             }
-            signInBtn.onClicked: {
+            signInBtn.button.onClicked: {
                 userManager.signIn(selectRole)
             }
             backBtn.onClicked: {
