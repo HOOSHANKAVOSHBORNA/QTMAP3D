@@ -112,6 +112,21 @@ Item {
             }
         }
     }
+
+    //shadow rectangleMainSearch
+    Rectangle {
+        id: dropShadowRect
+        width: rectMainSearch.width
+        height: rectMainSearch.height
+        color: "black"
+        radius: rectMainSearch.radius
+        opacity: 0.06
+        z: -1
+        anchors.left: rectMainSearch.left
+        anchors.leftMargin: -5
+        anchors.bottom: rectMainSearch.bottom
+        anchors.bottomMargin: -5
+    }
     Rectangle {
         id: rectMainSearch
         color: Style.backgroundColor
@@ -119,27 +134,28 @@ Item {
         anchors.top: rectCategoryTag.bottom
         anchors.topMargin: 20
         //width: parent.width
-        height: 150 //parent.heightStyle
+        height: searchRect.height + filterRect.height + 20 + 20 //parent.heightStyle
         anchors.left: parent.left
         //anchors.leftMargin: 20
         anchors.right: parent.right
         anchors.rightMargin: 20
         radius: 15
-        Rectangle {
-            id: dropShadowRect
-            property real offset: Math.min(parent.width * 0.03,
-                                           parent.height * 0.03)
-            color: "black"
-            width: parent.width
-            height: parent.height
-            z: -1
-            opacity: 0.06
-            radius: rectMainSearch.radius + 2
-            anchors.left: parent.left
-            anchors.leftMargin: -offset
-            anchors.top: parent.top
-            anchors.topMargin: offset
-        }
+
+        // Rectangle {
+        //     id: dropShadowRect
+        //     property real offset: Math.min(parent.width * 0.03,
+        //                                    parent.height * 0.03)
+        //     color: "black"
+        //     width: parent.width
+        //     height: parent.height
+        //     z: -1
+        //     opacity: 0.06
+        //     radius: rectMainSearch.radius + 2
+        //     anchors.left: parent.left
+        //     anchors.leftMargin: -offset
+        //     anchors.top: parent.top
+        //     anchors.topMargin: offset
+        // }
         Rectangle {
             id: searchRect
             anchors.left: parent.left
@@ -147,7 +163,7 @@ Item {
             height: 28 / Style.monitorRatio
             width: 300 / Style.monitorRatio
             anchors.top: parent.top //rectCategoryTag.bottom
-            anchors.topMargin: 20
+            anchors.topMargin: 20 / Style.monitorRatio
             radius: 15
             color: rootItem.fg20
             IconImage {
@@ -163,6 +179,7 @@ Item {
             TextField {
                 id: txtSearch
                 anchors.left: searchIcon.right
+                anchors.right: parent.right
                 //anchors.leftMargin: searchIcon.width
                 placeholderText: "...Search"
                 color: Style.foregroundColor
@@ -216,10 +233,6 @@ Item {
 
         property int currentIndex: 0
 
-        //anchors.rightMargin: 20
-        //Layout.fillHeight: true
-        //Layout.fillWidth: true
-        //            Layout.bottomMargin: 1
         TabBar {
             id: tabBar
             width: parent.width
@@ -244,7 +257,7 @@ Item {
 
                     Component.onCompleted: {
 
-                        //                        tableModel.filterStringColumn(repeater.itemAt(0).text)
+                        //tableModel.filterStringColumn(repeater.itemAt(0).text)
                         //console.log(repeater.itemAt(0).text)
                     }
 
@@ -603,7 +616,7 @@ Item {
                     //                    var fixedLengs = tableview.columnZero + tableview.columnIcons * 6
                     //                    var columnProviderSize = (tableview.width - fixedLengs)
                     //                            / (tableModel.columnCount() - 6)
-                    var columnProviderSize = 150
+                    var columnProviderSize = 100
                     //console.log(rootItem.width / tableModel.columnCount())
                     if (column === 0) {
                         return tableview.columnZero
