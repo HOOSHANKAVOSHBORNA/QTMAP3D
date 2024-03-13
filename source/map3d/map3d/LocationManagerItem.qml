@@ -828,7 +828,11 @@ Rectangle {
                                 tiLocationDescription.text = model.description
                                 lvColors.selectedColor = model.color
                                 rPopup.editIndex = model.index
-                                locationCpp.setImagePath(model.imageSource)
+
+                                if (model.imageSource !== '') {
+                                    locationCpp.setImagePath(model.imageSource)
+                                    locationCpp.setImageCaptured(true)
+                                }
 
                                 rPopup.myOpen()
                             }
