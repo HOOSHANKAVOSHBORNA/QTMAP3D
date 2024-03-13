@@ -113,6 +113,7 @@ Item {
                         color: (selected
                                 && mousearea.containsMouse) ? hoverColor2 : (selected
                                                                              || mousearea.containsMouse) ? hoverColor : "transparent"
+
                         RowLayout {
                             anchors.fill: parent
                             Layout.fillHeight: true
@@ -157,8 +158,8 @@ Item {
                                 visible: !hasChildren
                                 Layout.preferredWidth:  24 / Style.monitorRatio
                                 Layout.preferredHeight: 24 / Style.monitorRatio
-                                padding: 0
-                                iconColor: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                                hoverEnabled: true
+//                                iconColor: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
                                 iconImageSource:"qrc:/Resources/track-icon.png"
                                 backgroundColor: "transparent"
                                 onClicked: {
@@ -169,10 +170,11 @@ Item {
 
                             IconButton{
                                 id:goTo
+                                z:2
                                 visible: !hasChildren
                                 Layout.preferredWidth:  24 / Style.monitorRatio
                                 Layout.preferredHeight: 24 / Style.monitorRatio
-                                padding: 0
+                                hoverEnabled: true
                                 iconImageSource:"qrc:/Resources/easy-to-find.png"
                                 backgroundColor: "transparent"
                                 onClicked: {
@@ -184,8 +186,7 @@ Item {
                                 id:removeBtn
                                 visible: !hasChildren
                                 Layout.preferredWidth:  24 / Style.monitorRatio
-                                padding: 0
-                                iconColor: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                                hoverEnabled: true
                                 Layout.preferredHeight: 24 / Style.monitorRatio
                                 iconImageSource:"qrc:/Resources/garbage.png"
                                 backgroundColor: "transparent"
