@@ -371,28 +371,16 @@ bool NodeProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &so
 
 bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
-    //    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
-    //    QString categoryTab = dataManager->categoryTagNames().at(ifDataFromQmlIsIndexNotString);
     NodeData nodeData = mDataManager->getNodeAtIndex(sourceRow)->nodeData();
-    if(mFilterSearch == ""){
+
+    bool categoryFlag = (mFilterCategoryTag == "All") ? true:(nodeData.category.contains(mFilterCategoryTag, Qt::CaseInsensitive));
+    bool filterFlag = mDataManager->filterManager()->checkNodeToShow(&nodeData);
+    bool searchFlag = (mFilterSearch == "") ? true: nodeData.name.contains(mFilterSearch, Qt::CaseInsensitive);
+
+    if(categoryFlag && filterFlag && searchFlag)
         return true;
-    }else{
-        return nodeData.name.contains(mFilterSearch, Qt::CaseInsensitive);
-    }
 
-    if (!mDataManager->filterManager()->checkNodeToShow(&nodeData)) {
-        return false;
-    }
-
-    if (mFilterCategoryTag == "All") {
-        return true;
-    }
-
-
-//    DataManager *dataManager = dynamic_cast<NodeListModel *>(sourceModel())->dataManager();
-    QString rowCategory = mDataManager->getNodeAtIndex(sourceRow)->nodeData().category;
-
-    return rowCategory.contains(mFilterCategoryTag, Qt::CaseInsensitive);
+    return false;
 }
 
 QString NodeProxyModel::filterSearch() const
@@ -428,7 +416,7 @@ NodeList::NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::beginEndResetModel);
-    //    connect(timer, &QTimer::timeout, tabbarModel, &CategoryTabbarModel::beginEndResetModel);
+    connect(timer, &QTimer::timeout, tabbarModel, &CategoryTabbarModel::beginEndResetModel);
     connect(timer, &QTimer::timeout, categoryTagsModel, &CategoryTagModel::beginEndResetModel);
     connect(timer, &QTimer::timeout, mProxyModel, &NodeProxyModel::invalidateRowFilterInvoker);
     timer->start(1000);

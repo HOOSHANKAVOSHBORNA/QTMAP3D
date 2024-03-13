@@ -2,6 +2,7 @@
 #include "filterManager.h"
 #include "mapObject.h"
 #include "serviceManager.h"
+#include "userManager.h"
 #include <osg/Node>
 #include <osgEarth/ModelLayer>
 #include <osgEarthAnnotation/GeoPositionNode>
@@ -18,6 +19,8 @@ SearchNodeModel::SearchNodeModel(MapItem *mapItem, QObject *parent)
             &SearchNodeModel::removeNode);
     mTypeListModel = new TypeListModel(this);
     mFilterManager = new FilterManager(this);
+    connect(mFilterManager , &FilterManager::filterTagsEdited , this , &SearchNodeModel::onTagEdited);
+    revokeSettings();
 }
 
 SearchNodeModel::~SearchNodeModel()
@@ -86,6 +89,21 @@ void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
     }
 }
 
+void SearchNodeModel::onTagEdited()
+{
+    QVector<Tag *> tags = mFilterManager->getFilterTags();
+    mFilterSettings->beginGroup("filter");
+    mFilterSettings->remove("");
+    for (int var = 0; var < tags.count(); ++var) {
+        QVariantList list;
+        list.insert(0,tags[var]->value);
+        list.insert(1,tags[var]->comparision);
+        list.insert(2,tags[var]->logicalOperator);
+        mFilterSettings->setValue(tags[var]->field,list);
+    }
+    mFilterSettings->endGroup();
+}
+
 void SearchNodeModel::onNodeClicked(const QModelIndex &current)
 {
     // DEBUG
@@ -120,6 +138,25 @@ QHash<int, QByteArray> SearchNodeModel::roleNames() const
 TypeListModel *SearchNodeModel::getTypeListModel() const
 {
     return mTypeListModel;
+}
+
+void SearchNodeModel::revokeSettings()
+{
+    mFilterSettings = new QSettings("Map3D",UserManager::instance()->userName());
+    mFilterSettings->beginGroup("filter");
+    int groupKeysCount = mFilterSettings->allKeys().count();
+    for (int var = 0; var < groupKeysCount; ++var) {
+        QString key = mFilterSettings->allKeys().at(var);
+        QVariantList data = mFilterSettings->value(key).toList();
+        Tag::LogicalOperator op;
+        if(data[2] == 1){
+            op = Tag::Or;
+        }else{
+            op = Tag::And;
+        }
+        mFilterManager->addFilterTag(key,data[0],data[1].toString(),op);
+    }
+    mFilterSettings->endGroup();
 }
 
 FilterManager *SearchNodeModel::filterManager() const

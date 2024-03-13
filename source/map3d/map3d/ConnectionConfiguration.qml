@@ -41,15 +41,14 @@ Item {
             }
         }
 
-        Button {
+        IconButton {
             id: closeBtn
             Layout.preferredHeight: 40 / Style.monitorRatio
             Layout.preferredWidth: 40 / Style.monitorRatio
             Layout.topMargin: 30 / Style.monitorRatio
             Layout.alignment: Qt.AlignRight
-            background: Image {
-                source: "qrc:/Resources/close-icon.png"
-            }
+            iconImageSource: "qrc:/Resources/close-icon.png"
+            backgroundColor: "transparent"
             onClicked: {
                 rootItem.connectionConfigCpp.clearUnsavedUiData()
             }
@@ -208,7 +207,7 @@ Item {
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 10 / Style.monitorRatio
-          //  hoverEnabled: true
+            //  hoverEnabled: true
             buttonText: "Connect"
             buttonColor: Style.foregroundColor
 

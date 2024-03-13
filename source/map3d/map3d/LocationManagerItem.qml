@@ -328,23 +328,16 @@ Rectangle {
                     font.pixelSize: Style.titleFontSize
                 }
 
-                Button {
-                    topPadding: 0
-                    rightPadding: 0
-                    bottomPadding: 0
-                    leftPadding: 0
 
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-
+                IconButton{
                     anchors.verticalCenter: txtAddPlace.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 20 / Style.monitorRatio
-                    icon.source: "qrc:/Resources/add-place-close.png"
-                    icon.width: 24 / Style.monitorRatio
-                    icon.height: 24 / Style.monitorRatio
-
+                    width: 26  / Style.monitorRatio
+                    height: 26 / Style.monitorRatio
+                    anchors.horizontalCenter: txtTakePhoto.horizontalCenter
+                    iconImageSource:"qrc:/Resources/add-place-close.png"
+                    backgroundColor: "transparent"
                     onClicked: rPopup.myClose()
                 }
 
@@ -363,22 +356,13 @@ Rectangle {
                         spacing: 1 / Style.monitorRatio
                         Layout.bottomMargin: 2 / Style.monitorRatio
 
-                        Button {
+                        IconButton{
                             id: iconLocation
-
-                            topPadding: 0
-                            rightPadding: 0
-                            bottomPadding: 0
-                            leftPadding: 0
-
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
-                            icon.source: "qrc:/Resources/add-place-location.png"
-                            icon.width: 26 / Style.monitorRatio
-                            icon.height: 26 / Style.monitorRatio
-                            icon.color: Style.foregroundColor
+                            width: 26  / Style.monitorRatio
+                            height: 26 / Style.monitorRatio
+                            anchors.horizontalCenter: txtTakePhoto.horizontalCenter
+                            iconImageSource:"qrc:/Resources/add-place-location.png"
+                            backgroundColor: "transparent"
                         }
 
                         Label {
@@ -476,22 +460,15 @@ Rectangle {
                             anchors.centerIn: parent
                             spacing: 3 / Style.monitorRatio
 
-                            Button {
-                                topPadding: 0
-                                rightPadding: 0
-                                bottomPadding: 0
-                                leftPadding: 0
 
-                                background: Rectangle {
-                                    color: "transparent"
-                                }
-
+                            IconButton{
+                                width: 30 / Style.monitorRatio
+                                height: 30 / Style.monitorRatio
                                 opacity: 0.75
                                 anchors.horizontalCenter: txtTakePhoto.horizontalCenter
-                                icon.source: "qrc:/Resources/add-place-add-camera.png"
-                                icon.width: 30 / Style.monitorRatio
-                                icon.height: 30 / Style.monitorRatio
-                                icon.color: Style.foregroundColor
+                                iconColor: hovered ? Style.hoverColor : Style.backgroundColor
+                                iconImageSource:"qrc:/Resources/add-place-add-camera.png"
+                                backgroundColor: "transparent"
                             }
 
                             Text {
@@ -731,22 +708,13 @@ Rectangle {
                                 }
                             }
                         }
-
-                        Button {
-                            topPadding: 0
-                            rightPadding: 0
-                            bottomPadding: 0
-                            leftPadding: 0
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
+                        IconButton{
+                            width: 25 / Style.monitorRatio
+                            height: 25 / Style.monitorRatio
                             opacity: 0.75
-                            icon.source: "qrc:/Resources/location-edit.png"
-                            icon.width: 25 / Style.monitorRatio
-                            icon.height: 25 / Style.monitorRatio
-                            icon.color: Style.backgroundColor
-
+                            iconColor: hovered ? Style.hoverColor : Style.backgroundColor
+                            iconImageSource:"qrc:/Resources/location-edit.png"
+                            backgroundColor: "transparent"
                             onClicked: {
                                 lvLocationManger.model.goToLocation(
                                             lvLocationManger.model.index(index,
@@ -761,21 +729,14 @@ Rectangle {
                             }
                         }
 
-                        Button {
-                            topPadding: 0
-                            rightPadding: 0
-                            bottomPadding: 0
-                            leftPadding: 0
-                            background: Rectangle {
-                                color: "transparent"
-                            }
 
+                        IconButton{
+                            width: 25 / Style.monitorRatio
+                            height: 25 / Style.monitorRatio
                             opacity: 0.75
-                            icon.source: "qrc:/Resources/location-delete.png"
-                            icon.width: 25 / Style.monitorRatio
-                            icon.height: 25 / Style.monitorRatio
-                            icon.color: Style.backgroundColor
-
+                            iconColor: hovered ? Style.hoverColor : Style.backgroundColor
+                            iconImageSource:"qrc:/Resources/location-delete.png"
+                            backgroundColor: "transparent"
                             onClicked: lvLocationManger.model.myRemoveRow(
                                            lvLocationManger.model.index(index,
                                                                         0))
