@@ -275,6 +275,7 @@ Rectangle {
 
                     onClicked: {
                         rPopup.editIndex = -1
+                        locationCpp.setImagePath('')
                         rPopup.myOpen()
                     }
                 }
@@ -336,6 +337,7 @@ Rectangle {
                 lvColors.selectedColor = "black"
 
                 rPopup.close()
+                locationCpp.setImageCaptured(false)
                 locationCpp.setImagePath('')
                 locationCpp.addPlaceWindowClosed()
             }
@@ -511,7 +513,8 @@ Rectangle {
 
                             anchors.fill: parent
 
-                            currentIndex: locationCpp.imagePath === '' ? 0 : 1
+                            currentIndex: locationCpp === undefined
+                                          || !locationCpp.imageCaptured ? 0 : 1
 
                             Rectangle {
                                 color: 'transparent'
@@ -553,9 +556,7 @@ Rectangle {
 
                             Image {
                                 source: locationCpp !== undefined
-                                        && locationCpp.imagePath
-                                        !== '' ? 'file:///'
-                                                 + locationCpp.imagePath : 'qrc:/Resources/hand.png'
+                                        && locationCpp.imageCaptured ? 'file:///' + locationCpp.imagePath : 'qrc:/Resources/hand.png'
 
                                 Button {
                                     padding: 0
@@ -569,7 +570,7 @@ Rectangle {
                                     }
 
                                     onClicked: {
-                                        locationCpp.setImagePath('')
+                                        locationCpp.setImageCaptured(false)
                                     }
                                 }
                             }
@@ -691,7 +692,6 @@ Rectangle {
                                     lvLocationManger.model.addNewLocation(
                                                 tiLocationName.text,
                                                 tiLocationDescription.text,
-                                                "qrc:/Resources/airplane1.jpg",
                                                 lvColors.selectedColor)
                                 } else {
                                     lvLocationManger.model.editLocation(
@@ -699,11 +699,9 @@ Rectangle {
                                                     rPopup.editIndex, 0),
                                                 tiLocationName.text,
                                                 tiLocationDescription.text,
-                                                "qrc:/Resources/airplane1.jpg",
                                                 lvColors.selectedColor)
                                 }
 
-                                lvLocationManger.model.sourceModel.writeToFile()
                                 rPopup.myClose()
                             }
                         }
@@ -757,10 +755,14 @@ Rectangle {
                     Image {
                         id: imgLocation
 
+                        visible: model.imageSource !== ""
+                                 && model.imageSource.substring(0,
+                                                                4) !== 'qrc:/'
+
                         anchors.left: rDelegateContent.left
                         anchors.right: rDelegateContent.right
                         height: 138 / Style.monitorRatio
-                        source: model.imageSource
+                        source: "file:///" + model.imageSource
                     }
 
                     // ----------------------------------------------- Location Name Row

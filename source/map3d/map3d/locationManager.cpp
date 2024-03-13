@@ -36,14 +36,20 @@ void LocationManager::myRemoveRow(int index)
     mLocationProxyModel->myRemoveRow(mLocationProxyModel->index(index, 0));
 }
 
-void LocationManager::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
+void LocationManager::addNewLocation(QString newName, QString newDescription, QString newColor)
 {
-    mLocationProxyModel->addNewLocation(newName, newDescription, newImageSource, newColor);
+    mLocationProxyModel->addNewLocation(newName, newDescription, newColor);
 }
 
-void LocationManager::editLocation(int index, QString newName, QString newDescription, QString newImageSource, QString newColor)
+void LocationManager::editLocation(int index,
+                                   QString newName,
+                                   QString newDescription,
+                                   QString newColor)
 {
-    mLocationProxyModel->editLocation(mLocationProxyModel->index(index, 0), newName, newDescription, newImageSource, newColor);
+    mLocationProxyModel->editLocation(mLocationProxyModel->index(index, 0),
+                                      newName,
+                                      newDescription,
+                                      newColor);
 }
 
 LocationProxyModel *LocationManager::locationProxyModel()
@@ -73,6 +79,11 @@ LocationProxyModel::LocationProxyModel(MapItem *mapItem, QObject *parent)
             &CaptureCallback::imageProcessComplete,
             this,
             &LocationProxyModel::onImageProcessComplete);
+
+    QDir dir;
+    if (!dir.exists(appDir + "/" + savedDir)) {
+        dir.mkpath(appDir + "/" + savedDir);
+    }
 }
 
 LocationProxyModel::~LocationProxyModel()
@@ -141,10 +152,10 @@ void LocationProxyModel::printCurrentLocation()
 }
 // ENDDEBUG
 
-void LocationProxyModel::addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor)
+void LocationProxyModel::addNewLocation(QString newName, QString newDescription, QString newColor)
 {
     dynamic_cast<LocationModel *>(sourceModel())
-        ->myAppendRow(newName, newDescription, newImageSource, newColor);
+        ->myAppendRow(newName, newDescription, mImagePath, newColor);
 }
 
 QVector3D LocationProxyModel::getCurrentXYZ()
@@ -158,10 +169,13 @@ QVector3D LocationProxyModel::getCurrentXYZ()
     return qv3d;
 }
 
-void LocationProxyModel::editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor)
+void LocationProxyModel::editLocation(const QModelIndex &index,
+                                      QString newName,
+                                      QString newDescription,
+                                      QString newColor)
 {
     dynamic_cast<LocationModel *>(sourceModel())
-        ->myEditRow(mapToSource(index), newName, newDescription, newImageSource, newColor);
+        ->myEditRow(mapToSource(index), newName, newDescription, newColor);
 }
 
 QString LocationProxyModel::searchedName() const
@@ -210,26 +224,22 @@ void LocationProxyModel::addPlaceWindowOpened()
 
 void LocationProxyModel::capture()
 {
-    QDir dir;
-    if (!dir.exists(appDir + "/" + savedDir)) {
-        dir.mkpath(appDir + "/" + savedDir);
+    if (mImagePath == "") {
+        mImagePath = appDir + "/" + savedDir + "/" + UserManager::instance()->userName() + "-"
+                     + QString::number(QDateTime::currentSecsSinceEpoch()) + ".png";
     }
-
-    QString filePath = QString::fromStdString(
-        osgDB::getRealPath(appDir.toStdString() + "/" + savedDir.toStdString() + "/shot.png"));
 
     auto point = mMapItem->mapToScene(QPoint(0, 0));
     auto mapHeight = mMapItem->boundingRect().height();
     auto mapWidth = mMapItem->boundingRect().width();
 
-    mCaptureCallback->capture(filePath, point, mapWidth, mapHeight);
+    mCaptureCallback->capture(mImagePath, point, mapWidth, mapHeight);
 }
 
 void LocationProxyModel::onImageProcessComplete()
 {
-    QString filePath = QString::fromStdString(
-        osgDB::getRealPath(appDir.toStdString() + "/" + savedDir.toStdString() + "/shot.png"));
-    setImagePath(filePath);
+    qDebug() << "ay-debug ------ ";
+    setImageCaptured(true);
 }
 
 void LocationProxyModel::addPlaceWindowClosed()
@@ -301,6 +311,8 @@ QVariant LocationModel::data(const QModelIndex &index, int role) const
 void LocationModel::myRemoveRow(QModelIndex index)
 {
     beginRemoveRows(QModelIndex(), index.row(), index.row());
+    QFile file(mLocations.at(index.row()).imageSource);
+    file.remove();
     mLocations.removeAt(index.row());
     endRemoveRows();
 }
@@ -350,7 +362,6 @@ void LocationModel::myAppendRow(QString newName,
 void LocationModel::myEditRow(QModelIndex index,
                               QString newName,
                               QString newDescription,
-                              QString newImageSource,
                               QString newColor)
 {
     osgEarth::Viewpoint vp = mapItem()->getCameraController()->getViewpoint();
@@ -363,7 +374,6 @@ void LocationModel::myEditRow(QModelIndex index,
     li.viewpoint.setPitch(vp.getPitch());
     li.viewpoint.setRange(vp.getRange());
     li.description = newDescription;
-    li.imageSource = newImageSource;
     li.color = newColor;
 
     emit dataChanged(this->index(index.row(), 0), this->index(index.row(), 0));
@@ -578,8 +588,20 @@ QString LocationProxyModel::imagePath() const
 
 void LocationProxyModel::setImagePath(const QString &newImagePath)
 {
-    if (mImagePath == newImagePath)
-        return;
     mImagePath = newImagePath;
     emit imagePathChanged();
+}
+
+bool LocationProxyModel::imageCaptured() const
+{
+    return mImageCaptured;
+}
+
+void LocationProxyModel::setImageCaptured(bool newImageCaptured)
+{
+    if (mImageCaptured == newImageCaptured)
+        return;
+
+    mImageCaptured = newImageCaptured;
+    emit imageCapturedChanged();
 }
