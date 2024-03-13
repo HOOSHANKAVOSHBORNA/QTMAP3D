@@ -1,6 +1,5 @@
 #include "filterManager.h"
 #include "serviceManager.h"
-#include "userManager.h"
 
 
 FilterManager::FilterManager(QObject *parent) : QObject(parent)
