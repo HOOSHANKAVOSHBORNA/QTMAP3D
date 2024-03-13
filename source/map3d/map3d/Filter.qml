@@ -192,7 +192,7 @@ Rectangle {
                         // anchors.right: parent.right
                         spacing: 30 / Style.monitorRatio
                         ComboBox {
-                            id: control
+                            id: stringFieldCombo
                             model: rootObj.filterManager ? filterManager.stringFilterFields: 0
 
                             textRole: "display"
@@ -201,7 +201,7 @@ Rectangle {
                                 color: "transparent"
                             }
                             popup: Popup {
-                                y: control.height - 5
+                                y: stringFieldCombo.height - 5
                                 width: 100
                                 implicitHeight: contentItem.implicitHeight
                                 padding: 1
@@ -212,8 +212,8 @@ Rectangle {
                                 contentItem: ListView {
                                     clip: true
                                     implicitHeight: contentHeight
-                                    model: control.delegateModel
-                                    currentIndex: control.highlightedIndex
+                                    model: stringFieldCombo.delegateModel
+                                    currentIndex: stringFieldCombo.highlightedIndex
 
                                     ScrollIndicator.vertical: ScrollIndicator { }
                                 }
@@ -238,7 +238,7 @@ Rectangle {
 
                                 contentItem: Label {
                                     text: model.display
-                                    color: Style.foregroundColor
+                                    color: hovered ? Style.hoverColor :Style.foregroundColor
                                     font.family: Style.fontFamily
                                     font.pixelSize:Style.smallFontSize
                                     background: Rectangle {
@@ -248,11 +248,11 @@ Rectangle {
                             }
                             onFocusChanged: {
                                 if (focus)
-                                    control.popup.open()
+                                    stringFieldCombo.popup.open()
                             }
                             onCurrentIndexChanged: {
-                                txtContentItem.text = control.textAt(control.highlightedIndex)
-//                                control.currentText = txtContentItem.text
+                                txtContentItem.text = stringFieldCombo.textAt(stringFieldCombo.highlightedIndex)
+//                                stringFieldCombo.currentText = txtContentItem.text
                             }
 
                             indicator: Rectangle {}
@@ -285,9 +285,9 @@ Rectangle {
                                 }
 
                                 onTextChanged: {
-                                    control.popup.open()
+                                    stringFieldCombo.popup.open()
                                     var searchFilter = txtContentItem.text
-                                    control.model.setFilterFixedString(searchFilter)
+                                    stringFieldCombo.model.setFilterFixedString(searchFilter)
 
                                 }
                             }
@@ -314,7 +314,7 @@ Rectangle {
                             }
 
                             onAccepted: {
-                                if (control.indexOfValue(txtContentItem.text) === -1) {
+                                if (stringFieldCombo.indexOfValue(txtContentItem.text) === -1) {
                                     redBackG.color = "red"
                                     rbg.running = true
                                     return
@@ -351,7 +351,7 @@ Rectangle {
                         anchors.topMargin: -3
                         spacing: 30 / Style.monitorRatio
                         ComboBox {
-                            id: control3
+                            id: numFieldCombo
                             textRole: "display"
                             valueRole: "display"
                             model: rootObj.filterManager?filterManager.numFilterFields :0
@@ -359,7 +359,7 @@ Rectangle {
                                 color: "transparent"
                             }
                             popup: Popup {
-                                y: control3.height - 5
+                                y: numFieldCombo.height - 5
                                 width: 100
                                 implicitHeight: contentItem.implicitHeight
                                 padding: 1
@@ -370,8 +370,8 @@ Rectangle {
                                 contentItem: ListView {
                                     clip: true
                                     implicitHeight: contentHeight
-                                    model: control3.delegateModel
-                                    currentIndex: control3.highlightedIndex
+                                    model: numFieldCombo.delegateModel
+                                    currentIndex: numFieldCombo.highlightedIndex
 
                                     ScrollIndicator.vertical: ScrollIndicator { }
                                 }
@@ -396,7 +396,7 @@ Rectangle {
 
                                 contentItem: Label {
                                     text: model.display
-                                    color: Style.foregroundColor
+                                    color: hovered ? Style.hoverColor :Style.foregroundColor
                                     font.family: Style.fontFamily
                                     font.pixelSize: Style.smallFontSize
                                     background: Rectangle {
@@ -404,13 +404,13 @@ Rectangle {
                                     }
                                 }
                                 onClicked: {
-                                    control3.currentIndex = index
+                                    numFieldCombo.currentIndex = index
                                     txtContentItem3.text = model.display
                                 }
                             }
                             onFocusChanged: {
                                 if (focus)
-                                    control3.popup.open()
+                                    numFieldCombo.popup.open()
 
                             }
 
@@ -443,9 +443,9 @@ Rectangle {
                                 }
 
                                 onTextChanged: {
-                                    control3.popup.open()
+                                    numFieldCombo.popup.open()
                                     var searchFilter = txtContentItem3.text
-                                    control3.model.setFilterFixedString(searchFilter)
+                                    numFieldCombo.model.setFilterFixedString(searchFilter)
                                 }
                             }
                         }
@@ -468,6 +468,9 @@ Rectangle {
                                     color: Style.foregroundColor
                                     MouseArea {
                                         anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: lblComparision.color = Style.hoverColor
+                                        onExited: lblComparision.color = Style.foregroundColor
                                         onClicked: {
                                             comparisonMenu.popup()
                                         }
@@ -488,6 +491,7 @@ Rectangle {
                                             model: ["!=", "<", "<=", "=", ">=", ">"]
                                             MenuItem {
                                                 text: modelData
+                                                hoverEnabled: true
 
                                                 background: Rectangle {
                                                     width: 40
@@ -498,10 +502,12 @@ Rectangle {
                                                 }
                                                 contentItem: Text {
                                                     text: modelData
-                                                    color: "#003569"
+                                                    color: hovered ? Style.hoverColor : "#003569"
                                                     font.family: "Roboto"
                                                     font.pixelSize: Style.regularFontSize
+
                                                 }
+
                                                 onClicked: {
                                                     lblComparision.text = modelData
                                                 }
@@ -555,7 +561,7 @@ Rectangle {
                                 color: "transparent"
                             }
                             onAccepted: {
-                                if (control3.indexOfValue(txtContentItem3.text) === -1) {
+                                if (numFieldCombo.indexOfValue(txtContentItem3.text) === -1) {
                                     redBackG3.color = "red"
                                     rbg3.running = true
                                     return
