@@ -19,9 +19,9 @@ Window {
     visible: true
     width: 800
     height: 800
-
+    minimumWidth: 1500 / Style.monitorRatio
     onClosing: {
-        applicationCpp.userManager.signedOut();
+        applicationCpp.userManager.signedOut()
     }
 
     Image {
