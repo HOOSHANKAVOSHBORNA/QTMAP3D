@@ -264,7 +264,7 @@ Item {
                     text: model.display
 
                     onClicked: {
-                        tableModel.filterStringColumn(txtTabbar.text)
+                        tableModel.setFilterColumn(txtTabbar.text)
                         categoryRect.currentIndex = model.index
                     }
                     background: Rectangle {

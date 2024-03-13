@@ -12,6 +12,8 @@ Button {
     property alias buttonBorder: backgroundBtn.border
     property alias iconImageColor: iconImage.color
 
+    padding: 0
+
     background: Rectangle {
         id: backgroundBtn
         color: Style.foregroundColor

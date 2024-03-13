@@ -94,7 +94,7 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: itemMargin + 3
         filterManager: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp.getMapItem().filterManager : undefined
-        model: map.mapItem ? mapItem.searchNodeManager().searchNodeProxyModel() : undefined
+        model: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp.getMapItem().searchNodeManager().searchNodeProxyModel() : undefined
     }
 
     MultiEffect {
