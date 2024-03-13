@@ -381,7 +381,7 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
 void NodeProxyModel::revokeSettings()
 {
     mlistSettings = new QSettings("Map3D",UserManager::instance()->userName());
-    mlistSettings->beginGroup("filter");
+    mlistSettings->beginGroup("list");
     int groupKeysCount = mlistSettings->childKeys().count();
     for (int var = 0; var < groupKeysCount; ++var) {
         QString key = mlistSettings->childKeys().at(var);
@@ -410,6 +410,7 @@ void NodeProxyModel::setFilterSearch(const QString &newFilterSearch)
 void NodeProxyModel::onTagsEdited()
 {
     QVector<Tag *> tags = mDataManager->filterManager()->getFilterTags();
+    mlistSettings->remove("list/");
     for (int var = 0; var < tags.count(); ++var) {
         QVariantList list;
         list.insert(0,tags[var]->value);

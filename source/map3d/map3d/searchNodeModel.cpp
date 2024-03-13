@@ -92,6 +92,7 @@ void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
 void SearchNodeModel::onTagEdited()
 {
     QVector<Tag *> tags = mFilterManager->getFilterTags();
+    mFilterSettings->remove("filter/");
     for (int var = 0; var < tags.count(); ++var) {
         QVariantList list;
         list.insert(0,tags[var]->value);
