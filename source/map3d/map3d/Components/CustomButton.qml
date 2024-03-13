@@ -32,7 +32,7 @@ Button {
             Layout.preferredHeight: 20 / Style.monitorRatio
             Layout.alignment: Qt.AlignVCenter
             visible: false
-            color: Style.backgroundColor
+            color: button.hovered ? "#01AED6" : Style.backgroundColor
         }
         Text {
             id: buttonText
