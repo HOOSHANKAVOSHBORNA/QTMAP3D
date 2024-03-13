@@ -147,7 +147,7 @@ MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     QObject(parent)
 {
     addMapCallback(new MainMapCallback(this));
-    mTimerFilterUpdate = new QTimer(this);
+    // mTimerFilterUpdate = new QTimer(this);
     // connect(mTimerFilterUpdate, &QTimer::timeout, mFilterManager, &FilterManager::filterTagsEdited);
     // mTimerFilterUpdate->start(1000);
 }
@@ -238,14 +238,6 @@ void MapObject::clearLayers()
 {
     clear();
     mLayerMap.clear();
-}
-
-void MapObject::setRefreshStatus(bool status)
-{
-    if(status)
-        mTimerFilterUpdate->start(1000);
-    else
-        mTimerFilterUpdate->stop();
 }
 
 void MapObject::filterNodes()
