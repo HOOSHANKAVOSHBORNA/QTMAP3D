@@ -147,12 +147,16 @@ Item {
 
         width: 440 / Style.monitorRatio
         height: 745 / Style.monitorRatio
-
+        maximumWidth: 440 / Style.monitorRatio
+        minimumWidth: 440 / Style.monitorRatio
         visible: mainItem.connectionConfigVisible
 
         ConnectionConfiguration {
             id: settingsItem
-            anchors.fill: parent
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 60 / Style.monitorRatio
             closeBtn.visible: false
             connectionConfigCpp: applicationCpp.connectionConfigCpp
         }

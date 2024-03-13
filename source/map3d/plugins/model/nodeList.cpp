@@ -25,7 +25,6 @@ CategoryTagModel::CategoryTagModel(DataManager *dataManager, QObject *parent)
 
 CategoryTagModel::~CategoryTagModel()
 {
-    mDataManager = nullptr;
     qDebug()<<"~CategoryTagModel";
 }
 
@@ -63,7 +62,6 @@ CategoryTabbarModel::CategoryTabbarModel(DataManager *dataManager, QObject *pare
 
 CategoryTabbarModel::~CategoryTabbarModel()
 {
-    mDataManager = nullptr;
     qDebug()<<"~CategoryTabbarModel";
 }
 
@@ -94,8 +92,6 @@ NodeListModel::NodeListModel(DataManager *dataManager, QObject *parent)
 
 NodeListModel::~NodeListModel()
 {
-    mSelectionModel = nullptr;
-    mDataManager = nullptr;
     qDebug()<<"~NodeListModel";
 }
 
@@ -250,9 +246,6 @@ NodeProxyModel::NodeProxyModel(DataManager *dataManager, QObject *parent)
 
 NodeProxyModel::~NodeProxyModel()
 {
-    mDataManager = nullptr;
-    mTabbarModel = nullptr;
-    mCategoryTagModel = nullptr;
     qDebug()<<"~NodeProxyModel";
 }
 
@@ -487,7 +480,7 @@ void NodeList::createQml()
 {
     QQmlComponent *comp = new QQmlComponent(mQmlEngine, this);
 
-    connect(comp, &QQmlComponent::statusChanged, this, [=] {
+    connect(comp, &QQmlComponent::statusChanged, this, [&] {
         if (comp->status() == QQmlComponent::Status::Error) {
             qDebug() << comp->errorString();
         }
