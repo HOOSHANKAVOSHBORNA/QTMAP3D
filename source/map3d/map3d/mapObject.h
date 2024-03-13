@@ -66,7 +66,6 @@ public:
 
     ParenticAnnotationLayer *getServiceLayerBiId(int id);
     void clearLayers();
-    void setRefreshStatus(bool status);
 public slots:
     void filterNodes();
     void onLayerDataReceived(const LayerData &layerData);
