@@ -152,7 +152,9 @@ void SearchNodeModel::revokeSettings()
         }else{
             op = Tag::And;
         }
-        mFilterManager->addFilterTag(key,data[0],data[1].toString(),op);
+        Tag t{key, data[0]};
+        t.comparision = static_cast<Tag::Comparision>(data[1].toInt());
+        mFilterManager->addFilterTag(key,data[0],t.comparisionToString(),op);
         mFilterManager->getFilterTagAt(var)->isEnabled = false;
     }
     mFilterSettings->endGroup();

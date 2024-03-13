@@ -392,7 +392,10 @@ void NodeProxyModel::revokeSettings()
         }else{
             op = Tag::And;
         }
-        mDataManager->filterManager()->addFilterTag(key,data[0],data[1].toString(),op);
+
+        Tag t{key, data[0]};
+        t.comparision = static_cast<Tag::Comparision>(data[1].toInt());
+        mDataManager->filterManager()->addFilterTag(key,data[0],t.comparisionToString(),op);
         mDataManager->filterManager()->getFilterTagAt(var)->isEnabled = false;
     }
     mlistSettings->endGroup();
