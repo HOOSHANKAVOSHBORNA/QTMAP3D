@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QSortFilterProxyModel>
 #include "mapItem.h"
+#include "qsettings.h"
 #include "serviceManager.h"
 #include <osgEarthAnnotation/AnnotationNode>
 #include <osgEarthAnnotation/GeoPositionNode>
@@ -34,11 +35,12 @@ public:
 public slots:
     void addNode(osg::Node *node, osgEarth::Layer *layer);
     void removeNode(osg::Node *node, osgEarth::Layer *layer);
+    void onTagEdited();
 
     TypeListModel *getTypeListModel() const;
 
 private:
-    //    void init();
+       void revokeSettings();
 private:
     MapItem *mMapItem{nullptr};
     std::vector<osg::ref_ptr<osg::Node>> mNodes;
@@ -46,6 +48,7 @@ private:
 
     TypeListModel *mTypeListModel{nullptr};
     FilterManager *mFilterManager;
+    QSettings *mFilterSettings;
 };
 
 //----------------------------------------------

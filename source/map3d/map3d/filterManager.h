@@ -158,7 +158,6 @@ private:
     FilterFieldModel *mFilterFieldsNumModel;
     QSortFilterProxyModel *mFilterFieldsNum;
     FilterFieldModel *mFilterFieldsColorModel;
-    QSettings *mFilterSettings;
 
     QVector<Tag*> mFilterTags{};
 };
