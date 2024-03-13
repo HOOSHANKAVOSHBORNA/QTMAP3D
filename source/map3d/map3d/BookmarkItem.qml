@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Effects
-
+import "Components"
 import "style"
 
 Item {
@@ -122,8 +122,8 @@ Item {
                                 id: itemIcon
                                 source: categoryIcon
                                         ?? "qrc:/Resources/hand.png"
-                                Layout.preferredWidth: 24
-                                Layout.preferredHeight: 24
+                                Layout.preferredWidth: 24 / Style.monitorRatio
+                                Layout.preferredHeight: 24 / Style.monitorRatio
                                 Layout.leftMargin: 10
                                 Layout.alignment: Qt.AlignVCenter
                                 visible: hasChildren
@@ -151,53 +151,51 @@ Item {
                                     }
                                 }
                             }
-                            Button {
-                                id: track
+
+                            IconButton{
+                                id:track
                                 visible: !hasChildren
-                                Layout.preferredWidth: 20
-                                Layout.preferredHeight: 20
-                                background: Image {
-                                    source: "qrc:/Resources/track-icon.png"
-                                    width: 20
-                                    height: 20
-                                }
+                                Layout.preferredWidth:  24 / Style.monitorRatio
+                                Layout.preferredHeight: 24 / Style.monitorRatio
+                                padding: 0
+                                iconColor: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                                iconImageSource:"qrc:/Resources/track-icon.png"
+                                backgroundColor: "transparent"
                                 onClicked: {
                                     rootItem.bookmarkCpp.trackItem(
                                                 treeView.index(row, column))
                                 }
                             }
-                            Button {
-                                id: goTo
+
+                            IconButton{
+                                id:goTo
                                 visible: !hasChildren
-                                Layout.preferredWidth: 20
-                                Layout.preferredHeight: 20
-                                background: Image {
-                                    source: "qrc:/Resources/easy-to-find.png"
-                                    width: 20
-                                    height: 20
-                                }
+                                Layout.preferredWidth:  24 / Style.monitorRatio
+                                Layout.preferredHeight: 24 / Style.monitorRatio
+                                padding: 0
+                                iconImageSource:"qrc:/Resources/easy-to-find.png"
+                                backgroundColor: "transparent"
                                 onClicked: {
                                     rootItem.bookmarkCpp.goToPosition(
                                                 treeView.index(row, column))
                                 }
                             }
-
-                            Button {
-                                id: removeBtn
+                            IconButton{
+                                id:removeBtn
                                 visible: !hasChildren
-                                Layout.preferredWidth: 20
-                                Layout.preferredHeight: 20
-                                Layout.rightMargin: 5
-                                background: Image {
-                                    source: "qrc:/Resources/garbage.png"
-                                    width: 20
-                                    height: 20
-                                }
+                                Layout.preferredWidth:  24 / Style.monitorRatio
+                                padding: 0
+                                iconColor: hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
+                                Layout.preferredHeight: 24 / Style.monitorRatio
+                                iconImageSource:"qrc:/Resources/garbage.png"
+                                backgroundColor: "transparent"
+
                                 onClicked: {
                                     rootItem.bookmarkCpp.removeBookmarkItem(
                                                 treeView.index(row, column))
                                 }
                             }
+
                             Image {
                                 id: indicator
                                 rotation: treeDelegate.expanded ? 180 : 0
