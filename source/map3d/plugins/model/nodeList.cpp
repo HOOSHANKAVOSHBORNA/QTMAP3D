@@ -322,7 +322,7 @@ void NodeProxyModel::goToPosition(int index)
         return;
 
     SimpleModelNode *node = mDataManager->getNodeAtIndex(mapToSource(this->index(index, 0)).row());
-    mDataManager->mapItem()->getCameraController()->goToPosition(node->getPosition(), 500);
+    mDataManager->mapItem()->getCameraController()->goToPosition(node->getPosition(), 800);
 }
 
 void NodeProxyModel::trackPosition(int index)
