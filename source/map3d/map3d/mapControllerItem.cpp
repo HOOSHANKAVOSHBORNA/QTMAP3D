@@ -24,6 +24,11 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
     // --------------------- don't touch 2 below lines!!!!!!! ------------------------------------
     this->setWidth(300);
     this->setHeight(300);
+    mTimerFilterUpdate = new QTimer(this);
+    connect(mTimerFilterUpdate, &QTimer::timeout, this, [this](){
+        getMapObject()->filterNodes();
+    });
+    mTimerFilterUpdate->start(1000);
     // --------------------- I don't know why anyway :) ------------------------------------------
 }
 

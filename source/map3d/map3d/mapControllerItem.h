@@ -121,6 +121,7 @@ private:
     bool mTopMenuVisible = false;
     FilterManager *mFilterManager{nullptr};
     static inline MapControllerItem *mInstance{nullptr};
+    QTimer *mTimerFilterUpdate;
 };
 
 #endif // MAPCONTROLLERITEM_H

@@ -147,6 +147,9 @@ MapObject::MapObject(const osgEarth::MapOptions &options, QObject *parent):
     QObject(parent)
 {
     addMapCallback(new MainMapCallback(this));
+    // mTimerFilterUpdate = new QTimer(this);
+    // connect(mTimerFilterUpdate, &QTimer::timeout, mFilterManager, &FilterManager::filterTagsEdited);
+    // mTimerFilterUpdate->start(1000);
 }
 
 void MapObject::setServiceManager(ServiceManager *serviceManager)

@@ -116,8 +116,8 @@ Item {
     //shadow rectangleMainSearch
     Rectangle {
         id: dropShadowRect
-        width: rectMainSearch.width
-        height: rectMainSearch.height
+        //width: rectMainSearch.width
+        //height: rectMainSearch.height
         color: "black"
         radius: rectMainSearch.radius
         opacity: 0.06
@@ -126,6 +126,10 @@ Item {
         anchors.leftMargin: -5
         anchors.bottom: rectMainSearch.bottom
         anchors.bottomMargin: -5
+        anchors.right: rectMainSearch.right
+        anchors.rightMargin: -5
+        anchors.top: rectMainSearch.top
+        anchors.topMargin: -5
     }
     Rectangle {
         id: rectMainSearch
@@ -138,7 +142,7 @@ Item {
         anchors.left: parent.left
         //anchors.leftMargin: 20
         anchors.right: parent.right
-        anchors.rightMargin: 20
+        //anchors.rightMargin: 20
         radius: 15
 
         // Rectangle {
@@ -238,9 +242,9 @@ Item {
             width: parent.width
             anchors.left: parent.left
             anchors.right: parent.right
-            //            currentIndex: categoryRect.currentIndex
+            currentIndex: categoryRect.currentIndex
             Component.onCompleted: {
-
+                console.log(currentIndex)
                 //tableModel.filterStringColumn(repeater.itemAt(0).text)
                 //console.log(tabMain.modelData)
             }
@@ -257,6 +261,8 @@ Item {
 
                     Component.onCompleted: {
 
+                        //categoryRect.currentIndex = categoryRect.currentIndex
+                        //tabBar.currentIndex = categoryRect.currentIndex
                         //tableModel.filterStringColumn(repeater.itemAt(0).text)
                         //console.log(repeater.itemAt(0).text)
                     }
@@ -277,7 +283,7 @@ Item {
                             id: rectBackTabbar
                             width: parent.width
                             height: 2
-                            color: tabBar.currentIndex
+                            color: categoryRect.currentIndex
                                    === model.index ? Style.foregroundColor : Style.disableColor
                             anchors.bottom: parent.bottom
                         }
@@ -291,7 +297,7 @@ Item {
                         text: tabMain.text
                         font.family: Style.fontFamily
                         font.pixelSize: Style.regularFontSize
-                        color: tabBar.currentIndex
+                        color: categoryRect.currentIndex
                                === model.index ? Style.foregroundColor : Style.disableColor
                     }
                 }
@@ -726,35 +732,43 @@ Item {
                             id: iconsRepeater
 
                             model: ["qrc:/Resources/battle-icon.jpg", "qrc:/Resources/target-icon.jpg", "qrc:/Resources/goto-icon.jpg", "qrc:/Resources/track-icon.jpg"]
-
-                            Rectangle {
-                                width: 30
-                                height: 30
-                                color: 'transparent'
-
-                                IconImage {
-                                    source: modelData
-                                    anchors.fill: parent
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        if (tableview.isAttackecd) {
-                                            tableview.isAttackecd = false
-                                        } else {
-                                            tableview.isAttackecd = true
-                                        }
-                                        if (index === 2) {
-                                            tableModel.goToPosition(
-                                                        lvDelegate.lvIndex)
-                                        } else if (index === 3) {
-                                            tableModel.trackPosition(
-                                                        lvDelegate.lvIndex)
-                                        }
+                            IconButton {
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 30 / Style.monitorRatio
+                                height: 30 / Style.monitorRatio
+                                iconImageSource: modelData
+                                backgroundColor: "transparent"
+                                onClicked: {
+                                    if (tableview.isAttackecd) {
+                                        tableview.isAttackecd = false
+                                    } else {
+                                        tableview.isAttackecd = true
+                                    }
+                                    if (index === 2) {
+                                        tableModel.goToPosition(
+                                                    lvDelegate.lvIndex)
+                                    } else if (index === 3) {
+                                        tableModel.trackPosition(
+                                                    lvDelegate.lvIndex)
                                     }
                                 }
                             }
+
+                            // Rectangle {
+                            //     width: 30
+                            //     height: 30
+                            //     color: 'transparent'
+
+                            //     IconImage {
+                            //         source: modelData
+                            //         anchors.fill: parent
+                            //     }
+
+                            //     MouseArea {
+                            //         anchors.fill: parent
+
+                            //     }
+                            // }
                         }
                     }
                 }

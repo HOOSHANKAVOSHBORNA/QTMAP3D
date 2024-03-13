@@ -5,6 +5,7 @@
 #include <QObject>
 #include <osgEarth/Map>
 #include "compositeAnnotationLayer.h"
+#include "qtimer.h"
 #include "serviceManager.h"
 
 namespace osgEarth {
@@ -88,6 +89,7 @@ private:
     FilterManager *mFilterManager;
     int mRefrehsTime{0};
     ServiceManager *mServiceManager{nullptr};
+    QTimer *mTimerFilterUpdate;
 };
 
 #endif // CUSTOMMAP_H
