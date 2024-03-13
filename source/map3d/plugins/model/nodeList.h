@@ -129,6 +129,10 @@ public:
     Q_INVOKABLE QString filterSearch() const;
     Q_INVOKABLE void setFilterSearch(const QString &newFilterSearch);
 
+public slots:
+    void onTagsEdited();
+
+
 signals:
     void categoryTagModelChanged();
     void tabbarModelChanged();
@@ -137,6 +141,7 @@ protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
     bool filterAcceptsColumn(int source_column, const QModelIndex &source_parent) const;
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    void revokeSettings();
 
 private:
     QString mFilterSearch;
@@ -149,6 +154,7 @@ private:
     CategoryTagModel *mCategoryTagModel = nullptr;
     CategoryTabbarModel *mTabbarModel = nullptr;
     DataManager *mDataManager = nullptr;
+    QSettings *mlistSettings = nullptr;
 };
 
 //--------------------------------NodeList-----------------------

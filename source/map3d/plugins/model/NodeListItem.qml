@@ -116,8 +116,8 @@ Item {
     //shadow rectangleMainSearch
     Rectangle {
         id: dropShadowRect
-        width: rectMainSearch.width
-        height: rectMainSearch.height
+        //width: rectMainSearch.width
+        //height: rectMainSearch.height
         color: "black"
         radius: rectMainSearch.radius
         opacity: 0.06
@@ -126,6 +126,10 @@ Item {
         anchors.leftMargin: -5
         anchors.bottom: rectMainSearch.bottom
         anchors.bottomMargin: -5
+        anchors.right: rectMainSearch.right
+        anchors.rightMargin: -5
+        anchors.top: rectMainSearch.top
+        anchors.topMargin: -5
     }
     Rectangle {
         id: rectMainSearch
@@ -138,7 +142,7 @@ Item {
         anchors.left: parent.left
         //anchors.leftMargin: 20
         anchors.right: parent.right
-        anchors.rightMargin: 20
+        //anchors.rightMargin: 20
         radius: 15
 
         // Rectangle {
@@ -728,35 +732,43 @@ Item {
                             id: iconsRepeater
 
                             model: ["qrc:/Resources/battle-icon.jpg", "qrc:/Resources/target-icon.jpg", "qrc:/Resources/goto-icon.jpg", "qrc:/Resources/track-icon.jpg"]
-
-                            Rectangle {
-                                width: 30
-                                height: 30
-                                color: 'transparent'
-
-                                IconImage {
-                                    source: modelData
-                                    anchors.fill: parent
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        if (tableview.isAttackecd) {
-                                            tableview.isAttackecd = false
-                                        } else {
-                                            tableview.isAttackecd = true
-                                        }
-                                        if (index === 2) {
-                                            tableModel.goToPosition(
-                                                        lvDelegate.lvIndex)
-                                        } else if (index === 3) {
-                                            tableModel.trackPosition(
-                                                        lvDelegate.lvIndex)
-                                        }
+                            IconButton {
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: 30 / Style.monitorRatio
+                                height: 30 / Style.monitorRatio
+                                iconImageSource: modelData
+                                backgroundColor: "transparent"
+                                onClicked: {
+                                    if (tableview.isAttackecd) {
+                                        tableview.isAttackecd = false
+                                    } else {
+                                        tableview.isAttackecd = true
+                                    }
+                                    if (index === 2) {
+                                        tableModel.goToPosition(
+                                                    lvDelegate.lvIndex)
+                                    } else if (index === 3) {
+                                        tableModel.trackPosition(
+                                                    lvDelegate.lvIndex)
                                     }
                                 }
                             }
+
+                            // Rectangle {
+                            //     width: 30
+                            //     height: 30
+                            //     color: 'transparent'
+
+                            //     IconImage {
+                            //         source: modelData
+                            //         anchors.fill: parent
+                            //     }
+
+                            //     MouseArea {
+                            //         anchors.fill: parent
+
+                            //     }
+                            // }
                         }
                     }
                 }
