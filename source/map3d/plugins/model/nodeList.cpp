@@ -416,7 +416,7 @@ NodeList::NodeList(QQmlEngine *engine, MapControllerItem *mapItem, DataManager *
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, nodeModel, &NodeListModel::beginEndResetModel);
-    //    connect(timer, &QTimer::timeout, tabbarModel, &CategoryTabbarModel::beginEndResetModel);
+    connect(timer, &QTimer::timeout, tabbarModel, &CategoryTabbarModel::beginEndResetModel);
     connect(timer, &QTimer::timeout, categoryTagsModel, &CategoryTagModel::beginEndResetModel);
     connect(timer, &QTimer::timeout, mProxyModel, &NodeProxyModel::invalidateRowFilterInvoker);
     timer->start(1000);
