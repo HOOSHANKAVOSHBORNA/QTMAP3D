@@ -5,7 +5,6 @@
 
 FilterManager::FilterManager(QObject *parent) : QObject(parent)
 {
-
     mFilterFieldsColor = new QSortFilterProxyModel(this);
     mFilterFieldsColor->setFilterRole(Qt::DisplayRole);
     mFilterFieldsColor->setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -23,6 +22,7 @@ FilterManager::FilterManager(QObject *parent) : QObject(parent)
     mFilterFieldsNum->setFilterCaseSensitivity(Qt::CaseInsensitive);
     mFilterFieldsNumModel = new FilterFieldModel(this);
     mFilterFieldsNum->setSourceModel(mFilterFieldsNumModel);
+
 }
 
 FilterManager::~FilterManager()
@@ -86,7 +86,7 @@ bool FilterManager::checkNodeToShow(NodeData *nodeData, Tag *tag)
     if (it != nodeData->fieldData.end()) {
         switch (tag->comparision) {
         case Tag::Comparision::Equal:
-            if (it->value.toString().startsWith(tag->value.toString())) {
+            if (it->value.toString().startsWith(tag->value.toString(), Qt::CaseInsensitive)) {
                 return true;
             }
             break;

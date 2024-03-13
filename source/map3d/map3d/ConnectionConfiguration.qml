@@ -27,15 +27,25 @@ Item {
         Layout.maximumHeight: 745 / Style.monitorRatio
         spacing: 0
 
-        Button {
-            id: closeBtn
+//        Button {
+//            id: closeBtn
+//            Layout.preferredHeight: 40 / Style.monitorRatio
+//            Layout.preferredWidth: 40 / Style.monitorRatio
+//            Layout.topMargin: 30 / Style.monitorRatio
+//            Layout.alignment: Qt.AlignRight
+//            background: Image {
+//                source: "qrc:/Resources/close-icon.png"
+//            }
+
+//        }
+        IconButton{
+            id:closeBtn
             Layout.preferredHeight: 40 / Style.monitorRatio
             Layout.preferredWidth: 40 / Style.monitorRatio
             Layout.topMargin: 30 / Style.monitorRatio
             Layout.alignment: Qt.AlignRight
-            background: Image {
-                source: "qrc:/Resources/close-icon.png"
-            }
+            iconImageSource:"qrc:/Resources/close-icon.png"
+            backgroundColor: "transparent"
             onClicked: {
                 rootItem.connectionConfigCpp.clearUnsavedUiData()
             }
