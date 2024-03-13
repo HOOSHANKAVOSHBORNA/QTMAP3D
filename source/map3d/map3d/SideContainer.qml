@@ -185,7 +185,7 @@ Item {
                 isWindow: sideModel.get(5).isWindow
 
                 containerItem: Item{
-                    data: rootItem.settingItem
+                    data: rootItem.settingItem??0
                 }
 
                 onWindowClose: {
