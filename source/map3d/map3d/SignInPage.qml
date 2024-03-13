@@ -28,6 +28,13 @@ ColumnLayout {
     signal signInResponse
     spacing: 0
 
+   // Connections {
+   //     target: applicationCpp.userManager
+   //     function onSignedOut() {
+   //         passwordTxt.text = ""
+   //         usernameTxt.text = ''
+   //     }
+   // }
     onSignInResponse: {
         signInBtn.enabled = true
     }
@@ -95,7 +102,7 @@ ColumnLayout {
         leftPadding: 20 / Style.monitorRatio
 
         color: foregroundColorText
-        text: "test2"
+        text: ""
         placeholderText: activeFocus ? "" : "Enter your Username"
         placeholderTextColor: foregroundColorText
         background: Rectangle {
@@ -121,6 +128,7 @@ ColumnLayout {
             color: Style.foregroundColor
         }
     }
+
     TextField {
         id: passwordTxt
         Layout.fillWidth: true
@@ -133,7 +141,7 @@ ColumnLayout {
         placeholderText: activeFocus ? "" : "Enter your Password"
         placeholderTextColor: foregroundColorText
         echoMode: TextField.Password
-        text: "1234"
+        text: ""
         background: Rectangle {
             color: foregroundColorTextBox
             radius: height / 2

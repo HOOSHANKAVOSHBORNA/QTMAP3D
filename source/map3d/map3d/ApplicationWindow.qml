@@ -51,35 +51,35 @@ Window {
         anchors.fill: parent
 
         // DEBUG
-        TabBar {
-            id: debugTabbar
+        // TabBar {
+        //     id: debugTabbar
 
-            Layout.fillWidth: true
-            Layout.preferredHeight: 20
+        //     Layout.fillWidth: true
+        //     Layout.preferredHeight: 20
 
-            TabButton {
-                text: 'Login Page'
-                onClicked: {
-                    applicationCpp.pageIndex = 0
-                }
-            }
+        //     TabButton {
+        //         text: 'Login Page'
+        //         onClicked: {
+        //             applicationCpp.pageIndex = 0
+        //         }
+        //     }
 
-            TabButton {
-                text: 'Loading Page'
-                onClicked: {
-                    applicationCpp.pageIndex = 1
-                    applicationCpp.userManager.signedIn()
-                }
-            }
+        //     TabButton {
+        //         text: 'Loading Page'
+        //         onClicked: {
+        //             applicationCpp.pageIndex = 1
+        //             applicationCpp.userManager.signedIn()
+        //         }
+        //     }
 
-            TabButton {
-                text: 'Map Page'
+        //     TabButton {
+        //         text: 'Map Page'
 
-                onClicked: {
-                    applicationCpp.pageIndex = 2
-                }
-            }
-        }
+        //         onClicked: {
+        //             applicationCpp.pageIndex = 2
+        //         }
+        //     }
+        // }
 
         StackLayout {
             id: appStack

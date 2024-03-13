@@ -28,7 +28,6 @@ MapControllerItem::MapControllerItem(QQuickItem *parent):
     connect(mTimerFilterUpdate, &QTimer::timeout, this, [this](){
         getMapObject()->filterNodes();
     });
-    mTimerFilterUpdate->start(1000);
     // --------------------- I don't know why anyway :) ------------------------------------------
 }
 
@@ -142,12 +141,14 @@ void MapControllerItem::clearMap()
     if (getMapNode()->getNumChildren() > 3)
         getMapNode()->removeChild(3, getMapNode()->getNumChildren());
     qDebug() << "MapControllerItem::clearMap";
+    mTimerFilterUpdate->stop();
 }
 
 void MapControllerItem::initialize()
 {
     createSearchNodeManager();
     addBaselayers();
+    mTimerFilterUpdate->start(1000);
 }
 
 StatusBarSearchModel *MapControllerItem::statusBar() const

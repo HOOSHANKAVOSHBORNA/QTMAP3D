@@ -165,10 +165,13 @@ Item {
                     userManager.setMessage("")
                 }
                 function onSignedOut() {
+                    signInPage.passwordTxt = ""
+                    signInPage.usernameTxt = ""
                     rolePage.visible = false
                     signInPage.visible = true
                     heightDecrease.start()
                     topToBottomSignIn.start()
+                    userManager.message = ""
                 }
             }
         }
