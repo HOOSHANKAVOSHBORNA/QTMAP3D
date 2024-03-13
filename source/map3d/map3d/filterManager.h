@@ -137,7 +137,7 @@ public:
     Q_INVOKABLE void removeFilterTag(QString field, QVariant value, QString comp, Tag::LogicalOperator op = Tag::And);
     Q_INVOKABLE void removeFilterTag(int index);
     Q_INVOKABLE const QVector<Tag*> getFilterTags() const;
-    Q_INVOKABLE const Tag * const getFilterTagAt(int index);
+    Q_INVOKABLE Tag * const getFilterTagAt(int index);
 
     Q_INVOKABLE QSortFilterProxyModel *colorFilterFields() const;
     Q_INVOKABLE QSortFilterProxyModel *stringFilterFields() const;

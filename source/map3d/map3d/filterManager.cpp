@@ -186,7 +186,7 @@ const QVector<Tag *> FilterManager::getFilterTags() const
     return mFilterTags;
 }
 
-const Tag* const FilterManager::getFilterTagAt(int index)
+Tag* const FilterManager::getFilterTagAt(int index)
 {
     return mFilterTags[index];
 }

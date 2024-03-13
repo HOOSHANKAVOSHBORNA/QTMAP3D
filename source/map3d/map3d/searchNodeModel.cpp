@@ -153,6 +153,7 @@ void SearchNodeModel::revokeSettings()
             op = Tag::And;
         }
         mFilterManager->addFilterTag(key,data[0],data[1].toString(),op);
+        mFilterManager->getFilterTagAt(var)->isEnabled = false;
     }
     mFilterSettings->endGroup();
 }
