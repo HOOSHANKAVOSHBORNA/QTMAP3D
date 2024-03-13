@@ -37,8 +37,8 @@ public:
     explicit LocationManager(MapItem *mapItem, QObject *parent = nullptr);
     ~LocationManager();
     void myRemoveRow(int index);
-    void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
-    void editLocation(int index, QString newName, QString newDescription, QString newImageSource, QString newColor);
+    void addNewLocation(QString newName, QString newDescription, QString newColor);
+    void editLocation(int index, QString newName, QString newDescription, QString newColor);
 
     Q_INVOKABLE LocationProxyModel *locationProxyModel();
 
@@ -56,6 +56,9 @@ class LocationProxyModel : public QSortFilterProxyModel
     Q_OBJECT
     Q_PROPERTY(QString searchedName READ searchedName WRITE setSearchedName NOTIFY searchedNameChanged FINAL)
     Q_PROPERTY(QVector3D viewPoint READ viewPoint WRITE setViewPoint NOTIFY viewPointChanged FINAL)
+    Q_PROPERTY(QString imagePath READ imagePath WRITE setImagePath NOTIFY imagePathChanged FINAL)
+    Q_PROPERTY(bool imageCaptured READ imageCaptured WRITE setImageCaptured NOTIFY
+                   imageCapturedChanged FINAL)
 
 public:
     explicit LocationProxyModel(MapItem *mapItem, QObject *parent = nullptr);
@@ -68,9 +71,12 @@ public:
     Q_INVOKABLE void goToLocation(const QModelIndex &index);
     Q_INVOKABLE void goToLocation(double lat, double lang, double alt);
     Q_INVOKABLE void printCurrentLocation();
-    Q_INVOKABLE void addNewLocation(QString newName, QString newDescription, QString newImageSource, QString newColor);
+    Q_INVOKABLE void addNewLocation(QString newName, QString newDescription, QString newColor);
     Q_INVOKABLE QVector3D getCurrentXYZ();
-    Q_INVOKABLE void editLocation(const QModelIndex &index, QString newName, QString newDescription, QString newImageSource, QString newColor);
+    Q_INVOKABLE void editLocation(const QModelIndex &index,
+                                  QString newName,
+                                  QString newDescription,
+                                  QString newColor);
 
     QString searchedName() const;
     void setSearchedName(const QString &newSearchedName);
@@ -82,14 +88,33 @@ public:
     Q_INVOKABLE void addPlaceWindowClosed();
     Q_INVOKABLE void addPlaceWindowOpened();
 
+    Q_INVOKABLE void capture();
+
+    QString imagePath() const;
+    Q_INVOKABLE void setImagePath(const QString &newImagePath);
+
+    bool imageCaptured() const;
+    Q_INVOKABLE void setImageCaptured(bool newImageCaptured);
+
 signals:
     void searchedNameChanged();
     void viewPointChanged();
+    void imagePathChanged();
+    void imageCapturedChanged();
+
+private slots:
+    void onImageProcessComplete();
 
 private:
     MapItem *mMapItem;
     QString mSearchedWord;
     QVector3D mViewPoint;
+    CaptureCallback *mCaptureCallback = nullptr;
+
+    QString appDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    const QString savedDir = QString("locatoins");
+    QString mImagePath = QString("");
+    bool mImageCaptured = false;
 };
 
 // ------------------------------------------------------------ model
@@ -113,11 +138,12 @@ public:
     Q_INVOKABLE void myEditRow(QModelIndex index,
                                QString newName,
                                QString newDescription,
-                               QString newImageSource,
                                QString newColor);
 
-//    QVector<LocationItem *> locations() const;
-//    void setLocations(const QVector<LocationItem *> &newLocations);
+    //    QVector<LocationItem *> locations() const;
+    //    void setLocations(const QVector<LocationItem *> &newLocations);
+
+    QString getFilePath();
 
     MapItem *mapItem() const;
 

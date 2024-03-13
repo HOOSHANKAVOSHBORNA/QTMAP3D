@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import "../style"
 
 Button {
+    id: button
     property alias buttonText: buttonText.text
     property alias iconImageSource: iconImage.source
     property alias buttonColor: backgroundBtn.color
@@ -11,7 +12,7 @@ Button {
     property alias iconImageVisible: iconImage.visible
     property alias buttonBorder: backgroundBtn.border
     property alias iconImageColor: iconImage.color
-
+    hoverEnabled: true
     padding: 0
 
     background: Rectangle {
@@ -37,7 +38,7 @@ Button {
             id: buttonText
             font.pixelSize: Style.regularFontSize
             Layout.alignment: Qt.AlignVCenter
-            color: Style.backgroundColor
+            color: button.hovered ? "#01AED6" : Style.backgroundColor
         }
         Item {
             Layout.fillHeight: true

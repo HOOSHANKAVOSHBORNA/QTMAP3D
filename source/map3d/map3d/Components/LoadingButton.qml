@@ -1,56 +1,26 @@
 import QtQuick
 import QtQuick.Controls
-
+import QtQuick.Effects
 import "../style"
 
-Button {
-    id: button
+Item {
     property alias loadingRec: loadingRec
-    property alias loadingRecVisible: loadingRec.visible
     property alias loadingTimer: loadingTimer
     property alias buttonText: buttonText.text
     property alias buttonTextColor: buttonText.color
     property alias textId: buttonText
     property alias buttonColor: backgroundRec.color
     property alias backgroundColorOpacity: backgroundRec.color.a
-    property alias waitingTimer: waitingTimer
-    property alias opacityAnimation: opacityAnimation
+    property alias button: button
 
-    Timer {
-        id: waitingTimer
-        interval: 2000
-        onTriggered: {
-            buttonText.text = "Connect"
-            backgroundRec.color = Style.backgroundColor
-            backgroundRec.color = Style.foregroundColor
-            reverseAnimation.start()
-        }
+    function resetSignInBtn() {
+        buttonColor = Style.foregroundColor
+        loadingRec.anchors.leftMargin = 0
+        loadingRec.anchors.topMargin = 0
+        loadingTimer.stop()
     }
-
-    PropertyAnimation {
-        id: opacityAnimation
-        target: button
-        property: "backgroundColorOpacity"
-        from: 0
-        to: 0.2
-        duration: 100
-        onFinished: {
-            waitingTimer.start()
-        }
-    }
-
-    PropertyAnimation {
-        id: reverseAnimation
-        target: button
-        property: "backgroundColorOpacity"
-        from: 0.2
-        to: 1
-        duration: 100
-        onFinished: {
-            backgroundColorOpacity = 1
-            button.enabled = true
-            button.hoverEnabled = true
-        }
+    function startButtonLoading() {
+        loadingRec.anchors.topMargin = -2 / Style.monitorRatio
     }
 
     Timer {
@@ -82,30 +52,50 @@ Button {
             }
         }
     }
+    Button {
+        id: button
+        anchors.fill: parent
+        hoverEnabled: true
+        z: 1
+        background: Rectangle {
+            id: backgroundRec
+            radius: backgroundRec.height / 2
 
-    background: Rectangle {
-        id: backgroundRec
-        radius: backgroundRec.height / 2
+            Rectangle {
+                id: loadingRec
+                anchors.top: parent.top
+                anchors.left: parent.left
+                width: parent.width
+                height: parent.height
+                radius: parent.radius
+                color: Style.foregroundColor
+                opacity: 0.5
+                z: parent.z - 1
+            }
+        }
 
-        Rectangle {
-            id: loadingRec
-            anchors.top: parent.top
-            anchors.left: parent.left
-            width: parent.width
-            height: parent.height
-            radius: parent.radius
-            color: Style.foregroundColor
-            opacity: 0.5
-            z: parent.z - 1
-            visible: loadingRecVisible
+        contentItem: Text {
+            id: buttonText
+            color: Style.backgroundColor
+            font.pixelSize: Style.regularFontSize
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
         }
     }
 
-    contentItem: Text {
-        id: buttonText
-        color: Style.backgroundColor
-        font.pixelSize: Style.regularFontSize
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
+    MultiEffect {
+        id: shadow
+        source: button
+        z: button.z - 1
+        enabled: true
+        anchors.fill: button
+        shadowColor: "black"
+        shadowEnabled: button.hovered && button.enabled ? true : false
+        shadowHorizontalOffset: 10 / Style.monitorRatio
+        shadowVerticalOffset: 10 / Style.monitorRatio
+        shadowBlur: 1
+        shadowOpacity: 1
+        shadowScale: 0.98
+        paddingRect: Qt.rect(button.x, button.y, button.width, button.height)
     }
 }

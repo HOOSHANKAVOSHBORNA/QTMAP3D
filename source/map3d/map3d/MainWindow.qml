@@ -1,10 +1,10 @@
-import QtQuick 2.13
+﻿import QtQuick 2.13
 import QtQuick.Window 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import QtQuick.Controls.Material 2.12
 import QtQuick.Effects
-
+import "Components"
 import "style"
 
 Item {
@@ -49,9 +49,6 @@ Item {
 
                 sideContainer.settingItem: mainItem.mainPageCpp ? mainItem.mainPageCpp.settingsItem :  undefined
 
-                listWindowVisible: mainItem.listWindowVisible
-                onListWindowVisibleChanged: mainItem.listWindowVisible = listWindowVisible
-
                 onConnectionConfigCheckedChanged: mainItem.connectionConfigVisible
                                                   = connectionConfigChecked
 
@@ -90,6 +87,51 @@ Item {
         }
     }
 
+    IconButton {
+        id: btnList
+
+        padding: 0
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.rightMargin: 20 / Style.monitorRatio
+        anchors.topMargin: 40 / Style.monitorRatio
+        iconImageSource: "qrc:/Resources/list.png"
+        width: Math.ceil(40 / Style.monitorRatio)
+        height: Math.ceil(40 / Style.monitorRatio)
+
+        onCheckedChanged: {
+            mainItem.listWindowVisible = checked
+        }
+
+        display: AbstractButton.IconOnly
+        checkable: true
+        checked: mainItem.listWindowVisible
+
+        ToolTip {
+            y: 35
+            x: -btnList.width / 2
+
+            visible: false //btnList.hovered
+
+            contentItem: Text {
+                id: tooltipList
+                anchors.margins: 7 / Style.monitorRatio
+                text: 'List'
+                font.pixelSize: Style.regularFontSize
+                color: 'white'
+            }
+
+            background: Rectangle {
+                visible: btnList.hovered
+                // height: btnList.height
+                // width: tooltipList.contentWidth
+                radius: 10 / Style.monitorRatio
+
+                color: "#01AED6"
+            }
+        }
+    }
+
     ListWindow {
         visible: mainItem.listWindowVisible
         listWindowCpp: mainItem.mainPageCpp ? mainItem.mainPageCpp.getListWindow(
@@ -105,12 +147,16 @@ Item {
 
         width: 440 / Style.monitorRatio
         height: 745 / Style.monitorRatio
-
+        maximumWidth: 440 / Style.monitorRatio
+        minimumWidth: 440 / Style.monitorRatio
         visible: mainItem.connectionConfigVisible
 
         ConnectionConfiguration {
             id: settingsItem
-            anchors.fill: parent
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 60 / Style.monitorRatio
             closeBtn.visible: false
             connectionConfigCpp: applicationCpp.connectionConfigCpp
         }

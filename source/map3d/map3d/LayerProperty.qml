@@ -116,6 +116,7 @@ Item {
                     Layout.preferredHeight: 10
 
                     backgroundColor: rootItem.cppInterface ?  rootItem.cppInterface.color : "red"
+                    initialValue: rootItem.cppInterface ? rootItem.cppInterface.color.a : 1
 
                     //                    initialValue: rootItem.cppInterface.opacity
                     onValueChanged: value => {
