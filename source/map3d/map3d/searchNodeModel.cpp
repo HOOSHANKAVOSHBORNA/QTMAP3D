@@ -92,16 +92,13 @@ void SearchNodeModel::removeNode(osg::Node *node, osgEarth::Layer *layer)
 void SearchNodeModel::onTagEdited()
 {
     QVector<Tag *> tags = mFilterManager->getFilterTags();
-    mFilterSettings->beginGroup("filter");
-    mFilterSettings->remove("");
     for (int var = 0; var < tags.count(); ++var) {
         QVariantList list;
         list.insert(0,tags[var]->value);
         list.insert(1,tags[var]->comparision);
         list.insert(2,tags[var]->logicalOperator);
-        mFilterSettings->setValue(tags[var]->field,list);
+        mFilterSettings->setValue("filter/" + tags[var]->field,list);
     }
-    mFilterSettings->endGroup();
 }
 
 void SearchNodeModel::onNodeClicked(const QModelIndex &current)
@@ -144,9 +141,9 @@ void SearchNodeModel::revokeSettings()
 {
     mFilterSettings = new QSettings("Map3D",UserManager::instance()->userName());
     mFilterSettings->beginGroup("filter");
-    int groupKeysCount = mFilterSettings->allKeys().count();
+    int groupKeysCount = mFilterSettings->childKeys().count();
     for (int var = 0; var < groupKeysCount; ++var) {
-        QString key = mFilterSettings->allKeys().at(var);
+        QString key = mFilterSettings->childKeys().at(var);
         QVariantList data = mFilterSettings->value(key).toList();
         Tag::LogicalOperator op;
         if(data[2] == 1){

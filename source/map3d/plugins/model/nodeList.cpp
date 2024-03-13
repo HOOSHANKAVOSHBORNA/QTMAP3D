@@ -246,6 +246,8 @@ NodeProxyModel::NodeProxyModel(DataManager *dataManager, QObject *parent)
     :QSortFilterProxyModel(parent)
 {
     mDataManager = dataManager;
+    connect(mDataManager->filterManager(),&FilterManager::filterTagsEdited,this,&NodeProxyModel::onTagsEdited);
+    revokeSettings();
 }
 
 NodeProxyModel::~NodeProxyModel()
@@ -383,6 +385,25 @@ bool NodeProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourcePa
     return false;
 }
 
+void NodeProxyModel::revokeSettings()
+{
+    mlistSettings = new QSettings("Map3D",UserManager::instance()->userName());
+    mlistSettings->beginGroup("filter");
+    int groupKeysCount = mlistSettings->childKeys().count();
+    for (int var = 0; var < groupKeysCount; ++var) {
+        QString key = mlistSettings->childKeys().at(var);
+        QVariantList data = mlistSettings->value(key).toList();
+        Tag::LogicalOperator op;
+        if(data[2] == 1){
+            op = Tag::Or;
+        }else{
+            op = Tag::And;
+        }
+        mDataManager->filterManager()->addFilterTag(key,data[0],data[1].toString(),op);
+    }
+    mlistSettings->endGroup();
+}
+
 QString NodeProxyModel::filterSearch() const
 {
     return mFilterSearch;
@@ -391,6 +412,18 @@ QString NodeProxyModel::filterSearch() const
 void NodeProxyModel::setFilterSearch(const QString &newFilterSearch)
 {
     mFilterSearch = newFilterSearch;
+}
+
+void NodeProxyModel::onTagsEdited()
+{
+    QVector<Tag *> tags = mDataManager->filterManager()->getFilterTags();
+    for (int var = 0; var < tags.count(); ++var) {
+        QVariantList list;
+        list.insert(0,tags[var]->value);
+        list.insert(1,tags[var]->comparision);
+        list.insert(2,tags[var]->logicalOperator);
+        mlistSettings->setValue("list/" + tags[var]->field,list);
+    }
 }
 
 

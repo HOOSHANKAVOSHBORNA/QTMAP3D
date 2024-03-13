@@ -318,7 +318,7 @@ void LayerModel::setlayerSettings(osgEarth::Layer *layer)
 {
     if(mLayerSettings){
         mLayerSettings->beginGroup("layer");
-        if(mLayerSettings->allKeys().contains(QString::number(layer->getUID())) && mPropertyInterface){
+        if(mLayerSettings->childKeys().contains(QString::number(layer->getUID())) && mPropertyInterface){
             mPropertyInterface->setModelNodeLayer(layer);
             QList<QString> vec = mLayerSettings->value(QString::number(layer->getUID())).toStringList().toList();
             if((vec.length() >= 1 )&&(!vec.at(0).isEmpty())){
