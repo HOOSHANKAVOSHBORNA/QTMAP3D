@@ -326,6 +326,7 @@ Rectangle {
 
             function myOpen() {
                 rPopup.visible = true
+
                 locationCpp.addPlaceWindowOpened()
             }
 
@@ -335,6 +336,7 @@ Rectangle {
                 lvColors.selectedColor = "black"
 
                 rPopup.close()
+                locationCpp.setImagePath('')
                 locationCpp.addPlaceWindowClosed()
             }
 
@@ -367,10 +369,7 @@ Rectangle {
                 }
 
                 Button {
-                    topPadding: 0
-                    rightPadding: 0
-                    bottomPadding: 0
-                    leftPadding: 0
+                    padding: 0
 
                     background: Rectangle {
                         color: "transparent"
@@ -404,10 +403,7 @@ Rectangle {
                         Button {
                             id: iconLocation
 
-                            topPadding: 0
-                            rightPadding: 0
-                            bottomPadding: 0
-                            leftPadding: 0
+                            padding: 0
 
                             background: Rectangle {
                                 color: "transparent"
@@ -557,7 +553,25 @@ Rectangle {
 
                             Image {
                                 source: locationCpp !== undefined
-                                        && locationImage.currentIndex === 1 ? 'file:////home/client111/.local/share/Map3d/locatoins/shot.png' : 'qrc:/Resources/hand.png'
+                                        && locationCpp.imagePath
+                                        !== '' ? 'file:///'
+                                                 + locationCpp.imagePath : 'qrc:/Resources/hand.png'
+
+                                Button {
+                                    padding: 0
+                                    width: 50 / Style.monitorRatio
+                                    height: 50 / Style.monitorRatio
+                                    anchors.right: parent.right
+
+                                    background: IconImage {
+                                        source: 'qrc:/Resources/close.png'
+                                        color: Style.foregroundColor
+                                    }
+
+                                    onClicked: {
+                                        locationCpp.setImagePath('')
+                                    }
+                                }
                             }
                         }
                     }
@@ -812,6 +826,7 @@ Rectangle {
                                 tiLocationDescription.text = model.description
                                 lvColors.selectedColor = model.color
                                 rPopup.editIndex = model.index
+                                locationCpp.setImagePath(model.imageSource)
 
                                 rPopup.myOpen()
                             }

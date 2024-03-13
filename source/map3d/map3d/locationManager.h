@@ -86,7 +86,7 @@ public:
     Q_INVOKABLE void capture();
 
     QString imagePath() const;
-    void setImagePath(const QString &newImagePath);
+    Q_INVOKABLE void setImagePath(const QString &newImagePath);
 
 signals:
     void searchedNameChanged();
