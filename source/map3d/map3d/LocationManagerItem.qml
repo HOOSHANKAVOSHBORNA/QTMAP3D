@@ -648,6 +648,10 @@ Rectangle {
                                                 lvColors.selectedColor)
                                 }
 
+                                if (locationCpp.imageCaptured === '') {
+                                    locationCpp.imagePath = ''
+                                }
+
                                 rPopup.myClose()
                             }
                         }
