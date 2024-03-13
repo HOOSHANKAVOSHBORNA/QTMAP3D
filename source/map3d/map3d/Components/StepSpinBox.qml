@@ -23,39 +23,39 @@ Item {
     RowLayout {
         anchors.fill: parent
 
-//        ComboBox {
-//            id: control
-//            Layout.alignment: Qt.AlignVCenter
-//            Layout.preferredHeight: 20
-//            Layout.preferredWidth: 69
-//            model: [1000, 100, 10, 1, 0.1, 0.05, 0.01]
-//            currentIndex: rootItem.stepIndex
-////            font.pointSize: 10
-//            font.pixelSize: Style.smallFontSize
-//            displayText: model[currentIndex].toString()
+        //        ComboBox {
+        //            id: control
+        //            Layout.alignment: Qt.AlignVCenter
+        //            Layout.preferredHeight: 20
+        //            Layout.preferredWidth: 69
+        //            model: [1000, 100, 10, 1, 0.1, 0.05, 0.01]
+        //            currentIndex: rootItem.stepIndex
+        ////            font.pointSize: 10
+        //            font.pixelSize: Style.smallFontSize
+        //            displayText: model[currentIndex].toString()
 
-//            contentItem: Text {
-//                text: control.displayText
-//                color: Style.foregroundColor
-//                font.pixelSize:Style.smallFontSize
-//                horizontalAlignment: Qt.AlignHCenter
-//                verticalAlignment: Qt.AlignVCenter
-//            }
+        //            contentItem: Text {
+        //                text: control.displayText
+        //                color: Style.foregroundColor
+        //                font.pixelSize:Style.smallFontSize
+        //                horizontalAlignment: Qt.AlignHCenter
+        //                verticalAlignment: Qt.AlignVCenter
+        //            }
 
-//            background: Rectangle {
-//                color: bg30
-//                radius: 15
-//                IconImage {
-//                    width: 15 / Style.monitorRatio
-//                    height: 15 / Style.monitorRatio
-//                    source: "qrc:/Resources/down.png"
-//                    anchors.right: parent.right
-//                    anchors.verticalCenter: parent.verticalCenter
-//                    z: 3
-//                }
-//            }
-//            indicator: Item {}
-//        }
+        //            background: Rectangle {
+        //                color: bg30
+        //                radius: 15
+        //                IconImage {
+        //                    width: 15 / Style.monitorRatio
+        //                    height: 15 / Style.monitorRatio
+        //                    source: "qrc:/Resources/down.png"
+        //                    anchors.right: parent.right
+        //                    anchors.verticalCenter: parent.verticalCenter
+        //                    z: 3
+        //                }
+        //            }
+        //            indicator: Item {}
+        //        }
 
 
         ComboBox {
@@ -64,15 +64,15 @@ Item {
             Layout.preferredHeight: 20 / Style.monitorRatio
             Layout.preferredWidth: 69 / Style.monitorRatio
             model: [1000, 100, 10, 1, 0.1, 0.05, 0.01]
-font.pixelSize: Style.smallFontSize
+            font.pixelSize: Style.smallFontSize
             delegate: ItemDelegate {
                 width: control.width
                 contentItem: Text {
                     text: control.textRole
-                        ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
-                        : modelData
+                          ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole])
+                          : modelData
                     color: Style.foregroundColor
-//                    font.pixelSize: Style.smallFontSize
+                    //                    font.pixelSize: Style.smallFontSize
                     font: control.font
                     elide: Text.ElideRight
                     verticalAlignment: Text.AlignVCenter
@@ -84,25 +84,25 @@ font.pixelSize: Style.smallFontSize
             }
 
             indicator: IconImage {
-                                    width: 15 / Style.monitorRatio
-                                    height: 15 / Style.monitorRatio
-                                    source: "qrc:/Resources/down.png"
-                                    anchors.right: parent.right
-                                    anchors.verticalCenter: parent.verticalCenter
-                                }
+                width: 15 / Style.monitorRatio
+                height: 15 / Style.monitorRatio
+                source: "qrc:/Resources/down.png"
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+            }
 
-                        contentItem: Text {
-                            text: control.displayText
-                            color: Style.foregroundColor
-                            font.pixelSize:Style.smallFontSize
-                            horizontalAlignment: Qt.AlignHCenter
-                            verticalAlignment: Qt.AlignVCenter
-                        }
+            contentItem: Text {
+                text: control.displayText
+                color: Style.foregroundColor
+                font.pixelSize:Style.smallFontSize
+                horizontalAlignment: Qt.AlignHCenter
+                verticalAlignment: Qt.AlignVCenter
+            }
 
 
-                                    background: Rectangle {
-                                        color: bg30
-                                        radius: 15 }
+            background: Rectangle {
+                color: bg30
+                radius: 15 }
 
             popup: Popup {
                 y: control.height - 1

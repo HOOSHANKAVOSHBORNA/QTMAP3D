@@ -103,12 +103,13 @@ Window {
                     spacing: 0
 
                     CustomButton {
+                        id: trackBtn
                         Layout.fillWidth: true
                         Layout.preferredHeight: 30 / Style.monitorRatio
                         buttonText: "Track"
                         buttonColor: "transparent"
-                        buttonTextColor: Style.foregroundColor
-                        iconImageColor: Style.foregroundColor
+                        buttonTextColor: trackBtn.hovered ? "#01AED6" : Style.foregroundColor
+                        iconImageColor: trackBtn.hovered ? "#01AED6" : Style.foregroundColor
                         iconImageVisible: true
                         iconImageSource: "qrc:/Resources/track-icon.png"
                         onClicked: {
@@ -124,12 +125,13 @@ Window {
                         Layout.alignment: Qt.AlignCenter
                     }
                     CustomButton {
+                        id: goToBtn
                         Layout.fillWidth: true
                         Layout.preferredHeight: 30 / Style.monitorRatio
                         buttonText: "Go to"
                         buttonColor: "transparent"
-                        buttonTextColor: Style.foregroundColor
-                        iconImageColor: Style.foregroundColor
+                        buttonTextColor: goToBtn.hovered ? "#01AED6" : Style.foregroundColor
+                        iconImageColor: goToBtn.hovered ? "#01AED6" : Style.foregroundColor
                         iconImageVisible: true
                         iconImageSource: "qrc:/Resources/easy-to-find.png"
                         onClicked: {

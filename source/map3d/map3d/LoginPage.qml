@@ -98,8 +98,7 @@ Item {
 
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: 50 / Style.monitorRatio
-            anchors.rightMargin: 50 / Style.monitorRatio
+            anchors.leftMargin: 60 / Style.monitorRatio
             connectionConfigCpp: loginPage.connectionConfigCpp
             closeBtn.onClicked: {
                 connectionPopUp.visible = false
@@ -164,6 +163,12 @@ Item {
                     signInPage.signInBtn.loadingTimer.stop()
                     signInPage.signInBtn.resetSignInBtn()
                     userManager.setMessage("")
+                }
+                function onSignedOut() {
+                    rolePage.visible = false
+                    signInPage.visible = true
+                    heightDecrease.start()
+                    topToBottomSignIn.start()
                 }
             }
         }
