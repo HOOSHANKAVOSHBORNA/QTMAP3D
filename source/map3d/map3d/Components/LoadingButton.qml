@@ -81,6 +81,10 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
         }
+
+        Keys.onReturnPressed: {
+            button.clicked()
+        }
     }
 
     MultiEffect {

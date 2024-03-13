@@ -11,10 +11,10 @@ Window {
     property var listWindowCpp: undefined
     property var tabbarModel: listWindowCpp ? listWindowCpp.tabbarModel : undefined
 
-    title:"Node List"
+    title: "Node List"
     width: 1000
     height: 600
-
+    minimumWidth: 1500 / Style.monitorRatio
     //    color: 'transparent'
     //    flags: Qt.FramelessWindowHint
     Rectangle {
