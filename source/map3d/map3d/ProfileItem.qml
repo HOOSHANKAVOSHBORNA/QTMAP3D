@@ -80,14 +80,9 @@ Item {
             Layout.preferredWidth: 270 / Style.monitorRatio
             Layout.topMargin: 10 / Style.monitorRatio
             Layout.fillWidth: true
-
-            hoverEnabled: true
             iconImageSource: "qrc:/Resources/circular-logout.png"
             iconImageVisible: true
             buttonText: "Log out"
-            buttonColor: logoutBtn.hovered ? "#01AED6" : "transparent"
-            buttonTextColor: Style.foregroundColor
-            buttonBorder.color: Style.foregroundColor
 
             onClicked: {
                 applicationCpp.userManager.signedOut()

@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import "style"
+import "Components"
 
 Rectangle {
     id: rLocationManager
@@ -209,28 +210,11 @@ Rectangle {
                 }
             }
 
-            Button {
+            CustomButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 20
-
                 padding: 0
-
-                background: Rectangle {
-                    color: 'transparent'
-                }
-
-                contentItem: Rectangle {
-                    anchors.fill: parent
-                    color: fg80
-                    radius: 25
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: 'Go To Location...'
-                        color: Style.backgroundColor
-                    }
-                }
-
+                buttonText: "Go To Location"
                 onClicked: {
                     listModel.goToLocation(parseFloat(tiLat.text),
                                            parseFloat(tiLang.text),
@@ -245,39 +229,17 @@ Rectangle {
                 radius: 1
             }
 
-            Rectangle {
+            CustomButton {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 30 / Style.monitorRatio
-                radius: height / 2
-                color: fg80
+                buttonText: "Add place"
+                iconImageVisible: true
+                iconImageSource: "qrc:/Resources/location-add.png"
 
-                RowLayout {
-                    anchors.centerIn: parent
-                    spacing: 4 / Style.monitorRatio
-
-                    IconImage {
-                        Layout.preferredWidth: 22 / Style.monitorRatio
-                        Layout.preferredHeight: 22 / Style.monitorRatio
-                        source: "qrc:/Resources/location-add.png"
-                        color: Style.backgroundColor
-                    }
-
-                    Text {
-                        text: "Add place"
-                        font.family: Style.fontFamily
-                        font.pixelSize: Style.regularFontSize
-                        color: Style.backgroundColor
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-
-                    onClicked: {
-                        rPopup.editIndex = -1
-                        locationCpp.setImagePath('')
-                        rPopup.myOpen()
-                    }
+                onClicked: {
+                    rPopup.editIndex = -1
+                    locationCpp.setImagePath('')
+                    rPopup.myOpen()
                 }
             }
 
@@ -370,20 +332,15 @@ Rectangle {
                     font.pixelSize: Style.titleFontSize
                 }
 
-                Button {
-                    padding: 0
-
-                    background: Rectangle {
-                        color: "transparent"
-                    }
-
+                IconButton {
                     anchors.verticalCenter: txtAddPlace.verticalCenter
                     anchors.right: parent.right
                     anchors.rightMargin: 20 / Style.monitorRatio
-                    icon.source: "qrc:/Resources/add-place-close.png"
-                    icon.width: 24 / Style.monitorRatio
-                    icon.height: 24 / Style.monitorRatio
-
+                    width: 26 / Style.monitorRatio
+                    height: 26 / Style.monitorRatio
+                    Layout.alignment: Qt.AlignHCenter
+                    iconImageSource: "qrc:/Resources/add-place-close.png"
+                    backgroundColor: "transparent"
                     onClicked: rPopup.myClose()
                 }
 
@@ -402,19 +359,13 @@ Rectangle {
                         spacing: 1 / Style.monitorRatio
                         Layout.bottomMargin: 2 / Style.monitorRatio
 
-                        Button {
+                        IconButton {
                             id: iconLocation
-
-                            padding: 0
-
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
-                            icon.source: "qrc:/Resources/add-place-location.png"
-                            icon.width: 26 / Style.monitorRatio
-                            icon.height: 26 / Style.monitorRatio
-                            icon.color: Style.foregroundColor
+                            width: 26 / Style.monitorRatio
+                            height: 26 / Style.monitorRatio
+                            Layout.alignment: Qt.AlignHCenter
+                            iconImageSource: "qrc:/Resources/add-place-location.png"
+                            backgroundColor: "transparent"
                         }
 
                         Label {
@@ -523,19 +474,14 @@ Rectangle {
                                     anchors.centerIn: parent
                                     spacing: 3 / Style.monitorRatio
 
-                                    Button {
-                                        padding: 0
-
-                                        background: Rectangle {
-                                            color: "transparent"
-                                        }
-
+                                    IconButton {
+                                        width: 30 / Style.monitorRatio
+                                        height: 30 / Style.monitorRatio
                                         opacity: 0.75
                                         anchors.horizontalCenter: txtTakePhoto.horizontalCenter
-                                        icon.source: "qrc:/Resources/add-place-add-camera.png"
-                                        icon.width: 30 / Style.monitorRatio
-                                        icon.height: 30 / Style.monitorRatio
-                                        icon.color: Style.foregroundColor
+                                        iconColor: hovered ? Style.hoverColor : fg80
+                                        iconImageSource: "qrc:/Resources/add-place-add-camera.png"
+                                        backgroundColor: "transparent"
 
                                         onClicked: {
                                             locationCpp.capture()
@@ -803,22 +749,13 @@ Rectangle {
                                 }
                             }
                         }
-
-                        Button {
-                            topPadding: 0
-                            rightPadding: 0
-                            bottomPadding: 0
-                            leftPadding: 0
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
+                        IconButton {
+                            width: 25 / Style.monitorRatio
+                            height: 25 / Style.monitorRatio
                             opacity: 0.75
-                            icon.source: "qrc:/Resources/location-edit.png"
-                            icon.width: 25 / Style.monitorRatio
-                            icon.height: 25 / Style.monitorRatio
-                            icon.color: Style.backgroundColor
-
+                            iconColor: hovered ? Style.hoverColor : Style.backgroundColor
+                            iconImageSource: "qrc:/Resources/location-edit.png"
+                            backgroundColor: "transparent"
                             onClicked: {
                                 lvLocationManger.model.goToLocation(
                                             lvLocationManger.model.index(index,
@@ -838,21 +775,13 @@ Rectangle {
                             }
                         }
 
-                        Button {
-                            topPadding: 0
-                            rightPadding: 0
-                            bottomPadding: 0
-                            leftPadding: 0
-                            background: Rectangle {
-                                color: "transparent"
-                            }
-
+                        IconButton {
+                            width: 25 / Style.monitorRatio
+                            height: 25 / Style.monitorRatio
                             opacity: 0.75
-                            icon.source: "qrc:/Resources/location-delete.png"
-                            icon.width: 25 / Style.monitorRatio
-                            icon.height: 25 / Style.monitorRatio
-                            icon.color: Style.backgroundColor
-
+                            iconColor: hovered ? Style.hoverColor : Style.backgroundColor
+                            iconImageSource: "qrc:/Resources/location-delete.png"
+                            backgroundColor: "transparent"
                             onClicked: lvLocationManger.model.myRemoveRow(
                                            lvLocationManger.model.index(index,
                                                                         0))

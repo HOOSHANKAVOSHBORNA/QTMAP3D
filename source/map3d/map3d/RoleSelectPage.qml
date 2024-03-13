@@ -2,10 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "style"
+import "Components"
 
 ColumnLayout {
     property var roleSelectionModel: undefined
     property var connectionConfigCpp: undefined
+    property var userManager: undefined
     property alias connectionStatus: connectionStatus
     property alias signInBtn: signInBtn
     property alias backBtn: backBtn
@@ -13,6 +15,16 @@ ColumnLayout {
     property alias selectRole: roleSelectionView.currentIndex
 
     spacing: 0
+
+    Timer {
+        id: serverResponseTimer
+        interval: 5000
+        onTriggered: {
+            signInBtn.enabled = true
+            signInBtn.resetSignInBtn()
+            userManager.setMessage("No Response")
+        }
+    }
 
     Button {
         id: backBtn
@@ -126,27 +138,21 @@ ColumnLayout {
             Layout.leftMargin: 5 / Style.monitorRatio
         }
     }
-    Button {
+
+    LoadingButton {
         id: signInBtn
         Layout.preferredHeight: 40 / Style.monitorRatio
         Layout.fillWidth: true
-        Layout.topMargin: Style.smallFontSize
-        hoverEnabled: true
-        background: Rectangle {
-            color: Style.foregroundColor
-            radius: width / (Style.monitorRatio * 2)
-        }
-        contentItem: Text {
-            text: "Sign in"
-            font.pixelSize: Style.regularFontSize
-            color: parent.hovered
-                   && parent.enabled ? "#01AED6" : Style.backgroundColor
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
-
-        onClicked: {
-
+        Layout.topMargin: 14 / Style.monitorRatio
+        buttonColor: Style.foregroundColor
+        buttonText: "Sign in"
+        button.onClicked: {
+            signInBtn.enabled = false
+            signInBtn.buttonColor = "silver"
+            userManager.setMessage("")
+            startButtonLoading()
+            loadingTimer.start()
+            serverResponseTimer.start()
         }
     }
 }

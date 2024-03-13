@@ -76,8 +76,8 @@ void LayerPropertyItem::setIsVisible(bool newIsVisible)
         return;
 
 
-    auto layerVisible = dynamic_cast<osgEarth::VisibleLayer *>(mModelNodeLayer.get());
-    layerVisible->setVisible(newIsVisible);
+    // auto layerVisible = dynamic_cast<osgEarth::VisibleLayer *>(mModelNodeLayer.get());
+    // layerVisible->setVisible(newIsVisible);
 
     emit isVisibleChanged();
 
@@ -131,12 +131,12 @@ void LayerPropertyItem::setLayerSettings(QSettings *setting)
 {
 
     mLayerSetting = setting;
-    mLayerSetting->beginGroup("layer");
     if(mModelNodeLayer){
+        mLayerSetting->beginGroup("layer");
         mLayerSetting->setValue(QString::number(mModelNodeLayer->getUID()),mSettingList);
+        mLayerSetting->endGroup();
     }
     mSettingList.resize(3);
-    mLayerSetting->endGroup();
 }
 
 QList<QString> LayerPropertyItem::getSettingList()

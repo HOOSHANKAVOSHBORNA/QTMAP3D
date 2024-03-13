@@ -28,13 +28,6 @@ ColumnLayout {
     signal signInResponse
     spacing: 0
 
-    function resetSignInBtn() {
-        signInBtn.buttonColor = Style.foregroundColor
-        signInBtn.loadingRec.anchors.leftMargin = 0
-        signInBtn.loadingRec.anchors.topMargin = 0
-        signInBtn.loadingTimer.stop()
-    }
-
     onSignInResponse: {
         signInBtn.enabled = true
     }
@@ -44,7 +37,7 @@ ColumnLayout {
         interval: 5000
         onTriggered: {
             signInBtn.enabled = true
-            resetSignInBtn()
+            signInBtn.resetSignInBtn()
             userManager.setMessage("No Response")
         }
     }
@@ -167,44 +160,21 @@ ColumnLayout {
         }
     }
 
-    Item {
-        Layout.preferredHeight: 40 / Style.monitorRatio
-        Layout.fillWidth: true
-        Layout.topMargin: 14 / Style.monitorRatio
-
         LoadingButton {
             id: signInBtn
+            Layout.preferredHeight: 40 / Style.monitorRatio
+            Layout.fillWidth: true
+            Layout.topMargin: 14 / Style.monitorRatio
             z: 0
-            anchors.fill: parent
-            hoverEnabled: true
             buttonColor: Style.foregroundColor
             buttonText: "Sign in"
-            loadingRecVisible: true
-            onClicked: {
+            button.onClicked: {
                 signInBtn.enabled = false
                 signInBtn.buttonColor = "silver"
                 userManager.setMessage("")
-                loadingRec.anchors.topMargin = -2 / Style.monitorRatio
+                startButtonLoading()
                 loadingTimer.start()
                 serverResponseTimer.start()
             }
         }
-
-        MultiEffect {
-            id: shadow
-            source: signInBtn
-            z: signInBtn.z - 1
-            enabled: true
-            anchors.fill: signInBtn
-            shadowColor: "black"
-            shadowEnabled: signInBtn.hovered && signInBtn.enabled ? true : false
-            shadowHorizontalOffset: 10 / Style.monitorRatio
-            shadowVerticalOffset: 10 / Style.monitorRatio
-            shadowBlur: 1
-            shadowOpacity: 1
-            shadowScale: 0.98
-            paddingRect: Qt.rect(signInBtn.x, signInBtn.y, signInBtn.width,
-                                 signInBtn.height)
-        }
-    }
 }

@@ -40,7 +40,6 @@ Item {
                 width: 40 / Style.monitorRatio
                 height: 40 / Style.monitorRatio
                 iconImageSource:"qrc:/Resources/add.png"
-                iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
                 backgroundColor: "transparent"
             }
 
@@ -61,7 +60,6 @@ Item {
                 width: 40 / Style.monitorRatio
                 height: 40 / Style.monitorRatio
                 iconImageSource:"qrc:/Resources/minus.png"
-                iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
                 backgroundColor: "transparent"
             }
         }
@@ -73,7 +71,6 @@ Item {
             Layout.preferredWidth: 40 / Style.monitorRatio
 
             iconImageSource:"qrc:/Resources/direction.png"
-            iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
             backgroundColor: Style.backgroundColor
             onClicked: {
                 rotateCameraHandler.visible = true
@@ -97,7 +94,6 @@ Item {
             Layout.preferredHeight: 40 / Style.monitorRatio
             Layout.preferredWidth: 40 / Style.monitorRatio
             iconImageSource:"qrc:/Resources/home.png"
-            iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
             backgroundColor: Style.backgroundColor
 
             onClicked: btnHomeClicked()
@@ -109,7 +105,6 @@ Item {
             Layout.preferredHeight: 40 / Style.monitorRatio
             Layout.preferredWidth: 40 / Style.monitorRatio
             iconImageSource:mode === "projection" ? "qrc:///Resources/threeD.png" : "qrc:/Resources/twoD.png"
-            iconColor:  hovered ? (pressed ? Style.foregroundColor : Style.hoverColor) : (pressed ? Style.hoverColor : Style.foregroundColor)
             backgroundColor: Style.backgroundColor
 
             onClicked: {

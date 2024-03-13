@@ -10,7 +10,7 @@ Rectangle {
 
     property alias sideContainer: sideContainer
 
-    property alias listWindowVisible: btnList.checked
+    // property alias listWindowVisible: btnList.checked
     property alias connectionConfigChecked: btnConnection.checked
     property alias pinChecked: btnPin.checked
     property alias themeChecked: btnTheme.checked
@@ -173,50 +173,6 @@ Rectangle {
 
                                     color: "#01AED6"
                                 }
-                            }
-                        }
-                    }
-
-                    Button {
-                        id: btnList
-
-                        padding: 0
-
-                        icon {
-                            source: "qrc:/Resources/list.png"
-                            width: Math.ceil(35 / Style.monitorRatio)
-                            height: Math.ceil(35 / Style.monitorRatio)
-                        }
-                        background: Rectangle {
-                            radius: Math.ceil(10 / Style.monitorRatio)
-                            color: btnList.checked ? fg50 : "transparent"
-                        }
-
-                        display: AbstractButton.IconOnly
-
-                        checkable: true
-
-                        ToolTip {
-                            y: 0
-                            x: 35
-
-                            visible: btnList.hovered
-
-                            contentItem: Text {
-                                id: tooltipList
-                                anchors.margins: 7 / Style.monitorRatio
-                                text: 'List'
-                                font.pixelSize: Style.regularFontSize
-                                color: 'white'
-                            }
-
-                            background: Rectangle {
-                                visible: btnList.hovered
-                                height: btnList.height
-                                width: tooltipList.contentWidth + 14
-                                radius: 10 / Style.monitorRatio
-
-                                color: "#01AED6"
                             }
                         }
                     }
@@ -435,7 +391,6 @@ Rectangle {
             checked: false
             isWindow: false
         }
-
 
         ListElement {
             name: "Settings"

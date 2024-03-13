@@ -139,13 +139,25 @@ void LayerModel::onVisibleItemClicked(const QModelIndex &current)
     QModelIndex indexSource = mapToSource(current);
     QStandardItem *item = mSourceModel->itemFromIndex(indexSource);
     // bool visible = item->data(VisibleRole).toBool();
+    // QStandardItem *parentItem = item->parent();
+
+    // if (!parentItem) {
+    //     parentItem = mSourceModel->invisibleRootItem();
+    // }
 
     auto layer = item->data(LayerRole).value<osgEarth::Layer*>();
+
+    mPropertyInterface->setModelNodeLayer(layer);
+
     auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
     if(visibleLayer){
+        bool isVisible = visibleLayer->getVisible();
+        visibleLayer->setVisible(!isVisible);
         setLayerVisible(visibleLayer);
-        setItemVisible(item, visibleLayer->getVisible());
+        setItemVisible(item, !isVisible);
     }
+
+
 }
 
 
@@ -313,7 +325,9 @@ void LayerModel::setlayerSettings(osgEarth::Layer *layer)
                 mPropertyInterface->setColor(vec[0]);
             }
             if((vec.length() >= 2 )&&(!vec.at(1).isEmpty())){
-                mPropertyInterface->setIsVisible(vec[1].startsWith("t",Qt::CaseInsensitive));
+                // mPropertyInterface->setIsVisible(vec[1].startsWith("t",Qt::CaseInsensitive));
+                auto visibleLayer = dynamic_cast<osgEarth::VisibleLayer*>(layer);
+                visibleLayer->setVisible(vec[1].startsWith("t",Qt::CaseInsensitive));
             }
             if((vec.length() >= 13 )&&(!vec.at(2).isEmpty())){
                 mPropertyInterface->setOpacity(vec[2].toDouble());
@@ -336,7 +350,7 @@ void LayerModel::setPropertyInterface(LayerPropertyItem *newPropertyInterface)
 void LayerModel::setLayerVisible(osgEarth::VisibleLayer *layer)
 {
     bool visible = layer->getVisible();
-    mPropertyInterface->setIsVisible(!visible);
+    mPropertyInterface->setIsVisible(visible);
 }
 
 bool LayerModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const

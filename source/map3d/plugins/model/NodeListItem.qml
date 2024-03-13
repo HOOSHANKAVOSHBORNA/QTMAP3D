@@ -54,11 +54,11 @@ Item {
         id: txtObjectList
         text: "Object list"
         anchors.top: parent.top
-        anchors.topMargin: 20
+        anchors.topMargin: 20 / Style.monitorRatio
         anchors.left: parent.left
         color: Style.foregroundColor
         font.family: Style.fontFamily
-        font.pointSize: Style.titleFontSize
+        font.pixelSize: Style.titleFontSize
         font.bold: true
     }
 
@@ -96,7 +96,7 @@ Item {
                         text: model.display
                         color: index === repeaterNodeTypeFilter.currentIndex ? Style.hoverColor : Style.foregroundColor
                         font.family: Style.fontFamily
-                        font.pointSize: Style.regularFontSize
+                        font.pixelSize: Style.regularFontSize
                     }
 
                     MouseArea {
@@ -104,7 +104,8 @@ Item {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             repeaterNodeTypeFilter.currentIndex = index
-                            tableModel.filterCategoryTag(txtNodeTypeFilter.text)
+                            tableModel.setFilterCategoryTag(
+                                        txtNodeTypeFilter.text)
                         }
                     }
                 }
@@ -112,43 +113,126 @@ Item {
         }
     }
 
-    //-------------------------------------------Filter-------------------------
-    // BOOKMARK: mainfilter
+    //shadow rectangleMainSearch
     Rectangle {
-        id: filterRect
-        anchors.top: rectCategoryTag.bottom
-        color: /*Style.backgroundColor*/ 'royalblue'
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 135 / Style.monitorRatio /*69 / Style.monitorRatio*/
+        id: dropShadowRect
+        width: rectMainSearch.width
+        height: rectMainSearch.height
+        color: "black"
+        radius: rectMainSearch.radius
+        opacity: 0.06
         z: -1
+        anchors.left: rectMainSearch.left
+        anchors.leftMargin: -5
+        anchors.bottom: rectMainSearch.bottom
+        anchors.bottomMargin: -5
+    }
+    Rectangle {
+        id: rectMainSearch
+        color: Style.backgroundColor
+        //border.color: "black"
+        anchors.top: rectCategoryTag.bottom
+        anchors.topMargin: 20
+        //width: parent.width
+        height: searchRect.height + filterRect.height + 20 + 20 //parent.heightStyle
+        anchors.left: parent.left
+        //anchors.leftMargin: 20
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        radius: 15
 
-        Filter {
-            id: dropDown
-            property int innerWidth
-            anchors.top: filterRect.top
+        // Rectangle {
+        //     id: dropShadowRect
+        //     property real offset: Math.min(parent.width * 0.03,
+        //                                    parent.height * 0.03)
+        //     color: "black"
+        //     width: parent.width
+        //     height: parent.height
+        //     z: -1
+        //     opacity: 0.06
+        //     radius: rectMainSearch.radius + 2
+        //     anchors.left: parent.left
+        //     anchors.leftMargin: -offset
+        //     anchors.top: parent.top
+        //     anchors.topMargin: offset
+        // }
+        Rectangle {
+            id: searchRect
             anchors.left: parent.left
-            filterManager: rootItem.filterManager
+            anchors.leftMargin: 10 / Style.monitorRatio
+            height: 28 / Style.monitorRatio
+            width: 300 / Style.monitorRatio
+            anchors.top: parent.top //rectCategoryTag.bottom
+            anchors.topMargin: 20 / Style.monitorRatio
+            radius: 15
+            color: rootItem.fg20
+            IconImage {
+                id: searchIcon
+                anchors.left: parent.left
+                anchors.leftMargin: 10 / Style.monitorRatio
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/resources/search.png" //"qrc:/Resources/search-icon.jpg"
+                width: 24 / Style.monitorRatio
+                height: 24 / Style.monitorRatio
+                color: rootItem.fg75
+            }
+            TextField {
+                id: txtSearch
+                anchors.left: searchIcon.right
+                anchors.right: parent.right
+                //anchors.leftMargin: searchIcon.width
+                placeholderText: "...Search"
+                color: Style.foregroundColor
+                font.family: Style.fontFamily
+                font.pixelSize: Style.smallFontSize
+                anchors.verticalCenter: parent.verticalCenter
+                selectedTextColor: Style.backgroundColor
+                selectionColor: Style.foregroundColor
+                placeholderTextColor: rootItem.fg50
+                //wrapMode: Text.WrapAnywhere
+                background: Rectangle {
+                    color: "transparent"
+                    radius: 15
+                }
+                onTextChanged: {
+                    tableModel.setFilterSearch(txtSearch.text)
+                }
+            }
+        }
+
+        //-------------------------------------------Filter-------------------------
+        // BOOKMARK: mainfilter
+        Rectangle {
+            id: filterRect
+            anchors.top: searchRect.bottom
+            color: Style.backgroundColor //'royalblue'
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 135 / Style.monitorRatio /*69 / Style.monitorRatio*/
+
+            //z: -1
+            Filter {
+                id: dropDown
+                property int innerWidth
+                anchors.top: filterRect.top
+                anchors.left: parent.left
+                filterManager: rootItem.filterManager
+            }
         }
     }
-
     //------------------------------------------TabBar------------------------------
     Rectangle {
         id: categoryRect
         color: Style.backgroundColor
         width: rootItem.width
         height: 50
-        anchors.top: filterRect.bottom
+        anchors.top: rectMainSearch.bottom
         anchors.topMargin: 30
         anchors.left: rootItem.left
         anchors.right: rootItem.right
 
         property int currentIndex: 0
 
-        //anchors.rightMargin: 20
-        //Layout.fillHeight: true
-        //Layout.fillWidth: true
-        //            Layout.bottomMargin: 1
         TabBar {
             id: tabBar
             width: parent.width
@@ -173,14 +257,14 @@ Item {
 
                     Component.onCompleted: {
 
-                        //                        tableModel.filterStringColumn(repeater.itemAt(0).text)
+                        //tableModel.filterStringColumn(repeater.itemAt(0).text)
                         //console.log(repeater.itemAt(0).text)
                     }
 
                     text: model.display
 
                     onClicked: {
-                        tableModel.filterStringColumn(txtTabbar.text)
+                        tableModel.setFilterColumn(txtTabbar.text)
                         categoryRect.currentIndex = model.index
                     }
                     background: Rectangle {
@@ -205,8 +289,8 @@ Item {
                         anchors.bottom: tabBarBack.bottom
                         anchors.bottomMargin: 5
                         text: tabMain.text
-                        font.family: "Roboto"
-                        font.pointSize: Style.regularFontSize
+                        font.family: Style.fontFamily
+                        font.pixelSize: Style.regularFontSize
                         color: tabBar.currentIndex
                                === model.index ? Style.foregroundColor : Style.disableColor
                     }
@@ -240,7 +324,7 @@ Item {
                 text: model.display
                 color: Style.foregroundColor
                 font.family: Style.fontFamily
-                font.pointSize: Style.regularFontSize
+                font.pixelSize: Style.regularFontSize
                 //anchors.centerIn: parent
                 anchors.left: model.column === 2 ? parent.left : undefined
                 anchors.centerIn: model.column === 2 ? undefined : parent
@@ -382,7 +466,7 @@ Item {
                                     text: model.display
 
                                     elide: Text.ElideRight
-                                    font.pointSize: Style.regularFontSize
+                                    font.pixelSize: Style.regularFontSize
                                     font.family: Style.fontFamily
                                     color: Style.foregroundColor
                                     anchors.left: model.column === 2 ? parent.left : undefined
@@ -452,7 +536,7 @@ Item {
 
                 //                    elide: Text.ElideRight
                 //                    //                    width: parent.width - 3
-                //                    font.pointSize: 17 / Style.monitorRatio
+                //                    font.pixelSize: 17 / Style.monitorRatio
                 //                    font.family: Style.fontFamily
                 //                    color: Style.foregroundColor
                 //                    //anchors.fill: parent
@@ -532,7 +616,7 @@ Item {
                     //                    var fixedLengs = tableview.columnZero + tableview.columnIcons * 6
                     //                    var columnProviderSize = (tableview.width - fixedLengs)
                     //                            / (tableModel.columnCount() - 6)
-                    var columnProviderSize = 150
+                    var columnProviderSize = 100
                     //console.log(rootItem.width / tableModel.columnCount())
                     if (column === 0) {
                         return tableview.columnZero
@@ -657,18 +741,17 @@ Item {
                                     anchors.fill: parent
                                     onClicked: {
                                         if (tableview.isAttackecd) {
-                                    tableview.isAttackecd = false
+                                            tableview.isAttackecd = false
                                         } else {
-                                  tableview.isAttackecd = true
+                                            tableview.isAttackecd = true
                                         }
-                                        if(index === 2){
+                                        if (index === 2) {
                                             tableModel.goToPosition(
                                                         lvDelegate.lvIndex)
-                                        }else if(index === 3){
-                                            tableModel.trackPosition(lvDelegate.lvIndex)
+                                        } else if (index === 3) {
+                                            tableModel.trackPosition(
+                                                        lvDelegate.lvIndex)
                                         }
-
-
                                     }
                                 }
                             }
