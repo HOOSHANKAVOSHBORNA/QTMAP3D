@@ -139,17 +139,6 @@ ColumnLayout {
         }
     }
 
-//    CustomButton {
-//        id: signInBtn
-//        Layout.preferredHeight: 40 / Style.monitorRatio
-//        Layout.fillWidth: true
-//        Layout.topMargin: Style.smallFontSize
-//        hoverEnabled: true
-//        buttonColor: Style.foregroundColor
-//        buttonTextColor: signInBtn.hovered
-//                         && signInBtn.enabled ? "#01AED6" : Style.backgroundColor
-//        buttonText: "Sign in"
-//    }
     LoadingButton {
         id: signInBtn
         Layout.preferredHeight: 40 / Style.monitorRatio

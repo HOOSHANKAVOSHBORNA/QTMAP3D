@@ -207,22 +207,8 @@ Item {
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 10 / Style.monitorRatio
-            //  hoverEnabled: true
             buttonText: "Connect"
             buttonColor: Style.foregroundColor
-
-            //            Binding {
-            //                target: connectBtn.textId
-            //                property: "color"
-            //                value: {
-            //                    if (connectBtn.waitingTimer.running)
-            //                        return connectionConfigCpp.isConnected ? "#206900" : "#690000"
-            //                    else
-            //                        return connectBtn.hovered
-            //                                && connectBtn.backgroundColorOpacity
-            //                                == 1 ? "#01AED6" : Style.backgroundColor
-            //                }
-            //            }
             button.onClicked: {
                 backgroundColorOpacity = 0.5
                 connectionButtonClicked = true
@@ -241,10 +227,8 @@ Item {
             Layout.preferredHeight: 43 / Style.monitorRatio
             Layout.preferredWidth: 320 / Style.monitorRatio
             Layout.topMargin: 25 / Style.monitorRatio
-            hoverEnabled: true
             buttonText: "Save Changes"
             buttonColor: Style.foregroundColor
-            buttonTextColor: saveBtn.hovered ? "#01AED6" : Style.backgroundColor
             onClicked: {
                 rootItem.connectionConfigCpp.saveSettings()
             }
@@ -256,20 +240,9 @@ Item {
 
         function onIsConnectedChanged() {
             if (connectionButtonClicked && connectionConfigCpp.isConnected) {
-
-                //                connectBtn.buttonText = "Connection Success"
-                //                connectBtn.buttonTextColor = "#206900"
-                //                connectBtn.buttonColor = "#206900"
-                //                connectBtn.opacityAnimation.start()
-                //                messageText.text = "Connection Success"
                 connectionButtonClicked = false
             }
             if (connectionButtonClicked && !connectionConfigCpp.isConnected) {
-                //                connectBtn.buttonText = "Connection Failure"
-                //                connectBtn.buttonTextColor = "#690000"
-                //                connectBtn.buttonColor = "#690000"
-                //                connectBtn.opacityAnimation.start()
-                //                messageText.text = "Connection Failure"
                 connectionButtonClicked = false
             }
         }
