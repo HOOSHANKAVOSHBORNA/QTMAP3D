@@ -10,5 +10,6 @@
         <file>CircularCut.qml</file>
         <file>PropertyItem.qml</file>
         <file>NodeListItem.qml</file>
+        <file>resources/search.png</file>
     </qresource>
 </RCC>

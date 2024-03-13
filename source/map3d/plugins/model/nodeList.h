@@ -126,6 +126,9 @@ public:
     Q_INVOKABLE void goToPosition(int index);
     Q_INVOKABLE void trackPosition(int index);
 
+    Q_INVOKABLE QString filterSearch() const;
+    Q_INVOKABLE void setFilterSearch(const QString &newFilterSearch);
+
 signals:
     void categoryTagModelChanged();
     void tabbarModelChanged();
@@ -136,6 +139,7 @@ protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
 private:
+    QString mFilterSearch;
     QString mFilterCategoryTag = "All";
     QString mFilterColumn = "Essential";
 
