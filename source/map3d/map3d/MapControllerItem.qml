@@ -89,10 +89,11 @@ Item {
 
     SearchBar {
         id: searcbar
-        anchors.right: parent.right
-        anchors.rightMargin: itemMargin
+
         anchors.top: parent.top
-        anchors.topMargin: itemMargin + 3
+        anchors.right: parent.right
+        anchors.rightMargin: 63 / Style.monitorRatio
+        anchors.topMargin: 40 / Style.monitorRatio
         filterManager: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp.getMapItem().filterManager : undefined
         model: applicationCpp.mainPageCpp ? applicationCpp.mainPageCpp.getMapItem().searchNodeManager().searchNodeProxyModel() : undefined
     }
