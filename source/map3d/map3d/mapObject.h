@@ -5,6 +5,7 @@
 #include <QObject>
 #include <osgEarth/Map>
 #include "compositeAnnotationLayer.h"
+#include "qtimer.h"
 #include "serviceManager.h"
 
 namespace osgEarth {
@@ -65,6 +66,7 @@ public:
 
     ParenticAnnotationLayer *getServiceLayerBiId(int id);
     void clearLayers();
+    void setRefreshStatus(bool status);
 public slots:
     void filterNodes();
     void onLayerDataReceived(const LayerData &layerData);
@@ -88,6 +90,7 @@ private:
     FilterManager *mFilterManager;
     int mRefrehsTime{0};
     ServiceManager *mServiceManager{nullptr};
+    QTimer *mTimerFilterUpdate;
 };
 
 #endif // CUSTOMMAP_H

@@ -12,7 +12,7 @@ Item {
     property double innerRadius: 150
     property double thickness: outerRadius - innerRadius
     property double midAngle: -90
-    property double startAngle: midAngle - currentCutLen * listModel.rowCount() / 2
+    property double startAngle: midAngle - currentCutLen * (listModel? listModel.rowCount() : 1) / 2
 //    property double startAngle: -180
     property double currentCutLen: 45
     property double animationDuration: 2000
