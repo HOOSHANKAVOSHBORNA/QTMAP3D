@@ -104,6 +104,7 @@ Window {
 
                     CustomButton {
                         Layout.fillWidth: true
+                        Layout.preferredHeight: 30 / Style.monitorRatio
                         buttonText: "Track"
                         iconImageVisible: true
                         iconImageSource: "qrc:/Resources/track-icon.png"
@@ -121,6 +122,8 @@ Window {
                     }
                     CustomButton {
                         Layout.fillWidth: true
+
+                        Layout.preferredHeight: 30 / Style.monitorRatio
                         buttonText: "Go to"
                         iconImageVisible: true
                         iconImageSource: "qrc:/Resources/easy-to-find.png"
