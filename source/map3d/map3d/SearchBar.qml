@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
 import "style"
+import "Components"
 
 Item{
     id: rootItem
@@ -32,6 +33,7 @@ Item{
     Rectangle{
         id:mainRec
         width: parent.width
+
         height: 40 / Style.monitorRatio
         color:Style.backgroundColor
         radius:width > 40 / Style.monitorRatio ? 20 / Style.monitorRatio : width/2
@@ -80,11 +82,12 @@ Item{
                 height: iconSize
                 visible: !flag
             }
-            IconImage{
+            IconButton {
                 anchors.centerIn: parent
-                source: "qrc:/Resources/search.png"
-                width: iconSize
-                height: iconSize
+                iconImageSource: "qrc:/Resources/search.png"
+                width: 40 / Style.monitorRatio
+                height: 40 / Style.monitorRatio
+                padding: 0
                 visible: flag
             }
             MouseArea{
