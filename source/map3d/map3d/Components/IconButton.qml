@@ -16,7 +16,7 @@ Button {
     }
     contentItem:IconImage {
         id: iconImage
-        sourceSize: Qt.size(26/Style.monitorRatio,26/Style.monitorRatio)
+//        sourceSize: Qt.size(26/Style.monitorRatio,26/Style.monitorRatio)
         anchors.centerIn: parent
     }
 
