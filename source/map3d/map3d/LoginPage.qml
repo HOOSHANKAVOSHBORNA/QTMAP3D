@@ -164,6 +164,12 @@ Item {
                     signInPage.signInBtn.resetSignInBtn()
                     userManager.setMessage("")
                 }
+                function onSignedOut() {
+                    rolePage.visible = false
+                    signInPage.visible = true
+                    heightDecrease.start()
+                    topToBottomSignIn.start()
+                }
             }
         }
 
