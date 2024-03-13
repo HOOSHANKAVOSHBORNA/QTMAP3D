@@ -110,11 +110,11 @@ PluginManager::~PluginManager()
 {
     qDebug() << "~PluginManager";
     unLoadPlugins();
-    for (auto &i : mPluginsMap)
-        delete i;
-    mPluginsMap.clear();
+//    for (auto &i : mPluginsMap)
+//        delete i;
+//    mPluginsMap.clear();
     Application::instance()->mainWindow()->getMapItem()->getViewer()->removeEventHandler(mEventHandler);
-    delete mPluginLoader;
+//    delete mPluginLoader;
 }
 
 void PluginManager::loadPlugins()
@@ -232,6 +232,7 @@ void PluginManager::loadPlugin(const QString &pluginFileName, const QDir &plugin
             dynamic_cast<PluginInterface*>(instance);
 
         if (pluginInterface) {
+            pluginInterface->setParent(this);
             pluginInterface->setName(pluginFileName);
             mPluginsMap.insert(pluginFileName, pluginInterface);
             mLoadedPlugins.push_back(pluginFileName);
