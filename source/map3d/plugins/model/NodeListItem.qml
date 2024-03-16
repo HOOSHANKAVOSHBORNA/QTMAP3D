@@ -211,7 +211,7 @@ Item {
             anchors.top: searchRect.bottom
             color: Style.backgroundColor //'royalblue'
             anchors.left: parent.left
-            width: 1500 / Style.monitorRatio
+            width: 1300 / Style.monitorRatio
             height: 135 / Style.monitorRatio /*69 / Style.monitorRatio*/
 
             //z: -1
