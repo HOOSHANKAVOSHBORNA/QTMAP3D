@@ -14,7 +14,7 @@ Window {
     title: "Node List"
     width: 1000 / Style.monitorRatio
     height: 600 / Style.monitorRatio
-    minimumWidth: 1600 / Style.monitorRatio
+    minimumWidth: 1500 / Style.monitorRatio
     //    color: 'transparent'
     //    flags: Qt.FramelessWindowHint
     Rectangle {
