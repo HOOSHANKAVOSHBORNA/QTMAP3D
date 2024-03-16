@@ -443,7 +443,7 @@ void Model::moving(osgEarth::GeoPoint &geoPos)
     mNodeData.altitude = geoPos.z();
     if (mNodeData.type == NodeType::Flyable) {
         double randomHeight = 50 + (QRandomGenerator::global()->generate() % (100 - 50));
-        mNodeData.altitude = randomHeight;
+        mNodeData.altitude += randomHeight;
     }
     mProperty->setNodeData(mNodeData);
 }

@@ -20,6 +20,7 @@ Window {
     width: 800
     height: 800
     minimumWidth: 1500 / Style.monitorRatio
+    minimumHeight: 900 / Style.monitorRatio
     onClosing: {
         applicationCpp.userManager.signedOut()
     }
