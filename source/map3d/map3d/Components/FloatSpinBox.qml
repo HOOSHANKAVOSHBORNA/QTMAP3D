@@ -79,6 +79,7 @@ Item {
 
             IconButton{
                 id:iconMinus
+                enabled: false
                 width: 15 / Style.monitorRatio
                 height: 15 / Style.monitorRatio
                 anchors.centerIn: parent
@@ -96,6 +97,7 @@ Item {
 
             IconButton{
                 id:iconPlus
+                enabled: false
                 width: 15 / Style.monitorRatio
                 height: 15 / Style.monitorRatio
                 anchors.centerIn: parent

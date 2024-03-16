@@ -219,6 +219,7 @@ Item {
                 id: dropDown
                 property int innerWidth
                 anchors.top: filterRect.top
+                anchors.right: parent.right
                 anchors.left: parent.left
                 filterManager: rootItem.filterManager
             }

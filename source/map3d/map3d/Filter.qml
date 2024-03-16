@@ -21,7 +21,7 @@ Rectangle {
     }
     Rectangle{
         width: parent.width - 3/ Style.monitorRatio
-        height: 20
+        height: 20 / Style.monitorRatio
         anchors.top: parent.top
         color: Qt.rgba(Style.backgroundColor.r,Style.backgroundColor.g,Style.backgroundColor.b,.2)
         z:2
@@ -46,7 +46,7 @@ Rectangle {
         Flow {
             id: filterFields
             width: parent.width
-            spacing: 15
+            spacing: 15 / Style.monitorRatio
             Layout.topMargin: 10 / Style.monitorRatio
             Layout.leftMargin: Style.smallFontSize
             RowLayout {
