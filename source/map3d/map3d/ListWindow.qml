@@ -12,9 +12,9 @@ Window {
     property var tabbarModel: listWindowCpp ? listWindowCpp.tabbarModel : undefined
 
     title: "Node List"
-    width: 1000
-    height: 600
-    minimumWidth: 1500 / Style.monitorRatio
+    width: 1000 / Style.monitorRatio
+    height: 600 / Style.monitorRatio
+    minimumWidth: 1600 / Style.monitorRatio
     //    color: 'transparent'
     //    flags: Qt.FramelessWindowHint
     Rectangle {
@@ -24,10 +24,10 @@ Window {
         //        radius: 20
         ColumnLayout {
             anchors.fill: parent
-            anchors.leftMargin: 25
-            anchors.rightMargin: 25
-            anchors.topMargin: 20
-            anchors.bottomMargin: 25
+            anchors.leftMargin: 25/ Style.monitorRatio
+            anchors.rightMargin: 25/ Style.monitorRatio
+            anchors.topMargin: 20/ Style.monitorRatio
+            anchors.bottomMargin: 25/ Style.monitorRatio
 
             spacing: 0
 

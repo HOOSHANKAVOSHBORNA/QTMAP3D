@@ -69,7 +69,7 @@ Item {
         anchors.top: txtObjectList.bottom
         anchors.topMargin: 20
         //width: parent.width
-        height: 26
+        height: 26 / Style.monitorRatio
         anchors.left: parent.left
 
         RowLayout {
@@ -89,8 +89,8 @@ Item {
                         id: txtNodeTypeFilter
                         //anchors.fill: parent
                         anchors.centerIn: parent
-                        leftPadding: 15
-                        rightPadding: 15
+                        leftPadding: 15/ Style.monitorRatio
+                        rightPadding: 15/ Style.monitorRatio
                         bottomPadding: 3
                         topPadding: 3
                         text: model.display
@@ -123,22 +123,22 @@ Item {
         opacity: 0.06
         z: -1
         anchors.left: rectMainSearch.left
-        anchors.leftMargin: -5
+        anchors.leftMargin: -5 / Style.monitorRatio
         anchors.bottom: rectMainSearch.bottom
-        anchors.bottomMargin: -5
+        anchors.bottomMargin: -5 / Style.monitorRatio
         anchors.right: rectMainSearch.right
-        anchors.rightMargin: -5
+        anchors.rightMargin: -5 / Style.monitorRatio
         anchors.top: rectMainSearch.top
-        anchors.topMargin: -5
+        anchors.topMargin: -5 / Style.monitorRatio
     }
     Rectangle {
         id: rectMainSearch
         color: Style.backgroundColor
         //border.color: "black"
         anchors.top: rectCategoryTag.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 20 / Style.monitorRatio
         //width: parent.width
-        height: searchRect.height + filterRect.height + 20 + 20 //parent.heightStyle
+        height: searchRect.height + filterRect.height + 40 / Style.monitorRatio //parent.heightStyle
         anchors.left: parent.left
         //anchors.leftMargin: 20
         anchors.right: parent.right
